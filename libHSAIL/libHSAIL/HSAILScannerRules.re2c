@@ -1,0 +1,431 @@
+// University of Illinois/NCSA
+// Open Source License
+// 
+// Copyright (c) 2013, Advanced Micro Devices, Inc.
+// All rights reserved.
+// 
+// Developed by:
+// 
+//     HSA Team
+// 
+//     Advanced Micro Devices, Inc
+// 
+//     www.amd.com
+// 
+// Permission is hereby granted, free of charge, to any person obtaining a copy of
+// this software and associated documentation files (the "Software"), to deal with
+// the Software without restriction, including without limitation the rights to
+// use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies
+// of the Software, and to permit persons to whom the Software is furnished to do
+// so, subject to the following conditions:
+// 
+//     * Redistributions of source code must retain the above copyright notice,
+//       this list of conditions and the following disclaimers.
+// 
+//     * Redistributions in binary form must reproduce the above copyright notice,
+//       this list of conditions and the following disclaimers in the
+//       documentation and/or other materials provided with the distribution.
+// 
+//     * Neither the names of the LLVM Team, University of Illinois at
+//       Urbana-Champaign, nor the names of its contributors may be used to
+//       endorse or promote products derived from this Software without specific
+//       prior written permission.
+// 
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
+// FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SHALL THE
+// CONTRIBUTORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS WITH THE
+// SOFTWARE.
+/*!re2c
+
+    re2c:define:YYCTYPE  = "char";
+    re2c:define:YYCURSOR = m_curPos;
+    re2c:define:YYLIMIT  = m_end;
+    re2c:define:YYMARKER = marker;
+    re2c:yyfill:enable   = 1;
+    re2c:yych:conversion = 0;
+
+    SPACE = [ \t];
+    NL    = "\r"? "\n";
+    ANY   = [^];
+
+    WORD  = [a-zA-Z][a-zA-Z0-9]*;
+    ID    = [a-zA-Z_][a-zA-Z0-9_]*;
+
+    DCD   = [0-9];
+    HXD   = [0-9a-fA-F];
+
+    DECIMAL = DCD+;
+    OCTAL   = "0"[0-7]*;
+    HEX     = "0"[xX]HXD+;
+
+    INTEGER = DECIMAL|OCTAL|HEX;
+
+    HLFHEX  = "0"[hH]HXD{4};
+    SGLHEX  = "0"[fF]HXD{8};
+    DBLHEX  = "0"[dD]HXD{16};
+
+    EXP = [Ee][+-]?DCD+;
+    FLOAT1 = DCD+  "."  DCD*   EXP?;
+    FLOAT2 =       "."  DCD+   EXP?;
+    FLOAT3 = DCD+ ("."  DCD*)? EXP;
+    FLOAT = [+-]? (FLOAT1|FLOAT2|FLOAT3);
+
+    C99FLT  = [+-]?"0"[xX]HXD+("."HXD*)?[pP][+-]?DCD+;
+*/
+
+#define YYFILL(n) { readChars(n); }
+
+namespace HSAIL_ASM
+{
+
+void Scanner::readSingleStringLiteral(std::string* outString)
+{
+    using namespace std;
+    while(true) {
+        m_tokStart = m_curPos;
+        const char *marker;
+
+/*!re2c
+    re2c:indent:string = "        ";
+
+    "\\" [0-7]{1,3}       {
+        unsigned int v;
+        string const s(m_tokStart+1,m_curPos);
+        istringstream is(s);
+        is >> oct >> v;
+        if (is.fail() || v>std::numeric_limits<unsigned char>::max()) {
+            syntaxError("Invalid character code");
+        }
+        outString->push_back(static_cast<unsigned char>(v));
+        continue;
+    }
+    "\\" [xX][0-9A-Fa-f]{1,2} {
+        unsigned int v;
+        string const s(m_tokStart+2,m_curPos);
+        istringstream is(s);
+        is >> hex >> v;
+        if (is.fail() || v>std::numeric_limits<unsigned char>::max()) {
+            syntaxError("Invalid character code");
+        }
+        outString->push_back(static_cast<unsigned char>(v));
+        continue;
+    }
+    "\\\\"         { outString->push_back('\134'); continue; }
+    "\\'"          { outString->push_back('\047'); continue; }
+    "\\\""         { outString->push_back('\042'); continue; }
+    "\\?"          { outString->push_back('\077'); continue; }
+    "\\a"          { outString->push_back('\007'); continue; }
+    "\\b"          { outString->push_back('\010'); continue; }
+    "\\f"          { outString->push_back('\006'); continue; }
+    "\\n"          { outString->push_back('\012'); continue; }
+    "\\r"          { outString->push_back('\015'); continue; }
+    "\\t"          { outString->push_back('\011'); continue; }
+    "\\v"          { outString->push_back('\013'); continue; }
+    "\""           { break; }
+    "\\"           { syntaxError("Invalid escape sequence"); }
+    [\r\n]         { syntaxError("Runaway string literal"); }
+    [^\r\n\\\"]+   { outString->insert(outString->end(), m_tokStart, m_curPos); continue; }
+*/
+    }
+}
+
+ETokens Scanner::scanTargetOption()
+{
+    skipWhitespaces();
+    m_tokStart = m_curPos;
+    const char *marker;
+/*!re2c
+    re2c:indent:string = "    ";
+
+@print $scanner{ETargetMachine}
+@print $scanner{ETargetProfile}
+
+    ""      { syntaxError("Invalid target info"); }
+*/
+}
+
+ETokens Scanner::scanModifier()
+{
+    m_tokStart = m_curPos;
+    const char *marker;
+
+/*!re2c
+    re2c:indent:string = "    ";
+
+@print $scanner{_EMPacking}
+@print $scanner{_EMType}
+@print $scanner{_EMSemantics}
+@print $scanner{_EMAtomicOp}
+@print $scanner{_EMSegment}
+@print $scanner{_EMMemoryFence}
+
+    "_width"     { return m_token = EMWidth; }
+    "_v2"        { m_brigId = 2; return m_token = EMVector; }
+    "_v3"        { m_brigId = 3; return m_token = EMVector; }
+    "_v4"        { m_brigId = 4; return m_token = EMVector; }
+    "_equiv"     { return m_token = EMEquiv; }
+
+    "_ftz"       { return m_token = EMFTZ; }
+    
+    "_region"    { m_brigId = Brig::BRIG_ExtSpace0;      return m_token = EMSegment; }
+    "_aligned"   { m_brigId = Brig::BRIG_MEMORY_ALIGNED; return m_token = EMAligned; }
+
+    "_both"         { m_brigId = Brig::BRIG_FENCE_BOTH;          return m_token = EMMemoryFence; }
+    "_partial"      { m_brigId = Brig::BRIG_FENCE_PARTIAL;       return m_token = EMMemoryFence; }
+    "_partial_both" { m_brigId = Brig::BRIG_FENCE_PARTIAL_BOTH;  return m_token = EMMemoryFence; }
+    
+
+@print $scanner{_EMRound}
+@print $scanner{_EMCompare}
+@print $scanner{_EMGeom}
+
+    "_" WORD     {  m_brigId = 0; return m_token = EMSkip; } /* TBD just to skip unknown modifiers, remove */
+
+    ""           { return m_token = EMNone; }
+*/
+
+// "_fbar"      { return m_token = EMFBar; } // removed
+}
+
+Brig::BrigImageFormat8_t Scanner::scanImageFormat()
+{
+    skipWhitespaces();
+    m_tokStart = m_curPos;
+    const char *marker;
+/*!re2c
+    re2c:indent:string = "    ";
+
+@print $scanner{ImageFormat}
+    ""                   { syntaxError("unknown image format"); }
+  */
+}
+
+Brig::BrigImageOrder8_t Scanner::scanImageOrder()
+{
+    skipWhitespaces();
+    m_tokStart = m_curPos;
+    const char *marker;
+/*!re2c
+    re2c:indent:string = "    ";
+
+@print $scanner{ImageOrder}
+    ""          { syntaxError("unknown image order"); }
+*/
+}
+
+//#define DBGNL std::cout << "\n"
+#define DBGNL
+
+ETokens Scanner::scan()
+{
+    skipWhitespaces();
+    m_tokStart = m_curPos;
+    const char *marker;
+/*!re2c
+    re2c:indent:string  = "        ";
+
+    "{"                  { return m_token = ELCurl; }
+    "}"                  { return m_token = ERCurl; }
+    "("                  { return m_token = ELParen; }
+    ")"                  { return m_token = ERParen; }
+    "["                  { return m_token = ELBrace; }
+    "]"                  { return m_token = ERBrace; }
+    "<"                  { return m_token = ELAngle; }
+    ">"                  { return m_token = ERAngle; }
+    "."                  { return m_token = EDot; }
+    ","                  { return m_token = EComma; }
+    ";"                  { return m_token = ESemi; }
+    ":"                  { return m_token = EColon; }
+    "+"                  { return m_token = EPlus; }
+    "-"                  { return m_token = EMinus; }
+    "="                  { return m_token = EEqual; }
+
+    "version"            { return m_token = EKWVersion; }
+    "kernel"             { return m_token = EKWKernel; }
+    "function"           { return m_token = EKWFunction; }
+    "pragma"             { return m_token = EKWPragma; }
+    "section"            { return m_token = EKWSection; }
+    "rti"                { return m_token = EKWRTI; }
+    "loc"                { return m_token = EKWLoc; }
+    "extension"          { return m_token = EKWExtension; }
+    "file"               { return m_token = EKWFile; }
+    "labeltargets"       { return m_token = EKWLabelTargets; }
+    "signature"          { return m_token = EKWSignature; }
+    "all"                { return m_token = EKWWidthAll;  }
+    "fbarrier"           { return m_token = EKWFbarrier; }
+
+@print $scanner{EControl}
+
+    "width"              { return m_token = EKWImageWidth; }
+    "height"             { return m_token = EKWImageHeight; }
+    "depth"              { return m_token = EKWImageDepth; }
+    "format"             { return m_token = EKWImageFormat; }
+    "order"              { return m_token = EKWImageOrder; }
+
+    "boundaryU"          { return m_token = EKWSamplerBoundaryU; }
+    "boundaryV"          { return m_token = EKWSamplerBoundaryV; }
+    "boundaryW"          { return m_token = EKWSamplerBoundaryW; }
+    "coord"              { return m_token = EKWSamplerCoord; }
+    "filter"             { return m_token = EKWSamplerFilter; }
+
+@print $scanner{ESamplerBoundaryMode}
+
+    "normalized"         { m_brigId = 1;                            return m_token = ESamplerCoord;  }
+    "unnormalized"       { m_brigId = 0;                            return m_token = ESamplerCoord;  }
+    "nearest"            { m_brigId = Brig::BRIG_FILTER_NEAREST;    return m_token = ESamplerFilter; }
+    "linear"             { m_brigId = Brig::BRIG_FILTER_LINEAR;     return m_token = ESamplerFilter; }
+
+    "global"             { m_brigId = Brig::BRIG_SEGMENT_GLOBAL;    return m_token = ESegment; }
+    "group"              { m_brigId = Brig::BRIG_SEGMENT_GROUP;     return m_token = ESegment; }
+    "private"            { m_brigId = Brig::BRIG_SEGMENT_PRIVATE;   return m_token = ESegment; }
+    "kernarg"            { m_brigId = Brig::BRIG_SEGMENT_KERNARG;   return m_token = ESegment; }
+    "readonly"           { m_brigId = Brig::BRIG_SEGMENT_READONLY;  return m_token = ESegment; }
+    "spill"              { m_brigId = Brig::BRIG_SEGMENT_SPILL;     return m_token = ESegment; }
+    "arg"                { m_brigId = Brig::BRIG_SEGMENT_ARG;       return m_token = ESegment; }
+    "flat"               { m_brigId = Brig::BRIG_SEGMENT_FLAT;      return m_token = ESegment; }
+
+@print $scanner{Instructions}
+
+    "extern"             { m_brigId = Brig::BRIG_LINKAGE_EXTERN;    return m_token = EAttribute; }
+    "static"             { m_brigId = Brig::BRIG_LINKAGE_STATIC;    return m_token = EAttribute; }
+
+    "align"              { return m_token = EKWAlign; }
+    "const"              { return m_token = EKWConst; }
+
+    "block"              { return m_token = EKWBlockStart; }
+    "blocknumeric"       { return m_token = EKWBlockNum; }
+    "blockstring"        { return m_token = EKWBlockStr; }
+    "endblock"           { return m_token = EKWBlockEnd; }
+    
+    "fbar"               { return m_token = EKWFBar; }
+
+    "@" ID               { return m_token = ELabel; }
+    "&" ID               { return m_token = EIDStatic; }
+    "%" ID               { return m_token = EIDLocal; }
+    "$" ID               { return m_token = ERegister; }
+
+    "WAVESIZE"           { return m_token = EWaveSizeMacro; }
+
+    "\""                 { return m_token = EQuot; }
+
+    "_u8x4"              { m_brigId = Brig::BRIG_TYPE_U8X4;  return m_token = EPackedLiteral; }
+    "_s8x4"              { m_brigId = Brig::BRIG_TYPE_S8X4;  return m_token = EPackedLiteral; }
+    "_u8x8"              { m_brigId = Brig::BRIG_TYPE_U8X8;  return m_token = EPackedLiteral; }
+    "_s8x8"              { m_brigId = Brig::BRIG_TYPE_S8X8;  return m_token = EPackedLiteral; }
+    "_u8x16"             { m_brigId = Brig::BRIG_TYPE_U8X16; return m_token = EPackedLiteral; }
+    "_s8x16"             { m_brigId = Brig::BRIG_TYPE_S8X16; return m_token = EPackedLiteral; }
+    "_u16x2"             { m_brigId = Brig::BRIG_TYPE_U16X2; return m_token = EPackedLiteral; }
+    "_s16x2"             { m_brigId = Brig::BRIG_TYPE_S16X2; return m_token = EPackedLiteral; }
+    "_f16x2"             { m_brigId = Brig::BRIG_TYPE_F16X2; return m_token = EPackedLiteral; }
+    "_u16x4"             { m_brigId = Brig::BRIG_TYPE_U16X4; return m_token = EPackedLiteral; }
+    "_s16x4"             { m_brigId = Brig::BRIG_TYPE_S16X4; return m_token = EPackedLiteral; }
+    "_f16x4"             { m_brigId = Brig::BRIG_TYPE_F16X4; return m_token = EPackedLiteral; }
+    "_u16x8"             { m_brigId = Brig::BRIG_TYPE_U16X8; return m_token = EPackedLiteral; }
+    "_s16x8"             { m_brigId = Brig::BRIG_TYPE_S16X8; return m_token = EPackedLiteral; }
+    "_f16x8"             { m_brigId = Brig::BRIG_TYPE_F16X8; return m_token = EPackedLiteral; }
+    "_u32x2"             { m_brigId = Brig::BRIG_TYPE_U32X2; return m_token = EPackedLiteral; }
+    "_s32x2"             { m_brigId = Brig::BRIG_TYPE_S32X2; return m_token = EPackedLiteral; }
+    "_f32x2"             { m_brigId = Brig::BRIG_TYPE_F32X2; return m_token = EPackedLiteral; }
+    "_u32x4"             { m_brigId = Brig::BRIG_TYPE_U32X4; return m_token = EPackedLiteral; }
+    "_s32x4"             { m_brigId = Brig::BRIG_TYPE_S32X4; return m_token = EPackedLiteral; }
+    "_f32x4"             { m_brigId = Brig::BRIG_TYPE_F32X4; return m_token = EPackedLiteral; }
+    "_u64x2"             { m_brigId = Brig::BRIG_TYPE_U64X2; return m_token = EPackedLiteral; }
+    "_s64x2"             { m_brigId = Brig::BRIG_TYPE_S64X2; return m_token = EPackedLiteral; }
+    "_f64x2"             { m_brigId = Brig::BRIG_TYPE_F64X2; return m_token = EPackedLiteral; }
+
+    DECIMAL              { return m_token = EDecimalNumber; }
+    OCTAL                { return m_token = EOctalNumber; }
+    HEX                  { return m_token = EHexNumber; }
+
+    FLOAT [hH]           { return m_token = EHlfNumber; }
+    FLOAT [fF]           { return m_token = ESglNumber; }
+    FLOAT [lL]?          { return m_token = EDblNumber; }
+
+    HLFHEX               { return m_token = EHlfHexNumber; }
+    SGLHEX               { return m_token = ESglHexNumber; }
+    DBLHEX               { return m_token = EDblHexNumber; }
+
+    C99FLT [hH]          { return m_token = EHlfC99Number; }
+    C99FLT [fF]          { return m_token = ESglC99Number; }
+    C99FLT [lL]?         { return m_token = EDblC99Number; }   
+
+    "\000"               { --m_curPos; return m_token = EEndOfSource; }
+
+    ""                   { syntaxError("Syntax error"); }
+*/
+}
+
+void Scanner::nextLine()
+{
+    DBGNL;
+    m_lineStart = streamPosAt(m_curPos);
+    ++m_lineNum;
+}
+
+void Scanner::skipWhitespaces()
+{
+    while(true) {
+        m_tokStart = m_curPos;
+        const char *marker;
+/*!re2c
+        re2c:indent:string  = "        ";
+        SPACE           { continue; }
+        NL              { nextLine(); continue; }
+        "/" "/"         { skipOneLinearComment(); continue; }
+        "/" "*"         { skipMultilineComment(); continue; }
+        "\000"          { --m_curPos; break; }
+        ""              { break; }
+*/
+    }
+}
+
+#undef YYFILL
+
+#define YYFILL(n) { \
+    appendComment(m_tokStart,m_curPos); \
+    m_tokStart = m_curPos; \
+    readChars(n); }
+
+void Scanner::skipOneLinearComment()
+{
+    newComment();
+    while(true) {
+        const char *const i = m_curPos;
+/*!re2c
+        re2c:indent:string = "        ";
+        NL       { nextLine();
+                   appendComment(m_tokStart,i);
+                   break; }
+        "\000"   { --m_curPos; appendComment(m_tokStart,i); break; }
+        ANY      { continue; }
+*/
+    };
+}
+
+void Scanner::skipMultilineComment()
+{
+    newComment("// ");
+    m_tokStart = m_curPos; // skip leading / *
+
+    while(true) {
+        const char *const i = m_curPos;
+/*!re2c
+        re2c:indent:string = "        ";
+        NL       { nextLine();
+                   appendComment(m_tokStart,i);
+                   newComment("// ");
+                   m_tokStart = m_curPos;
+                   continue; }
+        "*" "/"  { appendComment(m_tokStart,i); break; }
+        "\000"   { --m_curPos; syntaxError("Premature end of comment"); }
+        ANY      { continue; }
+*/
+    };
+}
+
+#undef YYFILL
+
+} // end namespace

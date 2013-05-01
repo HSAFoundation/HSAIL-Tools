@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <CustomBuild Include="generate.pl">
+      <FileType>Document</FileType>
+      <Command>$(DK_ROOT)\perl\5.16.1\bin\perl.exe $(ProjectDir)\generate.pl --touch=$(OutDir)\generate.done $(ProjectDir) $(ProjectDir)\generated\</Command>
+      <Outputs>$(OutDir)\generate.done</Outputs>
+      <AdditionalInputs>$(ProjectDir)Brig_new.hpp;$(ProjectDir)HSAILScannerRules.re2c;$(DK_ROOT)\perl\5.12.2\bin\perl.exe</AdditionalInputs>
+      <Message>Generating *_gen.* using DK perl and generate.pl from Brig_new.hpp. If compilation fails make sure that DK_ROOT variable is set in the shell from which you start Visual Studio IDE.</Message>
+    </CustomBuild>
+  </ItemGroup>
+</Project>

@@ -1,0 +1,695 @@
+sequenceOfPrograms           ::= program { program }
+program                      ::= version topLevelStatements
+topLevelStatements           ::= { topLevelStatement }
+topLevelStatement            ::= TOKEN_COMMENT
+                               | directive
+                               | globalDecl
+                               | kernel
+                               | function
+globalDecl                   ::= globalInitializableDecl
+                               | globalUninitializableDecl
+                               | globalImageDecl
+                               | globalReadOnlyImageDecl
+                               | globalSamplerDecl
+                               | functionDecl
+                               | functionSignature
+directive                    ::= pragma
+                               | extension
+                               | block
+                               | control
+                               | fileDecl
+bodyStatements               ::= { bodyStatement }
+bodyStatement                ::= TOKEN_COMMENT
+                               | location
+                               | block
+                               | pragma
+                               | localInitializableDecl
+                               | localUninitializableDecl
+                               | argBlock
+                               | label
+                               | labelTarget
+                               | operation
+bodyStatementNested          ::= TOKEN_COMMENT
+                               | pragma
+                               | block
+                               | localInitializableDecl
+                               | localUninitializableDecl
+                               | location
+                               | label
+                               | labelTarget
+                               | operation
+argBlock                     ::= "{" argStatements "}"
+argStatements                ::= { argStatement } argStatement
+argStatement                 ::= bodyStatementNested
+                               | argUninitializableDecl
+                               | call
+operation                    ::= instruction0
+                               | instruction1
+                               | instruction2
+                               | instruction3
+                               | instruction4
+                               | cmp
+                               | mul
+                               | combine
+                               | expand
+                               | mov
+                               | segOp
+                               | alloca
+                               | sad
+                               | packcvt
+                               | unpackcvt
+                               | bitinsert
+                               | pack
+                               | unpack
+                               | lda
+                               | ldc
+                               | ld
+                               | st
+                               | cvt
+                               | atomic
+                               | atomicnoret
+                               | sync
+                               | bar
+                               | fbar
+                               | syscall
+                               | ret
+                               | branch
+                               | rdimage
+                               | stimage
+                               | ldimage
+                               | atomicimage
+                               | atomicimagenoret
+                               | queryimage
+                               | querysampler
+block                        ::= "block" TOKEN_STRING { blockItem } "endblock" ";"
+blockItem                    ::= ( "blockstring" TOKEN_STRING
+                                 | "blocknumeric" dataTypeId decimalList
+                                 | "blocknumeric" dataTypeId packedList
+                                 | "blocknumeric" dataTypeId halfList
+                                 | "blocknumeric" dataTypeId singleList
+                                 | "blocknumeric" dataTypeId doubleList ) ";"
+declPrefix                   ::= [ alignment externOrStatic
+                                 | externOrStatic alignment
+                                 | externOrStatic
+                                 | alignment
+                                 | const alignment externOrStatic
+                                 | const externOrStatic alignment
+                                 | const externOrStatic
+                                 | const alignment
+                                 | alignment const externOrStatic
+                                 | externOrStatic const alignment
+                                 | externOrStatic const
+                                 | alignment const
+                                 | alignment externOrStatic const
+                                 | externOrStatic alignment const ]
+globalSamplerDecl            ::= declPrefix initializableAddress "_Samp"
+                                 TOKEN_GLOBAL_IDENTIFIER
+                                 optArrayDimensions samplerInitializer ";"
+globalImageDecl              ::= declPrefix initializableAddress "_rwimg"
+                                 TOKEN_GLOBAL_IDENTIFIER
+                                 optArrayDimensions imageInitializer ";"
+globalReadOnlyImageDecl      ::= declPrefix initializableAddress "_roimg"
+                                 TOKEN_GLOBAL_IDENTIFIER
+                                 optArrayDimensions imageInitializer ";"
+version                      ::= "version"
+                                 TOKEN_INTEGER_CONSTANT ":"
+                                 TOKEN_INTEGER_CONSTANT ":"
+                                 profile ":"
+                                 machineModel ";"
+profile                      ::= "$full"
+                               | "$base"
+machineModel                 ::= "$small"
+                               | "$large"
+addressableOperand           ::= "[" nonRegister "]"
+nonRegister                  ::= TOKEN_GLOBAL_IDENTIFIER
+                               | TOKEN_LOCAL_IDENTIFIER
+identifier                   ::= TOKEN_GLOBAL_IDENTIFIER
+                               | TOKEN_LOCAL_IDENTIFIER
+                               | register
+identifierList               ::= { identifier "," } identifier
+decimalConstant              ::= "+" TOKEN_INTEGER_CONSTANT
+                               | "-" TOKEN_INTEGER_CONSTANT
+                               | TOKEN_INTEGER_CONSTANT
+decimalList                  ::= { decimalConstant "," } decimalConstant
+decimalInitializer           ::= "{" decimalList "}"
+                               | decimalConstant
+doubleConstant               ::= "+" TOKEN_DOUBLE_CONSTANT
+                               | "-" TOKEN_DOUBLE_CONSTANT
+                               | TOKEN_DOUBLE_CONSTANT
+doubleList                   ::= { doubleConstant "," }
+                                 doubleConstant
+doubleInitializer            ::= "{" doubleList "}"
+                               | doubleConstant
+singleConstant               ::= "+" TOKEN_SINGLE_CONSTANT
+                               | "-" TOKEN_SINGLE_CONSTANT
+                               | TOKEN_SINGLE_CONSTANT
+singleList                   ::= { singleConstant "," }
+                                 singleConstant
+singleInitializer            ::= "{" singleList "}"
+                               | singleConstant
+halfConstant                 ::= "+" TOKEN_HALF_CONSTANT
+                               | "-" TOKEN_HALF_CONSTANT
+                               | TOKEN_HALF_CONSTANT
+halfList                     ::= { halfConstant "," }
+                                 halfConstant
+halfInitializer              ::= "{" halfList "}"
+                               | halfConstant
+packedConstant               ::= dataTypeId "(" decimalList ")"
+                               | dataTypeId "(" halfList ")"
+                               | dataTypeId "(" singleList ")"
+                               | dataTypeId "(" doubleList ")"
+packedList                   ::= { packedConstant "," } packedConstant
+packedInitializer            ::= "{" packedList "}"
+                               | packedConstant
+labelInitializer             ::= "{" labelList "}"
+addressSpaceIdentifier       ::= "_readonly"
+                               | "_kernarg"
+                               | "_global"
+                               | "_private"
+                               | "_arg"
+                               | "_group"
+                               | "_spill"
+optAddressSpace              ::= [ addressSpaceIdentifier ]
+vectorToken                  ::= "_v2"
+                               | "_v3"
+                               | "_v4"
+alignment                    ::= "align" TOKEN_INTEGER_CONSTANT
+arrayDimensionSet            ::= ( "[" TOKEN_INTEGER_CONSTANT
+                                 | arrayDimensionSet "[" TOKEN_INTEGER_CONSTANT
+                                 | "[" )
+                                 "]"
+optArrayDimensions           ::= [ arrayDimensionSet ]
+optInitializer               ::= [ "="
+                                   ( decimalInitializer
+                                   | doubleInitializer
+                                   | singleInitializer
+                                   | halfInitializer
+                                   | packedInitializer
+                                   | labelInitializer ) ]
+fileDecl                     ::= "file" TOKEN_INTEGER_CONSTANT
+                                 TOKEN_STRING ";"
+argumentDecl                 ::= declPrefix "arg" extDataTypeId
+                                 TOKEN_LOCAL_IDENTIFIER
+                                 optArrayDimensions
+kernelArgumentDecl           ::= declPrefix "kernarg" extDataTypeId
+                                 TOKEN_LOCAL_IDENTIFIER
+                                 optArrayDimensions
+argumentListBody             ::= [ { argumentDecl "," } argumentDecl ]
+kernelArgumentListBody       ::= [ { kernelArgumentDecl "," }
+                                 kernelArgumentDecl ]
+argList                      ::= "(" argumentListBody ")"
+returnArgList                ::= "(" argumentListBody ")"
+kernelArgumentList           ::= "(" kernelArgumentListBody ")"
+signatureArguments           ::= [ signatureArgumentList
+                                   [ signatureArgumentList ] ]
+twoCallArgs                  ::= callArgs [ callArgs ]
+functionDefinition           ::= declPrefix "function"
+                                 TOKEN_GLOBAL_IDENTIFIER
+                                 returnArgList argList
+function                     ::= functionDefinition codeBlock
+functionDecl                 ::= declPrefix "function"
+                                 TOKEN_GLOBAL_IDENTIFIER returnArgList
+                                 argList ";"
+signatureType                ::= ( alignment "arg" extDataTypeId
+                                   TOKEN_LOCAL_IDENTIFIER
+                                 | "arg" extDataTypeId
+                                   TOKEN_LOCAL_IDENTIFIER
+                                 | alignment "arg" extDataTypeId
+                                 | "arg" extDataTypeId )
+                                 optArrayDimensions
+signatureTypes               ::= { signatureType "," } signatureType
+signatureArgumentList        ::= "(" ( signatureTypes ")" | ")" )
+functionSignature            ::= "signature" TOKEN_GLOBAL_IDENTIFIER
+                                 signatureArguments ";"
+kernelHeader                 ::= "kernel" TOKEN_GLOBAL_IDENTIFIER kernelArgumentList
+kernel                       ::= kernelHeader codeBlock
+codeBlock                    ::= "{" bodyStatements "}" ";"
+labelList                    ::= { TOKEN_LABEL_IDENTIFIER "," } TOKEN_LABEL_IDENTIFIER
+imageInitializer             ::= [ "=" "{" imageList "}" ]
+samplerInitializer           ::= [ "=" "{" samplerList "}" ]
+imageList                    ::= { imageInit "," } imageInit
+samplerList                  ::= { samplerInit "," } samplerInit
+imageInit                    ::= "format" "=" TOKEN_PROPERTY
+                               | "order" "=" TOKEN_PROPERTY
+                               | tobNumeric "=" TOKEN_INTEGER_CONSTANT
+samplerInit                  ::= ( "coord"
+                                 | "filter"
+                                 | "boundaryU"
+                                 | "boundaryV"
+                                 | "boundaryW"
+                                 ) "=" TOKEN_PROPERTY
+register                     ::= TOKEN_CREGISTER
+                               | TOKEN_DREGISTER
+                               | TOKEN_QREGISTER
+                               | TOKEN_SREGISTER
+labelTarget                  ::= label "labeltargets" labelList ";"
+control                      ::= "enablebreakexceptions" baseOperand ";"
+                               | "enabledetectexceptions" baseOperand ";"
+                               | "maxdynamicgroupsize" baseOperand ";"
+                               | "maxflatgridsize" baseOperand ","
+                                 baseOperand "," baseOperand ";"
+                               | "maxflatworkgroupsize" baseOperand ","
+                                 baseOperand "," baseOperand ";"
+                               | "requestedworkgroupspercu" baseOperand ";"
+                               | "requireddim" baseOperand ";"
+                               | "requiredgridsize" baseOperand ","
+                                 baseOperand "," baseOperand ";"
+                               | "requiredworkgroupsize" baseOperand ","
+                                 baseOperand "," baseOperand ";"
+                               | "requirenopartialworkgroups" ";"
+pragma                       ::= "pragma" TOKEN_STRING ";"
+extension                    ::= "extension" TOKEN_STRING ";"
+externOrStatic               ::= "extern"
+                               | "static"
+const                        ::= "const"
+globalUninitializableAddress ::= "private"
+                               | "group"
+localUninitializableAddress  ::= "private"
+                               | "group"
+                               | "spill"
+initializableAddress         ::= "readonly"
+                               | "global"
+globalInitializableDecl      ::= declPrefix initializableAddress dataTypeId
+                                 TOKEN_GLOBAL_IDENTIFIER optArrayDimensions
+                                 optInitializer ";"
+localInitializableDecl       ::= declPrefix initializableAddress dataTypeId
+                                 TOKEN_LOCAL_IDENTIFIER optArrayDimensions
+                                 optInitializer ";"
+globalUninitializableDecl    ::= declPrefix globalUninitializableAddress dataTypeId
+                                 TOKEN_GLOBAL_IDENTIFIER optArrayDimensions ";"
+localUninitializableDecl     ::= declPrefix localUninitializableAddress dataTypeId
+                                 TOKEN_LOCAL_IDENTIFIER optArrayDimensions ";"
+argUninitializableDecl       ::= declPrefix "arg" dataTypeId identifier
+                                 optArrayDimensions ";"
+location                     ::= "loc" TOKEN_INTEGER_CONSTANT
+                                 TOKEN_INTEGER_CONSTANT
+                                 TOKEN_INTEGER_CONSTANT ";"
+label                        ::= TOKEN_LABEL_IDENTIFIER ":"
+baseOperand                  ::= decimalConstant
+                               | packedConstant
+                               | doubleConstant
+                               | singleConstant
+                               | halfConstant
+                               | TOKEN_WAVESIZE
+offsetAddressableOperand     ::= "[" register "+" TOKEN_INTEGER_CONSTANT "]"
+                               | "[" register "-" TOKEN_INTEGER_CONSTANT "]"
+                               | "[" register "]"
+                               | "[" TOKEN_INTEGER_CONSTANT "]"
+operand                      ::= baseOperand
+                               | identifier
+pairAddressableOperand       ::= addressableOperand
+                                 offsetAddressableOperand
+memoryOperand                ::= addressableOperand
+                               | offsetAddressableOperand
+                               | pairAddressableOperand
+arrayOperand                 ::= operand
+                               | arrayOperandList
+arrayOperandList             ::= "(" identifierList ")"
+instruction1Opcode           ::= "clock"
+                               | "countuplane"
+                               | "cuid"
+                               | "debugtrap"
+                               | "dim"
+                               | "dispatchid"
+                               | "cleardetectexcept"
+                               | "getdetectexcept"
+                               | "setdetectexcept"
+                               | "laneid"
+                               | "maxcuid"
+                               | "maxwaveid"
+                               | "qid"
+                               | "waveid"
+                               | "workitemflatabsid"
+                               | "workitemflatid"
+instruction2Opcode           ::= "abs"
+                               | "bitrev"
+                               | "countlane"
+                               | "currentworkgroupsize"
+                               | "ncos"
+                               | "neg"
+                               | "nexp2"
+                               | "nlog2"
+                               | "nrcp"
+                               | "nrsqrt"
+                               | "nsin"
+                               | "nsqrt"
+                               | "gridgroups"
+                               | "gridsize"
+                               | "masklane"
+                               | "not"
+                               | "sqrt"
+                               | "workgroupid"
+                               | "workgroupsize"
+                               | "workitemabsid"
+                               | "workitemid"
+instruction2OpcodeFtz        ::= "ceil"
+                               | "floor"
+                               | "fract"
+                               | "rint"
+                               | "trunc"
+instruction3Opcode           ::= "add"
+                               | "bitmask"
+                               | "borrow"
+                               | "carry"
+                               | "copysign"
+                               | "div"
+                               | "rem"
+                               | "sub"
+                               | "shl"
+                               | "shr"
+                               | "and"
+                               | "or"
+                               | "xor"
+                               | "unpackhi"
+                               | "unpacklo"
+                               | "sendlane"
+                               | "receivelane"
+instruction3OpcodeFtz        ::= "max"
+                               | "min"
+instruction4Opcode           ::= "fma"
+                               | "mad"
+                               | "bitextract"
+                               | "bitselect"
+                               | "shuffle"
+                               | "cmov"
+                               | "bitalign"
+                               | "bytealign"
+                               | "lerp"
+instruction4OpcodeFtz        ::= "nfma"
+atomicOperationId            ::= "_and"
+                               | "_or"
+                               | "_xor"
+                               | "_exch"
+                               | "_add"
+                               | "_sub"
+                               | "_inc"
+                               | "_dec"
+                               | "_max"
+                               | "_min"
+comparisonId                 ::= "_eq"
+                               | "_ne"
+                               | "_lt"
+                               | "_le"
+                               | "_gt"
+                               | "_ge"
+                               | "_equ"
+                               | "_neu"
+                               | "_ltu"
+                               | "_leu"
+                               | "_gtu"
+                               | "_geu"
+                               | "_num"
+                               | "_nan"
+                               | "_seq"
+                               | "_sne"
+                               | "_slt"
+                               | "_sle"
+                               | "_sgt"
+                               | "_sge"
+                               | "_snum"
+                               | "_snan"
+                               | "_sequ"
+                               | "_sneu"
+                               | "_sltu"
+                               | "_sleu"
+                               | "_sgtu"
+                               | "_sgeu"
+intRounding                  ::= "_upi"
+                               | "_downi"
+                               | "_zeroi"
+                               | "_neari"
+                               | "_upi_sat"
+                               | "_downi_sat"
+                               | "_zeroi_sat"
+                               | "_neari_sat"
+floatRounding                ::= "_up"
+                               | "_down"
+                               | "_zero"
+                               | "_near"
+packing                      ::= "_pp"
+                               | "_ps"
+                               | "_sp"
+                               | "_ss"
+                               | "_s"
+                               | "_p"
+                               | "_pp_sat"
+                               | "_ps_sat"
+                               | "_sp_sat"
+                               | "_ss_sat"
+                               | "_s_sat"
+                               | "_p_sat"
+tobNumeric                   ::= "width"
+                               | "height"
+                               | "depth"
+dataTypeId                   ::= "_u8"
+                               | "_s8"
+                               | "_u16"
+                               | "_s16"
+                               | "_u32"
+                               | "_s32"
+                               | "_u64"
+                               | "_s64"
+                               | "_f16"
+                               | "_f32"
+                               | "_f64"
+                               | "_b1"
+                               | "_b8"
+                               | "_b16"
+                               | "_b32"
+                               | "_b64"
+                               | "_b128"
+                               | "_u8x4"
+                               | "_s8x4"
+                               | "_u16x2"
+                               | "_s16x2"
+                               | "_f16x2"
+                               | "_u8x8"
+                               | "_s8x8"
+                               | "_u16x4"
+                               | "_s16x4"
+                               | "_f16x4"
+                               | "_u32x2"
+                               | "_s32x2"
+                               | "_f32x2"
+                               | "_u8x16"
+                               | "_s8x16"
+                               | "_u16x8"
+                               | "_s16x8"
+                               | "_u32x4"
+                               | "_f16x8"
+                               | "_s32x4"
+                               | "_f32x4"
+                               | "_u64x2"
+                               | "_s64x2"
+                               | "_f64x2"
+imgDataTypeId                ::= "_roimg"
+                               | "_rwimg"
+sampDataTypeId               ::= "_samp"
+extDataTypeId                ::= dataTypeId
+                               | imgDataTypeId
+                               | sampDataTypeId
+optFtz                       ::= [ "_ftz" ]
+optRoundingMode              ::= [ roundingMode ]
+optPacking                   ::= [ packing ]
+roundingMode                 ::= "_ftz"
+                               | "_ftz" floatRounding
+                               | floatRounding
+                               | intRounding
+instruction0                 ::= "nop" ";"
+instruction1                 ::= ( ( "nullptr" | "dispatchptr" | "qptr" )
+                                   optAddressSpace dataTypeId
+                                 | instruction1Opcode
+                                   optRoundingMode dataTypeId
+                                 ) operand ";"
+instruction2                 ::= ( "popcount" dataTypeId dataTypeId
+                                 | "firstbit" dataTypeId dataTypeId
+                                 | "lastbit" dataTypeId dataTypeId
+                                 | instruction2OpcodeFtz optFtz
+                                   optPacking dataTypeId
+                                 | instruction2Opcode optRoundingMode
+                                   optPacking dataTypeId
+                                 ) operand "," operand ";"
+syscall                      ::= "syscall" dataTypeId operand ","
+                                 baseOperand "," operand ","
+                                 operand "," operand ";"
+instruction3                 ::= ( "class" dataTypeId dataTypeId
+                                 | instruction3Opcode optRoundingMode
+                                   optPacking dataTypeId
+                                 | instruction3OpcodeFtz optFtz
+                                   optPacking dataTypeId
+                                 ) operand "," operand "," operand ";"
+mul                          ::= ( "mul" optRoundingMode optPacking
+                                   dataTypeId
+                                 | "mulhi" optPacking dataTypeId
+                                 | "mul24hi" dataTypeId
+                                 | "mul24" dataTypeId
+                                 | "mad24" dataTypeId operand ","
+                                 | "mad24hi" dataTypeId operand ","
+                                 ) operand "," operand "," operand ";"
+instruction4                 ::= ( instruction4Opcode optRoundingMode
+                                 | instruction4OpcodeFtz optFtz optPacking
+                                 ) dataTypeId operand "," operand ","
+                                   operand "," operand ";"
+packcvt                      ::= "packcvt" dataTypeId dataTypeId operand ","
+                                 operand "," operand "," operand "," operand ";"
+unpackcvt                    ::= "unpackcvt" dataTypeId dataTypeId operand ","
+                                 operand "," operand ";"
+sad                          ::= ( "sad" | "sadhi" ) dataTypeId dataTypeId
+                                 operand "," operand "," operand "," operand ";"
+pack                         ::= "pack" dataTypeId dataTypeId operand ","
+                                 operand "," operand "," operand ";"
+unpack                       ::= "unpack" dataTypeId dataTypeId operand ","
+                                 operand "," operand ";"
+optWidth                     ::= [ "_width" "("
+                                   ( "all"
+                                   | TOKEN_WAVESIZE
+                                   | TOKEN_INTEGER_CONSTANT
+                                   ) ")" ]
+bitinsert                    ::= "bitinsert" dataTypeId operand "," operand ","
+                                 operand "," operand "," operand ";"
+branchOp                     ::= "cbr" optWidth
+branchOpBrn                  ::= "brn" optWidth
+branch                       ::= ( branchOp operand "," TOKEN_LABEL_IDENTIFIER
+                                 | branchOp operand "," identifier
+                                 | branchOp operand "," operand ","
+                                   "[" identifier "]"
+                                 | branchOp operand "," operand ","
+                                   "[" TOKEN_LABEL_IDENTIFIER "]"
+                                 | branchOpBrn identifier
+                                 | branchOpBrn TOKEN_LABEL_IDENTIFIER
+                                 | branchOpBrn identifier ","
+                                   "[" identifier "]"
+                                 | branchOpBrn identifier ","
+                                   "[" TOKEN_LABEL_IDENTIFIER "]"
+                                 ) ";"
+operandList                  ::= { operand "," } operand
+callArgs                     ::= "(" ( operandList ")" | ")" )
+call                         ::= "call" optWidth operand twoCallArgs
+                                 optCallTargets ";"
+optCallTargets               ::= [ callTargets ]
+callTargets                  ::= "[" identifierList "]"
+                               | TOKEN_GLOBAL_IDENTIFIER
+optMemSemantic               ::= [ acqRel | acq ]
+atomic                       ::= "atomic"
+                                 ( atomicOperationId
+                                   optAddressSpace optMemSemantic
+                                   dataTypeId operand "," memoryOperand
+                                 | "_cas"
+                                   optAddressSpace optMemSemantic
+                                   dataTypeId operand "," memoryOperand
+                                   "," operand
+                                 ) "," operand ";"
+atomicnoret                  ::= "atomicnoret"
+                                 ( atomicOperationId optAddressSpace
+                                   optMemSemantic dataTypeId memoryOperand
+                                 | "_cas" optAddressSpace
+                                   optMemSemantic dataTypeId memoryOperand
+                                   "," operand
+                                 ) "," operand ";"
+cvtModifier1                 ::= floatRounding
+                               | "_ftz"
+                               | "_ftz" floatRounding
+                               | intRounding
+                               | "_ftz" intRounding
+optCvtModifier               ::= [ cvtModifier1 ]
+cvt                          ::= "cvt" optCvtModifier dataTypeId
+                                 dataTypeId operand "," operand ";"
+ldModifier                   ::= { ( vectorToken
+                                   | addressSpaceIdentifier
+                                   | acq
+                                   | equiv
+                                   | aligned ) }
+equiv                        ::= "_equiv" "(" TOKEN_INTEGER_CONSTANT ")"
+acq                          ::= "_acq"
+                               | "_part_acq"
+                               | "_rel"
+                               | "_part_rel"
+acqRel                       ::= "_ar"
+                               | "_part_ar"
+aligned                      ::= "aligned"
+ld                           ::= "ld" optWidth ldModifier extDataTypeId arrayOperand
+                                 "," memoryOperand ";"
+memFence                     ::= "_fnone"
+                               | "_fgroup"
+                               | "_fglobal"
+                               | "_fboth"
+                               | "_fpartial"
+                               | "_fpartialboth"
+optMemFence                  ::= [ memFence ]
+sync                         ::= "sync" optMemFence ";"
+bar                          ::= "barrier" optWidth optMemFence ";"
+fbar                         ::= "initfbar" addressSpaceIdentifier operand ";"
+                               | "joinfbar" optWidth addressSpaceIdentifier
+                                 operand ";"
+                               | "waitfbar" optWidth optMemFence
+                                 addressSpaceIdentifier operand ";"
+                               | "arrivefbar" optWidth optMemFence
+                                 addressSpaceIdentifier operand ";"
+                               | "leavefbar" optWidth addressSpaceIdentifier
+                                 operand ";"
+                               | "releasefbar" addressSpaceIdentifier operand ";"
+segOp                        ::= ( "segmentp" | "ftos" | "stof" )
+                                 addressSpaceIdentifier dataTypeId dataTypeId
+                                 operand "," operand ";"
+alloca                       ::= "alloca" addressSpaceIdentifier dataTypeId
+                                 operand "," operand ";"
+combine                      ::= "combine" vectorToken dataTypeId dataTypeId
+                                 operand "," arrayOperandList ";"
+expand                       ::= "expand" vectorToken dataTypeId dataTypeId
+                                 arrayOperandList "," operand ";"
+mov                          ::= "mov" extDataTypeId operand '","' operand '";"'
+lda                          ::= "lda" optAddressSpace dataTypeId operand ","
+                                 memoryOperand ";"
+ldc                          ::= "ldc" dataTypeId operand "," (
+                                 TOKEN_LABEL_IDENTIFIER ";" | identifier ";" )
+ret                          ::= "ret" ";"
+cmp                          ::= "cmp" comparisonId optFtz optPacking dataTypeId
+                                 dataTypeId operand "," operand "," operand ";"
+st                           ::= "st" ldModifier extDataTypeId arrayOperand
+                                 "," memoryOperand ";"
+geometryId                   ::= "_1d"
+                               | "_2d"
+                               | "_3d"
+                               | "_1db"
+                               | "_1da"
+                               | "_2da"
+rdimage                      ::= "rdimage" "_v4" geometryId dataTypeId imgDataTypeId
+                                 dataTypeId arrayOperandList "," operand ","
+                                 operand "," arrayOperand ";"
+ldimage                      ::= "ldimage" "_v4" geometryId dataTypeId imgDataTypeId
+                                 dataTypeId arrayOperandList ","
+                                 operand "," arrayOperand ";"
+stimage                      ::= "stimage" "_v4" geometryId dataTypeId imgDataTypeId
+                                 dataTypeId arrayOperandList ","
+                                 operand "," arrayOperand ";"
+atomicimage                  ::= "atomicimage"
+                                 ( atomicOperationId
+                                   geometryId dataTypeId imgDataTypeId dataTypeId
+                                   operand "," operand "," arrayOperand ","
+                                   operand ";"
+                                 | "_cas"
+                                   geometryId dataTypeId imgDataTypeId dataTypeId
+                                   operand "," operand "," arrayOperand ","
+                                   operand "," operand ";" )
+atomicimagenoret             ::= "atomicimagenoret"
+                                 ( atomicOperationId
+                                   geometryId dataTypeId imgDataTypeId dataTypeId
+                                   operand "," arrayOperand "," operand ";"
+                                 | "_cas"
+                                   geometryId dataTypeId imgDataTypeId dataTypeId
+                                   operand "," arrayOperand "," operand ","
+                                   operand ";" )
+queryimageOp                 ::= "queryimageorder"
+                               | "queryimageformat"
+                               | "queryimagearray"
+                               | "queryimagewidth"
+                               | "queryimagedepth"
+                               | "queryimageheight"
+querysamplerOp               ::= "querysamplercoord"
+                               | "querysamplerfilter"
+queryimage                   ::= queryimageOp dataTypeId imgDataTypeId
+                                 operand "," operand ";"
+querysampler                 ::= querysamplerOp dataTypeId sampDataTypeId
+                                 operand "," operand ";"
+                               | "querysamplerboundary" dataTypeId sampDataTypeId
+                                 operand "," operand "," operand ";"

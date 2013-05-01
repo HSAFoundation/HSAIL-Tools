@@ -1,0 +1,736 @@
+// University of Illinois/NCSA
+// Open Source License
+// 
+// Copyright (c) 2013, Advanced Micro Devices, Inc.
+// All rights reserved.
+// 
+// Developed by:
+// 
+//     HSA Team
+// 
+//     Advanced Micro Devices, Inc
+// 
+//     www.amd.com
+// 
+// Permission is hereby granted, free of charge, to any person obtaining a copy of
+// this software and associated documentation files (the "Software"), to deal with
+// the Software without restriction, including without limitation the rights to
+// use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies
+// of the Software, and to permit persons to whom the Software is furnished to do
+// so, subject to the following conditions:
+// 
+//     * Redistributions of source code must retain the above copyright notice,
+//       this list of conditions and the following disclaimers.
+// 
+//     * Redistributions in binary form must reproduce the above copyright notice,
+//       this list of conditions and the following disclaimers in the
+//       documentation and/or other materials provided with the distribution.
+// 
+//     * Neither the names of the LLVM Team, University of Illinois at
+//       Urbana-Champaign, nor the names of its contributors may be used to
+//       endorse or promote products derived from this Software without specific
+//       prior written permission.
+// 
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
+// FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SHALL THE
+// CONTRIBUTORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS WITH THE
+// SOFTWARE.
+/*!re2c
+
+    re2c:define:YYCTYPE  = "char";
+    re2c:define:YYCURSOR = m_curPos;
+    re2c:define:YYLIMIT  = m_end;
+    re2c:define:YYMARKER = marker;
+    re2c:yyfill:enable   = 1;
+    re2c:yych:conversion = 0;
+
+    SPACE = [ \t];
+    NL    = "\r"? "\n";
+    ANY   = [^];
+
+    WORD  = [a-zA-Z][a-zA-Z0-9]*;
+    ID    = [a-zA-Z_][a-zA-Z0-9_]*;
+
+    DCD   = [0-9];
+    HXD   = [0-9a-fA-F];
+
+    DECIMAL = DCD+;
+    OCTAL   = "0"[0-7]*;
+    HEX     = "0"[xX]HXD+;
+
+    INTEGER = DECIMAL|OCTAL|HEX;
+
+    HLFHEX  = "0"[hH]HXD{4};
+    SGLHEX  = "0"[fF]HXD{8};
+    DBLHEX  = "0"[dD]HXD{16};
+
+    EXP = [Ee][+-]?DCD+;
+    FLOAT1 = DCD+  "."  DCD*   EXP?;
+    FLOAT2 =       "."  DCD+   EXP?;
+    FLOAT3 = DCD+ ("."  DCD*)? EXP;
+    FLOAT = [+-]? (FLOAT1|FLOAT2|FLOAT3);
+
+    C99FLT  = [+-]?"0"[xX]HXD+("."HXD*)?[pP][+-]?DCD+;
+*/
+
+#define YYFILL(n) { readChars(n); }
+
+namespace HSAIL_ASM
+{
+
+void Scanner::readSingleStringLiteral(std::string* outString)
+{
+    using namespace std;
+    while(true) {
+        m_tokStart = m_curPos;
+        const char *marker;
+
+/*!re2c
+    re2c:indent:string = "        ";
+
+    "\\" [0-7]{1,3}       {
+        unsigned int v;
+        string const s(m_tokStart+1,m_curPos);
+        istringstream is(s);
+        is >> oct >> v;
+        if (is.fail() || v>std::numeric_limits<unsigned char>::max()) {
+            syntaxError("Invalid character code");
+        }
+        outString->push_back(static_cast<unsigned char>(v));
+        continue;
+    }
+    "\\" [xX][0-9A-Fa-f]{1,2} {
+        unsigned int v;
+        string const s(m_tokStart+2,m_curPos);
+        istringstream is(s);
+        is >> hex >> v;
+        if (is.fail() || v>std::numeric_limits<unsigned char>::max()) {
+            syntaxError("Invalid character code");
+        }
+        outString->push_back(static_cast<unsigned char>(v));
+        continue;
+    }
+    "\\\\"         { outString->push_back('\134'); continue; }
+    "\\'"          { outString->push_back('\047'); continue; }
+    "\\\""         { outString->push_back('\042'); continue; }
+    "\\?"          { outString->push_back('\077'); continue; }
+    "\\a"          { outString->push_back('\007'); continue; }
+    "\\b"          { outString->push_back('\010'); continue; }
+    "\\f"          { outString->push_back('\006'); continue; }
+    "\\n"          { outString->push_back('\012'); continue; }
+    "\\r"          { outString->push_back('\015'); continue; }
+    "\\t"          { outString->push_back('\011'); continue; }
+    "\\v"          { outString->push_back('\013'); continue; }
+    "\""           { break; }
+    "\\"           { syntaxError("Invalid escape sequence"); }
+    [\r\n]         { syntaxError("Runaway string literal"); }
+    [^\r\n\\\"]+   { outString->insert(outString->end(), m_tokStart, m_curPos); continue; }
+*/
+    }
+}
+
+ETokens Scanner::scanTargetOption()
+{
+    skipWhitespaces();
+    m_tokStart = m_curPos;
+    const char *marker;
+/*!re2c
+    re2c:indent:string = "    ";
+
+    "$large"              { m_brigId = Brig::BRIG_MACHINE_LARGE;     return m_token = ETargetMachine; }
+    "$small"              { m_brigId = Brig::BRIG_MACHINE_SMALL;     return m_token = ETargetMachine; }
+    "$base"               { m_brigId = Brig::BRIG_PROFILE_BASE;      return m_token = ETargetProfile; }
+    "$full"               { m_brigId = Brig::BRIG_PROFILE_FULL;      return m_token = ETargetProfile; }
+
+    ""      { syntaxError("Invalid target info"); }
+*/
+}
+
+ETokens Scanner::scanModifier()
+{
+    m_tokStart = m_curPos;
+    const char *marker;
+
+/*!re2c
+    re2c:indent:string = "    ";
+
+    "_p"                  { m_brigId = Brig::BRIG_PACK_P;            return m_token = EMPacking;    }
+    "_pp"                 { m_brigId = Brig::BRIG_PACK_PP;           return m_token = EMPacking;    }
+    "_pp_sat"             { m_brigId = Brig::BRIG_PACK_PPSAT;        return m_token = EMPacking;    }
+    "_ps"                 { m_brigId = Brig::BRIG_PACK_PS;           return m_token = EMPacking;    }
+    "_p_sat"              { m_brigId = Brig::BRIG_PACK_PSAT;         return m_token = EMPacking;    }
+    "_ps_sat"             { m_brigId = Brig::BRIG_PACK_PSSAT;        return m_token = EMPacking;    }
+    "_s"                  { m_brigId = Brig::BRIG_PACK_S;            return m_token = EMPacking;    }
+    "_sp"                 { m_brigId = Brig::BRIG_PACK_SP;           return m_token = EMPacking;    }
+    "_sp_sat"             { m_brigId = Brig::BRIG_PACK_SPSAT;        return m_token = EMPacking;    }
+    "_ss"                 { m_brigId = Brig::BRIG_PACK_SS;           return m_token = EMPacking;    }
+    "_s_sat"              { m_brigId = Brig::BRIG_PACK_SSAT;         return m_token = EMPacking;    }
+    "_ss_sat"             { m_brigId = Brig::BRIG_PACK_SSSAT;        return m_token = EMPacking;    }
+    "_b1"                 { m_brigId = Brig::BRIG_TYPE_B1;           return m_token = EMType;       }
+    "_b128"               { m_brigId = Brig::BRIG_TYPE_B128;         return m_token = EMType;       }
+    "_b16"                { m_brigId = Brig::BRIG_TYPE_B16;          return m_token = EMType;       }
+    "_b32"                { m_brigId = Brig::BRIG_TYPE_B32;          return m_token = EMType;       }
+    "_b64"                { m_brigId = Brig::BRIG_TYPE_B64;          return m_token = EMType;       }
+    "_b8"                 { m_brigId = Brig::BRIG_TYPE_B8;           return m_token = EMType;       }
+    "_f16"                { m_brigId = Brig::BRIG_TYPE_F16;          return m_token = EMType;       }
+    "_f16x2"              { m_brigId = Brig::BRIG_TYPE_F16X2;        return m_token = EMType;       }
+    "_f16x4"              { m_brigId = Brig::BRIG_TYPE_F16X4;        return m_token = EMType;       }
+    "_f16x8"              { m_brigId = Brig::BRIG_TYPE_F16X8;        return m_token = EMType;       }
+    "_f32"                { m_brigId = Brig::BRIG_TYPE_F32;          return m_token = EMType;       }
+    "_f32x2"              { m_brigId = Brig::BRIG_TYPE_F32X2;        return m_token = EMType;       }
+    "_f32x4"              { m_brigId = Brig::BRIG_TYPE_F32X4;        return m_token = EMType;       }
+    "_f64"                { m_brigId = Brig::BRIG_TYPE_F64;          return m_token = EMType;       }
+    "_f64x2"              { m_brigId = Brig::BRIG_TYPE_F64X2;        return m_token = EMType;       }
+    "_fbar"               { m_brigId = Brig::BRIG_TYPE_FBAR;         return m_token = EMType;       }
+    "_roimg"              { m_brigId = Brig::BRIG_TYPE_ROIMG;        return m_token = EMType;       }
+    "_rwimg"              { m_brigId = Brig::BRIG_TYPE_RWIMG;        return m_token = EMType;       }
+    "_s16"                { m_brigId = Brig::BRIG_TYPE_S16;          return m_token = EMType;       }
+    "_s16x2"              { m_brigId = Brig::BRIG_TYPE_S16X2;        return m_token = EMType;       }
+    "_s16x4"              { m_brigId = Brig::BRIG_TYPE_S16X4;        return m_token = EMType;       }
+    "_s16x8"              { m_brigId = Brig::BRIG_TYPE_S16X8;        return m_token = EMType;       }
+    "_s32"                { m_brigId = Brig::BRIG_TYPE_S32;          return m_token = EMType;       }
+    "_s32x2"              { m_brigId = Brig::BRIG_TYPE_S32X2;        return m_token = EMType;       }
+    "_s32x4"              { m_brigId = Brig::BRIG_TYPE_S32X4;        return m_token = EMType;       }
+    "_s64"                { m_brigId = Brig::BRIG_TYPE_S64;          return m_token = EMType;       }
+    "_s64x2"              { m_brigId = Brig::BRIG_TYPE_S64X2;        return m_token = EMType;       }
+    "_s8"                 { m_brigId = Brig::BRIG_TYPE_S8;           return m_token = EMType;       }
+    "_s8x16"              { m_brigId = Brig::BRIG_TYPE_S8X16;        return m_token = EMType;       }
+    "_s8x4"               { m_brigId = Brig::BRIG_TYPE_S8X4;         return m_token = EMType;       }
+    "_s8x8"               { m_brigId = Brig::BRIG_TYPE_S8X8;         return m_token = EMType;       }
+    "_samp"               { m_brigId = Brig::BRIG_TYPE_SAMP;         return m_token = EMType;       }
+    "_u16"                { m_brigId = Brig::BRIG_TYPE_U16;          return m_token = EMType;       }
+    "_u16x2"              { m_brigId = Brig::BRIG_TYPE_U16X2;        return m_token = EMType;       }
+    "_u16x4"              { m_brigId = Brig::BRIG_TYPE_U16X4;        return m_token = EMType;       }
+    "_u16x8"              { m_brigId = Brig::BRIG_TYPE_U16X8;        return m_token = EMType;       }
+    "_u32"                { m_brigId = Brig::BRIG_TYPE_U32;          return m_token = EMType;       }
+    "_u32x2"              { m_brigId = Brig::BRIG_TYPE_U32X2;        return m_token = EMType;       }
+    "_u32x4"              { m_brigId = Brig::BRIG_TYPE_U32X4;        return m_token = EMType;       }
+    "_u64"                { m_brigId = Brig::BRIG_TYPE_U64;          return m_token = EMType;       }
+    "_u64x2"              { m_brigId = Brig::BRIG_TYPE_U64X2;        return m_token = EMType;       }
+    "_u8"                 { m_brigId = Brig::BRIG_TYPE_U8;           return m_token = EMType;       }
+    "_u8x16"              { m_brigId = Brig::BRIG_TYPE_U8X16;        return m_token = EMType;       }
+    "_u8x4"               { m_brigId = Brig::BRIG_TYPE_U8X4;         return m_token = EMType;       }
+    "_u8x8"               { m_brigId = Brig::BRIG_TYPE_U8X8;         return m_token = EMType;       }
+    "_acq"                { m_brigId = Brig::BRIG_SEMANTIC_ACQUIRE;  return m_token = EMSemantics;  }
+    "_ar"                 { m_brigId = Brig::BRIG_SEMANTIC_ACQUIRE_RELEASE; return m_token = EMSemantics;  }
+    "_part_acq"           { m_brigId = Brig::BRIG_SEMANTIC_PARTIAL_ACQUIRE; return m_token = EMSemantics;  }
+    "_part_ar"            { m_brigId = Brig::BRIG_SEMANTIC_PARTIAL_ACQUIRE_RELEASE; return m_token = EMSemantics;  }
+    "_part_rel"           { m_brigId = Brig::BRIG_SEMANTIC_PARTIAL_RELEASE; return m_token = EMSemantics;  }
+    "_regular"            { m_brigId = Brig::BRIG_SEMANTIC_REGULAR;  return m_token = EMSemantics;  }
+    "_rel"                { m_brigId = Brig::BRIG_SEMANTIC_RELEASE;  return m_token = EMSemantics;  }
+    "_add"                { m_brigId = Brig::BRIG_ATOMIC_ADD;        return m_token = EMAtomicOp;   }
+    "_and"                { m_brigId = Brig::BRIG_ATOMIC_AND;        return m_token = EMAtomicOp;   }
+    "_cas"                { m_brigId = Brig::BRIG_ATOMIC_CAS;        return m_token = EMAtomicOp;   }
+    "_dec"                { m_brigId = Brig::BRIG_ATOMIC_DEC;        return m_token = EMAtomicOp;   }
+    "_exch"               { m_brigId = Brig::BRIG_ATOMIC_EXCH;       return m_token = EMAtomicOp;   }
+    "_inc"                { m_brigId = Brig::BRIG_ATOMIC_INC;        return m_token = EMAtomicOp;   }
+    "_max"                { m_brigId = Brig::BRIG_ATOMIC_MAX;        return m_token = EMAtomicOp;   }
+    "_min"                { m_brigId = Brig::BRIG_ATOMIC_MIN;        return m_token = EMAtomicOp;   }
+    "_or"                 { m_brigId = Brig::BRIG_ATOMIC_OR;         return m_token = EMAtomicOp;   }
+    "_sub"                { m_brigId = Brig::BRIG_ATOMIC_SUB;        return m_token = EMAtomicOp;   }
+    "_xor"                { m_brigId = Brig::BRIG_ATOMIC_XOR;        return m_token = EMAtomicOp;   }
+    "_arg"                { m_brigId = Brig::BRIG_SEGMENT_ARG;       return m_token = EMSegment;    }
+    "_extspace0"          { m_brigId = Brig::BRIG_SEGMENT_EXTSPACE0; return m_token = EMSegment;    }
+    "_flat"               { m_brigId = Brig::BRIG_SEGMENT_FLAT;      return m_token = EMSegment;    }
+    "_global"             { m_brigId = Brig::BRIG_SEGMENT_GLOBAL;    return m_token = EMSegment;    }
+    "_group"              { m_brigId = Brig::BRIG_SEGMENT_GROUP;     return m_token = EMSegment;    }
+    "_kernarg"            { m_brigId = Brig::BRIG_SEGMENT_KERNARG;   return m_token = EMSegment;    }
+    "_private"            { m_brigId = Brig::BRIG_SEGMENT_PRIVATE;   return m_token = EMSegment;    }
+    "_readonly"           { m_brigId = Brig::BRIG_SEGMENT_READONLY;  return m_token = EMSegment;    }
+    "_spill"              { m_brigId = Brig::BRIG_SEGMENT_SPILL;     return m_token = EMSegment;    }
+    "_fboth"              { m_brigId = Brig::BRIG_FENCE_BOTH;        return m_token = EMMemoryFence; }
+    "_fglobal"            { m_brigId = Brig::BRIG_FENCE_GLOBAL;      return m_token = EMMemoryFence; }
+    "_fgroup"             { m_brigId = Brig::BRIG_FENCE_GROUP;       return m_token = EMMemoryFence; }
+    "_fpartial"           { m_brigId = Brig::BRIG_FENCE_PARTIAL;     return m_token = EMMemoryFence; }
+    "_fpartialboth"       { m_brigId = Brig::BRIG_FENCE_PARTIAL_BOTH; return m_token = EMMemoryFence; }
+
+    "_width"     { return m_token = EMWidth; }
+    "_v2"        { m_brigId = 2; return m_token = EMVector; }
+    "_v3"        { m_brigId = 3; return m_token = EMVector; }
+    "_v4"        { m_brigId = 4; return m_token = EMVector; }
+    "_equiv"     { return m_token = EMEquiv; }
+
+    "_ftz"       { return m_token = EMFTZ; }
+    
+    "_region"    { m_brigId = Brig::BRIG_ExtSpace0;      return m_token = EMSegment; }
+    "_aligned"   { m_brigId = Brig::BRIG_MEMORY_ALIGNED; return m_token = EMAligned; }
+
+    "_both"         { m_brigId = Brig::BRIG_FENCE_BOTH;          return m_token = EMMemoryFence; }
+    "_partial"      { m_brigId = Brig::BRIG_FENCE_PARTIAL;       return m_token = EMMemoryFence; }
+    "_partial_both" { m_brigId = Brig::BRIG_FENCE_PARTIAL_BOTH;  return m_token = EMMemoryFence; }
+    
+
+    "_down"               { m_brigId = Brig::BRIG_ROUND_FLOAT_MINUS_INFINITY; return m_token = EMRound;      }
+    "_near"               { m_brigId = Brig::BRIG_ROUND_FLOAT_NEAR_EVEN; return m_token = EMRound;      }
+    "_up"                 { m_brigId = Brig::BRIG_ROUND_FLOAT_PLUS_INFINITY; return m_token = EMRound;      }
+    "_zero"               { m_brigId = Brig::BRIG_ROUND_FLOAT_ZERO;  return m_token = EMRound;      }
+    "_downi"              { m_brigId = Brig::BRIG_ROUND_INTEGER_MINUS_INFINITY; return m_token = EMRound;      }
+    "_downi_sat"          { m_brigId = Brig::BRIG_ROUND_INTEGER_MINUS_INFINITY_SAT; return m_token = EMRound;      }
+    "_neari"              { m_brigId = Brig::BRIG_ROUND_INTEGER_NEAR_EVEN; return m_token = EMRound;      }
+    "_neari_sat"          { m_brigId = Brig::BRIG_ROUND_INTEGER_NEAR_EVEN_SAT; return m_token = EMRound;      }
+    "_upi"                { m_brigId = Brig::BRIG_ROUND_INTEGER_PLUS_INFINITY; return m_token = EMRound;      }
+    "_upi_sat"            { m_brigId = Brig::BRIG_ROUND_INTEGER_PLUS_INFINITY_SAT; return m_token = EMRound;      }
+    "_zeroi"              { m_brigId = Brig::BRIG_ROUND_INTEGER_ZERO; return m_token = EMRound;      }
+    "_zeroi_sat"          { m_brigId = Brig::BRIG_ROUND_INTEGER_ZERO_SAT; return m_token = EMRound;      }
+    "_eq"                 { m_brigId = Brig::BRIG_COMPARE_EQ;        return m_token = EMCompare;    }
+    "_equ"                { m_brigId = Brig::BRIG_COMPARE_EQU;       return m_token = EMCompare;    }
+    "_ge"                 { m_brigId = Brig::BRIG_COMPARE_GE;        return m_token = EMCompare;    }
+    "_geu"                { m_brigId = Brig::BRIG_COMPARE_GEU;       return m_token = EMCompare;    }
+    "_gt"                 { m_brigId = Brig::BRIG_COMPARE_GT;        return m_token = EMCompare;    }
+    "_gtu"                { m_brigId = Brig::BRIG_COMPARE_GTU;       return m_token = EMCompare;    }
+    "_le"                 { m_brigId = Brig::BRIG_COMPARE_LE;        return m_token = EMCompare;    }
+    "_leu"                { m_brigId = Brig::BRIG_COMPARE_LEU;       return m_token = EMCompare;    }
+    "_lt"                 { m_brigId = Brig::BRIG_COMPARE_LT;        return m_token = EMCompare;    }
+    "_ltu"                { m_brigId = Brig::BRIG_COMPARE_LTU;       return m_token = EMCompare;    }
+    "_nan"                { m_brigId = Brig::BRIG_COMPARE_NAN;       return m_token = EMCompare;    }
+    "_ne"                 { m_brigId = Brig::BRIG_COMPARE_NE;        return m_token = EMCompare;    }
+    "_neu"                { m_brigId = Brig::BRIG_COMPARE_NEU;       return m_token = EMCompare;    }
+    "_num"                { m_brigId = Brig::BRIG_COMPARE_NUM;       return m_token = EMCompare;    }
+    "_seq"                { m_brigId = Brig::BRIG_COMPARE_SEQ;       return m_token = EMCompare;    }
+    "_sequ"               { m_brigId = Brig::BRIG_COMPARE_SEQU;      return m_token = EMCompare;    }
+    "_sge"                { m_brigId = Brig::BRIG_COMPARE_SGE;       return m_token = EMCompare;    }
+    "_sgeu"               { m_brigId = Brig::BRIG_COMPARE_SGEU;      return m_token = EMCompare;    }
+    "_sgt"                { m_brigId = Brig::BRIG_COMPARE_SGT;       return m_token = EMCompare;    }
+    "_sgtu"               { m_brigId = Brig::BRIG_COMPARE_SGTU;      return m_token = EMCompare;    }
+    "_sle"                { m_brigId = Brig::BRIG_COMPARE_SLE;       return m_token = EMCompare;    }
+    "_sleu"               { m_brigId = Brig::BRIG_COMPARE_SLEU;      return m_token = EMCompare;    }
+    "_slt"                { m_brigId = Brig::BRIG_COMPARE_SLT;       return m_token = EMCompare;    }
+    "_sltu"               { m_brigId = Brig::BRIG_COMPARE_SLTU;      return m_token = EMCompare;    }
+    "_snan"               { m_brigId = Brig::BRIG_COMPARE_SNAN;      return m_token = EMCompare;    }
+    "_sne"                { m_brigId = Brig::BRIG_COMPARE_SNE;       return m_token = EMCompare;    }
+    "_sneu"               { m_brigId = Brig::BRIG_COMPARE_SNEU;      return m_token = EMCompare;    }
+    "_snum"               { m_brigId = Brig::BRIG_COMPARE_SNUM;      return m_token = EMCompare;    }
+    "_1d"                 { m_brigId = Brig::BRIG_GEOMETRY_1D;       return m_token = EMGeom;       }
+    "_1da"                { m_brigId = Brig::BRIG_GEOMETRY_1DA;      return m_token = EMGeom;       }
+    "_1db"                { m_brigId = Brig::BRIG_GEOMETRY_1DB;      return m_token = EMGeom;       }
+    "_2d"                 { m_brigId = Brig::BRIG_GEOMETRY_2D;       return m_token = EMGeom;       }
+    "_2da"                { m_brigId = Brig::BRIG_GEOMETRY_2DA;      return m_token = EMGeom;       }
+    "_3d"                 { m_brigId = Brig::BRIG_GEOMETRY_3D;       return m_token = EMGeom;       }
+
+    "_" WORD     {  m_brigId = 0; return m_token = EMSkip; } /* TBD just to skip unknown modifiers, remove */
+
+    ""           { return m_token = EMNone; }
+*/
+
+// "_fbar"      { return m_token = EMFBar; } // removed
+}
+
+Brig::BrigImageFormat8_t Scanner::scanImageFormat()
+{
+    skipWhitespaces();
+    m_tokStart = m_curPos;
+    const char *marker;
+/*!re2c
+    re2c:indent:string = "    ";
+
+    "float"               { return Brig::BRIG_FORMAT_FLOAT;          }
+    "half_float"          { return Brig::BRIG_FORMAT_HALF_FLOAT;     }
+    "signed_int16"        { return Brig::BRIG_FORMAT_SIGNED_INT16;   }
+    "signed_int32"        { return Brig::BRIG_FORMAT_SIGNED_INT32;   }
+    "signed_int8"         { return Brig::BRIG_FORMAT_SIGNED_INT8;    }
+    "snorm_int16"         { return Brig::BRIG_FORMAT_SNORM_INT16;    }
+    "snorm_int8"          { return Brig::BRIG_FORMAT_SNORM_INT8;     }
+    "unorm_int16"         { return Brig::BRIG_FORMAT_UNORM_INT16;    }
+    "unorm_int24"         { return Brig::BRIG_FORMAT_UNORM_INT24;    }
+    "unorm_int8"          { return Brig::BRIG_FORMAT_UNORM_INT8;     }
+    "unorm_short_101010"  { return Brig::BRIG_FORMAT_UNORM_SHORT_101010; }
+    "unorm_short_555"     { return Brig::BRIG_FORMAT_UNORM_SHORT_555; }
+    "unorm_short_565"     { return Brig::BRIG_FORMAT_UNORM_SHORT_565; }
+    "unsigned_int16"      { return Brig::BRIG_FORMAT_UNSIGNED_INT16; }
+    "unsigned_int32"      { return Brig::BRIG_FORMAT_UNSIGNED_INT32; }
+    "unsigned_int8"       { return Brig::BRIG_FORMAT_UNSIGNED_INT8;  }
+    ""                   { syntaxError("unknown image format"); }
+  */
+}
+
+Brig::BrigImageOrder8_t Scanner::scanImageOrder()
+{
+    skipWhitespaces();
+    m_tokStart = m_curPos;
+    const char *marker;
+/*!re2c
+    re2c:indent:string = "    ";
+
+    "a"                   { return Brig::BRIG_ORDER_A;               }
+    "argb"                { return Brig::BRIG_ORDER_ARGB;            }
+    "bgra"                { return Brig::BRIG_ORDER_BGRA;            }
+    "intensity"           { return Brig::BRIG_ORDER_INTENSITY;       }
+    "luminance"           { return Brig::BRIG_ORDER_LUMINANCE;       }
+    "r"                   { return Brig::BRIG_ORDER_R;               }
+    "ra"                  { return Brig::BRIG_ORDER_RA;              }
+    "rg"                  { return Brig::BRIG_ORDER_RG;              }
+    "rgb"                 { return Brig::BRIG_ORDER_RGB;             }
+    "rgba"                { return Brig::BRIG_ORDER_RGBA;            }
+    "rgbx"                { return Brig::BRIG_ORDER_RGBX;            }
+    "rgx"                 { return Brig::BRIG_ORDER_RGX;             }
+    "rx"                  { return Brig::BRIG_ORDER_RX;              }
+    "sbgra"               { return Brig::BRIG_ORDER_SBGRA;           }
+    "srgb"                { return Brig::BRIG_ORDER_SRGB;            }
+    "srgba"               { return Brig::BRIG_ORDER_SRGBA;           }
+    "srgbx"               { return Brig::BRIG_ORDER_SRGBX;           }
+    ""          { syntaxError("unknown image order"); }
+*/
+}
+
+//#define DBGNL std::cout << "\n"
+#define DBGNL
+
+ETokens Scanner::scan()
+{
+    skipWhitespaces();
+    m_tokStart = m_curPos;
+    const char *marker;
+/*!re2c
+    re2c:indent:string  = "        ";
+
+    "{"                  { return m_token = ELCurl; }
+    "}"                  { return m_token = ERCurl; }
+    "("                  { return m_token = ELParen; }
+    ")"                  { return m_token = ERParen; }
+    "["                  { return m_token = ELBrace; }
+    "]"                  { return m_token = ERBrace; }
+    "<"                  { return m_token = ELAngle; }
+    ">"                  { return m_token = ERAngle; }
+    "."                  { return m_token = EDot; }
+    ","                  { return m_token = EComma; }
+    ";"                  { return m_token = ESemi; }
+    ":"                  { return m_token = EColon; }
+    "+"                  { return m_token = EPlus; }
+    "-"                  { return m_token = EMinus; }
+    "="                  { return m_token = EEqual; }
+
+    "version"            { return m_token = EKWVersion; }
+    "kernel"             { return m_token = EKWKernel; }
+    "function"           { return m_token = EKWFunction; }
+    "pragma"             { return m_token = EKWPragma; }
+    "section"            { return m_token = EKWSection; }
+    "rti"                { return m_token = EKWRTI; }
+    "loc"                { return m_token = EKWLoc; }
+    "extension"          { return m_token = EKWExtension; }
+    "file"               { return m_token = EKWFile; }
+    "labeltargets"       { return m_token = EKWLabelTargets; }
+    "signature"          { return m_token = EKWSignature; }
+    "all"                { return m_token = EKWWidthAll;  }
+    "fbarrier"           { return m_token = EKWFbarrier; }
+
+    "enablebreakexceptions"  { m_brigId = Brig::BRIG_CONTROL_ENABLEBREAKEXCEPTIONS; return m_token = EControl;     }
+    "enabledetectexceptions"  { m_brigId = Brig::BRIG_CONTROL_ENABLEDETECTEXCEPTIONS; return m_token = EControl;     }
+    "maxdynamicgroupsize"  { m_brigId = Brig::BRIG_CONTROL_MAXDYNAMICGROUPSIZE; return m_token = EControl;     }
+    "maxflatgridsize"     { m_brigId = Brig::BRIG_CONTROL_MAXFLATGRIDSIZE; return m_token = EControl;     }
+    "maxflatworkgroupsize"  { m_brigId = Brig::BRIG_CONTROL_MAXFLATWORKGROUPSIZE; return m_token = EControl;     }
+    "requestedworkgroupspercu"  { m_brigId = Brig::BRIG_CONTROL_REQUESTEDWORKGROUPSPERCU; return m_token = EControl;     }
+    "requireddim"         { m_brigId = Brig::BRIG_CONTROL_REQUIREDDIM; return m_token = EControl;     }
+    "requiredgridsize"    { m_brigId = Brig::BRIG_CONTROL_REQUIREDGRIDSIZE; return m_token = EControl;     }
+    "requiredworkgroupsize"  { m_brigId = Brig::BRIG_CONTROL_REQUIREDWORKGROUPSIZE; return m_token = EControl;     }
+    "requirenopartialworkgroups"  { m_brigId = Brig::BRIG_CONTROL_REQUIRENOPARTIALWORKGROUPS; return m_token = EControl;     }
+
+    "width"              { return m_token = EKWImageWidth; }
+    "height"             { return m_token = EKWImageHeight; }
+    "depth"              { return m_token = EKWImageDepth; }
+    "format"             { return m_token = EKWImageFormat; }
+    "order"              { return m_token = EKWImageOrder; }
+
+    "boundaryU"          { return m_token = EKWSamplerBoundaryU; }
+    "boundaryV"          { return m_token = EKWSamplerBoundaryV; }
+    "boundaryW"          { return m_token = EKWSamplerBoundaryW; }
+    "coord"              { return m_token = EKWSamplerCoord; }
+    "filter"             { return m_token = EKWSamplerFilter; }
+
+    "border"              { m_brigId = Brig::BRIG_BOUNDARY_BORDER;   return m_token = ESamplerBoundaryMode; }
+    "clamp"               { m_brigId = Brig::BRIG_BOUNDARY_CLAMP;    return m_token = ESamplerBoundaryMode; }
+    "mirror"              { m_brigId = Brig::BRIG_BOUNDARY_MIRROR;   return m_token = ESamplerBoundaryMode; }
+    "mirroronce"          { m_brigId = Brig::BRIG_BOUNDARY_MIRRORONCE; return m_token = ESamplerBoundaryMode; }
+    "wrap"                { m_brigId = Brig::BRIG_BOUNDARY_WRAP;     return m_token = ESamplerBoundaryMode; }
+
+    "normalized"         { m_brigId = 1;                            return m_token = ESamplerCoord;  }
+    "unnormalized"       { m_brigId = 0;                            return m_token = ESamplerCoord;  }
+    "nearest"            { m_brigId = Brig::BRIG_FILTER_NEAREST;    return m_token = ESamplerFilter; }
+    "linear"             { m_brigId = Brig::BRIG_FILTER_LINEAR;     return m_token = ESamplerFilter; }
+
+    "global"             { m_brigId = Brig::BRIG_SEGMENT_GLOBAL;    return m_token = ESegment; }
+    "group"              { m_brigId = Brig::BRIG_SEGMENT_GROUP;     return m_token = ESegment; }
+    "private"            { m_brigId = Brig::BRIG_SEGMENT_PRIVATE;   return m_token = ESegment; }
+    "kernarg"            { m_brigId = Brig::BRIG_SEGMENT_KERNARG;   return m_token = ESegment; }
+    "readonly"           { m_brigId = Brig::BRIG_SEGMENT_READONLY;  return m_token = ESegment; }
+    "spill"              { m_brigId = Brig::BRIG_SEGMENT_SPILL;     return m_token = ESegment; }
+    "arg"                { m_brigId = Brig::BRIG_SEGMENT_ARG;       return m_token = ESegment; }
+    "flat"               { m_brigId = Brig::BRIG_SEGMENT_FLAT;      return m_token = ESegment; }
+
+    "abs"                 { m_brigId = Brig::BRIG_OPCODE_ABS;        return m_token = EInstruction; }
+    "add"                 { m_brigId = Brig::BRIG_OPCODE_ADD;        return m_token = EInstruction; }
+    "alloca"              { m_brigId = Brig::BRIG_OPCODE_ALLOCA;     return m_token = EInstruction; }
+    "and"                 { m_brigId = Brig::BRIG_OPCODE_AND;        return m_token = EInstruction; }
+    "arrivefbar"          { m_brigId = Brig::BRIG_OPCODE_ARRIVEFBAR; return m_token = EInstruction; }
+    "atomic"              { m_brigId = Brig::BRIG_OPCODE_ATOMIC;     return m_token = EInstruction; }
+    "atomicimage"         { m_brigId = Brig::BRIG_OPCODE_ATOMICIMAGE; return m_token = EInstruction; }
+    "atomicimagenoret"    { m_brigId = Brig::BRIG_OPCODE_ATOMICIMAGENORET; return m_token = EInstruction; }
+    "atomicnoret"         { m_brigId = Brig::BRIG_OPCODE_ATOMICNORET; return m_token = EInstruction; }
+    "barrier"             { m_brigId = Brig::BRIG_OPCODE_BARRIER;    return m_token = EInstruction; }
+    "bitalign"            { m_brigId = Brig::BRIG_OPCODE_BITALIGN;   return m_token = EInstruction; }
+    "bitextract"          { m_brigId = Brig::BRIG_OPCODE_BITEXTRACT; return m_token = EInstruction; }
+    "bitinsert"           { m_brigId = Brig::BRIG_OPCODE_BITINSERT;  return m_token = EInstruction; }
+    "bitmask"             { m_brigId = Brig::BRIG_OPCODE_BITMASK;    return m_token = EInstruction; }
+    "bitrev"              { m_brigId = Brig::BRIG_OPCODE_BITREV;     return m_token = EInstruction; }
+    "bitselect"           { m_brigId = Brig::BRIG_OPCODE_BITSELECT;  return m_token = EInstruction; }
+    "borrow"              { m_brigId = Brig::BRIG_OPCODE_BORROW;     return m_token = EInstruction; }
+    "brn"                 { m_brigId = Brig::BRIG_OPCODE_BRN;        return m_token = EInstruction; }
+    "bytealign"           { m_brigId = Brig::BRIG_OPCODE_BYTEALIGN;  return m_token = EInstruction; }
+    "call"                { m_brigId = Brig::BRIG_OPCODE_CALL;       return m_token = EInstruction; }
+    "carry"               { m_brigId = Brig::BRIG_OPCODE_CARRY;      return m_token = EInstruction; }
+    "cbr"                 { m_brigId = Brig::BRIG_OPCODE_CBR;        return m_token = EInstruction; }
+    "ceil"                { m_brigId = Brig::BRIG_OPCODE_CEIL;       return m_token = EInstruction; }
+    "class"               { m_brigId = Brig::BRIG_OPCODE_CLASS;      return m_token = EInstruction; }
+    "cleardetectexcept"   { m_brigId = Brig::BRIG_OPCODE_CLEARDETECTEXCEPT; return m_token = EInstruction; }
+    "clock"               { m_brigId = Brig::BRIG_OPCODE_CLOCK;      return m_token = EInstruction; }
+    "cmov"                { m_brigId = Brig::BRIG_OPCODE_CMOV;       return m_token = EInstruction; }
+    "cmp"                 { m_brigId = Brig::BRIG_OPCODE_CMP;        return m_token = EInstruction; }
+    "combine"             { m_brigId = Brig::BRIG_OPCODE_COMBINE;    return m_token = EInstruction; }
+    "copysign"            { m_brigId = Brig::BRIG_OPCODE_COPYSIGN;   return m_token = EInstruction; }
+    "countlane"           { m_brigId = Brig::BRIG_OPCODE_COUNTLANE;  return m_token = EInstruction; }
+    "countuplane"         { m_brigId = Brig::BRIG_OPCODE_COUNTUPLANE; return m_token = EInstruction; }
+    "cuid"                { m_brigId = Brig::BRIG_OPCODE_CUID;       return m_token = EInstruction; }
+    "currentworkgroupsize"  { m_brigId = Brig::BRIG_OPCODE_CURRENTWORKGROUPSIZE; return m_token = EInstruction; }
+    "cvt"                 { m_brigId = Brig::BRIG_OPCODE_CVT;        return m_token = EInstruction; }
+    "debugtrap"           { m_brigId = Brig::BRIG_OPCODE_DEBUGTRAP;  return m_token = EInstruction; }
+    "dim"                 { m_brigId = Brig::BRIG_OPCODE_DIM;        return m_token = EInstruction; }
+    "dispatchid"          { m_brigId = Brig::BRIG_OPCODE_DISPATCHID; return m_token = EInstruction; }
+    "dispatchptr"         { m_brigId = Brig::BRIG_OPCODE_DISPATCHPTR; return m_token = EInstruction; }
+    "div"                 { m_brigId = Brig::BRIG_OPCODE_DIV;        return m_token = EInstruction; }
+    "expand"              { m_brigId = Brig::BRIG_OPCODE_EXPAND;     return m_token = EInstruction; }
+    "firstbit"            { m_brigId = Brig::BRIG_OPCODE_FIRSTBIT;   return m_token = EInstruction; }
+    "floor"               { m_brigId = Brig::BRIG_OPCODE_FLOOR;      return m_token = EInstruction; }
+    "fma"                 { m_brigId = Brig::BRIG_OPCODE_FMA;        return m_token = EInstruction; }
+    "fract"               { m_brigId = Brig::BRIG_OPCODE_FRACT;      return m_token = EInstruction; }
+    "ftos"                { m_brigId = Brig::BRIG_OPCODE_FTOS;       return m_token = EInstruction; }
+    "getdetectexcept"     { m_brigId = Brig::BRIG_OPCODE_GETDETECTEXCEPT; return m_token = EInstruction; }
+    "gridgroups"          { m_brigId = Brig::BRIG_OPCODE_GRIDGROUPS; return m_token = EInstruction; }
+    "gridsize"            { m_brigId = Brig::BRIG_OPCODE_GRIDSIZE;   return m_token = EInstruction; }
+    "initfbar"            { m_brigId = Brig::BRIG_OPCODE_INITFBAR;   return m_token = EInstruction; }
+    "joinfbar"            { m_brigId = Brig::BRIG_OPCODE_JOINFBAR;   return m_token = EInstruction; }
+    "laneid"              { m_brigId = Brig::BRIG_OPCODE_LANEID;     return m_token = EInstruction; }
+    "lastbit"             { m_brigId = Brig::BRIG_OPCODE_LASTBIT;    return m_token = EInstruction; }
+    "ld"                  { m_brigId = Brig::BRIG_OPCODE_LD;         return m_token = EInstruction; }
+    "lda"                 { m_brigId = Brig::BRIG_OPCODE_LDA;        return m_token = EInstruction; }
+    "ldc"                 { m_brigId = Brig::BRIG_OPCODE_LDC;        return m_token = EInstruction; }
+    "ldf"                 { m_brigId = Brig::BRIG_OPCODE_LDF;        return m_token = EInstruction; }
+    "ldimage"             { m_brigId = Brig::BRIG_OPCODE_LDIMAGE;    return m_token = EInstruction; }
+    "leavefbar"           { m_brigId = Brig::BRIG_OPCODE_LEAVEFBAR;  return m_token = EInstruction; }
+    "lerp"                { m_brigId = Brig::BRIG_OPCODE_LERP;       return m_token = EInstruction; }
+    "mad"                 { m_brigId = Brig::BRIG_OPCODE_MAD;        return m_token = EInstruction; }
+    "mad24"               { m_brigId = Brig::BRIG_OPCODE_MAD24;      return m_token = EInstruction; }
+    "mad24hi"             { m_brigId = Brig::BRIG_OPCODE_MAD24HI;    return m_token = EInstruction; }
+    "masklane"            { m_brigId = Brig::BRIG_OPCODE_MASKLANE;   return m_token = EInstruction; }
+    "max"                 { m_brigId = Brig::BRIG_OPCODE_MAX;        return m_token = EInstruction; }
+    "maxcuid"             { m_brigId = Brig::BRIG_OPCODE_MAXCUID;    return m_token = EInstruction; }
+    "maxwaveid"           { m_brigId = Brig::BRIG_OPCODE_MAXWAVEID;  return m_token = EInstruction; }
+    "min"                 { m_brigId = Brig::BRIG_OPCODE_MIN;        return m_token = EInstruction; }
+    "mov"                 { m_brigId = Brig::BRIG_OPCODE_MOV;        return m_token = EInstruction; }
+    "mul"                 { m_brigId = Brig::BRIG_OPCODE_MUL;        return m_token = EInstruction; }
+    "mul24"               { m_brigId = Brig::BRIG_OPCODE_MUL24;      return m_token = EInstruction; }
+    "mul24hi"             { m_brigId = Brig::BRIG_OPCODE_MUL24HI;    return m_token = EInstruction; }
+    "mulhi"               { m_brigId = Brig::BRIG_OPCODE_MULHI;      return m_token = EInstruction; }
+    "ncos"                { m_brigId = Brig::BRIG_OPCODE_NCOS;       return m_token = EInstruction; }
+    "neg"                 { m_brigId = Brig::BRIG_OPCODE_NEG;        return m_token = EInstruction; }
+    "nexp2"               { m_brigId = Brig::BRIG_OPCODE_NEXP2;      return m_token = EInstruction; }
+    "nfma"                { m_brigId = Brig::BRIG_OPCODE_NFMA;       return m_token = EInstruction; }
+    "nlog2"               { m_brigId = Brig::BRIG_OPCODE_NLOG2;      return m_token = EInstruction; }
+    "nop"                 { m_brigId = Brig::BRIG_OPCODE_NOP;        return m_token = EInstruction; }
+    "not"                 { m_brigId = Brig::BRIG_OPCODE_NOT;        return m_token = EInstruction; }
+    "nrcp"                { m_brigId = Brig::BRIG_OPCODE_NRCP;       return m_token = EInstruction; }
+    "nrsqrt"              { m_brigId = Brig::BRIG_OPCODE_NRSQRT;     return m_token = EInstruction; }
+    "nsin"                { m_brigId = Brig::BRIG_OPCODE_NSIN;       return m_token = EInstruction; }
+    "nsqrt"               { m_brigId = Brig::BRIG_OPCODE_NSQRT;      return m_token = EInstruction; }
+    "nullptr"             { m_brigId = Brig::BRIG_OPCODE_NULLPTR;    return m_token = EInstruction; }
+    "or"                  { m_brigId = Brig::BRIG_OPCODE_OR;         return m_token = EInstruction; }
+    "pack"                { m_brigId = Brig::BRIG_OPCODE_PACK;       return m_token = EInstruction; }
+    "packcvt"             { m_brigId = Brig::BRIG_OPCODE_PACKCVT;    return m_token = EInstruction; }
+    "popcount"            { m_brigId = Brig::BRIG_OPCODE_POPCOUNT;   return m_token = EInstruction; }
+    "qid"                 { m_brigId = Brig::BRIG_OPCODE_QID;        return m_token = EInstruction; }
+    "qptr"                { m_brigId = Brig::BRIG_OPCODE_QPTR;       return m_token = EInstruction; }
+    "queryimagearray"     { m_brigId = Brig::BRIG_OPCODE_QUERYIMAGEARRAY; return m_token = EInstruction; }
+    "queryimagedepth"     { m_brigId = Brig::BRIG_OPCODE_QUERYIMAGEDEPTH; return m_token = EInstruction; }
+    "queryimageformat"    { m_brigId = Brig::BRIG_OPCODE_QUERYIMAGEFORMAT; return m_token = EInstruction; }
+    "queryimageheight"    { m_brigId = Brig::BRIG_OPCODE_QUERYIMAGEHEIGHT; return m_token = EInstruction; }
+    "queryimageorder"     { m_brigId = Brig::BRIG_OPCODE_QUERYIMAGEORDER; return m_token = EInstruction; }
+    "queryimagewidth"     { m_brigId = Brig::BRIG_OPCODE_QUERYIMAGEWIDTH; return m_token = EInstruction; }
+    "querysamplercoord"   { m_brigId = Brig::BRIG_OPCODE_QUERYSAMPLERCOORD; return m_token = EInstruction; }
+    "querysamplerfilter"  { m_brigId = Brig::BRIG_OPCODE_QUERYSAMPLERFILTER; return m_token = EInstruction; }
+    "rdimage"             { m_brigId = Brig::BRIG_OPCODE_RDIMAGE;    return m_token = EInstruction; }
+    "receivelane"         { m_brigId = Brig::BRIG_OPCODE_RECEIVELANE; return m_token = EInstruction; }
+    "releasefbar"         { m_brigId = Brig::BRIG_OPCODE_RELEASEFBAR; return m_token = EInstruction; }
+    "rem"                 { m_brigId = Brig::BRIG_OPCODE_REM;        return m_token = EInstruction; }
+    "ret"                 { m_brigId = Brig::BRIG_OPCODE_RET;        return m_token = EInstruction; }
+    "rint"                { m_brigId = Brig::BRIG_OPCODE_RINT;       return m_token = EInstruction; }
+    "sad"                 { m_brigId = Brig::BRIG_OPCODE_SAD;        return m_token = EInstruction; }
+    "sadhi"               { m_brigId = Brig::BRIG_OPCODE_SADHI;      return m_token = EInstruction; }
+    "segmentp"            { m_brigId = Brig::BRIG_OPCODE_SEGMENTP;   return m_token = EInstruction; }
+    "sendlane"            { m_brigId = Brig::BRIG_OPCODE_SENDLANE;   return m_token = EInstruction; }
+    "setdetectexcept"     { m_brigId = Brig::BRIG_OPCODE_SETDETECTEXCEPT; return m_token = EInstruction; }
+    "shl"                 { m_brigId = Brig::BRIG_OPCODE_SHL;        return m_token = EInstruction; }
+    "shr"                 { m_brigId = Brig::BRIG_OPCODE_SHR;        return m_token = EInstruction; }
+    "shuffle"             { m_brigId = Brig::BRIG_OPCODE_SHUFFLE;    return m_token = EInstruction; }
+    "sqrt"                { m_brigId = Brig::BRIG_OPCODE_SQRT;       return m_token = EInstruction; }
+    "st"                  { m_brigId = Brig::BRIG_OPCODE_ST;         return m_token = EInstruction; }
+    "stimage"             { m_brigId = Brig::BRIG_OPCODE_STIMAGE;    return m_token = EInstruction; }
+    "stof"                { m_brigId = Brig::BRIG_OPCODE_STOF;       return m_token = EInstruction; }
+    "sub"                 { m_brigId = Brig::BRIG_OPCODE_SUB;        return m_token = EInstruction; }
+    "sync"                { m_brigId = Brig::BRIG_OPCODE_SYNC;       return m_token = EInstruction; }
+    "syscall"             { m_brigId = Brig::BRIG_OPCODE_SYSCALL;    return m_token = EInstruction; }
+    "trunc"               { m_brigId = Brig::BRIG_OPCODE_TRUNC;      return m_token = EInstruction; }
+    "unpack"              { m_brigId = Brig::BRIG_OPCODE_UNPACK;     return m_token = EInstruction; }
+    "unpackcvt"           { m_brigId = Brig::BRIG_OPCODE_UNPACKCVT;  return m_token = EInstruction; }
+    "unpackhi"            { m_brigId = Brig::BRIG_OPCODE_UNPACKHI;   return m_token = EInstruction; }
+    "unpacklo"            { m_brigId = Brig::BRIG_OPCODE_UNPACKLO;   return m_token = EInstruction; }
+    "waitfbar"            { m_brigId = Brig::BRIG_OPCODE_WAITFBAR;   return m_token = EInstruction; }
+    "waveid"              { m_brigId = Brig::BRIG_OPCODE_WAVEID;     return m_token = EInstruction; }
+    "workgroupid"         { m_brigId = Brig::BRIG_OPCODE_WORKGROUPID; return m_token = EInstruction; }
+    "workgroupsize"       { m_brigId = Brig::BRIG_OPCODE_WORKGROUPSIZE; return m_token = EInstruction; }
+    "workitemabsid"       { m_brigId = Brig::BRIG_OPCODE_WORKITEMABSID; return m_token = EInstruction; }
+    "workitemflatabsid"   { m_brigId = Brig::BRIG_OPCODE_WORKITEMFLATABSID; return m_token = EInstruction; }
+    "workitemflatid"      { m_brigId = Brig::BRIG_OPCODE_WORKITEMFLATID; return m_token = EInstruction; }
+    "workitemid"          { m_brigId = Brig::BRIG_OPCODE_WORKITEMID; return m_token = EInstruction; }
+    "xor"                 { m_brigId = Brig::BRIG_OPCODE_XOR;        return m_token = EInstruction; }
+
+    "extern"             { m_brigId = Brig::BRIG_LINKAGE_EXTERN;    return m_token = EAttribute; }
+    "static"             { m_brigId = Brig::BRIG_LINKAGE_STATIC;    return m_token = EAttribute; }
+
+    "align"              { return m_token = EKWAlign; }
+    "const"              { return m_token = EKWConst; }
+
+    "block"              { return m_token = EKWBlockStart; }
+    "blocknumeric"       { return m_token = EKWBlockNum; }
+    "blockstring"        { return m_token = EKWBlockStr; }
+    "endblock"           { return m_token = EKWBlockEnd; }
+    
+    "fbar"               { return m_token = EKWFBar; }
+
+    "@" ID               { return m_token = ELabel; }
+    "&" ID               { return m_token = EIDStatic; }
+    "%" ID               { return m_token = EIDLocal; }
+    "$" ID               { return m_token = ERegister; }
+
+    "WAVESIZE"           { return m_token = EWaveSizeMacro; }
+
+    "\""                 { return m_token = EQuot; }
+
+    "_u8x4"              { m_brigId = Brig::BRIG_TYPE_U8X4;  return m_token = EPackedLiteral; }
+    "_s8x4"              { m_brigId = Brig::BRIG_TYPE_S8X4;  return m_token = EPackedLiteral; }
+    "_u8x8"              { m_brigId = Brig::BRIG_TYPE_U8X8;  return m_token = EPackedLiteral; }
+    "_s8x8"              { m_brigId = Brig::BRIG_TYPE_S8X8;  return m_token = EPackedLiteral; }
+    "_u8x16"             { m_brigId = Brig::BRIG_TYPE_U8X16; return m_token = EPackedLiteral; }
+    "_s8x16"             { m_brigId = Brig::BRIG_TYPE_S8X16; return m_token = EPackedLiteral; }
+    "_u16x2"             { m_brigId = Brig::BRIG_TYPE_U16X2; return m_token = EPackedLiteral; }
+    "_s16x2"             { m_brigId = Brig::BRIG_TYPE_S16X2; return m_token = EPackedLiteral; }
+    "_f16x2"             { m_brigId = Brig::BRIG_TYPE_F16X2; return m_token = EPackedLiteral; }
+    "_u16x4"             { m_brigId = Brig::BRIG_TYPE_U16X4; return m_token = EPackedLiteral; }
+    "_s16x4"             { m_brigId = Brig::BRIG_TYPE_S16X4; return m_token = EPackedLiteral; }
+    "_f16x4"             { m_brigId = Brig::BRIG_TYPE_F16X4; return m_token = EPackedLiteral; }
+    "_u16x8"             { m_brigId = Brig::BRIG_TYPE_U16X8; return m_token = EPackedLiteral; }
+    "_s16x8"             { m_brigId = Brig::BRIG_TYPE_S16X8; return m_token = EPackedLiteral; }
+    "_f16x8"             { m_brigId = Brig::BRIG_TYPE_F16X8; return m_token = EPackedLiteral; }
+    "_u32x2"             { m_brigId = Brig::BRIG_TYPE_U32X2; return m_token = EPackedLiteral; }
+    "_s32x2"             { m_brigId = Brig::BRIG_TYPE_S32X2; return m_token = EPackedLiteral; }
+    "_f32x2"             { m_brigId = Brig::BRIG_TYPE_F32X2; return m_token = EPackedLiteral; }
+    "_u32x4"             { m_brigId = Brig::BRIG_TYPE_U32X4; return m_token = EPackedLiteral; }
+    "_s32x4"             { m_brigId = Brig::BRIG_TYPE_S32X4; return m_token = EPackedLiteral; }
+    "_f32x4"             { m_brigId = Brig::BRIG_TYPE_F32X4; return m_token = EPackedLiteral; }
+    "_u64x2"             { m_brigId = Brig::BRIG_TYPE_U64X2; return m_token = EPackedLiteral; }
+    "_s64x2"             { m_brigId = Brig::BRIG_TYPE_S64X2; return m_token = EPackedLiteral; }
+    "_f64x2"             { m_brigId = Brig::BRIG_TYPE_F64X2; return m_token = EPackedLiteral; }
+
+    DECIMAL              { return m_token = EDecimalNumber; }
+    OCTAL                { return m_token = EOctalNumber; }
+    HEX                  { return m_token = EHexNumber; }
+
+    FLOAT [hH]           { return m_token = EHlfNumber; }
+    FLOAT [fF]           { return m_token = ESglNumber; }
+    FLOAT [lL]?          { return m_token = EDblNumber; }
+
+    HLFHEX               { return m_token = EHlfHexNumber; }
+    SGLHEX               { return m_token = ESglHexNumber; }
+    DBLHEX               { return m_token = EDblHexNumber; }
+
+    C99FLT [hH]          { return m_token = EHlfC99Number; }
+    C99FLT [fF]          { return m_token = ESglC99Number; }
+    C99FLT [lL]?         { return m_token = EDblC99Number; }   
+
+    "\000"               { --m_curPos; return m_token = EEndOfSource; }
+
+    ""                   { syntaxError("Syntax error"); }
+*/
+}
+
+void Scanner::nextLine()
+{
+    DBGNL;
+    m_lineStart = streamPosAt(m_curPos);
+    ++m_lineNum;
+}
+
+void Scanner::skipWhitespaces()
+{
+    while(true) {
+        m_tokStart = m_curPos;
+        const char *marker;
+/*!re2c
+        re2c:indent:string  = "        ";
+        SPACE           { continue; }
+        NL              { nextLine(); continue; }
+        "/" "/"         { skipOneLinearComment(); continue; }
+        "/" "*"         { skipMultilineComment(); continue; }
+        "\000"          { --m_curPos; break; }
+        ""              { break; }
+*/
+    }
+}
+
+#undef YYFILL
+
+#define YYFILL(n) { \
+    appendComment(m_tokStart,m_curPos); \
+    m_tokStart = m_curPos; \
+    readChars(n); }
+
+void Scanner::skipOneLinearComment()
+{
+    newComment();
+    while(true) {
+        const char *const i = m_curPos;
+/*!re2c
+        re2c:indent:string = "        ";
+        NL       { nextLine();
+                   appendComment(m_tokStart,i);
+                   break; }
+        "\000"   { --m_curPos; appendComment(m_tokStart,i); break; }
+        ANY      { continue; }
+*/
+    };
+}
+
+void Scanner::skipMultilineComment()
+{
+    newComment("// ");
+    m_tokStart = m_curPos; // skip leading / *
+
+    while(true) {
+        const char *const i = m_curPos;
+/*!re2c
+        re2c:indent:string = "        ";
+        NL       { nextLine();
+                   appendComment(m_tokStart,i);
+                   newComment("// ");
+                   m_tokStart = m_curPos;
+                   continue; }
+        "*" "/"  { appendComment(m_tokStart,i); break; }
+        "\000"   { --m_curPos; syntaxError("Premature end of comment"); }
+        ANY      { continue; }
+*/
+    };
+}
+
+#undef YYFILL
+
+} // end namespace
