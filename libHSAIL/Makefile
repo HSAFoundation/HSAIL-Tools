@@ -30,6 +30,7 @@ endif
 else # !_WINDOWS
 # linux
 MKDIR = mkdir -p $(@D)
+CLEAN_BUILD_DIR = rm -rf build_linux
 CXXFLAGS += -fPIC
 LIBS += dl pthread
 CONFIG := linux
@@ -159,7 +160,7 @@ LLVM_LIBDIR = $(LLVM_BUILD)/lib
 CXXFLAGS +=  -Wno-reorder -Wno-unused -Wno-deprecated -fno-strict-aliasing
 
 CXX ?= g++
-CXXFLAGS += -c -o $@
+CXXFLAGS += -fno-rtti -c -o $@
 AR ?= ar
 ARFLAGS += rv $@
 LD = $(CXX)
@@ -220,7 +221,7 @@ libhsail: $(LIBHSAIL_LIB)
 
 ###########################
 
-HSAILASM_DIR  = HSAILasm
+HSAILASM_DIR  = HSAILAsm
 HSAILASM_EXE  = $(BUILD_DIR)/hsailasm$(EXE_SUFFIX)
 HSAILASM_SRCS = $(wildcard $(HSAILASM_DIR)/*.cpp)
 HSAILASM_OBJS = $(HSAILASM_SRCS:%.cpp=$(BUILD_DIR)/o_%$(OBJ_SUFFIX))

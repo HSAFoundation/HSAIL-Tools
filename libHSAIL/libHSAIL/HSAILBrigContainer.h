@@ -43,7 +43,7 @@
 #define INCLUDED_HSAIL_BRIG_CONTAINER_H
 
 #include "HSAILSRef.h"
-#include "brig.h"
+#include "Brig.h"
 #include "HSAILUtilities.h"
 
 #include <string>
