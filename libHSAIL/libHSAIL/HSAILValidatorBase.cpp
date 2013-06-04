@@ -67,7 +67,7 @@ bool InstValidatorBase::isImage(Operand opr, bool isRW /*=false*/)
     return addr &&
            addr.symbol() &&
            DirectiveImage(addr.symbol()) &&
-           (!isRW || DirectiveImage(addr.symbol()).type() == Brig::BRIG_TYPE_RWIMG);
+           (DirectiveImage(addr.symbol()).type() == (isRW? Brig::BRIG_TYPE_RWIMG : Brig::BRIG_TYPE_ROIMG));
 }
 
 bool InstValidatorBase::isSampler(Operand opr)
@@ -102,17 +102,17 @@ bool InstValidatorBase::isJumpTab(Inst inst, unsigned operandIdx, bool isAssert)
         {
             if (!sym.modifier().isArray())
             {
-                if (isAssert) validate(inst, operandIdx, false, "Invalid descriprion of jump targets; expected an array of labels");
+                if (isAssert) validate(inst, operandIdx, false, "Invalid descriprion of jump targets; expected a reference to an array initialized with labels");
                 return false;
             }
             if (sym.modifier().isDeclaration())
             {
-                if (isAssert) validate(inst, operandIdx, false, "Invalid descriprion of jump targets; expected a reference to array definition");
+                if (isAssert) validate(inst, operandIdx, false, "Invalid descriprion of jump targets; expected a reference to an array definition");
                 return false;
             }
             if (sym.dim() == 0 || sym.modifier().isFlexArray())
             {
-                if (isAssert) validate(inst, operandIdx, false, "Invalid descriprion of jump targets; expected a non-empty array of labels");
+                if (isAssert) validate(inst, operandIdx, false, "Invalid descriprion of jump targets; expected a reference to a non-empty array initialized with labels");
                 return false;
             }
             if (sym.type() != BRIG_TYPE_U64 && sym.type() != BRIG_TYPE_U32)
@@ -129,15 +129,20 @@ bool InstValidatorBase::isJumpTab(Inst inst, unsigned operandIdx, bool isAssert)
             DirectiveLabelList list = sym.init();
             if (!list)
             {
-                if (isAssert) validate(inst, operandIdx, false, "Invalid descriprion of jump targets; expected an array initialized with labels");
+                if (isAssert) validate(inst, operandIdx, false, "Invalid descriprion of jump targets; expected a reference to an array initialized with labels");
                 return false;
             }
 
             if (list.elementCount() == 0)
             {
-                if (isAssert) validate(inst, operandIdx, false, "Invalid descriprion of jump targets; expected a non-empty array of labels");
+                if (isAssert) validate(inst, operandIdx, false, "Invalid descriprion of jump targets; expected a reference to a non-empty array initialized with labels");
                 return false;
             }
+        }
+        else
+        {
+            if (isAssert) validate(inst, operandIdx, false, "Invalid descriprion of jump targets; expected a reference to an array initialized with labels");
+            return false;
         }
 
         if (addr.type() != btype)
@@ -225,8 +230,8 @@ const char* InstValidatorBase::operand2str(unsigned valId)
     case OPERAND_VAL_CALLTAB:   return "a list of call targets";
     case OPERAND_VAL_FBARRIER:  return "an fbarrier";
 
-    case OPERAND_VAL_IMAGE:     return "an image";
-    case OPERAND_VAL_IMAGE_RW:  return "a read-write image";
+    case OPERAND_VAL_ROIMAGE:   return "a read-only image";
+    case OPERAND_VAL_RWIMAGE:   return "a read-write image";
     case OPERAND_VAL_SAMPLER:   return "a sampler";
 
     case OPERAND_VAL_REG_1:     return "a 'c' register";
@@ -240,20 +245,23 @@ const char* InstValidatorBase::operand2str(unsigned valId)
     case OPERAND_VAL_IMM_64:    return "a 64-bit immediate or wavesize";
     case OPERAND_VAL_IMM_128:   return "a 128-bit immediate or wavesize";
 
-    case OPERAND_VAL_REG_V2_1:   return "a vector of 2 'c' registers";
-    case OPERAND_VAL_REG_V2_32:  return "a vector of 2 's' registers";
-    case OPERAND_VAL_REG_V2_64:  return "a vector of 2 'd' registers";
-    case OPERAND_VAL_REG_V2_128: return "a vector of 2 'q' registers";
+    case OPERAND_VAL_IMM_0_1_2:   return "a 32-bit immediate with value 0, 1 or 2";
+    case OPERAND_VAL_IMM_0_1_2_3: return "a 32-bit immediate with value 0, 1, 2 or 3";
 
-    case OPERAND_VAL_REG_V3_1:   return "a vector of 3 'c' registers";
-    case OPERAND_VAL_REG_V3_32:  return "a vector of 3 's' registers";
-    case OPERAND_VAL_REG_V3_64:  return "a vector of 3 'd' registers";
-    case OPERAND_VAL_REG_V3_128: return "a vector of 3 'q' registers";
+    case OPERAND_VAL_REG_V2_1:    return "a vector of 2 'c' registers";
+    case OPERAND_VAL_REG_V2_32:   return "a vector of 2 's' registers";
+    case OPERAND_VAL_REG_V2_64:   return "a vector of 2 'd' registers";
+    case OPERAND_VAL_REG_V2_128:  return "a vector of 2 'q' registers";
 
-    case OPERAND_VAL_REG_V4_1:   return "a vector of 4 'c' registers";
-    case OPERAND_VAL_REG_V4_32:  return "a vector of 4 's' registers";
-    case OPERAND_VAL_REG_V4_64:  return "a vector of 4 'd' registers";
-    case OPERAND_VAL_REG_V4_128: return "a vector of 4 'q' registers";
+    case OPERAND_VAL_REG_V3_1:    return "a vector of 3 'c' registers";
+    case OPERAND_VAL_REG_V3_32:   return "a vector of 3 's' registers";
+    case OPERAND_VAL_REG_V3_64:   return "a vector of 3 'd' registers";
+    case OPERAND_VAL_REG_V3_128:  return "a vector of 3 'q' registers";
+
+    case OPERAND_VAL_REG_V4_1:    return "a vector of 4 'c' registers";
+    case OPERAND_VAL_REG_V4_32:   return "a vector of 4 's' registers";
+    case OPERAND_VAL_REG_V4_64:   return "a vector of 4 'd' registers";
+    case OPERAND_VAL_REG_V4_128:  return "a vector of 4 'q' registers";
 
     default:
         assert(false);
@@ -268,10 +276,11 @@ const char* InstValidatorBase::val2str(unsigned prop, unsigned val)
     using namespace Brig;
     switch(prop)
     {
-    case PROP_TYPE:         res = typeX2str(val); break;
-    case PROP_STYPE:        res = typeX2str(val); break;
-    case PROP_ITYPE:        res = typeX2str(val); break;
-    case PROP_CTYPE:        res = typeX2str(val); break;
+    case PROP_TYPE:
+    case PROP_STYPE:
+    case PROP_ITYPE:
+    case PROP_CTYPE:
+                            res = (val == BRIG_TYPE_NONE)? "none" : typeX2str(val); break;
 
     case PROP_OPERATOR:     res = compareOperation2str(val); break;
     case PROP_FTZ:          res = val? "ftz" : "none";           break;
@@ -281,8 +290,8 @@ const char* InstValidatorBase::val2str(unsigned prop, unsigned val)
     case PROP_GEOM:         res = imageGeometry2str(val);   break;
     case PROP_PACKING:      res = (val == BRIG_PACK_NONE)?    "no packing" : pack2str(val);   break;
     case PROP_ROUNDING:     res = (val == BRIG_ROUND_NONE)?   "none" : round2str(val);        break;
-    case PROP_SYNC:         res = (val == BRIG_FENCE_NONE)?   "none" : memoryFence2str(val);  break;
-    case PROP_SEGMENT:      res = (val == BRIG_SEGMENT_NONE)? "none" : segment2str(val);      break;
+    case PROP_SYNC:         res = memoryFence2str(val);  break;
+    case PROP_SEGMENT:      res = (val == BRIG_SEGMENT_NONE)? "none" : (val == BRIG_SEGMENT_FLAT)? "flat" : segment2str(val); break;
     case PROP_WIDTH:        res = (val == BRIG_WIDTH_NONE)?   "none" : width2str(val);        break;
     case PROP_EQCLASS:      res = "";  break; // no sense printing as any value would be valid
 
@@ -342,7 +351,7 @@ string InstValidatorBase::prop2str(unsigned prop)
     case PROP_ATMOP:       return "atomic operation";
     case PROP_MSEM:        return "memory semantic";
     case PROP_GEOM:        return "geom";
-    case PROP_SYNC:        return "sync flags";
+    case PROP_SYNC:        return "fence";
     case PROP_SEGMENT:     return "storage class";
     case PROP_WIDTH:       return "width";
     case PROP_EQCLASS:     return "equivalence class";
@@ -415,7 +424,19 @@ bool InstValidatorBase::validateTypeSize(Inst inst, bool isSrcType, unsigned val
     {
     case TYPESIZE_VAL_SEG:
         if (getTypeSize(type) == getSegAddrSize(HSAIL_ASM::getSegment(inst), isLargeModel())) return true;
-        if (isAssert) validate(inst, false, "Instruction type must match segment kind and machine model");
+#if !ENABLE_ADDRESS_SIZE_CHECK
+        // This is a temporary workaround for lowering
+        if (isLargeModel() && getSegAddrSize(HSAIL_ASM::getSegment(inst), isLargeModel()) == 32 && getTypeSize(type) == 64) return true;
+#endif
+        if (isAssert)
+        {
+            validate(inst, false,
+                     SRef(
+                        isSrcType?
+                        "Src type must match segment kind and machine model" :
+                        "Instruction type must match segment kind and machine model")
+                     );
+        }
         break;
 
     case TYPESIZE_VAL_MODEL:
@@ -522,10 +543,13 @@ bool InstValidatorBase::checkAddrSeg(Inst inst, unsigned operandIdx, bool isAsse
     }
     if (getTypeSize(opr.type()) != getSegAddrSize(HSAIL_ASM::getSegment(inst), isLargeModel()))
     {
+#if !ENABLE_ADDRESS_SIZE_CHECK
+        // This is a temporary workaround for lowering
+        if (isLargeModel() && getSegAddrSize(HSAIL_ASM::getSegment(inst), isLargeModel()) == 32 && getTypeSize(opr.type()) == 64) return true;
+#endif
         if (isAssert) validate(inst, operandIdx, false, "Address size does not match instruction type");
         return false;
     }
-
     return true;
 }
 
@@ -538,22 +562,35 @@ bool InstValidatorBase::checkAddrTSeg(Inst inst, unsigned operandIdx, bool isAss
     OperandAddress opr = inst.operand(operandIdx);
     assert(opr);
 
-    if (!checkAddrSeg(inst, opr, isAssert)) return false;
+    if (!checkAddrSeg(inst, operandIdx, isAssert)) return false;
+    if (!opr.symbol()) return true;
 
     using namespace Brig;
     unsigned type = inst.type();
-    unsigned otype = opr.symbol()? opr.symbol().type().value() : BRIG_TYPE_NONE;
+    unsigned otype = opr.symbol().type();
 
     if (type == otype) return true;
 
-    if (type == BRIG_TYPE_SAMP  || type == BRIG_TYPE_RWIMG  || type == BRIG_TYPE_ROIMG ||
-        otype == BRIG_TYPE_SAMP || otype == BRIG_TYPE_RWIMG || otype == BRIG_TYPE_ROIMG)
+    if (type == BRIG_TYPE_SAMP  || type == BRIG_TYPE_RWIMG  || type == BRIG_TYPE_ROIMG)
     {
-        if (isAssert) validate(inst, operandIdx, false, "Opaque symbol used in address must match instruction type");
+        if (isAssert) validate(inst, operandIdx, false, "Instruction type does not match address symbol type");
+        return false;
+    }
+
+    if (otype == BRIG_TYPE_SAMP || otype == BRIG_TYPE_RWIMG || otype == BRIG_TYPE_ROIMG)
+    {
+        if (isAssert) validate(inst, operandIdx, false, "Opaque symbol used in address does not match instruction type");
         return false;
     }
 
     return true;
+}
+
+bool InstValidatorBase::isImmInRange(OperandImmed imm, unsigned low, unsigned high)
+{
+    if (imm.type() != Brig::BRIG_TYPE_B32) return false;
+    unsigned val = *reinterpret_cast<const uint32_t*>(&imm.brig()->bytes[0]);
+    return low <= val && val <= high;
 }
 
 bool InstValidatorBase::checkOperandKind(Inst inst, unsigned operandIdx, unsigned* vals, unsigned length, bool isAssert)
@@ -561,6 +598,8 @@ bool InstValidatorBase::checkOperandKind(Inst inst, unsigned operandIdx, unsigne
     assert(inst);
     assert(operandIdx <= 4);
     assert(vals && length > 0);
+
+    using namespace Brig;
 
     Operand opr = inst.operand(operandIdx);
     unsigned kind = (unsigned)-1;
@@ -583,51 +622,54 @@ bool InstValidatorBase::checkOperandKind(Inst inst, unsigned operandIdx, unsigne
         case OPERAND_VAL_NULL:      if (!opr) return true; break; //F get rid of breaks, return value immediately
 
         //NB: According with current design, explicitly specified operand size also assumes integer type => wavesize is allowed
-        case OPERAND_VAL_IMM_1:     if ((kind == Brig::BRIG_OPERAND_WAVESIZE || kind == Brig::BRIG_OPERAND_IMMED) && size == 1)   return true; break;
-        case OPERAND_VAL_IMM_32:    if ((kind == Brig::BRIG_OPERAND_WAVESIZE || kind == Brig::BRIG_OPERAND_IMMED) && size == 32)  return true; break;
-        case OPERAND_VAL_IMM_64:    if ((kind == Brig::BRIG_OPERAND_WAVESIZE || kind == Brig::BRIG_OPERAND_IMMED) && size == 64)  return true; break;
-        case OPERAND_VAL_IMM_128:   if ((kind == Brig::BRIG_OPERAND_WAVESIZE || kind == Brig::BRIG_OPERAND_IMMED) && size == 128) return true; break;
+        case OPERAND_VAL_IMM_1:     if ((kind == BRIG_OPERAND_WAVESIZE || kind == BRIG_OPERAND_IMMED) && size == 1)   return true; break;
+        case OPERAND_VAL_IMM_32:    if ((kind == BRIG_OPERAND_WAVESIZE || kind == BRIG_OPERAND_IMMED) && size == 32)  return true; break;
+        case OPERAND_VAL_IMM_64:    if ((kind == BRIG_OPERAND_WAVESIZE || kind == BRIG_OPERAND_IMMED) && size == 64)  return true; break;
+        case OPERAND_VAL_IMM_128:   if ((kind == BRIG_OPERAND_WAVESIZE || kind == BRIG_OPERAND_IMMED) && size == 128) return true; break;
 
-        case OPERAND_VAL_REG_1:     if (kind == Brig::BRIG_OPERAND_REG && size == 1)   return true; break;
-        case OPERAND_VAL_REG_32:    if (kind == Brig::BRIG_OPERAND_REG && size == 32)  return true; break;
-        case OPERAND_VAL_REG_64:    if (kind == Brig::BRIG_OPERAND_REG && size == 64)  return true; break;
-        case OPERAND_VAL_REG_128:   if (kind == Brig::BRIG_OPERAND_REG && size == 128) return true; break;
+        case OPERAND_VAL_IMM_0_1_2:   if (kind == BRIG_OPERAND_IMMED && isImmInRange(opr, 0, 2)) return true; break;
+        case OPERAND_VAL_IMM_0_1_2_3: if (kind == BRIG_OPERAND_IMMED && isImmInRange(opr, 0, 3)) return true; break;
 
-        case OPERAND_VAL_REG_V2_1:   if (kind == Brig::BRIG_OPERAND_REG_VECTOR && OperandRegVector(opr).regCount() == 2 && size == 1)   return true; break;
-        case OPERAND_VAL_REG_V2_32:  if (kind == Brig::BRIG_OPERAND_REG_VECTOR && OperandRegVector(opr).regCount() == 2 && size == 32)  return true; break;
-        case OPERAND_VAL_REG_V2_64:  if (kind == Brig::BRIG_OPERAND_REG_VECTOR && OperandRegVector(opr).regCount() == 2 && size == 64)  return true; break;
-        case OPERAND_VAL_REG_V2_128: if (kind == Brig::BRIG_OPERAND_REG_VECTOR && OperandRegVector(opr).regCount() == 2 && size == 128) return true; break;
+        case OPERAND_VAL_REG_1:     if (kind == BRIG_OPERAND_REG && size == 1)   return true; break;
+        case OPERAND_VAL_REG_32:    if (kind == BRIG_OPERAND_REG && size == 32)  return true; break;
+        case OPERAND_VAL_REG_64:    if (kind == BRIG_OPERAND_REG && size == 64)  return true; break;
+        case OPERAND_VAL_REG_128:   if (kind == BRIG_OPERAND_REG && size == 128) return true; break;
 
-        case OPERAND_VAL_REG_V3_1:   if (kind == Brig::BRIG_OPERAND_REG_VECTOR && OperandRegVector(opr).regCount() == 3 && size == 1)   return true; break;
-        case OPERAND_VAL_REG_V3_32:  if (kind == Brig::BRIG_OPERAND_REG_VECTOR && OperandRegVector(opr).regCount() == 3 && size == 32)  return true; break;
-        case OPERAND_VAL_REG_V3_64:  if (kind == Brig::BRIG_OPERAND_REG_VECTOR && OperandRegVector(opr).regCount() == 3 && size == 64)  return true; break;
-        case OPERAND_VAL_REG_V3_128: if (kind == Brig::BRIG_OPERAND_REG_VECTOR && OperandRegVector(opr).regCount() == 3 && size == 128) return true; break;
+        case OPERAND_VAL_REG_V2_1:   if (kind == BRIG_OPERAND_REG_VECTOR && OperandRegVector(opr).regCount() == 2 && size == 1)   return true; break;
+        case OPERAND_VAL_REG_V2_32:  if (kind == BRIG_OPERAND_REG_VECTOR && OperandRegVector(opr).regCount() == 2 && size == 32)  return true; break;
+        case OPERAND_VAL_REG_V2_64:  if (kind == BRIG_OPERAND_REG_VECTOR && OperandRegVector(opr).regCount() == 2 && size == 64)  return true; break;
+        case OPERAND_VAL_REG_V2_128: if (kind == BRIG_OPERAND_REG_VECTOR && OperandRegVector(opr).regCount() == 2 && size == 128) return true; break;
 
-        case OPERAND_VAL_REG_V4_1:   if (kind == Brig::BRIG_OPERAND_REG_VECTOR && OperandRegVector(opr).regCount() == 4 && size == 1)   return true; break;
-        case OPERAND_VAL_REG_V4_32:  if (kind == Brig::BRIG_OPERAND_REG_VECTOR && OperandRegVector(opr).regCount() == 4 && size == 32)  return true; break;
-        case OPERAND_VAL_REG_V4_64:  if (kind == Brig::BRIG_OPERAND_REG_VECTOR && OperandRegVector(opr).regCount() == 4 && size == 64)  return true; break;
-        case OPERAND_VAL_REG_V4_128: if (kind == Brig::BRIG_OPERAND_REG_VECTOR && OperandRegVector(opr).regCount() == 4 && size == 128) return true; break;
+        case OPERAND_VAL_REG_V3_1:   if (kind == BRIG_OPERAND_REG_VECTOR && OperandRegVector(opr).regCount() == 3 && size == 1)   return true; break;
+        case OPERAND_VAL_REG_V3_32:  if (kind == BRIG_OPERAND_REG_VECTOR && OperandRegVector(opr).regCount() == 3 && size == 32)  return true; break;
+        case OPERAND_VAL_REG_V3_64:  if (kind == BRIG_OPERAND_REG_VECTOR && OperandRegVector(opr).regCount() == 3 && size == 64)  return true; break;
+        case OPERAND_VAL_REG_V3_128: if (kind == BRIG_OPERAND_REG_VECTOR && OperandRegVector(opr).regCount() == 3 && size == 128) return true; break;
 
-        case OPERAND_VAL_ADDR_SEG:  if (kind == Brig::BRIG_OPERAND_ADDRESS && checkAddrSeg(inst, operandIdx, isAssert))                 return true; break;
-        case OPERAND_VAL_ADDR_TSEG: if (kind == Brig::BRIG_OPERAND_ADDRESS && checkAddrTSeg(inst, operandIdx, isAssert))                return true; break;
-        case OPERAND_VAL_LAB:       if (kind == Brig::BRIG_OPERAND_LABEL_REF && DirectiveLabel(OperandLabelRef(opr).ref()))             return true; break;
-        case OPERAND_VAL_FUNC:      if (kind == Brig::BRIG_OPERAND_FUNCTION_REF)  return true; break;
-        case OPERAND_VAL_ARGLIST:   if (kind == Brig::BRIG_OPERAND_ARGUMENT_LIST) return true; break;
+        case OPERAND_VAL_REG_V4_1:   if (kind == BRIG_OPERAND_REG_VECTOR && OperandRegVector(opr).regCount() == 4 && size == 1)   return true; break;
+        case OPERAND_VAL_REG_V4_32:  if (kind == BRIG_OPERAND_REG_VECTOR && OperandRegVector(opr).regCount() == 4 && size == 32)  return true; break;
+        case OPERAND_VAL_REG_V4_64:  if (kind == BRIG_OPERAND_REG_VECTOR && OperandRegVector(opr).regCount() == 4 && size == 64)  return true; break;
+        case OPERAND_VAL_REG_V4_128: if (kind == BRIG_OPERAND_REG_VECTOR && OperandRegVector(opr).regCount() == 4 && size == 128) return true; break;
+
+        case OPERAND_VAL_ADDR_SEG:  if (kind == BRIG_OPERAND_ADDRESS && checkAddrSeg(inst, operandIdx, isAssert))                 return true; break;
+        case OPERAND_VAL_ADDR_TSEG: if (kind == BRIG_OPERAND_ADDRESS && checkAddrTSeg(inst, operandIdx, isAssert))                return true; break;
+        case OPERAND_VAL_LAB:       if (kind == BRIG_OPERAND_LABEL_REF && DirectiveLabel(OperandLabelRef(opr).ref()))             return true; break;
+        case OPERAND_VAL_FUNC:      if (kind == BRIG_OPERAND_FUNCTION_REF)  return true; break;
+        case OPERAND_VAL_ARGLIST:   if (kind == BRIG_OPERAND_ARGUMENT_LIST) return true; break;
         case OPERAND_VAL_JUMPTAB:   if (isJumpTab(inst, operandIdx, isAssert)) return true; break;
         case OPERAND_VAL_CALLTAB:   if (isCallTab(inst, operandIdx, isAssert)) return true; break;
-        case OPERAND_VAL_FBARRIER:  if (kind == Brig::BRIG_OPERAND_FBARRIER_REF)  return true; break;
+        case OPERAND_VAL_FBARRIER:  if (kind == BRIG_OPERAND_FBARRIER_REF)  return true; break;
 
-        case OPERAND_VAL_IMAGE:     if (isImage(opr, false)) return true; break;
-        case OPERAND_VAL_IMAGE_RW:  if (isImage(opr, true))  return true; break;
+        case OPERAND_VAL_ROIMAGE:   if (isImage(opr, false)) return true; break;
+        case OPERAND_VAL_RWIMAGE:   if (isImage(opr, true))  return true; break;
         case OPERAND_VAL_SAMPLER:   if (isSampler(opr))      return true; break;
 
-        case OPERAND_VAL_IMM:       if (kind == Brig::BRIG_OPERAND_IMMED ||
-                                        kind == Brig::BRIG_OPERAND_WAVESIZE) return true; break;
+        case OPERAND_VAL_IMM:       if (kind == BRIG_OPERAND_IMMED ||
+                                        kind == BRIG_OPERAND_WAVESIZE) return true; break;
 
-        case OPERAND_VAL_REG:       if (kind == Brig::BRIG_OPERAND_REG)   return true; break;
-        case OPERAND_VAL_REG_V2:    if (kind == Brig::BRIG_OPERAND_REG_VECTOR && OperandRegVector(opr).regCount() == 2) return true; break;
-        case OPERAND_VAL_REG_V3:    if (kind == Brig::BRIG_OPERAND_REG_VECTOR && OperandRegVector(opr).regCount() == 3) return true; break;
-        case OPERAND_VAL_REG_V4:    if (kind == Brig::BRIG_OPERAND_REG_VECTOR && OperandRegVector(opr).regCount() == 4) return true; break;
+        case OPERAND_VAL_REG:       if (kind == BRIG_OPERAND_REG)   return true; break;
+        case OPERAND_VAL_REG_V2:    if (kind == BRIG_OPERAND_REG_VECTOR && OperandRegVector(opr).regCount() == 2) return true; break;
+        case OPERAND_VAL_REG_V3:    if (kind == BRIG_OPERAND_REG_VECTOR && OperandRegVector(opr).regCount() == 3) return true; break;
+        case OPERAND_VAL_REG_V4:    if (kind == BRIG_OPERAND_REG_VECTOR && OperandRegVector(opr).regCount() == 4) return true; break;
 
         default:
             assert(false);
@@ -656,7 +698,7 @@ bool InstValidatorBase::validateOperand(Inst inst, unsigned prop, unsigned attr,
     }
 
     res = !isDst || validateDstVector(inst.operand(operandIdx));
-    if (isAssert && !res) validate(inst, operandIdx, res, "Destination vector " + prop2str(prop) + " must not include the same register more than once");
+    if (isAssert && !res) validate(inst, operandIdx, res, "Destination vector operand must not include the same register more than once");
     if (!res) return res;
 
     if (attr != OPERAND_ATTR_NONE)
@@ -677,3 +719,5 @@ void InstValidatorBase::invalidVariant(Inst inst, unsigned prop1, unsigned prop2
 }
 
 } // namespace HSAIL_ASM
+
+

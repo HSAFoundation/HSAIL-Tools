@@ -168,7 +168,10 @@ private:
     }
 
     void printValue(const StrRef& v) {
-        s << '"'; dumpStr(s,v); s << '"';
+        s << "S@" << v.deref();
+        if (v) {
+          s << "=\""; dumpStr(s,v); s << '"';
+        }
     }
 
     template<typename T>

@@ -5,13 +5,21 @@
 Use GNU make. A native (e.g. MinGW) build of make should be used on Windows.
 
 Building HSAILasm currently requires some components from LLVM (only Support
-and Object libs are used). This dependency may be removed in the future. 
+and Object libs are used). This dependency may be removed in the future.
 libHSAIL can be built without LLVM. The only LLVM dependency it has is the ELF
 header file, which can be obtained from alternative sources.
 
-LLVM can be downloaded from http://llvm.org/releases/. 
+LLVM can be downloaded from http://llvm.org/releases/.
 Most modern linux distributions include a precompiled LLVM package.
 Building LLVM from source requires CMake: http://www.cmake.org/
+
+On modern Linux distributions a LLVM package is typically provided out  of  the
+box (e.g. on Ubuntu run "sudo apt-get install llvm-3.1-dev" to install).
+
+libBRIGdwarf (debug info generation package) requires libelf and  libdwarf.  On
+modern Linux distributions these are typically provided out of the box (e.g. on
+Ubuntu run "sudo apt-get  install  libelf-dev  libdwarf-dev"  to  install).  On
+Windows debug info generation is not supported at this point.
 
 A part of libHSAIL source files is generated using perl (5.10+) and re2c.
 Pre-generated files are included in the source tree, so perl and re2c are not
@@ -19,11 +27,11 @@ mandatory prerequisites for building libHSAIL. However they are necessary if
 you want to modify BRIG  data structures libHSAIL operates on, or HSAIL parser.
 
 re2c is a lexer generator used in many open source projects including PHP. re2c
-source, Windows binaries and some linux packages can be donwloaded from 
-http://sourceforge.net/projects/re2c/. Most linux distributions also include a
-re2c package.
+source, Windows binaries and some linux packages can be donwloaded from
+http://sourceforge.net/projects/re2c/. Most linux distributions include a
+re2c package (e.g. on Unbuntu run "sudo apt-get install re2c" to install).
 
-Perl is typically included in any modern linux distribution. 
+Perl is typically included in any modern linux distribution.
 Perl for Windows can be obtained from any of the following sources:
 
 * Activestate ActivePerl : http://www.activestate.com/activeperl
@@ -39,9 +47,11 @@ obtained from http://tdm-gcc.tdragon.net/download .
 
 2. BUILDING:
 
-You should define the following variables on make command line or pre-define 
+You should define the following variables on make command line or pre-define
 them in the environment:
 
+        LLVM_CONFIG:path to llvm-config binary. If specified, no  further  info
+                    about LLVM is necessary.
 	LLVM_SRC:   pointing to LLVM source files.
         LLVM_BUILD: pointing to LLVM build directory  matching  your  build
                     settings. Windows build attempts  to  locate  the  libs  in
@@ -56,16 +66,21 @@ them in the environment:
                     Windows
 
 
+On Linux (e.g. Ubuntu) a standard LLVM package may be used. It is sufficient to
+specify the path to its llvm-config binary:
+
+	make -j LLVM_CONFIG=llvm-config-3.2
+
 Any combination of _OPT and _DBG is allowed. _M64 and _M32 can not be combined.
 
 example: make -j LLVM_SRC=llvm31 LLVM_BUILD=llvm31/build _OPT=1 _M64=1
 
-If you have 32-bit or 64-bit build of MSVC (cl.exe) in the path, it defines 
+If you have 32-bit or 64-bit build of MSVC (cl.exe) in the path, it defines
 32-bit or 64-bit target configuration, which may not  conflict  with  _M64
 or  _M32.  No attempts to auto-configure MSVC environment are made in this case.
 
-If you are building with MSVC but do not have cl.exe in path, the build process 
-attempts  to  locate  the 32-bit (if _M64 is unset) or 64-bit (if _M64 is set) 
+If you are building with MSVC but do not have cl.exe in path, the build process
+attempts  to  locate  the 32-bit (if _M64 is unset) or 64-bit (if _M64 is set)
 build  of  the  compiler using the following environment variables, in order of
 decreasing  preference:
 
@@ -84,7 +99,7 @@ To regenerate libHSAIL source files, run the following:
 	cd libHSAIL
 	perl generate.pl . generated
 
-where "." is the input file path and "generated" is the output file path. If 
+where "." is the input file path and "generated" is the output file path. If
 necessary, path to re2c build may be explicitly specified:
 
 	perl generate.pl --re2c=my/build/of/re2c . generated

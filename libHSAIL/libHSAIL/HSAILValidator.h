@@ -49,6 +49,8 @@
 #include <istream>
 #include <string>
 
+#define ENABLE_ADDRESS_SIZE_CHECK (0)
+
 using std::istream;
 
 namespace HSAIL_ASM {

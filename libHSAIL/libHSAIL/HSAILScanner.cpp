@@ -327,3 +327,4 @@ void Scanner::throwTokenExpected(ETokens token, const char* message) {
 
 
 } // end namespace
+

@@ -166,6 +166,23 @@ public:
 typedef DataItemT<uint8_t>    DataItem;
 typedef DataItemRefT<uint8_t> DataItemRef;
 
+class ArbitraryData
+{
+    std::vector<char> m_buffer;
+public:
+    SRef toSRef() const { return m_buffer.empty() ? SRef() : SRef(&m_buffer[0],&m_buffer[0]+m_buffer.size()); }
+
+    template<typename T>
+    void push_back(T t) {
+        const char *p = reinterpret_cast<const char*>(&t);
+        m_buffer.insert(m_buffer.end(),p,p+sizeof t);
+    }
+
+    template<typename T>
+    size_t numElements() const { return m_buffer.size() / sizeof (T); }
+
+    size_t numBytes() const { return m_buffer.size(); }
+};
 
 /*
 template <typename Accessor>
@@ -183,10 +200,13 @@ public:
 
 /// implement reference to a string table element from a brig item.
 class StrRef {
-    BrigSectionImpl * m_refSection;
+    BrigSectionImpl * const m_refSection;
     Offset            m_offset2Ref;
 
     StrRef(); // not default-constructible
+
+    typedef void (StrRef::*bool_type)() const;
+    void toCompare() const {}
 
 public:
     StrRef(const StrRef& rhs)
@@ -228,7 +248,19 @@ public:
     /// @}
 
     operator SRef() const { return m_refSection->container()->strings().getString(deref()); }
+
+    /// return non-null if wrapper points to an item.
+    operator bool_type() const { return deref() != 0 ? &StrRef::toCompare : NULL; }
+
+    bool operator==(const StrRef& rhs) const { return deref()==rhs.deref(); }
+    bool operator!=(const StrRef& rhs) const { return !(*this==rhs); }
 };
+
+template <typename OS>
+OS& operator<<(OS& os, const StrRef& s) {
+   os << static_cast<SRef>(s);
+   return os;
+}
 
 /// implement reference one brig item from another.
 /// @param Item - type of referenced item.
@@ -409,6 +441,8 @@ public:
 /// base class for brig item wrapper.
 /// @param SectionKind_ - base type of item (Directive,Instr,Operand)
 class ItemBase {
+	typedef void (ItemBase::*bool_type)() const;
+    void toCompare() const {}
 public:
 	typedef BrigSectionImpl MySection;
 
@@ -450,8 +484,10 @@ public:
     /// return offset of the item in the section.
     Offset brigOffset() const { return m_offset;  }
 
-    /// return true if wrapper points to an item.
-    operator bool() const { return m_section!=NULL && m_offset != 0; }
+    //operator bool() const { return m_section!=NULL && m_offset != 0; }
+
+	/// return non-null if wrapper points to an item.
+	operator bool_type() const { return m_offset != 0 ? &ItemBase::toCompare : NULL; }
 
     /// wrapper comparisons - return whether 2 wrappers point to the same item.
     bool operator==(const ItemBase& rhs) const { return m_offset == rhs.m_offset && m_section==rhs.m_section; }
@@ -689,3 +725,4 @@ public:
 } // namespace HSAIL_ASM
 
 #endif //INCLUDED_HSAIL_ITEM_BASE_H
+

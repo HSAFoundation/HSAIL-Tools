@@ -134,7 +134,7 @@ private:
     Directive printArgs(Directive arg, unsigned paramNum, Directive scoped) const;
     void printLabelList(LabelList list) const;
 
-    void printBody(Inst inst, unsigned instNum, Directive start, Directive end) const;
+    void printBody(Inst inst, unsigned instNum, Directive start, Directive end, bool isDecl = false) const;
     Directive printContextDir(Offset off, Directive start, Directive end) const;
 
     void printSymDecl(DirectiveSymbol d) const;
@@ -203,6 +203,7 @@ private:
     void printOperand(OperandFbarrierRef opr) const;
 
     void printOperandImmed(Inst inst, unsigned operandIdx) const;
+    void printOperandImmed(OperandImmed imm, unsigned requiredType) const;
 
     template<class T> void printOperandRegV(T operand, int size) const;
     SRef getSymbolName(Directive d) const;
@@ -213,7 +214,7 @@ private:
     const char* opcode2str(unsigned opcode) const;
     const char* type2str(unsigned t) const;
     const char* pack2str(unsigned t) const;
-    const char* seg2str(Brig::BrigSegment8_t  segment, bool omitFlat = true, bool isGcn = false) const;
+    const char* seg2str(Brig::BrigSegment8_t  segment, bool isGcn = false) const;
     const char* sem2str(unsigned semantic) const;
     const char* cmpOp2str(unsigned opcode) const;
     const char* atomicOperation2str(unsigned op) const;
@@ -388,3 +389,4 @@ private:
 } // namespace HSAIL_ASM
 
 #endif
+

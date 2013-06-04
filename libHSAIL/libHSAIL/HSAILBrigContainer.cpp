@@ -313,13 +313,24 @@ static Directive extractDataFromHsaDwarfDebugBlock( Directive d,
                                                     Directive d_end,
                                                     std::ostream & out )
 {
-    assert(false); // TBD095 extractDataFromHsaDwarfDebugBlock
-
     for ( ; d != d_end && (d.brig()->kind == Brig::BRIG_DIRECTIVE_BLOCK_NUMERIC); d = d.next() ) {
         BlockNumeric bNumeric( d );
         // append the blocknumeric's bytes to the dbg stream
         //
         out.write( (const char *)bNumeric.data().begin(), bNumeric.data().numElements() );
+    }
+    return d;
+}
+
+static Directive extractDataFromHsaDwarfDebugBlock( Directive d,
+                                                    Directive d_end,
+                                                    std::vector<char> & out )
+{
+    for ( ; d != d_end && (d.brig()->kind == Brig::BRIG_DIRECTIVE_BLOCK_NUMERIC); d = d.next() ) {
+        BlockNumeric bNumeric( d );
+        // append the blocknumeric's bytes to the dbg stream
+        //
+        out.insert(out.end(), bNumeric.data().begin(), bNumeric.data().end());
     }
     return d;
 }
@@ -338,6 +349,15 @@ static Directive extractDataFromHsaDwarfDebugBlock( Directive d,
 // Any other formats/arrangements of blocks are skipped.
 //
 void BrigContainer::ExtractDebugInformationToStream( std::ostream & out )
+{
+    for ( Directive d = this->debugChunks().begin(), d_end = this->debugChunks().end(); d != d_end; )
+    {
+        d = findHsaDwarfDebugBlock( d, d_end );
+        d = extractDataFromHsaDwarfDebugBlock( d, d_end, out );
+    }
+}
+
+void BrigContainer::ExtractDebugInformationToVector( std::vector<char> & out )
 {
     for ( Directive d = this->debugChunks().begin(), d_end = this->debugChunks().end(); d != d_end; )
     {

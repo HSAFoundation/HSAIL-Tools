@@ -115,6 +115,7 @@ private:
     static OperandParser getOperandParser(Brig::BrigOpcode16_t opcode);
 
     Inst parseInstLdSt();
+    Inst parseInstCombineExpand(unsigned operandIdx);
     Inst parseInstImage();
 
     int  parseArgScope();
@@ -201,22 +202,7 @@ inline SourceInfo Parser::tokenSourceInfo() const
     return HSAIL_ASM::tokenSourceInfo(m_scanner);
 }
 
-inline int getOperandsNum(Inst inst)
-{
-    int i=0;
-    while (i<5 && inst.operand(i)) ++i;
-    return i;
-}
-
-inline void appendOperand(Inst inst, Operand opnd)
-{
-    int i=getOperandsNum(inst);
-
-    if (i<5) {
-        inst.operand(i) = opnd;
-    }
-}
-
 } // end namespace
 
 #endif
+

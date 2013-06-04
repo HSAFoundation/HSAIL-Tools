@@ -43,7 +43,7 @@
 #define INCLUDED_HSAIL_BRIG_CONTAINER_H
 
 #include "HSAILSRef.h"
-#include "brig.h"
+#include "Brig.h"
 #include "HSAILUtilities.h"
 
 #include <string>
@@ -106,8 +106,7 @@ public:
 private:
     class BrigContainer *m_container;
 
-    char                *m_data;
-    char                *m_dataEnd;
+    SRef                   m_data;
 
     Buffer               m_buffer;
 
@@ -117,8 +116,12 @@ private:
     bool hasOwnBuffer() const { return !m_buffer.empty(); }
 
     void syncPtrsWithBuffer() {
-        m_data = &m_buffer[0];
-        m_dataEnd = m_data + m_buffer.size();
+        m_data = m_buffer;
+    }
+
+    void syncSizeAtHeader() {
+        assert(NUM_BYTES_RESERVED>=sizeof(uint32_t) && m_buffer.size() >= NUM_BYTES_RESERVED);
+        *reinterpret_cast<uint32_t*>(&m_buffer[0]) = static_cast<uint32_t>(m_buffer.size());
     }
 
 protected:
@@ -143,6 +146,7 @@ public:
         : m_container(container)
     {
         m_buffer.resize(NUM_BYTES_RESERVED);
+        syncSizeAtHeader();
         syncPtrsWithBuffer();
     }
 
@@ -150,8 +154,8 @@ public:
     /// @param container - parent container this section belongs to.
     BrigSectionImpl(char *data, size_t size, class BrigContainer *container=NULL)
         : m_container(container)
-        , m_data(data)
-        , m_dataEnd(data+size)
+        , m_data(data, data+size)
+        //, m_dataEnd(data+size)
     {
     }
 
@@ -171,6 +175,7 @@ public:
         assert(hasOwnBuffer());
         m_buffer.clear();
         m_buffer.resize(NUM_BYTES_RESERVED);
+        syncSizeAtHeader();
         m_sourceInfo.clear();
         syncPtrsWithBuffer();
     }
@@ -202,8 +207,8 @@ public:
     const T* getData(Offset offset) const { return reinterpret_cast<const T*>(getData(offset)); }
     /// @}
 
-    char* getData(Offset offset) { return m_data + offset; }
-    const char* getData(Offset offset) const { return m_data + offset; }
+    char* getData(Offset offset) { return (char*)(m_data.begin + offset); }
+    const char* getData(Offset offset) const { return m_data.begin + offset; }
 
     /// insert uninitialized data into the section.
     /// May invalidate pointers to the section data.
@@ -214,6 +219,7 @@ public:
         assert(hasOwnBuffer());
         assert(offset <= m_buffer.size());
         m_buffer.insert(m_buffer.begin() + offset,numBytes,fill);
+        syncSizeAtHeader();
         syncPtrsWithBuffer();
         return getData(offset);
     }
@@ -227,6 +233,7 @@ public:
         assert(hasOwnBuffer());
         assert(offset <= m_buffer.size());
         m_buffer.insert(m_buffer.begin() + offset,start,end);
+        syncSizeAtHeader();
         syncPtrsWithBuffer();
         return getData(offset);
     }
@@ -238,14 +245,15 @@ public:
         assert(hasOwnBuffer());
         assert(offset + numBytes <= m_buffer.size());
         m_buffer.erase(m_buffer.begin() + offset,m_buffer.begin() + offset + numBytes);
+        syncSizeAtHeader();
         syncPtrsWithBuffer();
     }
 
     /// size of the section in bytes.
-    Offset size() const { return (Offset)(m_dataEnd - m_data); }
+    Offset size() const { return (Offset)m_data.length(); }
 
-    /// direct access to buffer for load/store operations.
-    const Buffer& bufferImpl() const { return m_buffer; }
+    /// section data ptrs encapsulated in SRef
+    SRef data() const { return m_data; }
 
     /// insert item of specified type at the specified offset.
     /// @param Item - item wrapper type.
@@ -295,10 +303,11 @@ public:
         assert((item.brigOffset() + item.brig()->size) == size());
 
         Offset const oldNumBytes = item.brig()->size;
-        Offset const newNumBytes = (Offset)std::min<size_t>(HSAIL_ASM::align(reqSize,ITEM_ALIGNMENT),std::numeric_limits<uint16_t>::max()-ITEM_ALIGNMENT);
+        Offset const newNumBytes = (Offset)std::min<size_t>(HSAIL_ASM::align(reqSize,ITEM_ALIGNMENT),(std::numeric_limits<uint16_t>::max)()-ITEM_ALIGNMENT);
 
         if (newNumBytes > oldNumBytes) {
             m_buffer.resize(item.brigOffset() + newNumBytes);
+            syncSizeAtHeader();
             syncPtrsWithBuffer();
             memset(reinterpret_cast<char*>(item.brig()) + oldNumBytes, 0, newNumBytes - oldNumBytes);
             item.brig()->size = static_cast<uint16_t>(newNumBytes);
@@ -398,6 +407,7 @@ public:
 
     Offset addString(const SRef& newStr);
     SRef getString(Offset offset) const {
+        assert(offset);
         const Brig::BrigString* s = getData<const Brig::BrigString>(offset);
         const char *begin = reinterpret_cast<const char*>(s->bytes);
         return SRef(begin,begin + s->byteCount);
@@ -511,6 +521,7 @@ public:
 
     void optimizeOperands();
     void ExtractDebugInformationToStream( std::ostream & out );
+    void ExtractDebugInformationToVector( std::vector<char> & out );
 
     void clear() {
         m_strings.clear();
@@ -552,3 +563,4 @@ template <> inline const BrigSectionImpl&  BrigContainer::sectionById<BRIG_SECTI
 } // namespace HSAIL_ASM
 
 #endif // INCLUDED_HSAIL_BRIG_CONTAINER_H
+

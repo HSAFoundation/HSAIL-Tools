@@ -617,7 +617,7 @@ public:
 	ValRef<uint16_t>                                   type();
 	ValRef<uint16_t>                                   elementCount();
 	ControlValues                                      values();
-	ItemRef<OperandImmed>                              values(int index);
+	ItemRef<Operand>                                   values(int index);
 
 
 	/// constructors
@@ -2183,7 +2183,7 @@ public:
 
 	/// accessors
 	ValRef<uint8_t>                                    allBits();
-	BFValRef<Brig::BrigSamplerModifier8_t,0,6>         filter();
+	BFValRef<Brig::BrigSamplerFilter8_t,0,6>           filter();
 	BitValRef<6>                                       isUnnormalized();
 
 

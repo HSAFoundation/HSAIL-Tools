@@ -96,7 +96,7 @@ struct UnsafeCastConvert {
 
     typedef typename DstBrigType::CType DstType;
     typedef typename SrcBrigType::CType SrcType;
-    SrcType const src;
+    SrcType src;
 
     DstType getBits(true_type*) const { // when sizeof(DstType) > sizeof(SrcType)
         DstType dst = DstType();
@@ -118,7 +118,7 @@ struct LengthOnlyRuleConvert {
 
     typedef typename DstBrigType::CType DstType;
     typedef typename SrcBrigType::CType SrcType;
-    SrcType const src;
+    SrcType src;
 
     DstType getBits(true_type*) const {  // when sizeof(DstType) == sizeof(SrcType)
         return *reinterpret_cast<const DstType*>(&src);
@@ -137,7 +137,7 @@ struct TruncateRuleConvert {
 
     typedef typename DstBrigType::CType DstType;
     typedef typename SrcBrigType::CType SrcType;
-    SrcType const src;
+    SrcType src;
 
     DstType getBits(true_type*) const {  // when sizeof(DstType) <= sizeof(SrcType)
         return *reinterpret_cast<const DstType*>(&src);
@@ -158,7 +158,7 @@ struct StaticCastConvert {
 
     typedef typename DstBrigType::CType DstType;
     typedef typename SrcBrigType::CType SrcType;
-    SrcType const src;
+    SrcType src;
 
     DstType visit(...) const { return static_cast<DstType>(src); }
 };
@@ -181,7 +181,7 @@ struct LosslessConvert {
     }
     // int = int
     DstType visit(BrigTypeNF*, BrigTypeNF*) const {
-        if (src > std::numeric_limits< typename make_unsigned<DstType>::type >::max()) {
+    	 if (src > (std::numeric_limits< typename make_unsigned<DstType>::type >::max)()) {
             throw ConversionError("value doesn't fit into destination");
         }
         return static_cast<DstType>(src);
@@ -191,8 +191,8 @@ struct LosslessConvert {
         typedef typename   make_signed<DstType>::type SgnDstType;
         typedef typename make_unsigned<DstType>::type UnsDstType;
         typedef typename make_unsigned<SrcType>::type UnsSrcType;
-        if ( (src < 0 && src < std::numeric_limits<SgnDstType>::min() ) ||
-             (src > 0 && static_cast<UnsSrcType>(src) > std::numeric_limits<UnsDstType>::max()) ) {
+        if ( (src < 0 && src < (std::numeric_limits<SgnDstType>::min)() ) ||
+             (src > 0 && (static_cast<UnsSrcType>(src) > (std::numeric_limits<UnsDstType>::max)())) ) {
             throw ConversionError("value doesn't fit into destination");
         }
         return static_cast<DstType>(static_cast<SgnDstType>(src));
@@ -204,6 +204,13 @@ struct LosslessConvert {
 
     DstType visit(BrigTypeNF*, BrigType<Brig::BRIG_TYPE_B1>*) const {
         return src!=0 ? 1 : 0;
+    }
+
+    DstType visit(BrigTypeF*, BrigType<Brig::BRIG_TYPE_B128>*) const {
+        throw ConversionError("conversion not supported");
+    }
+    DstType visit(BrigTypeF*, BrigType<Brig::BRIG_TYPE_B1>*) const {
+        throw ConversionError("conversion not supported");
     }
 
     DstType visit(BrigType<Brig::BRIG_TYPE_B128>*, BrigTypeNF*) const { return convert<DstBrigType,SrcBrigType,StaticCastConvert>(src); }
@@ -220,7 +227,7 @@ struct ConvertImmediate {
 
     typedef typename DstBrigType::CType DstType;
     typedef typename SrcBrigType::CType SrcType;
-    SrcType const src;
+    SrcType src;
 
     template <template <typename,typename> class Convertor>
     DstType use() const { return convert<DstBrigType,SrcBrigType,Convertor>(src); }
@@ -273,14 +280,14 @@ struct BoundCheckedConvert
 {
     typedef typename DstBrigType::CType DstType;
     typedef typename SrcBrigType::CType SrcType;
-    SrcType const src;
+    SrcType src;
 
     static void throwError() { throw ConversionError("value is out of bounds"); }
 
     // intX_t = intX_t
     DstType visit(BrigTypeS*,BrigTypeS*) const {
-        if (src > std::numeric_limits<DstType>::max() ||
-            src < std::numeric_limits<DstType>::min()) {
+        if (src > (std::numeric_limits<DstType>::max)() ||
+           src < (std::numeric_limits<DstType>::min)()) {
             throwError();
         }
         return static_cast<DstType>(src);
@@ -288,14 +295,14 @@ struct BoundCheckedConvert
     // uintX_t = intX_t
     DstType visit(BrigTypeU*,BrigTypeS*) const {
         if (src < 0 ||
-            static_cast<typename make_unsigned<SrcType>::type>(src) > std::numeric_limits<DstType>::max() ) {
+                static_cast<typename make_unsigned<SrcType>::type>(src) > (std::numeric_limits<DstType>::max)() ) {
             throwError();
         }
         return static_cast<DstType>(src);
     }
     // (u)intX_t = uintX_t
     DstType visit(BrigTypeInt*,BrigTypeU*) const {
-        if (src > static_cast<typename make_unsigned<DstType>::type>(std::numeric_limits<DstType>::max())) {
+        if (src > static_cast<typename make_unsigned<DstType>::type>((std::numeric_limits<DstType>::max)())) {
             throwError();
         }
         return static_cast<DstType>(src);
@@ -308,7 +315,7 @@ struct ConvertIfNonNegativeInt {
 
     typedef typename DstBrigType::CType DstType;
     typedef typename SrcBrigType::CType SrcType;
-    SrcType const src;
+    SrcType src;
 
     // (u)intX_t = intX_t
     DstType visit(BrigTypeInt*,BrigTypeS*) const {
@@ -329,11 +336,11 @@ struct ConvertIfPositiveInt {
 
     typedef typename DstBrigType::CType DstType;
     typedef typename SrcBrigType::CType SrcType;
-    SrcType const src;
+    SrcType src;
 
     DstType visit(...) const {
-        if (src == SrcType()) {
-            throw ConversionError("zero is not allowed");
+        if (src <= SrcType()) {
+            throw ConversionError("positive value is expected");
         }
         return convert<DstBrigType,SrcBrigType,ConvertIfNonNegativeInt>(src);
     }

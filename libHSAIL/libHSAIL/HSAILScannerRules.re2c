@@ -169,14 +169,9 @@ ETokens Scanner::scanModifier()
     "_equiv"     { return m_token = EMEquiv; }
 
     "_ftz"       { return m_token = EMFTZ; }
-    
+
     "_region"    { m_brigId = Brig::BRIG_ExtSpace0;      return m_token = EMSegment; }
     "_aligned"   { m_brigId = Brig::BRIG_MEMORY_ALIGNED; return m_token = EMAligned; }
-
-    "_both"         { m_brigId = Brig::BRIG_FENCE_BOTH;          return m_token = EMMemoryFence; }
-    "_partial"      { m_brigId = Brig::BRIG_FENCE_PARTIAL;       return m_token = EMMemoryFence; }
-    "_partial_both" { m_brigId = Brig::BRIG_FENCE_PARTIAL_BOTH;  return m_token = EMMemoryFence; }
-    
 
 @print $scanner{_EMRound}
 @print $scanner{_EMCompare}
@@ -299,7 +294,7 @@ ETokens Scanner::scan()
     "blocknumeric"       { return m_token = EKWBlockNum; }
     "blockstring"        { return m_token = EKWBlockStr; }
     "endblock"           { return m_token = EKWBlockEnd; }
-    
+
     "fbar"               { return m_token = EKWFBar; }
 
     "@" ID               { return m_token = ELabel; }
@@ -350,7 +345,7 @@ ETokens Scanner::scan()
 
     C99FLT [hH]          { return m_token = EHlfC99Number; }
     C99FLT [fF]          { return m_token = ESglC99Number; }
-    C99FLT [lL]?         { return m_token = EDblC99Number; }   
+    C99FLT [lL]?         { return m_token = EDblC99Number; }
 
     "\000"               { --m_curPos; return m_token = EEndOfSource; }
 

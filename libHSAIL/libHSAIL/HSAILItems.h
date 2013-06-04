@@ -87,10 +87,10 @@ typedef TrailingStrRefs<
 > RegVecStrList;
 
 class DirectiveControl;
-class OperandImmed;
+class Operand;
 typedef TrailingRefs<
     DirectiveControl,
-    OperandImmed,
+    Operand,
     offsetof(Brig::BrigDirectiveControl, values)
 > ControlValues;
 
@@ -112,15 +112,22 @@ public:
 
     DirectiveSignatureArgument addArg(ArgKind kind, Brig::BrigType16_t type, Optional<uint64_t> dim, uint8_t  align = 1) {
         unsigned const newNumElem = m_item.outCount() + m_item.inCount() + 1;
-        unsigned const newNumBytes = offsetof(Brig::BrigDirectiveSignature, args) + newNumElem*sizeof(DirectiveSignatureArgument);
+        unsigned const newNumBytes = offsetof(Brig::BrigDirectiveSignature, args) + newNumElem*sizeof(Brig::BrigDirectiveSignatureArgument);
         if (grow(m_item,newNumBytes)>=newNumBytes) {
             DirectiveSignatureArgument t = m_item.args(newNumElem-1);
             t.type()   = type;
             t.align()  = align;
+            t.modifier().linkage() = Brig::BRIG_LINKAGE_NONE;
+            t.modifier().isConst() = false;
+            t.modifier().isDeclaration() = true;
             if (dim.isInitialized()) {
                 t.modifier().isArray()=true;
                 t.modifier().isFlexArray()=dim.value()==0;
                 t.dim() = dim;
+            } else {
+                t.modifier().isArray()=false;
+                t.modifier().isFlexArray()=false;
+                t.dim() = 0;
             }
 
             switch(kind) {
@@ -138,6 +145,8 @@ public:
 #include "generated/HSAILItemImpls_gen.hpp"
 
 #include "generated/HSAILVisitItems_gen.hpp"
+
+#include "generated/HSAILItemUtils_gen.hpp"
 
 // shortcut for "final" classes
 template<typename RetType, typename Visitor, typename Item>
@@ -312,3 +321,4 @@ typename ReqBrigType::CType getImmValue( Inst i, unsigned opndIndex, Brig::BrigM
 } // namespace HSAIL_ASM
 
 #endif // INCLUDED_HSAIL_ITEMS_H
+

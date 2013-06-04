@@ -261,6 +261,7 @@ ExtProp operand =
     lab, func, 
     (lab, func).model, //F
     jumptab, calltab,
+    imm.0.1.2, imm.0.1.2.3,
     arglist,
     fbarrier,
     addr.(seg,              // 1) address size must match _instruction_ segment size; 
@@ -269,9 +270,10 @@ ExtProp operand =
           
           tseg),            // 1+2+3+4
                             // 4) opaque symbols used in address must match instruction type (rwimg, roimg, samp)
+    
+    roimage, rwimage, sampler, // FIXME: should be removed as soon as image support is implemented
 
     (reg, reg.v2, reg.v3, reg.v4, imm).(1, 32, 64, 128, stype, ctype, model, exp, sexp, noexp);
-    //F imm.0.1.2, imm.0.1.2.3; //F
 
 // NB: sexp = stype+exp
 // NB: exp and sexp do not apply to imm!
@@ -286,6 +288,8 @@ Alias reg.v       = reg.(v2, v3, v4);
 Alias reg.v.exp   = reg.(v2, v3, v4).exp;
 //Alias reg.v.noexp = reg.(v2, v3, v4).noexp;
 //Alias reg.v.32    = reg.(v2, v3, v4).32;
+
+Alias image = roimage, rwimage;
 
 Clone  d0, d1, s0, s1, s2, s3, s4;
 
@@ -869,13 +873,13 @@ Req pack
     type  = x;
     stype = (s, u)(32, 64), f;
 
-    { stype = s32 ? type = s(8, 16, 32)x     }
-    { stype = s64 ? type = s(8, 16, 32, 64)x }
-    { stype = u32 ? type = u(8, 16, 32)x     }
-    { stype = u64 ? type = u(8, 16, 32, 64)x }
-    { stype = f16 ? type = f16x              }
-    { stype = f32 ? type = f32x              }
-    { stype = f64 ? type = f64x              }
+    { type = s(8, 16, 32)x ? stype = s32, s64 }
+    { type = s64x          ? stype = s64      }
+    { type = u(8, 16, 32)x ? stype = u32, u64 }
+    { type = u64x          ? stype = u64      }
+    { type = f16x          ? stype = f16      }
+    { type = f32x          ? stype = f32      }
+    { type = f64x          ? stype = f64      }
     ;
 
     d0 = reg;       
@@ -889,6 +893,8 @@ Inst pack(SourceType, pack)
 
 // ============================================================================
 // UNPACK
+
+//F s2 must be in the range [0, number of elements in the packed source type - 1]. 
 
 Req unpack
 { 
@@ -1070,7 +1076,7 @@ Req unpackcvt
 
     d0 = reg;
     s1 = (reg, imm).stype; 
-    s2 = imm; //F imm.0.1.2.3;
+    s2 = imm.0.1.2.3;
     s3 = null;
     s4 = null;
 } 
@@ -1180,6 +1186,16 @@ Req cvt
     type  = b1, s, u, f;
     stype = b1, s, u, f;
 
+    { type = b1       ? stype = s, u, f                      }
+    { type = (s, u)8  ? stype = b1, (s, u)(   16, 32, 64), f }
+    { type = (s, u)16 ? stype = b1, (s, u)(8,     32, 64), f }
+    { type = (s, u)32 ? stype = b1, (s, u)(8, 16,     64), f }
+    { type = (s, u)64 ? stype = b1, (s, u)(8, 16, 32    ), f }
+    { type = f16      ? stype = b1, s, u, f                  }        //{ type = f16      ? stype = * / f16      } //F Not clear if this should be allowed
+    { type = f32      ? stype = b1, s, u, f                  }        //{ type = f32      ? stype = * / f32      }
+    { type = f64      ? stype = b1, s, u, f                  }        //{ type = f64      ? stype = * / f64      }
+    ;
+
     { stype = b1, s, u; type = b1, s, u  ? rounding = none;  ftz = none }
     { stype = b1;       type = f         ? rounding = none;  ftz = none }
     { stype = s, u;     type = f         ? rounding = float; ftz = none }
@@ -1211,7 +1227,7 @@ Req ld
 //  eqclass = any; // Currently not checked
     width   = any;
       
-    { type = u, s, f                  ? d0 = (reg, reg.v).exp } // FIXME: do operand expansion rules apply to reg.v?
+    { type = u, s, f                  ? d0 = (reg, reg.v).exp }
     { type = b128, roimg, rwimg, samp ? d0 = reg              }
     ;
 
@@ -1235,14 +1251,14 @@ Req st
 //  eqclass = any; // Currently not checked
     width   = none;
 
+    { type = u, s, f                  ? s0 = (reg, reg.v, imm).exp }
+    { type = b128, roimg, rwimg, samp ? s0 = reg                   }
+    ;
+
     s1 = addr.tseg;
     s2 = null;
     s3 = null;
     s4 = null;
-
-    { type = u, s, f                  ? s0 = (reg, reg.v, imm).exp } // FIXME: do operand expansion rules apply to reg.v?
-    { type = b128, roimg, rwimg, samp ? s0 = reg                   }
-    ;
 } 
 
 Inst st(Mem, st)
@@ -1302,13 +1318,17 @@ Req rdimage
 { 
     type    = (s, u, f)32;
     itype   = roimg, rwimg;
-    ctype   = (u, f)32;
+    ctype   = (s, f)32;
     geom    = 1d, 2d, 3d, 1da, 2da;
 
     d0 = reg.v4;
-    s1 = reg.64;
-    s2 = reg.64;
+    s1 = reg.64, image;
+    s2 = reg.64, sampler;
     s4 = null;
+
+    { itype = roimg ? s1 = reg.64, roimage }
+    { itype = rwimg ? s1 = reg.64, rwimage }
+    ;
 
     { geom = 1d      ? s3 = reg.ctype    }
     { geom = 2d, 1da ? s3 = reg.v2.ctype }
@@ -1339,9 +1359,13 @@ Req ld.image
     itype = roimg, rwimg;
 
     d0 = reg.v4;
-    s1 = reg.64;
+    s1 = reg.64, image;
     s3 = null;
     s4 = null;
+
+    { itype = roimg ? s1 = reg.64, roimage }
+    { itype = rwimg ? s1 = reg.64, rwimage }
+    ;
 }
 
 Req st.image
@@ -1350,7 +1374,7 @@ Req st.image
     itype = rwimg;
 
     s0 = reg.v4;
-    s1 = reg.64;
+    s1 = reg.64, rwimage;
     s3 = null;
     s4 = null;
 }
@@ -1376,7 +1400,7 @@ Req atomic.image
     ;
 
     d0 = reg;
-    s1 = reg.64;
+    s1 = reg.64, rwimage;
     s3 = reg, imm;
 
     { geom = 1d, 1db ? s2 = reg.ctype    }
@@ -1404,7 +1428,7 @@ Req atomic.noret.image
     { atmop = add, sub, min, max ? type = (s, u)(32, 64); s3 = null     }
     ;
 
-    s0 = reg.64;
+    s0 = reg.64, rwimage;
     s2 = reg, imm;
     s4 = null;
 
@@ -1425,10 +1449,14 @@ Req queryimage
     stype = roimg, rwimg;
        
     d0 = reg;
-    s1 = reg.64;
+    s1 = reg.64, image;
     s2 = null;
     s3 = null;    
     s4 = null;
+
+    { stype = roimg ? s1 = reg.64, roimage }
+    { stype = rwimg ? s1 = reg.64, rwimage }
+    ;
 }
 
 Req querysampler
@@ -1437,7 +1465,7 @@ Req querysampler
     stype = samp;
        
     d0 = reg;
-    s1 = reg.64;
+    s1 = reg.64, sampler;
     s2 = null;
     s3 = null;    
     s4 = null;
@@ -1460,8 +1488,10 @@ Req cbr
     type     = none;
     rounding = none; 
     ftz      = none;
-    width    = any;
-
+  //width    = any;     // Moved below after all other checks are complete.
+                        // This is necessary to improve diagnostics because 
+                        // default 'width' value is assigned together
+                        // with 's0' operand. See Brigantine::setOperand
     s0 = reg.1;
     s1 = (reg, lab).model;
     s2 = null, jumptab;
@@ -1469,8 +1499,10 @@ Req cbr
     s4 = null;
 
     { s1 = reg.model ? s2 = null, jumptab }
-    { s1 = lab.model ? s2 = null         }
+    { s1 = lab.model ? s2 = null          }
     ;
+
+    width = any;
 }
 
 Inst cbr(Br, cbr)
@@ -1483,7 +1515,10 @@ Req brn
     type     = none;
     rounding = none; 
     ftz      = none;
-    width    = any;
+  //width    = any;     // Checked below after all other checks are complete.
+                        // This is necessary to improve diagnostics because 
+                        // default 'width' value is assigned together
+                        // with 's0' operand. See Brigantine::setOperand
 
     s0 = (reg, lab).model;
     s1 = null, jumptab;
@@ -1492,7 +1527,7 @@ Req brn
     s4 = null;
 
     { s0 = reg.model ? width = any; s1 = null, jumptab }
-    { s0 = lab.model ? width = all; s1 = null         }
+    { s0 = lab.model ? width = all; s1 = null          }
     ;
 }
 
@@ -1583,7 +1618,7 @@ Inst ldf        (Basic, ldf)
 Req sync
 { 
     type  = none;
-    sync  = *;
+    sync  = * / none;
     width = none;
 
     s0 = null;
@@ -1668,7 +1703,10 @@ Req call
     type     = none;
     rounding = none; 
     ftz      = none;
-    width    = any;
+  //width    = any;     // Checked below after all other checks are complete.
+                        // This is necessary to improve diagnostics because 
+                        // default 'width' value is assigned together
+                        // with 's0' operand. See Brigantine::setOperand
 
     s0 = arglist;
     s1 = (reg, func).model;
@@ -1752,7 +1790,7 @@ Req spec.reg.dim
     type    = u32;
 
     d0 = reg;
-    s1 = imm; //F imm.0.1.2;
+    s1 = imm.0.1.2;
     s2 = null;
     s3 = null;
     s4 = null;
@@ -1821,7 +1859,7 @@ Inst nop(Basic, nop)
 // ============================================================================
 // DISPATCHPTR, QPTR, NULLPTR
 
-Req dispatchptr
+Req aqlptr
 { 
     type    = u(32, 64);
     stype   = none;
@@ -1836,7 +1874,7 @@ Req dispatchptr
     s4 = null;
 }
 
-Req ptr
+Req nullptr
 { 
     type    = u(32, 64);
     stype   = none;
@@ -1851,9 +1889,9 @@ Req ptr
     s4 = null;
 }
 
-Inst dispatchptr(Seg, dispatchptr)
-Inst qptr       (Seg, ptr)
-Inst nullptr    (Seg, ptr)
+Inst dispatchptr(Seg, aqlptr)
+Inst qptr       (Seg, aqlptr)
+Inst nullptr    (Seg, nullptr)
 
 // ============================================================================
 
@@ -1869,7 +1907,6 @@ Req debugtrap
 }
 
 Inst debugtrap(Basic, debugtrap)
-
 
 // ============================================================================
 // ============================================================================

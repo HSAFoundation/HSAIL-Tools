@@ -158,9 +158,12 @@ public:
     /// @{
 
     DirectiveSymbol   addSymbol(DirectiveSymbol sym);
+
     DirectiveVariable addVariable(const SRef& name, Brig::BrigSegment8_t segment, unsigned dType,const SourceInfo* srcInfo=NULL);
-    DirectiveImage    addImage   (const SRef& name, Brig::BrigSegment8_t segment, const SourceInfo* srcInfo=NULL);
-    DirectiveSampler  addSampler (const SRef& name, Brig::BrigSegment8_t segment, const SourceInfo* srcInfo=NULL);
+    DirectiveVariable addArrayVariable(const SRef& name, uint64_t size, Brig::BrigSegment8_t segment, unsigned dType,const SourceInfo* srcInfo=NULL);
+
+    DirectiveImage    addImage   (const SRef& name, Brig::BrigSegment8_t segment=Brig::BRIG_SEGMENT_GLOBAL, const SourceInfo* srcInfo=NULL);
+    DirectiveSampler  addSampler (const SRef& name, Brig::BrigSegment8_t segment=Brig::BRIG_SEGMENT_GLOBAL, const SourceInfo* srcInfo=NULL);
 
     DirectiveFbarrier addFbarrier(const SRef& name,const SourceInfo* srcInfo=NULL);
 
@@ -230,6 +233,11 @@ public:
     Inst addNop(const SourceInfo* srcInfo=NULL);
     /// @}
 
+
+    void setOperand(Inst inst, int i, Operand opnd);
+    void setOperandEx(Inst inst, int i, Operand opnd);
+    void appendOperand(Inst inst, Operand opnd);
+
     /// @name Register operands
     /// emit OperandReg.
     /// @param name - register name including '$'.
@@ -263,9 +271,9 @@ public:
     /// @param srcInfo - (optional) source location.
     /// @{
     OperandArgumentList createArgList(const SourceInfo* srcInfo=NULL);
-    /*OperandArgumentList createArgList(const ItemRange<DirectiveSymbol>& list, const SourceInfo* srcInfo=NULL);
+    /*OperandArgumentList createArgList(const ItemRange<DirectiveSymbol>& list, const SourceInfo* srcInfo=NULL);*/
     template <typename Iterator>
-    OperandArgumentList createArgList(Iterator from, Iterator till, const SourceInfo* srcInfo=NULL);*/
+    OperandArgumentList createArgList(Iterator from, Iterator till, const SourceInfo* srcInfo=NULL);
     /// @}
 
     OperandFunctionList createFuncList(const SourceInfo* srcInfo);
@@ -334,7 +342,10 @@ public:
     /// @param offset - offset (optional, that is 0).
     /// @param srcInfo - (optional) source location.
     /// at least one of symName,reg, offset should be supplied upon call.
-    OperandAddress     createRef(const SRef& symName, const SRef& reg=SRef(), int32_t offset=0, const SourceInfo* srcInfo=NULL);
+    OperandAddress     createRef(const SRef& symName, const SRef& reg, int32_t offset=0, const SourceInfo* srcInfo=NULL);
+    OperandAddress     createRef(const SRef& symName, int32_t offset=0, const SourceInfo* srcInfo=NULL) {
+        return createRef(symName, SRef(), offset, srcInfo);
+    }
 
     OperandRef         createDirectiveRef(const SRef& name,const SourceInfo* srcInfo=NULL);
     OperandRef         createDirectiveRef(Directive d,const SourceInfo* srcInfo=NULL);
@@ -489,25 +500,31 @@ void Brigantine::storeDWARF(const std::vector<T>& dwarf) {
     }
 }
 
-/* // TBD095 remove
 template <typename Iterator>
 OperandArgumentList Brigantine::createArgList(Iterator from, Iterator till,const SourceInfo* srcInfo)
 {
     OperandArgumentList list = m_container.append<OperandArgumentList>();
     annotate(list,srcInfo);
     Offset const size = (Offset)std::distance(from,till);
-    if (size != list.args().resize(size)) {
+    if (size != list.elements().resize(size)) {
         brigWriteError("OperandArgumentList overflow", srcInfo);
     }
 
     Offset i = 0;
     Iterator a = from;
     while (a!=till) {
-        list.args()[i++] = *a++;
+        list.elements(i++) = *a++;
     }
     return list;
 }
-*/
+
+inline int getOperandsNum(Inst inst)
+{
+    int i=0;
+    while (i<5 && inst.operand(i)) ++i;
+    return i;
+}
+
 
 }
 

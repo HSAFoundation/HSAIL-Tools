@@ -44,7 +44,11 @@
 //
 //===----------------------------------------------------------------------===//
 #include "llvm/Support/CommandLine.h"
+#ifdef _DEBUG
 #include "llvm/Support/Debug.h"
+#else
+#define DEBUG(x)
+#endif
 #include "llvm/Support/PrettyStackTrace.h"
 #include "llvm/Support/Signals.h"
 
@@ -56,7 +60,7 @@
 #include "HSAILUtilities.h"
 #include "HSAILDump.h"
 
-#if 0
+#ifdef WITH_LIBBRIGDWARF
 #include "BrigDwarfGenerator.h"
 #endif
 
@@ -80,7 +84,7 @@ using std::string;
 
 // ============================================================================
 
-#define BRIG_ASM_VERSION "1.0"
+#define BRIG_ASM_VERSION "2.0"
 
 // ============================================================================
 
@@ -237,12 +241,12 @@ static int AssembleInput() {
     if (res) return res;
 
     if ( EnableDebugInfo ) {
-    #if 0
+#ifdef WITH_LIBBRIGDWARF
         std::stringstream ssVersion;
-        ssVersion << "HSAIL Assembler (C) AMD 2012, all rights reserved, ";
+        ssVersion << "HSAIL Assembler (C) AMD 2013, all rights reserved, ";
         ssVersion << "Version " << BRIG_ASM_VERSION;
-        ssVersion << ", HSAIL spec version: ";
-        ssVersion << SUPPORTED_HSAIL_SPEC_VERSION;
+        ssVersion << ", HSAIL version ";
+        ssVersion << Brig::BRIG_VERSION_HSAIL_MAJOR << ':' << Brig::BRIG_VERSION_HSAIL_MINOR;
 
         std::auto_ptr<BrigDebug::BrigDwarfGenerator> pBdig(
             BrigDebug::BrigDwarfGenerator::Create( ssVersion.str(),
@@ -250,8 +254,9 @@ static int AssembleInput() {
                                                    InputFilename ) );
         pBdig->generate( c );
         pBdig->storeInBrig( c );
-    #endif
+#else
         assert(!"libBrigDwarf not enabled");
+#endif
     }
 
     if ( DebugInfoFilename.size() > 0 )
@@ -299,12 +304,12 @@ static int Repeat(int (*func)()) {
 
 static void printVersion() {
     std::cout << "HSAIL Assembler and Disassembler.\n";
-    std::cout << "  (C) AMD 2012, all rights reserved.\n";
+    std::cout << "  (C) AMD 2013, all rights reserved.\n";
     std::cout << "  Built " << __DATE__ << " (" << __TIME__ << ").\n";
     std::cout << "  Version " << BRIG_ASM_VERSION << ".\n";
-#ifdef DEBUG
-    std::cout << "  HSAIL spec version: " << SUPPORTED_HSAIL_SPEC_VERSION << ".\n";
-#endif
+
+    std::cout << "  HSAIL version " << Brig::BRIG_VERSION_HSAIL_MAJOR << ':' << Brig::BRIG_VERSION_HSAIL_MINOR << ".\n";
+    std::cout << "  BRIG version "  << Brig::BRIG_VERSION_BRIG_MAJOR  << ':' << Brig::BRIG_VERSION_BRIG_MINOR  << ".\n";
 }
 
 int main(int argc, char **argv) {

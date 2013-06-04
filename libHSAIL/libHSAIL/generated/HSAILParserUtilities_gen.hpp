@@ -119,7 +119,7 @@ Parser::OperandParser Parser::getOperandParser(Brig::BrigOpcode16_t arg) {
     case BRIG_OPCODE_NEXP2              : return &Parser::parseOperands;
     case BRIG_OPCODE_NFMA               : return &Parser::parseOperands;
     case BRIG_OPCODE_NLOG2              : return &Parser::parseOperands;
-    case BRIG_OPCODE_NOP                : return &Parser::parseOperands;
+    case BRIG_OPCODE_NOP                : return &Parser::parseNoOperands;
     case BRIG_OPCODE_NOT                : return &Parser::parseOperands;
     case BRIG_OPCODE_NRCP               : return &Parser::parseOperands;
     case BRIG_OPCODE_NRSQRT             : return &Parser::parseOperands;

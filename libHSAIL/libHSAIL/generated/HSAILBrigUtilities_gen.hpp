@@ -153,12 +153,12 @@ bool isToplevelOnly(Directive d) {
     case BRIG_DIRECTIVE_BLOCK_STRING    : return false;
     case BRIG_DIRECTIVE_COMMENT         : return false;
     case BRIG_DIRECTIVE_CONTROL         : return false;
-    case BRIG_DIRECTIVE_EXTENSION       : return false;
+    case BRIG_DIRECTIVE_EXTENSION       : return true;
     case BRIG_DIRECTIVE_FBARRIER        : return false;
-    case BRIG_DIRECTIVE_FILE            : return false;
+    case BRIG_DIRECTIVE_FILE            : return true;
     case BRIG_DIRECTIVE_FUNCTION        : return true;
     case BRIG_DIRECTIVE_IMAGE           : return false;
-    case BRIG_DIRECTIVE_IMAGE_INIT      : return false;
+    case BRIG_DIRECTIVE_IMAGE_INIT      : return true;
     case BRIG_DIRECTIVE_KERNEL          : return true;
     case BRIG_DIRECTIVE_LABEL           : return false;
     case BRIG_DIRECTIVE_LABEL_INIT      : return false;
@@ -166,7 +166,7 @@ bool isToplevelOnly(Directive d) {
     case BRIG_DIRECTIVE_LOC             : return false;
     case BRIG_DIRECTIVE_PRAGMA          : return false;
     case BRIG_DIRECTIVE_SAMPLER         : return false;
-    case BRIG_DIRECTIVE_SAMPLER_INIT    : return false;
+    case BRIG_DIRECTIVE_SAMPLER_INIT    : return true;
     case BRIG_DIRECTIVE_SIGNATURE       : return true;
     case BRIG_DIRECTIVE_VARIABLE        : return false;
     case BRIG_DIRECTIVE_VARIABLE_INIT   : return false;
@@ -185,7 +185,7 @@ bool isBodyOnly(Directive d) {
     case BRIG_DIRECTIVE_BLOCK_START     : return false;
     case BRIG_DIRECTIVE_BLOCK_STRING    : return false;
     case BRIG_DIRECTIVE_COMMENT         : return false;
-    case BRIG_DIRECTIVE_CONTROL         : return false;
+    case BRIG_DIRECTIVE_CONTROL         : return true;
     case BRIG_DIRECTIVE_EXTENSION       : return false;
     case BRIG_DIRECTIVE_FBARRIER        : return false;
     case BRIG_DIRECTIVE_FILE            : return false;
@@ -194,9 +194,9 @@ bool isBodyOnly(Directive d) {
     case BRIG_DIRECTIVE_IMAGE_INIT      : return false;
     case BRIG_DIRECTIVE_KERNEL          : return false;
     case BRIG_DIRECTIVE_LABEL           : return true;
-    case BRIG_DIRECTIVE_LABEL_INIT      : return false;
-    case BRIG_DIRECTIVE_LABEL_TARGETS   : return false;
-    case BRIG_DIRECTIVE_LOC             : return false;
+    case BRIG_DIRECTIVE_LABEL_INIT      : return true;
+    case BRIG_DIRECTIVE_LABEL_TARGETS   : return true;
+    case BRIG_DIRECTIVE_LOC             : return true;
     case BRIG_DIRECTIVE_PRAGMA          : return false;
     case BRIG_DIRECTIVE_SAMPLER         : return false;
     case BRIG_DIRECTIVE_SAMPLER_INIT    : return false;
@@ -316,7 +316,7 @@ const char* memoryFence2str(unsigned arg) {
     case BRIG_FENCE_BOTH                : return "fboth";
     case BRIG_FENCE_GLOBAL              : return "fglobal";
     case BRIG_FENCE_GROUP               : return "fgroup";
-    case BRIG_FENCE_NONE                : return "";
+    case BRIG_FENCE_NONE                : return "fnone";
     case BRIG_FENCE_PARTIAL             : return "fpartial";
     case BRIG_FENCE_PARTIAL_BOTH        : return "fpartialboth";
     default : return NULL;
@@ -591,7 +591,7 @@ const char* segment2str(unsigned arg) {
   switch( arg ) {
     case BRIG_SEGMENT_ARG               : return "arg";
     case BRIG_SEGMENT_EXTSPACE0         : return "extspace0";
-    case BRIG_SEGMENT_FLAT              : return "flat";
+    case BRIG_SEGMENT_FLAT              : return "";
     case BRIG_SEGMENT_GLOBAL            : return "global";
     case BRIG_SEGMENT_GROUP             : return "group";
     case BRIG_SEGMENT_KERNARG           : return "kernarg";

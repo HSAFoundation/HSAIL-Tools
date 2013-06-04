@@ -133,7 +133,7 @@ class BrigIOImpl {
     std::vector<char> sectionNameTable;
     std::vector<char> symtabData;
     std::vector<char> strtabData;
-    std::vector<const std::vector<char>*> sectionData;
+    std::vector< SRef > sectionData;
     BinaryFileFormat fmt;
 
 public:
@@ -243,19 +243,28 @@ private:
     // Saving code
 
 public:
+
     int writeContainer(WriteAdapter *s, const BrigContainer& c) {
         reset();
         for(int i = 0; i < NUM_BRIG_SECTIONS; ++i) {
-            addSection(descById(i), c.sectionById(i).bufferImpl());
+            addSection(descById(i), c.sectionById(i).data());
         }
+        unsigned strTabNdx = 0;
+        unsigned symTabNdx = 0;
         if (fmt == FILE_FORMAT_BIF) {
-            unsigned strTabNdx = addSection(descById(ELF_SECTION_STRTAB), strtabData);
-            unsigned symTabNdx = addSection(descById(ELF_SECTION_SYMTAB), symtabData);
+            strTabNdx = addSection(descById(ELF_SECTION_STRTAB), strtabData);
+            symTabNdx = addSection(descById(ELF_SECTION_SYMTAB), symtabData);
             sectionHeaders[symTabNdx].sh_link = strTabNdx;
             sectionHeaders[symTabNdx].sh_entsize = sizeof(Elf32_Sym);
         }
-        addSection(descById(ELF_SECTION_SHSTRTAB), sectionNameTable);
+        unsigned shStrTabNdx = addSection(descById(ELF_SECTION_SHSTRTAB), sectionNameTable);
 
+        // string/symbol tables were resized/reallocated
+        if (fmt == FILE_FORMAT_BIF) {
+          updateSection(symTabNdx, symtabData);
+          updateSection(strTabNdx, strtabData);
+        }
+        updateSection(shStrTabNdx, sectionNameTable);
         return writeElf(s);
     }
 private:
@@ -290,20 +299,32 @@ private:
         return 0;
     }
 
-    unsigned addSection(const SectionDesc& desc, const std::vector<char>& data) {
+    void updateSection(unsigned shndx, SRef data) {
+        sectionData[shndx] = data;
+        sectionHeaders[shndx].sh_size = (Elf32_Word)data.length();
+        for(size_t pos = sizeof(Elf32_Sym); pos < symtabData.size(); pos += sizeof(Elf32_Sym)) {
+          Elf32_Sym *pSym = (Elf32_Sym*)(&symtabData[pos]);
+          if (pSym->st_shndx == shndx) {
+            pSym->st_size = (Elf32_Word)data.length();
+            break;
+          }
+        }
+    }
+
+    unsigned addSection(const SectionDesc& desc, SRef data) {
         Elf32_Shdr thisSec;
         memset(&thisSec, 0, sizeof(thisSec));
         if (sectionHeaders.empty()) {
             sectionHeaders.push_back(thisSec);
-            sectionData.push_back(0);
+            sectionData.push_back("");
         }
-        assert(data.size() < INT_MAX);
+        assert(data.length() < INT_MAX);
         unsigned shndx = (unsigned)sectionHeaders.size();
         thisSec.sh_type = desc.type;
         thisSec.sh_flags = desc.flags;
         thisSec.sh_addralign = desc.align;
         thisSec.sh_name = addString(&sectionNameTable, desc.*predefinedSectionName());
-        thisSec.sh_size = (Elf32_Word)data.size();
+        thisSec.sh_size = (Elf32_Word)data.length();
         const char* symbolName = desc.symbolName;
         if (fmt == FILE_FORMAT_BIF && symbolName) {
             Elf32_Sym sym;
@@ -313,13 +334,13 @@ private:
             }
             sym.st_name = addString(&strtabData, symbolName);
             sym.st_value = 0; // Value or address associated with the symbol
-            sym.st_size = (Elf32_Word)data.size(); // Size of the symbol
+            sym.st_size = (Elf32_Word)data.length(); // Size of the symbol
             sym.st_shndx = shndx; // Section's index
             sym.st_info = (STB_LOCAL << 4) | STT_OBJECT;
             symtabData.insert(symtabData.end(), (char*)(&sym), (char*)(&sym+1));
         }
         sectionHeaders.push_back(thisSec);
-        sectionData.push_back(&data);
+        sectionData.push_back(data);
         return shndx;
     }
 
@@ -331,10 +352,9 @@ private:
         alignFilePos(s, filePos, 4);
         for(unsigned secIndex = 1; secIndex < sectionHeaders.size(); ++secIndex) {
             Elf32_Shdr &shdr = sectionHeaders[secIndex];
-            const std::vector<char>& sdata = *(sectionData[secIndex]);
             alignFilePos(s, filePos, shdr.sh_addralign);
             shdr.sh_offset = filePos;
-            if (s && s->write(&sdata[0], shdr.sh_size)) {
+            if (s && s->write(sectionData[secIndex].begin, shdr.sh_size)) {
                 return 1;
             }
             filePos += shdr.sh_size;

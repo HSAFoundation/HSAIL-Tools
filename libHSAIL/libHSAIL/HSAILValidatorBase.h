@@ -144,8 +144,8 @@ enum
     OPERAND_VAL_CALLTAB,
     OPERAND_VAL_FBARRIER,
 
-    OPERAND_VAL_IMAGE,
-    OPERAND_VAL_IMAGE_RW,
+    OPERAND_VAL_ROIMAGE,
+    OPERAND_VAL_RWIMAGE,
     OPERAND_VAL_SAMPLER,
 
     OPERAND_VAL_REG_1,
@@ -157,6 +157,9 @@ enum
     OPERAND_VAL_IMM_32,
     OPERAND_VAL_IMM_64,
     OPERAND_VAL_IMM_128,
+
+    OPERAND_VAL_IMM_0_1_2,
+    OPERAND_VAL_IMM_0_1_2_3,
 
     OPERAND_VAL_REG_V2_1,
     OPERAND_VAL_REG_V2_32,
@@ -233,6 +236,7 @@ private:
     static bool isSampler(Operand addr);
     static bool isJumpTab(Inst inst, unsigned operandIdx, bool isAssert);
     static bool isCallTab(Inst inst, unsigned operandIdx, bool isAssert);
+    static bool isImmInRange(OperandImmed imm, unsigned low, unsigned high);
 
 private:
     static bool eqTypes(unsigned type1, unsigned type2) { return getTypeSize(type1) == getTypeSize(type2); }

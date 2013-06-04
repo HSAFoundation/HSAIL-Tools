@@ -1,36 +1,36 @@
 // University of Illinois/NCSA
 // Open Source License
-// 
+//
 // Copyright (c) 2013, Advanced Micro Devices, Inc.
 // All rights reserved.
-// 
+//
 // Developed by:
-// 
+//
 //     HSA Team
-// 
+//
 //     Advanced Micro Devices, Inc
-// 
+//
 //     www.amd.com
-// 
+//
 // Permission is hereby granted, free of charge, to any person obtaining a copy of
 // this software and associated documentation files (the "Software"), to deal with
 // the Software without restriction, including without limitation the rights to
 // use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies
 // of the Software, and to permit persons to whom the Software is furnished to do
 // so, subject to the following conditions:
-// 
+//
 //     * Redistributions of source code must retain the above copyright notice,
 //       this list of conditions and the following disclaimers.
-// 
+//
 //     * Redistributions in binary form must reproduce the above copyright notice,
 //       this list of conditions and the following disclaimers in the
 //       documentation and/or other materials provided with the distribution.
-// 
+//
 //     * Neither the names of the LLVM Team, University of Illinois at
 //       Urbana-Champaign, nor the names of its contributors may be used to
 //       endorse or promote products derived from this Software without specific
 //       prior written permission.
-// 
+//
 // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 // IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
 // FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SHALL THE
@@ -43,12 +43,18 @@
 
 #include <string>
 #include <cstring>
+#include <vector>
 #include <iosfwd>
 
 namespace HSAIL_ASM {
 
 struct SRef
 {
+private:
+    typedef void (SRef::*bool_type)() const;
+    void toCompare() const {}
+
+public:
     const char *begin;
     const char *end;
     SRef(const char *begin_, const char *end_) : begin(begin_), end(end_) { }
@@ -56,23 +62,26 @@ struct SRef
     SRef(const char (&rhs)[N]) : begin(rhs), end(rhs + N - 1) { }
     SRef() : begin(0), end(0) { }
     SRef(const std::string& rhs) : begin(rhs.data()), end(rhs.data() + rhs.size()) { }
+    SRef(const std::vector<char>& rhs) : begin(rhs.empty() ? 0 : &rhs[0]), end(rhs.empty() ? 0 : &rhs[0] + rhs.size()) { }
     explicit SRef(const char *begin_) : begin(begin_), end(begin_ + strlen(begin_)) { }
     bool empty() const { return begin == end; }
-    ptrdiff_t length() const { return end - begin; }
+    std::ptrdiff_t length() const { return end - begin; }
     static int compare(const SRef& lhs, const SRef& rhs) {
-        ptrdiff_t lhsLen = lhs.end-lhs.begin;
-        ptrdiff_t rhsLen = rhs.end-rhs.begin;
+        std::ptrdiff_t lhsLen = lhs.end-lhs.begin;
+        std::ptrdiff_t rhsLen = rhs.end-rhs.begin;
         int rc = memcmp(lhs.begin, rhs.begin, (std::min)(lhsLen, rhsLen));
         if (rc) return rc;
         return (int)(lhsLen-rhsLen);
     }
     static int compare(const char* lhs, const SRef& rhs) {
-        ptrdiff_t rhsLen = rhs.end-rhs.begin;
+        std::ptrdiff_t rhsLen = rhs.end-rhs.begin;
         int rc = strncmp(lhs, rhs.begin, rhsLen);
         if (rc) return rc;
         return lhs[rhsLen] == 0 ? 0 : 1;
     }
     operator std::string() const { return std::string(begin,end); }
+
+    operator bool_type() const { return !empty() ? &SRef::toCompare : NULL; }
 };
 
 inline bool operator>(const SRef& lhs, const SRef& rhs)  { return SRef::compare(lhs, rhs) > 0; }

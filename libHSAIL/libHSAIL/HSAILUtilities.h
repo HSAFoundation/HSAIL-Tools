@@ -94,7 +94,7 @@ bool validateDstOperand(Inst inst, int oprIdx, bool enableIntExp, bool enableFlo
 bool validateMachineType(Inst inst, int oprIdx, unsigned machineType, bool isSrcType, bool isUnsigned, bool isAssert);
 
 inline bool isGcnInst(unsigned opcode) {
-    return (opcode & (1<<16))!=0;
+    return (opcode & (1<<15))!=0;
 }
 
 const char* width2str(unsigned val);
@@ -102,3 +102,4 @@ const char* width2str(unsigned val);
 } // end namespace
 
 #endif
+

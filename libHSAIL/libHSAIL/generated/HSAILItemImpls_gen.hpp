@@ -119,7 +119,7 @@ inline EnumValRef<Brig::BrigControlDirective,uint16_t> DirectiveControl::control
 inline ValRef<uint16_t> DirectiveControl::type() { return valRef(&brig()->type); };
 inline ValRef<uint16_t> DirectiveControl::elementCount() { return valRef(&brig()->valueCount); };
 inline ControlValues DirectiveControl::values() { return ControlValues(*this); };
-inline ItemRef<OperandImmed> DirectiveControl::values(int index) { return itemRef<OperandImmed>(&brig()->values[index]); };
+inline ItemRef<Operand> DirectiveControl::values(int index) { return itemRef<Operand>(&brig()->values[index]); };
 inline StrRef DirectiveExtension::name() { return strRef(&brig()->name); };
 inline StrRef DirectiveFbarrier::name() { return strRef(&brig()->name); };
 inline ValRef<uint32_t> DirectiveFile::fileid() { return valRef(&brig()->fileid); };
@@ -246,7 +246,7 @@ inline RegVecStrList OperandRegVector::regs() { return RegVecStrList(*this); };
 inline StrRef OperandRegVector::regs(int index) { return strRef(&brig()->regs[index]); };
 inline ValRef<uint16_t> OperandWavesize::type() { return valRef(&brig()->type); };
 inline ValRef<uint8_t> SamplerModifier::allBits() { return valRef(&brig()->allBits); };
-inline BFValRef<Brig::BrigSamplerModifier8_t,0,6> SamplerModifier::filter() { return bFValRef<Brig::BrigSamplerModifier8_t,0,6>(&brig()->allBits); };
+inline BFValRef<Brig::BrigSamplerFilter8_t,0,6> SamplerModifier::filter() { return bFValRef<Brig::BrigSamplerFilter8_t,0,6>(&brig()->allBits); };
 inline BitValRef<6> SamplerModifier::isUnnormalized() { return bitValRef<6>(&brig()->allBits); };
 inline ValRef<uint8_t> SymbolModifier::allBits() { return valRef(&brig()->allBits); };
 inline BFValRef<Brig::BrigLinkage8_t,0,2> SymbolModifier::linkage() { return bFValRef<Brig::BrigLinkage8_t,0,2>(&brig()->allBits); };

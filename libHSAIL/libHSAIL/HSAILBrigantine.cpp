@@ -105,8 +105,10 @@ DirectiveVersion Brigantine::version(
     DirectiveVersion version = m_container.append<DirectiveVersion>();
     annotate(version,srcInfo);
     version.code() = m_container.insts().end();
-    //version.major() = major; // TBD095
-    //version.minor() = minor; // TBD095
+    version.hsailMajor() = major;
+    version.hsailMinor() = minor;
+    version.brigMajor()  = Brig::BRIG_VERSION_BRIG_MAJOR;
+    version.brigMinor()  = Brig::BRIG_VERSION_BRIG_MINOR;
     version.machineModel() = machineModel;
     version.profile() = profile;
     m_machine = machineModel;
@@ -146,6 +148,7 @@ DirectiveExecutable Brigantine::declFuncCommon(DirectiveExecutable func,const SR
     func.instCount() = 0;
     func.nextTopLevelDirective() = m_container.directives().end();
     func.firstScopedDirective() = m_container.directives().end();
+    func.firstInArg() = m_container.directives().end();
     if (!m_globalScope->get<DirectiveExecutable>(name)) {
         addSymbolToGlobalScope(func);
     }
@@ -161,18 +164,15 @@ void Brigantine::addOutputParameter(DirectiveSymbol sym)
     func.outArgCount() = func.outArgCount() + 1;
     func.nextTopLevelDirective() = m_container.directives().end();
     func.firstScopedDirective() = m_container.directives().end();
+    func.firstInArg() = m_container.directives().end();
 }
 
 void Brigantine::addInputParameter(DirectiveSymbol sym)
 {
     assert(m_func && sym);
+    sym.modifier().isDeclaration() = 1;
     DirectiveExecutable func = m_func;
-    if (!func.firstInArg()) {
-        func.firstInArg() = sym;
-        func.inArgCount() = 1;
-    } else {
-        func.inArgCount() = func.inArgCount() + 1;
-    }
+    func.inArgCount() = func.inArgCount() + 1;
     func.nextTopLevelDirective() = m_container.directives().end();
     func.firstScopedDirective() = m_container.directives().end();
 }
@@ -316,6 +316,19 @@ DirectiveVariable Brigantine::addVariable(
     return sym;
 }
 
+DirectiveVariable Brigantine::addArrayVariable(
+    const SRef& name,
+    uint64_t size,
+    Brig::BrigSegment8_t segment,
+    unsigned dType,
+    const SourceInfo* srcInfo)
+{
+    DirectiveVariable sym = addVariable(name,segment,dType,srcInfo);
+    sym.modifier().isArray() = true;
+    sym.dim() = size;
+    return sym;
+}
+
 DirectiveImage Brigantine::addImage(
     const SRef& name,
     Brig::BrigSegment8_t segment,
@@ -324,6 +337,7 @@ DirectiveImage Brigantine::addImage(
     DirectiveImage sym = createCodeRefDir<DirectiveImage>(srcInfo);
     sym.name() = name;
     sym.segment() = segment;
+    sym.type() = Brig::BRIG_TYPE_RWIMG;
     addSymbol(sym);
     return sym;
 }
@@ -336,6 +350,7 @@ DirectiveSampler Brigantine::addSampler(
     DirectiveSampler sym = createCodeRefDir<DirectiveSampler>(srcInfo);
     sym.name() = name;
     sym.segment() = segment;
+    sym.type() = Brig::BRIG_TYPE_SAMP;
     addSymbol(sym);
     return sym;
 }
@@ -532,7 +547,7 @@ OperandImmed Brigantine::createWidthOperand(const Optional<uint32_t>& width,cons
 OperandReg Brigantine::createOperandReg(const SRef& name,const SourceInfo* srcInfo) {
     OperandReg operand = m_container.append<OperandReg>();
     annotate(operand,srcInfo);
-	operand.reg() = name;
+    operand.reg() = name;
     operand.type() = getRegisterType(name);
     return operand;
 }
@@ -541,12 +556,12 @@ OperandReg Brigantine::createOperandReg(const SRef& name,const SourceInfo* srcIn
 OperandRegVector Brigantine::createOperandRegVec(
     std::string o[],unsigned num,
     const SourceInfo* srcInfo) {
-	if (num < 2 || num > 4) {
-		brigWriteError("registry vector can contain only 2,3 or 4 registers",srcInfo);
-	}
+    if (num < 2 || num > 4) {
+        brigWriteError("vector operand must contain 2, 3 or 4 registers",srcInfo);
+    }
     OperandRegVector operand = m_container.append<OperandRegVector>();
     annotate(operand,srcInfo);
-	for(unsigned i=0; i<num; ++i)
+    for(unsigned i=0; i<num; ++i)
         operand.regs().push_back(o[i]);
     operand.type() = getRegisterType(SRef(o[0]));
     return operand;
@@ -645,39 +660,30 @@ OperandAddress Brigantine::createRef(
     OperandAddress operand = m_container.append<OperandAddress>();
     annotate(operand,srcInfo);
 
-	if (!symName.empty()) {
-		DirectiveSymbol nameDS = findInScopes<DirectiveSymbol>(symName);
-		if (!nameDS) {
-			brigWriteError("Symbol not found",srcInfo);
-			return OperandAddress();
-		}
-		operand.symbol() = nameDS;
-	}
-	if (!reg.empty()) {
-		operand.reg() = reg;
-	}
+    if (!symName.empty()) {
+        DirectiveSymbol nameDS = findInScopes<DirectiveSymbol>(symName);
+        if (!nameDS) {
+            brigWriteError("Symbol not found",srcInfo);
+            return OperandAddress();
+        }
+        operand.symbol() = nameDS;
+    }
+    if (!reg.empty()) {
+        operand.reg() = reg;
+    }
     operand.offset() = offset;
 
     //dp operand.type()   = getMachineType();
     //dp: this is a patch; operand type may depend on instruction as well!
     //dp start ----------------------------
-	if (!symName.empty()) {
-        switch (operand.symbol().segment())
-        {
-        case Brig::BRIG_SEGMENT_FLAT:
-        case Brig::BRIG_SEGMENT_GLOBAL:
-        case Brig::BRIG_SEGMENT_READONLY:
-        case Brig::BRIG_SEGMENT_KERNARG:
-            operand.type() = getMachineType();
-            break;
-
-        default:
-            operand.type() = Brig::BRIG_TYPE_B32;
-            break;
-        }
-    } else if (reg.length() > 1) {
+    if (reg.length() > 1) {
         std::string name = reg;
         operand.type() = (name[1] == 'd')? Brig::BRIG_TYPE_B64 : Brig::BRIG_TYPE_B32;
+    } else if (!symName.empty()) {
+        operand.type() =
+            getSegAddrSize(operand.symbol().segment(), m_machine == Brig::BRIG_MACHINE_LARGE) == 32?
+                Brig::BRIG_TYPE_B32 :
+                Brig::BRIG_TYPE_B64;
     } else {
         operand.type() = getMachineType(); //dp: actually type depends on context
     }
@@ -785,6 +791,71 @@ void Brigantine::storeDWARF(const void* dwarfData, size_t dwarfDataSize)
   sec.append< HSAIL_ASM::BlockEnd >();
 }
 
+// **NB** This function should only be called by Parser. Lowering code should use setOperandEx
+void Brigantine::setOperand(Inst inst, int oprIdx, Operand opnd)
+{
+    inst.operand(oprIdx) = opnd;
+
+    // Set default width value for branch/call instructions.
+    // This is only possible after target address operand is assigned,
+    // because default width value depends on wether branch/call is indirect
+    if (InstBr br = inst) {
+        if (br.width() == Brig::BRIG_WIDTH_NONE) {      // BRIG_WIDTH_NONE is a special value indicating
+            unsigned opcode = br.opcode();              // that instruction has no explicitly specified width
+            if ((opcode == Brig::BRIG_OPCODE_BRN  && oprIdx == 0) ||
+                (opcode == Brig::BRIG_OPCODE_CBR  && oprIdx == 1) ||
+                (opcode == Brig::BRIG_OPCODE_CALL && oprIdx == 1)) {
+                 br.width() = getDefWidth(br);
+            }
+        }
+    }
+
+    if (OperandAddress addr = opnd) {
+        if (!addr.symbol() && !addr.reg()) {
+            // Set size of address operands which have neither symbol no register.
+            // Size of these operands should be set based on segment in instruction which uses them.
+            if (getSegAddrSize(getSegment(inst), m_machine == Brig::BRIG_MACHINE_LARGE) == 32) {
+                addr.type() = Brig::BRIG_TYPE_B32;
+            } else {
+                addr.type() = Brig::BRIG_TYPE_B64;
+            }
+        } else if (!addr.reg() && addr.symbol() && m_machine == Brig::BRIG_MACHINE_LARGE && getSegAddrSize(addr.symbol().segment(), true) == 32) {
+            //FIXME: this is a temporary patch (currently, LLVM cannot generate 32-bit addresses for large model)
+            addr.type() = Brig::BRIG_TYPE_B64;
+        }
+    }
+}
+
+// **NB** This function should only be called by lowering code. Parser should use setOperand
+void Brigantine::setOperandEx(Inst inst, int oprIdx, Operand opnd)
+{
+    setOperand(inst,oprIdx,opnd);
+
+    // This is a lowering-specific patch to sync symbol segment with instruction segment
+    if (OperandAddress addr = opnd) {
+        DirectiveSymbol sym = addr.symbol();
+        if (sym && sym.segment() == Brig::BRIG_SEGMENT_READONLY) {
+            if (InstMem im = inst) {
+                im.segment() = Brig::BRIG_SEGMENT_READONLY;
+            } else if (InstAddr ia = inst) {
+                ia.segment() = Brig::BRIG_SEGMENT_READONLY;
+            }
+        }
+    }
+}
+
+void Brigantine::appendOperand(Inst inst, Operand opnd)
+{
+    int i=getOperandsNum(inst);
+
+    if (i<5) {
+        setOperand(inst,i,opnd);
+        inst.operand(i) = opnd;
+    } else {
+        brigWriteError("not more than 5 operands allowed",inst.srcInfo());
+    }
+}
+
 /*
 class FillWithZeroes {
     unsigned      m_numZeroes;
@@ -832,10 +903,10 @@ void Brigantine::appendTrailingZeroes(HSAIL_ASM::DirectiveSymbol sym)
 // TBD095 replace with addSampler, createSamplerInitializer
 /*
 void Brigantine::CreateSampler(
-	const SRef& name,
-	const int normalized,
-	const Brig::BrigSamplerFilter filter,
-	const Brig::BrigSamplerBoundaryMode mode) {
+    const SRef& name,
+    const int normalized,
+    const Brig::BrigSamplerFilter filter,
+    const Brig::BrigSamplerBoundaryMode mode) {
 
     DirectiveSymbol sym = createCodeRefDir<DirectiveSymbol>();
     sym.type() = Brig::BRIG_TYPE_SAMP;

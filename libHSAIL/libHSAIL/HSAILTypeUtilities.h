@@ -574,7 +574,7 @@ class Optional
     bool m_initialized;
 
 public:
-    Optional() : m_initialized(false), m_value() {};
+    Optional() : m_value(), m_initialized(false) {};
 
     Optional(Value v) : m_value(v), m_initialized(true) {};
 

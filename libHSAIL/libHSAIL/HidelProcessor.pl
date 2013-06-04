@@ -2761,6 +2761,7 @@ EOT
 
 ###############################################################################
 # TODO
+# - generate HSAILTestGenCategories.h
 # - revise attributes
 #   - try creating a better approach
 #   - at least we have to remove attr prefix from prop name

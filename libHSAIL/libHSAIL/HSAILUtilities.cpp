@@ -51,7 +51,6 @@ std::ostream& operator<<(std::ostream& os, const SRef& s) {
     os.write(s.begin,s.length());
     return os;
 }
-
 size_t align(size_t s, size_t pow2)
 {
     assert( (pow2 & (pow2-1))==0 );
@@ -369,8 +368,7 @@ unsigned getSegment(Inst inst)
     else if (InstMem    i = inst) return i.segment();
     else if (InstSeg    i = inst) return i.segment();
     else if (InstAtomic i = inst) return i.segment();
-    else assert(false);
-    return (unsigned)-1;
+    else                          return Brig::BRIG_SEGMENT_NONE;
 }
 
 // This function provides no information if operandIdx may be an immediate.
@@ -732,7 +730,10 @@ bool validateMachineType(Inst inst, int oprIdx, unsigned machineType, bool isSrc
     {
         if ((!isSrcType && inst.type() != type) || (isSrcType && getSrcType(inst) != type))
         {
-            if (isAssert) operandError(inst, -1, errInfo, reason);
+            if (isAssert)
+            {
+                Validator::validate(inst, -1, std::string(isSrcType? "Src" : "Instruction") + " type must be " + typeX2str(type) + reason, false);
+            }
             return false;
         }
     }
@@ -834,3 +835,4 @@ const char* width2str(unsigned val)
 }
 
 } // end namespace
+

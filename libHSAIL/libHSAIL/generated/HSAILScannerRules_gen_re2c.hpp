@@ -483,9 +483,8 @@ yy73:
     case 7: 	goto yy312;
     case 8: 	goto yy314;
     case 9: 	goto yy76;
-    case 10: 	goto yy340;
-    case 11: 	goto yy377;
-    case 12: 	goto yy515;
+    case 10: 	goto yy367;
+    case 11: 	goto yy506;
     }
 yy74:
     ++m_curPos;
@@ -562,103 +561,102 @@ yy76:
 yy77:
     yych = *++m_curPos;
     switch (yych) {
-    case 'c':    goto yy545;
-    case 'd':    goto yy548;
-    case 'l':    goto yy550;
-    case 'n':    goto yy549;
-    case 'r':    goto yy546;
+    case 'c':    goto yy532;
+    case 'd':    goto yy535;
+    case 'l':    goto yy537;
+    case 'n':    goto yy536;
+    case 'r':    goto yy533;
     default:    goto yy75;
     }
 yy78:
     yych = *++m_curPos;
     switch (yych) {
-    case '1':    goto yy526;
-    case '3':    goto yy528;
-    case '6':    goto yy529;
-    case '8':    goto yy530;
-    case 'o':    goto yy532;
+    case '1':    goto yy517;
+    case '3':    goto yy519;
+    case '6':    goto yy520;
+    case '8':    goto yy521;
     default:    goto yy75;
     }
 yy79:
     yych = *++m_curPos;
     switch (yych) {
-    case 'a':    goto yy523;
+    case 'a':    goto yy514;
     default:    goto yy75;
     }
 yy80:
     yych = *++m_curPos;
     switch (yych) {
-    case 'e':    goto yy509;
-    case 'o':    goto yy510;
+    case 'e':    goto yy500;
+    case 'o':    goto yy501;
     default:    goto yy75;
     }
 yy81:
     yych = *++m_curPos;
     switch (yych) {
-    case 'q':    goto yy491;
-    case 'x':    goto yy490;
+    case 'q':    goto yy482;
+    case 'x':    goto yy481;
     default:    goto yy75;
     }
 yy82:
     yych = *++m_curPos;
     switch (yych) {
-    case '1':    goto yy426;
-    case '3':    goto yy427;
-    case '6':    goto yy428;
-    case 'b':    goto yy429;
-    case 'g':    goto yy431;
-    case 'l':    goto yy430;
-    case 'p':    goto yy432;
-    case 't':    goto yy433;
+    case '1':    goto yy416;
+    case '3':    goto yy417;
+    case '6':    goto yy418;
+    case 'b':    goto yy419;
+    case 'g':    goto yy420;
+    case 'n':    goto yy421;
+    case 'p':    goto yy422;
+    case 't':    goto yy423;
     default:    goto yy75;
     }
 yy83:
     yych = *++m_curPos;
     switch (yych) {
-    case 'e':    goto yy409;
-    case 'l':    goto yy407;
-    case 'r':    goto yy408;
-    case 't':    goto yy411;
+    case 'e':    goto yy399;
+    case 'l':    goto yy397;
+    case 'r':    goto yy398;
+    case 't':    goto yy401;
     default:    goto yy75;
     }
 yy84:
     yych = *++m_curPos;
     switch (yych) {
-    case 'n':    goto yy404;
+    case 'n':    goto yy394;
     default:    goto yy75;
     }
 yy85:
     yych = *++m_curPos;
     switch (yych) {
-    case 'e':    goto yy397;
+    case 'e':    goto yy387;
     default:    goto yy75;
     }
 yy86:
     yych = *++m_curPos;
     switch (yych) {
-    case 'e':    goto yy389;
-    case 't':    goto yy391;
+    case 'e':    goto yy379;
+    case 't':    goto yy381;
     default:    goto yy75;
     }
 yy87:
     yych = *++m_curPos;
     switch (yych) {
-    case 'a':    goto yy383;
-    case 'i':    goto yy384;
+    case 'a':    goto yy373;
+    case 'i':    goto yy374;
     default:    goto yy75;
     }
 yy88:
     yych = *++m_curPos;
     switch (yych) {
-    case 'a':    goto yy365;
-    case 'e':    goto yy363;
-    case 'u':    goto yy366;
+    case 'a':    goto yy355;
+    case 'e':    goto yy353;
+    case 'u':    goto yy356;
     default:    goto yy75;
     }
 yy89:
     yych = *++m_curPos;
     switch (yych) {
-    case 'r':    goto yy361;
+    case 'r':    goto yy351;
     default:    goto yy75;
     }
 yy90:
@@ -5536,7 +5534,7 @@ yy311:
     case 'x':
     case 'y':
     case 'z':    goto yy74;
-    case '_':    goto yy356;
+    case '_':    goto yy346;
     default:    goto yy312;
     }
 yy312:
@@ -5607,7 +5605,7 @@ yy313:
     case 'x':
     case 'y':
     case 'z':    goto yy74;
-    case '_':    goto yy351;
+    case '_':    goto yy341;
     default:    goto yy314;
     }
 yy314:
@@ -5615,7 +5613,7 @@ yy314:
 yy315:
     yych = *++m_curPos;
     switch (yych) {
-    case 's':    goto yy347;
+    case 's':    goto yy337;
     default:    goto yy73;
     }
 yy316:
@@ -5733,64 +5731,540 @@ yy325:
     yyaccept = 9;
     yych = *(marker = ++m_curPos);
     switch (yych) {
-    case '_':    goto yy327;
-    case 'i':    goto yy326;
+    case '_':    goto yy326;
     default:    goto yy75;
     }
 yy326:
     yych = *++m_curPos;
     switch (yych) {
-    case 'a':    goto yy338;
-    default:    goto yy75;
+    case 'a':    goto yy327;
+    case 'r':    goto yy328;
+    default:    goto yy73;
     }
 yy327:
     yych = *++m_curPos;
     switch (yych) {
-    case 'a':    goto yy328;
-    case 'r':    goto yy329;
+    case 'c':    goto yy334;
+    case 'r':    goto yy332;
     default:    goto yy73;
     }
 yy328:
     yych = *++m_curPos;
     switch (yych) {
-    case 'c':    goto yy335;
-    case 'r':    goto yy333;
+    case 'e':    goto yy329;
     default:    goto yy73;
     }
 yy329:
     yych = *++m_curPos;
     switch (yych) {
-    case 'e':    goto yy330;
+    case 'l':    goto yy330;
     default:    goto yy73;
     }
 yy330:
-    yych = *++m_curPos;
-    switch (yych) {
-    case 'l':    goto yy331;
-    default:    goto yy73;
-    }
-yy331:
     ++m_curPos;
     { m_brigId = Brig::BRIG_SEMANTIC_PARTIAL_RELEASE; return m_token = EMSemantics;  }
-yy333:
+yy332:
     ++m_curPos;
     { m_brigId = Brig::BRIG_SEMANTIC_PARTIAL_ACQUIRE_RELEASE; return m_token = EMSemantics;  }
-yy335:
+yy334:
     yych = *++m_curPos;
     switch (yych) {
-    case 'q':    goto yy336;
+    case 'q':    goto yy335;
     default:    goto yy73;
     }
-yy336:
+yy335:
     ++m_curPos;
     { m_brigId = Brig::BRIG_SEMANTIC_PARTIAL_ACQUIRE; return m_token = EMSemantics;  }
+yy337:
+    yych = *++m_curPos;
+    switch (yych) {
+    case 'a':    goto yy338;
+    default:    goto yy73;
+    }
 yy338:
     yych = *++m_curPos;
     switch (yych) {
-    case 'l':    goto yy339;
-    default:    goto yy75;
+    case 't':    goto yy339;
+    default:    goto yy73;
     }
 yy339:
+    ++m_curPos;
+    { m_brigId = Brig::BRIG_PACK_PSAT;         return m_token = EMPacking;    }
+yy341:
+    yych = *++m_curPos;
+    switch (yych) {
+    case 's':    goto yy342;
+    default:    goto yy73;
+    }
+yy342:
+    yych = *++m_curPos;
+    switch (yych) {
+    case 'a':    goto yy343;
+    default:    goto yy73;
+    }
+yy343:
+    yych = *++m_curPos;
+    switch (yych) {
+    case 't':    goto yy344;
+    default:    goto yy73;
+    }
+yy344:
+    ++m_curPos;
+    { m_brigId = Brig::BRIG_PACK_PSSAT;        return m_token = EMPacking;    }
+yy346:
+    yych = *++m_curPos;
+    switch (yych) {
+    case 's':    goto yy347;
+    default:    goto yy73;
+    }
+yy347:
+    yych = *++m_curPos;
+    switch (yych) {
+    case 'a':    goto yy348;
+    default:    goto yy73;
+    }
+yy348:
+    yych = *++m_curPos;
+    switch (yych) {
+    case 't':    goto yy349;
+    default:    goto yy73;
+    }
+yy349:
+    ++m_curPos;
+    { m_brigId = Brig::BRIG_PACK_PPSAT;        return m_token = EMPacking;    }
+yy351:
+    ++m_curPos;
+    switch ((yych = *m_curPos)) {
+    case '0':
+    case '1':
+    case '2':
+    case '3':
+    case '4':
+    case '5':
+    case '6':
+    case '7':
+    case '8':
+    case '9':
+    case 'A':
+    case 'B':
+    case 'C':
+    case 'D':
+    case 'E':
+    case 'F':
+    case 'G':
+    case 'H':
+    case 'I':
+    case 'J':
+    case 'K':
+    case 'L':
+    case 'M':
+    case 'N':
+    case 'O':
+    case 'P':
+    case 'Q':
+    case 'R':
+    case 'S':
+    case 'T':
+    case 'U':
+    case 'V':
+    case 'W':
+    case 'X':
+    case 'Y':
+    case 'Z':
+    case 'a':
+    case 'b':
+    case 'c':
+    case 'd':
+    case 'e':
+    case 'f':
+    case 'g':
+    case 'h':
+    case 'i':
+    case 'j':
+    case 'k':
+    case 'l':
+    case 'm':
+    case 'n':
+    case 'o':
+    case 'p':
+    case 'q':
+    case 'r':
+    case 's':
+    case 't':
+    case 'u':
+    case 'v':
+    case 'w':
+    case 'x':
+    case 'y':
+    case 'z':    goto yy74;
+    default:    goto yy352;
+    }
+yy352:
+    { m_brigId = Brig::BRIG_ATOMIC_OR;         return m_token = EMAtomicOp;   }
+yy353:
+    ++m_curPos;
+    switch ((yych = *m_curPos)) {
+    case '0':
+    case '1':
+    case '2':
+    case '3':
+    case '4':
+    case '5':
+    case '6':
+    case '7':
+    case '8':
+    case '9':
+    case 'A':
+    case 'B':
+    case 'C':
+    case 'D':
+    case 'E':
+    case 'F':
+    case 'G':
+    case 'H':
+    case 'I':
+    case 'J':
+    case 'K':
+    case 'L':
+    case 'M':
+    case 'N':
+    case 'O':
+    case 'P':
+    case 'Q':
+    case 'R':
+    case 'S':
+    case 'T':
+    case 'U':
+    case 'V':
+    case 'W':
+    case 'X':
+    case 'Y':
+    case 'Z':
+    case 'b':
+    case 'c':
+    case 'd':
+    case 'e':
+    case 'f':
+    case 'g':
+    case 'h':
+    case 'i':
+    case 'j':
+    case 'k':
+    case 'l':
+    case 'm':
+    case 'n':
+    case 'o':
+    case 'p':
+    case 'q':
+    case 'r':
+    case 's':
+    case 't':
+    case 'v':
+    case 'w':
+    case 'x':
+    case 'y':
+    case 'z':    goto yy74;
+    case 'a':    goto yy361;
+    case 'u':    goto yy362;
+    default:    goto yy354;
+    }
+yy354:
+    { m_brigId = Brig::BRIG_COMPARE_NE;        return m_token = EMCompare;    }
+yy355:
+    yych = *++m_curPos;
+    switch (yych) {
+    case 'n':    goto yy359;
+    default:    goto yy75;
+    }
+yy356:
+    yych = *++m_curPos;
+    switch (yych) {
+    case 'm':    goto yy357;
+    default:    goto yy75;
+    }
+yy357:
+    ++m_curPos;
+    switch ((yych = *m_curPos)) {
+    case '0':
+    case '1':
+    case '2':
+    case '3':
+    case '4':
+    case '5':
+    case '6':
+    case '7':
+    case '8':
+    case '9':
+    case 'A':
+    case 'B':
+    case 'C':
+    case 'D':
+    case 'E':
+    case 'F':
+    case 'G':
+    case 'H':
+    case 'I':
+    case 'J':
+    case 'K':
+    case 'L':
+    case 'M':
+    case 'N':
+    case 'O':
+    case 'P':
+    case 'Q':
+    case 'R':
+    case 'S':
+    case 'T':
+    case 'U':
+    case 'V':
+    case 'W':
+    case 'X':
+    case 'Y':
+    case 'Z':
+    case 'a':
+    case 'b':
+    case 'c':
+    case 'd':
+    case 'e':
+    case 'f':
+    case 'g':
+    case 'h':
+    case 'i':
+    case 'j':
+    case 'k':
+    case 'l':
+    case 'm':
+    case 'n':
+    case 'o':
+    case 'p':
+    case 'q':
+    case 'r':
+    case 's':
+    case 't':
+    case 'u':
+    case 'v':
+    case 'w':
+    case 'x':
+    case 'y':
+    case 'z':    goto yy74;
+    default:    goto yy358;
+    }
+yy358:
+    { m_brigId = Brig::BRIG_COMPARE_NUM;       return m_token = EMCompare;    }
+yy359:
+    ++m_curPos;
+    switch ((yych = *m_curPos)) {
+    case '0':
+    case '1':
+    case '2':
+    case '3':
+    case '4':
+    case '5':
+    case '6':
+    case '7':
+    case '8':
+    case '9':
+    case 'A':
+    case 'B':
+    case 'C':
+    case 'D':
+    case 'E':
+    case 'F':
+    case 'G':
+    case 'H':
+    case 'I':
+    case 'J':
+    case 'K':
+    case 'L':
+    case 'M':
+    case 'N':
+    case 'O':
+    case 'P':
+    case 'Q':
+    case 'R':
+    case 'S':
+    case 'T':
+    case 'U':
+    case 'V':
+    case 'W':
+    case 'X':
+    case 'Y':
+    case 'Z':
+    case 'a':
+    case 'b':
+    case 'c':
+    case 'd':
+    case 'e':
+    case 'f':
+    case 'g':
+    case 'h':
+    case 'i':
+    case 'j':
+    case 'k':
+    case 'l':
+    case 'm':
+    case 'n':
+    case 'o':
+    case 'p':
+    case 'q':
+    case 'r':
+    case 's':
+    case 't':
+    case 'u':
+    case 'v':
+    case 'w':
+    case 'x':
+    case 'y':
+    case 'z':    goto yy74;
+    default:    goto yy360;
+    }
+yy360:
+    { m_brigId = Brig::BRIG_COMPARE_NAN;       return m_token = EMCompare;    }
+yy361:
+    yych = *++m_curPos;
+    switch (yych) {
+    case 'r':    goto yy364;
+    default:    goto yy75;
+    }
+yy362:
+    ++m_curPos;
+    switch ((yych = *m_curPos)) {
+    case '0':
+    case '1':
+    case '2':
+    case '3':
+    case '4':
+    case '5':
+    case '6':
+    case '7':
+    case '8':
+    case '9':
+    case 'A':
+    case 'B':
+    case 'C':
+    case 'D':
+    case 'E':
+    case 'F':
+    case 'G':
+    case 'H':
+    case 'I':
+    case 'J':
+    case 'K':
+    case 'L':
+    case 'M':
+    case 'N':
+    case 'O':
+    case 'P':
+    case 'Q':
+    case 'R':
+    case 'S':
+    case 'T':
+    case 'U':
+    case 'V':
+    case 'W':
+    case 'X':
+    case 'Y':
+    case 'Z':
+    case 'a':
+    case 'b':
+    case 'c':
+    case 'd':
+    case 'e':
+    case 'f':
+    case 'g':
+    case 'h':
+    case 'i':
+    case 'j':
+    case 'k':
+    case 'l':
+    case 'm':
+    case 'n':
+    case 'o':
+    case 'p':
+    case 'q':
+    case 'r':
+    case 's':
+    case 't':
+    case 'u':
+    case 'v':
+    case 'w':
+    case 'x':
+    case 'y':
+    case 'z':    goto yy74;
+    default:    goto yy363;
+    }
+yy363:
+    { m_brigId = Brig::BRIG_COMPARE_NEU;       return m_token = EMCompare;    }
+yy364:
+    ++m_curPos;
+    switch ((yych = *m_curPos)) {
+    case '0':
+    case '1':
+    case '2':
+    case '3':
+    case '4':
+    case '5':
+    case '6':
+    case '7':
+    case '8':
+    case '9':
+    case 'A':
+    case 'B':
+    case 'C':
+    case 'D':
+    case 'E':
+    case 'F':
+    case 'G':
+    case 'H':
+    case 'I':
+    case 'J':
+    case 'K':
+    case 'L':
+    case 'M':
+    case 'N':
+    case 'O':
+    case 'P':
+    case 'Q':
+    case 'R':
+    case 'S':
+    case 'T':
+    case 'U':
+    case 'V':
+    case 'W':
+    case 'X':
+    case 'Y':
+    case 'Z':
+    case 'a':
+    case 'b':
+    case 'c':
+    case 'd':
+    case 'e':
+    case 'f':
+    case 'g':
+    case 'h':
+    case 'j':
+    case 'k':
+    case 'l':
+    case 'm':
+    case 'n':
+    case 'o':
+    case 'p':
+    case 'q':
+    case 'r':
+    case 's':
+    case 't':
+    case 'u':
+    case 'v':
+    case 'w':
+    case 'x':
+    case 'y':
+    case 'z':    goto yy74;
+    case 'i':    goto yy366;
+    default:    goto yy365;
+    }
+yy365:
+    { m_brigId = Brig::BRIG_ROUND_FLOAT_NEAR_EVEN; return m_token = EMRound;      }
+yy366:
     yyaccept = 10;
     yych = *(marker = ++m_curPos);
     switch (yych) {
@@ -5856,631 +6330,389 @@ yy339:
     case 'x':
     case 'y':
     case 'z':    goto yy74;
-    case '_':    goto yy341;
-    default:    goto yy340;
-    }
-yy340:
-    { m_brigId = Brig::BRIG_FENCE_PARTIAL;       return m_token = EMMemoryFence; }
-yy341:
-    yych = *++m_curPos;
-    switch (yych) {
-    case 'b':    goto yy342;
-    default:    goto yy73;
-    }
-yy342:
-    yych = *++m_curPos;
-    switch (yych) {
-    case 'o':    goto yy343;
-    default:    goto yy73;
-    }
-yy343:
-    yych = *++m_curPos;
-    switch (yych) {
-    case 't':    goto yy344;
-    default:    goto yy73;
-    }
-yy344:
-    yych = *++m_curPos;
-    switch (yych) {
-    case 'h':    goto yy345;
-    default:    goto yy73;
-    }
-yy345:
-    ++m_curPos;
-    { m_brigId = Brig::BRIG_FENCE_PARTIAL_BOTH;  return m_token = EMMemoryFence; }
-yy347:
-    yych = *++m_curPos;
-    switch (yych) {
-    case 'a':    goto yy348;
-    default:    goto yy73;
-    }
-yy348:
-    yych = *++m_curPos;
-    switch (yych) {
-    case 't':    goto yy349;
-    default:    goto yy73;
-    }
-yy349:
-    ++m_curPos;
-    { m_brigId = Brig::BRIG_PACK_PSAT;         return m_token = EMPacking;    }
-yy351:
-    yych = *++m_curPos;
-    switch (yych) {
-    case 's':    goto yy352;
-    default:    goto yy73;
-    }
-yy352:
-    yych = *++m_curPos;
-    switch (yych) {
-    case 'a':    goto yy353;
-    default:    goto yy73;
-    }
-yy353:
-    yych = *++m_curPos;
-    switch (yych) {
-    case 't':    goto yy354;
-    default:    goto yy73;
-    }
-yy354:
-    ++m_curPos;
-    { m_brigId = Brig::BRIG_PACK_PSSAT;        return m_token = EMPacking;    }
-yy356:
-    yych = *++m_curPos;
-    switch (yych) {
-    case 's':    goto yy357;
-    default:    goto yy73;
-    }
-yy357:
-    yych = *++m_curPos;
-    switch (yych) {
-    case 'a':    goto yy358;
-    default:    goto yy73;
-    }
-yy358:
-    yych = *++m_curPos;
-    switch (yych) {
-    case 't':    goto yy359;
-    default:    goto yy73;
-    }
-yy359:
-    ++m_curPos;
-    { m_brigId = Brig::BRIG_PACK_PPSAT;        return m_token = EMPacking;    }
-yy361:
-    ++m_curPos;
-    switch ((yych = *m_curPos)) {
-    case '0':
-    case '1':
-    case '2':
-    case '3':
-    case '4':
-    case '5':
-    case '6':
-    case '7':
-    case '8':
-    case '9':
-    case 'A':
-    case 'B':
-    case 'C':
-    case 'D':
-    case 'E':
-    case 'F':
-    case 'G':
-    case 'H':
-    case 'I':
-    case 'J':
-    case 'K':
-    case 'L':
-    case 'M':
-    case 'N':
-    case 'O':
-    case 'P':
-    case 'Q':
-    case 'R':
-    case 'S':
-    case 'T':
-    case 'U':
-    case 'V':
-    case 'W':
-    case 'X':
-    case 'Y':
-    case 'Z':
-    case 'a':
-    case 'b':
-    case 'c':
-    case 'd':
-    case 'e':
-    case 'f':
-    case 'g':
-    case 'h':
-    case 'i':
-    case 'j':
-    case 'k':
-    case 'l':
-    case 'm':
-    case 'n':
-    case 'o':
-    case 'p':
-    case 'q':
-    case 'r':
-    case 's':
-    case 't':
-    case 'u':
-    case 'v':
-    case 'w':
-    case 'x':
-    case 'y':
-    case 'z':    goto yy74;
-    default:    goto yy362;
-    }
-yy362:
-    { m_brigId = Brig::BRIG_ATOMIC_OR;         return m_token = EMAtomicOp;   }
-yy363:
-    ++m_curPos;
-    switch ((yych = *m_curPos)) {
-    case '0':
-    case '1':
-    case '2':
-    case '3':
-    case '4':
-    case '5':
-    case '6':
-    case '7':
-    case '8':
-    case '9':
-    case 'A':
-    case 'B':
-    case 'C':
-    case 'D':
-    case 'E':
-    case 'F':
-    case 'G':
-    case 'H':
-    case 'I':
-    case 'J':
-    case 'K':
-    case 'L':
-    case 'M':
-    case 'N':
-    case 'O':
-    case 'P':
-    case 'Q':
-    case 'R':
-    case 'S':
-    case 'T':
-    case 'U':
-    case 'V':
-    case 'W':
-    case 'X':
-    case 'Y':
-    case 'Z':
-    case 'b':
-    case 'c':
-    case 'd':
-    case 'e':
-    case 'f':
-    case 'g':
-    case 'h':
-    case 'i':
-    case 'j':
-    case 'k':
-    case 'l':
-    case 'm':
-    case 'n':
-    case 'o':
-    case 'p':
-    case 'q':
-    case 'r':
-    case 's':
-    case 't':
-    case 'v':
-    case 'w':
-    case 'x':
-    case 'y':
-    case 'z':    goto yy74;
-    case 'a':    goto yy371;
-    case 'u':    goto yy372;
-    default:    goto yy364;
-    }
-yy364:
-    { m_brigId = Brig::BRIG_COMPARE_NE;        return m_token = EMCompare;    }
-yy365:
-    yych = *++m_curPos;
-    switch (yych) {
-    case 'n':    goto yy369;
-    default:    goto yy75;
-    }
-yy366:
-    yych = *++m_curPos;
-    switch (yych) {
-    case 'm':    goto yy367;
-    default:    goto yy75;
+    case '_':    goto yy368;
+    default:    goto yy367;
     }
 yy367:
-    ++m_curPos;
-    switch ((yych = *m_curPos)) {
-    case '0':
-    case '1':
-    case '2':
-    case '3':
-    case '4':
-    case '5':
-    case '6':
-    case '7':
-    case '8':
-    case '9':
-    case 'A':
-    case 'B':
-    case 'C':
-    case 'D':
-    case 'E':
-    case 'F':
-    case 'G':
-    case 'H':
-    case 'I':
-    case 'J':
-    case 'K':
-    case 'L':
-    case 'M':
-    case 'N':
-    case 'O':
-    case 'P':
-    case 'Q':
-    case 'R':
-    case 'S':
-    case 'T':
-    case 'U':
-    case 'V':
-    case 'W':
-    case 'X':
-    case 'Y':
-    case 'Z':
-    case 'a':
-    case 'b':
-    case 'c':
-    case 'd':
-    case 'e':
-    case 'f':
-    case 'g':
-    case 'h':
-    case 'i':
-    case 'j':
-    case 'k':
-    case 'l':
-    case 'm':
-    case 'n':
-    case 'o':
-    case 'p':
-    case 'q':
-    case 'r':
-    case 's':
-    case 't':
-    case 'u':
-    case 'v':
-    case 'w':
-    case 'x':
-    case 'y':
-    case 'z':    goto yy74;
-    default:    goto yy368;
-    }
+    { m_brigId = Brig::BRIG_ROUND_INTEGER_NEAR_EVEN; return m_token = EMRound;      }
 yy368:
-    { m_brigId = Brig::BRIG_COMPARE_NUM;       return m_token = EMCompare;    }
+    yych = *++m_curPos;
+    switch (yych) {
+    case 's':    goto yy369;
+    default:    goto yy73;
+    }
 yy369:
-    ++m_curPos;
-    switch ((yych = *m_curPos)) {
-    case '0':
-    case '1':
-    case '2':
-    case '3':
-    case '4':
-    case '5':
-    case '6':
-    case '7':
-    case '8':
-    case '9':
-    case 'A':
-    case 'B':
-    case 'C':
-    case 'D':
-    case 'E':
-    case 'F':
-    case 'G':
-    case 'H':
-    case 'I':
-    case 'J':
-    case 'K':
-    case 'L':
-    case 'M':
-    case 'N':
-    case 'O':
-    case 'P':
-    case 'Q':
-    case 'R':
-    case 'S':
-    case 'T':
-    case 'U':
-    case 'V':
-    case 'W':
-    case 'X':
-    case 'Y':
-    case 'Z':
-    case 'a':
-    case 'b':
-    case 'c':
-    case 'd':
-    case 'e':
-    case 'f':
-    case 'g':
-    case 'h':
-    case 'i':
-    case 'j':
-    case 'k':
-    case 'l':
-    case 'm':
-    case 'n':
-    case 'o':
-    case 'p':
-    case 'q':
-    case 'r':
-    case 's':
-    case 't':
-    case 'u':
-    case 'v':
-    case 'w':
-    case 'x':
-    case 'y':
-    case 'z':    goto yy74;
-    default:    goto yy370;
+    yych = *++m_curPos;
+    switch (yych) {
+    case 'a':    goto yy370;
+    default:    goto yy73;
     }
 yy370:
-    { m_brigId = Brig::BRIG_COMPARE_NAN;       return m_token = EMCompare;    }
+    yych = *++m_curPos;
+    switch (yych) {
+    case 't':    goto yy371;
+    default:    goto yy73;
+    }
 yy371:
-    yych = *++m_curPos;
-    switch (yych) {
-    case 'r':    goto yy374;
-    default:    goto yy75;
-    }
-yy372:
-    ++m_curPos;
-    switch ((yych = *m_curPos)) {
-    case '0':
-    case '1':
-    case '2':
-    case '3':
-    case '4':
-    case '5':
-    case '6':
-    case '7':
-    case '8':
-    case '9':
-    case 'A':
-    case 'B':
-    case 'C':
-    case 'D':
-    case 'E':
-    case 'F':
-    case 'G':
-    case 'H':
-    case 'I':
-    case 'J':
-    case 'K':
-    case 'L':
-    case 'M':
-    case 'N':
-    case 'O':
-    case 'P':
-    case 'Q':
-    case 'R':
-    case 'S':
-    case 'T':
-    case 'U':
-    case 'V':
-    case 'W':
-    case 'X':
-    case 'Y':
-    case 'Z':
-    case 'a':
-    case 'b':
-    case 'c':
-    case 'd':
-    case 'e':
-    case 'f':
-    case 'g':
-    case 'h':
-    case 'i':
-    case 'j':
-    case 'k':
-    case 'l':
-    case 'm':
-    case 'n':
-    case 'o':
-    case 'p':
-    case 'q':
-    case 'r':
-    case 's':
-    case 't':
-    case 'u':
-    case 'v':
-    case 'w':
-    case 'x':
-    case 'y':
-    case 'z':    goto yy74;
-    default:    goto yy373;
-    }
-yy373:
-    { m_brigId = Brig::BRIG_COMPARE_NEU;       return m_token = EMCompare;    }
-yy374:
-    ++m_curPos;
-    switch ((yych = *m_curPos)) {
-    case '0':
-    case '1':
-    case '2':
-    case '3':
-    case '4':
-    case '5':
-    case '6':
-    case '7':
-    case '8':
-    case '9':
-    case 'A':
-    case 'B':
-    case 'C':
-    case 'D':
-    case 'E':
-    case 'F':
-    case 'G':
-    case 'H':
-    case 'I':
-    case 'J':
-    case 'K':
-    case 'L':
-    case 'M':
-    case 'N':
-    case 'O':
-    case 'P':
-    case 'Q':
-    case 'R':
-    case 'S':
-    case 'T':
-    case 'U':
-    case 'V':
-    case 'W':
-    case 'X':
-    case 'Y':
-    case 'Z':
-    case 'a':
-    case 'b':
-    case 'c':
-    case 'd':
-    case 'e':
-    case 'f':
-    case 'g':
-    case 'h':
-    case 'j':
-    case 'k':
-    case 'l':
-    case 'm':
-    case 'n':
-    case 'o':
-    case 'p':
-    case 'q':
-    case 'r':
-    case 's':
-    case 't':
-    case 'u':
-    case 'v':
-    case 'w':
-    case 'x':
-    case 'y':
-    case 'z':    goto yy74;
-    case 'i':    goto yy376;
-    default:    goto yy375;
-    }
-yy375:
-    { m_brigId = Brig::BRIG_ROUND_FLOAT_NEAR_EVEN; return m_token = EMRound;      }
-yy376:
-    yyaccept = 11;
-    yych = *(marker = ++m_curPos);
-    switch (yych) {
-    case '0':
-    case '1':
-    case '2':
-    case '3':
-    case '4':
-    case '5':
-    case '6':
-    case '7':
-    case '8':
-    case '9':
-    case 'A':
-    case 'B':
-    case 'C':
-    case 'D':
-    case 'E':
-    case 'F':
-    case 'G':
-    case 'H':
-    case 'I':
-    case 'J':
-    case 'K':
-    case 'L':
-    case 'M':
-    case 'N':
-    case 'O':
-    case 'P':
-    case 'Q':
-    case 'R':
-    case 'S':
-    case 'T':
-    case 'U':
-    case 'V':
-    case 'W':
-    case 'X':
-    case 'Y':
-    case 'Z':
-    case 'a':
-    case 'b':
-    case 'c':
-    case 'd':
-    case 'e':
-    case 'f':
-    case 'g':
-    case 'h':
-    case 'i':
-    case 'j':
-    case 'k':
-    case 'l':
-    case 'm':
-    case 'n':
-    case 'o':
-    case 'p':
-    case 'q':
-    case 'r':
-    case 's':
-    case 't':
-    case 'u':
-    case 'v':
-    case 'w':
-    case 'x':
-    case 'y':
-    case 'z':    goto yy74;
-    case '_':    goto yy378;
-    default:    goto yy377;
-    }
-yy377:
-    { m_brigId = Brig::BRIG_ROUND_INTEGER_NEAR_EVEN; return m_token = EMRound;      }
-yy378:
-    yych = *++m_curPos;
-    switch (yych) {
-    case 's':    goto yy379;
-    default:    goto yy73;
-    }
-yy379:
-    yych = *++m_curPos;
-    switch (yych) {
-    case 'a':    goto yy380;
-    default:    goto yy73;
-    }
-yy380:
-    yych = *++m_curPos;
-    switch (yych) {
-    case 't':    goto yy381;
-    default:    goto yy73;
-    }
-yy381:
     ++m_curPos;
     { m_brigId = Brig::BRIG_ROUND_INTEGER_NEAR_EVEN_SAT; return m_token = EMRound;      }
-yy383:
+yy373:
     yych = *++m_curPos;
     switch (yych) {
-    case 'x':    goto yy387;
+    case 'x':    goto yy377;
     default:    goto yy75;
+    }
+yy374:
+    yych = *++m_curPos;
+    switch (yych) {
+    case 'n':    goto yy375;
+    default:    goto yy75;
+    }
+yy375:
+    ++m_curPos;
+    switch ((yych = *m_curPos)) {
+    case '0':
+    case '1':
+    case '2':
+    case '3':
+    case '4':
+    case '5':
+    case '6':
+    case '7':
+    case '8':
+    case '9':
+    case 'A':
+    case 'B':
+    case 'C':
+    case 'D':
+    case 'E':
+    case 'F':
+    case 'G':
+    case 'H':
+    case 'I':
+    case 'J':
+    case 'K':
+    case 'L':
+    case 'M':
+    case 'N':
+    case 'O':
+    case 'P':
+    case 'Q':
+    case 'R':
+    case 'S':
+    case 'T':
+    case 'U':
+    case 'V':
+    case 'W':
+    case 'X':
+    case 'Y':
+    case 'Z':
+    case 'a':
+    case 'b':
+    case 'c':
+    case 'd':
+    case 'e':
+    case 'f':
+    case 'g':
+    case 'h':
+    case 'i':
+    case 'j':
+    case 'k':
+    case 'l':
+    case 'm':
+    case 'n':
+    case 'o':
+    case 'p':
+    case 'q':
+    case 'r':
+    case 's':
+    case 't':
+    case 'u':
+    case 'v':
+    case 'w':
+    case 'x':
+    case 'y':
+    case 'z':    goto yy74;
+    default:    goto yy376;
+    }
+yy376:
+    { m_brigId = Brig::BRIG_ATOMIC_MIN;        return m_token = EMAtomicOp;   }
+yy377:
+    ++m_curPos;
+    switch ((yych = *m_curPos)) {
+    case '0':
+    case '1':
+    case '2':
+    case '3':
+    case '4':
+    case '5':
+    case '6':
+    case '7':
+    case '8':
+    case '9':
+    case 'A':
+    case 'B':
+    case 'C':
+    case 'D':
+    case 'E':
+    case 'F':
+    case 'G':
+    case 'H':
+    case 'I':
+    case 'J':
+    case 'K':
+    case 'L':
+    case 'M':
+    case 'N':
+    case 'O':
+    case 'P':
+    case 'Q':
+    case 'R':
+    case 'S':
+    case 'T':
+    case 'U':
+    case 'V':
+    case 'W':
+    case 'X':
+    case 'Y':
+    case 'Z':
+    case 'a':
+    case 'b':
+    case 'c':
+    case 'd':
+    case 'e':
+    case 'f':
+    case 'g':
+    case 'h':
+    case 'i':
+    case 'j':
+    case 'k':
+    case 'l':
+    case 'm':
+    case 'n':
+    case 'o':
+    case 'p':
+    case 'q':
+    case 'r':
+    case 's':
+    case 't':
+    case 'u':
+    case 'v':
+    case 'w':
+    case 'x':
+    case 'y':
+    case 'z':    goto yy74;
+    default:    goto yy378;
+    }
+yy378:
+    { m_brigId = Brig::BRIG_ATOMIC_MAX;        return m_token = EMAtomicOp;   }
+yy379:
+    ++m_curPos;
+    switch ((yych = *m_curPos)) {
+    case '0':
+    case '1':
+    case '2':
+    case '3':
+    case '4':
+    case '5':
+    case '6':
+    case '7':
+    case '8':
+    case '9':
+    case 'A':
+    case 'B':
+    case 'C':
+    case 'D':
+    case 'E':
+    case 'F':
+    case 'G':
+    case 'H':
+    case 'I':
+    case 'J':
+    case 'K':
+    case 'L':
+    case 'M':
+    case 'N':
+    case 'O':
+    case 'P':
+    case 'Q':
+    case 'R':
+    case 'S':
+    case 'T':
+    case 'U':
+    case 'V':
+    case 'W':
+    case 'X':
+    case 'Y':
+    case 'Z':
+    case 'a':
+    case 'b':
+    case 'c':
+    case 'd':
+    case 'e':
+    case 'f':
+    case 'g':
+    case 'h':
+    case 'i':
+    case 'j':
+    case 'k':
+    case 'l':
+    case 'm':
+    case 'n':
+    case 'o':
+    case 'p':
+    case 'q':
+    case 'r':
+    case 's':
+    case 't':
+    case 'v':
+    case 'w':
+    case 'x':
+    case 'y':
+    case 'z':    goto yy74;
+    case 'u':    goto yy385;
+    default:    goto yy380;
+    }
+yy380:
+    { m_brigId = Brig::BRIG_COMPARE_LE;        return m_token = EMCompare;    }
+yy381:
+    ++m_curPos;
+    switch ((yych = *m_curPos)) {
+    case '0':
+    case '1':
+    case '2':
+    case '3':
+    case '4':
+    case '5':
+    case '6':
+    case '7':
+    case '8':
+    case '9':
+    case 'A':
+    case 'B':
+    case 'C':
+    case 'D':
+    case 'E':
+    case 'F':
+    case 'G':
+    case 'H':
+    case 'I':
+    case 'J':
+    case 'K':
+    case 'L':
+    case 'M':
+    case 'N':
+    case 'O':
+    case 'P':
+    case 'Q':
+    case 'R':
+    case 'S':
+    case 'T':
+    case 'U':
+    case 'V':
+    case 'W':
+    case 'X':
+    case 'Y':
+    case 'Z':
+    case 'a':
+    case 'b':
+    case 'c':
+    case 'd':
+    case 'e':
+    case 'f':
+    case 'g':
+    case 'h':
+    case 'i':
+    case 'j':
+    case 'k':
+    case 'l':
+    case 'm':
+    case 'n':
+    case 'o':
+    case 'p':
+    case 'q':
+    case 'r':
+    case 's':
+    case 't':
+    case 'v':
+    case 'w':
+    case 'x':
+    case 'y':
+    case 'z':    goto yy74;
+    case 'u':    goto yy383;
+    default:    goto yy382;
+    }
+yy382:
+    { m_brigId = Brig::BRIG_COMPARE_LT;        return m_token = EMCompare;    }
+yy383:
+    ++m_curPos;
+    switch ((yych = *m_curPos)) {
+    case '0':
+    case '1':
+    case '2':
+    case '3':
+    case '4':
+    case '5':
+    case '6':
+    case '7':
+    case '8':
+    case '9':
+    case 'A':
+    case 'B':
+    case 'C':
+    case 'D':
+    case 'E':
+    case 'F':
+    case 'G':
+    case 'H':
+    case 'I':
+    case 'J':
+    case 'K':
+    case 'L':
+    case 'M':
+    case 'N':
+    case 'O':
+    case 'P':
+    case 'Q':
+    case 'R':
+    case 'S':
+    case 'T':
+    case 'U':
+    case 'V':
+    case 'W':
+    case 'X':
+    case 'Y':
+    case 'Z':
+    case 'a':
+    case 'b':
+    case 'c':
+    case 'd':
+    case 'e':
+    case 'f':
+    case 'g':
+    case 'h':
+    case 'i':
+    case 'j':
+    case 'k':
+    case 'l':
+    case 'm':
+    case 'n':
+    case 'o':
+    case 'p':
+    case 'q':
+    case 'r':
+    case 's':
+    case 't':
+    case 'u':
+    case 'v':
+    case 'w':
+    case 'x':
+    case 'y':
+    case 'z':    goto yy74;
+    default:    goto yy384;
     }
 yy384:
-    yych = *++m_curPos;
-    switch (yych) {
-    case 'n':    goto yy385;
-    default:    goto yy75;
-    }
+    { m_brigId = Brig::BRIG_COMPARE_LTU;       return m_token = EMCompare;    }
 yy385:
     ++m_curPos;
     switch ((yych = *m_curPos)) {
@@ -6549,215 +6781,38 @@ yy385:
     default:    goto yy386;
     }
 yy386:
-    { m_brigId = Brig::BRIG_ATOMIC_MIN;        return m_token = EMAtomicOp;   }
+    { m_brigId = Brig::BRIG_COMPARE_LEU;       return m_token = EMCompare;    }
 yy387:
-    ++m_curPos;
-    switch ((yych = *m_curPos)) {
-    case '0':
-    case '1':
-    case '2':
-    case '3':
-    case '4':
-    case '5':
-    case '6':
-    case '7':
-    case '8':
-    case '9':
-    case 'A':
-    case 'B':
-    case 'C':
-    case 'D':
-    case 'E':
-    case 'F':
-    case 'G':
-    case 'H':
-    case 'I':
-    case 'J':
-    case 'K':
-    case 'L':
-    case 'M':
-    case 'N':
-    case 'O':
-    case 'P':
-    case 'Q':
-    case 'R':
-    case 'S':
-    case 'T':
-    case 'U':
-    case 'V':
-    case 'W':
-    case 'X':
-    case 'Y':
-    case 'Z':
-    case 'a':
-    case 'b':
-    case 'c':
-    case 'd':
-    case 'e':
-    case 'f':
-    case 'g':
-    case 'h':
-    case 'i':
-    case 'j':
-    case 'k':
-    case 'l':
-    case 'm':
-    case 'n':
-    case 'o':
-    case 'p':
-    case 'q':
-    case 'r':
-    case 's':
-    case 't':
-    case 'u':
-    case 'v':
-    case 'w':
-    case 'x':
-    case 'y':
-    case 'z':    goto yy74;
-    default:    goto yy388;
+    yych = *++m_curPos;
+    switch (yych) {
+    case 'r':    goto yy388;
+    default:    goto yy75;
     }
 yy388:
-    { m_brigId = Brig::BRIG_ATOMIC_MAX;        return m_token = EMAtomicOp;   }
+    yych = *++m_curPos;
+    switch (yych) {
+    case 'n':    goto yy389;
+    default:    goto yy75;
+    }
 yy389:
-    ++m_curPos;
-    switch ((yych = *m_curPos)) {
-    case '0':
-    case '1':
-    case '2':
-    case '3':
-    case '4':
-    case '5':
-    case '6':
-    case '7':
-    case '8':
-    case '9':
-    case 'A':
-    case 'B':
-    case 'C':
-    case 'D':
-    case 'E':
-    case 'F':
-    case 'G':
-    case 'H':
-    case 'I':
-    case 'J':
-    case 'K':
-    case 'L':
-    case 'M':
-    case 'N':
-    case 'O':
-    case 'P':
-    case 'Q':
-    case 'R':
-    case 'S':
-    case 'T':
-    case 'U':
-    case 'V':
-    case 'W':
-    case 'X':
-    case 'Y':
-    case 'Z':
-    case 'a':
-    case 'b':
-    case 'c':
-    case 'd':
-    case 'e':
-    case 'f':
-    case 'g':
-    case 'h':
-    case 'i':
-    case 'j':
-    case 'k':
-    case 'l':
-    case 'm':
-    case 'n':
-    case 'o':
-    case 'p':
-    case 'q':
-    case 'r':
-    case 's':
-    case 't':
-    case 'v':
-    case 'w':
-    case 'x':
-    case 'y':
-    case 'z':    goto yy74;
-    case 'u':    goto yy395;
-    default:    goto yy390;
+    yych = *++m_curPos;
+    switch (yych) {
+    case 'a':    goto yy390;
+    default:    goto yy75;
     }
 yy390:
-    { m_brigId = Brig::BRIG_COMPARE_LE;        return m_token = EMCompare;    }
+    yych = *++m_curPos;
+    switch (yych) {
+    case 'r':    goto yy391;
+    default:    goto yy75;
+    }
 yy391:
-    ++m_curPos;
-    switch ((yych = *m_curPos)) {
-    case '0':
-    case '1':
-    case '2':
-    case '3':
-    case '4':
-    case '5':
-    case '6':
-    case '7':
-    case '8':
-    case '9':
-    case 'A':
-    case 'B':
-    case 'C':
-    case 'D':
-    case 'E':
-    case 'F':
-    case 'G':
-    case 'H':
-    case 'I':
-    case 'J':
-    case 'K':
-    case 'L':
-    case 'M':
-    case 'N':
-    case 'O':
-    case 'P':
-    case 'Q':
-    case 'R':
-    case 'S':
-    case 'T':
-    case 'U':
-    case 'V':
-    case 'W':
-    case 'X':
-    case 'Y':
-    case 'Z':
-    case 'a':
-    case 'b':
-    case 'c':
-    case 'd':
-    case 'e':
-    case 'f':
-    case 'g':
-    case 'h':
-    case 'i':
-    case 'j':
-    case 'k':
-    case 'l':
-    case 'm':
-    case 'n':
-    case 'o':
-    case 'p':
-    case 'q':
-    case 'r':
-    case 's':
-    case 't':
-    case 'v':
-    case 'w':
-    case 'x':
-    case 'y':
-    case 'z':    goto yy74;
-    case 'u':    goto yy393;
-    default:    goto yy392;
+    yych = *++m_curPos;
+    switch (yych) {
+    case 'g':    goto yy392;
+    default:    goto yy75;
     }
 yy392:
-    { m_brigId = Brig::BRIG_COMPARE_LT;        return m_token = EMCompare;    }
-yy393:
     ++m_curPos;
     switch ((yych = *m_curPos)) {
     case '0':
@@ -6822,10 +6877,16 @@ yy393:
     case 'x':
     case 'y':
     case 'z':    goto yy74;
-    default:    goto yy394;
+    default:    goto yy393;
     }
+yy393:
+    { m_brigId = Brig::BRIG_SEGMENT_KERNARG;   return m_token = EMSegment;    }
 yy394:
-    { m_brigId = Brig::BRIG_COMPARE_LTU;       return m_token = EMCompare;    }
+    yych = *++m_curPos;
+    switch (yych) {
+    case 'c':    goto yy395;
+    default:    goto yy75;
+    }
 yy395:
     ++m_curPos;
     switch ((yych = *m_curPos)) {
@@ -6894,38 +6955,158 @@ yy395:
     default:    goto yy396;
     }
 yy396:
-    { m_brigId = Brig::BRIG_COMPARE_LEU;       return m_token = EMCompare;    }
+    { m_brigId = Brig::BRIG_ATOMIC_INC;        return m_token = EMAtomicOp;   }
 yy397:
     yych = *++m_curPos;
     switch (yych) {
-    case 'r':    goto yy398;
+    case 'o':    goto yy411;
     default:    goto yy75;
     }
 yy398:
     yych = *++m_curPos;
     switch (yych) {
-    case 'n':    goto yy399;
+    case 'o':    goto yy407;
     default:    goto yy75;
     }
 yy399:
-    yych = *++m_curPos;
-    switch (yych) {
-    case 'a':    goto yy400;
-    default:    goto yy75;
+    ++m_curPos;
+    switch ((yych = *m_curPos)) {
+    case '0':
+    case '1':
+    case '2':
+    case '3':
+    case '4':
+    case '5':
+    case '6':
+    case '7':
+    case '8':
+    case '9':
+    case 'A':
+    case 'B':
+    case 'C':
+    case 'D':
+    case 'E':
+    case 'F':
+    case 'G':
+    case 'H':
+    case 'I':
+    case 'J':
+    case 'K':
+    case 'L':
+    case 'M':
+    case 'N':
+    case 'O':
+    case 'P':
+    case 'Q':
+    case 'R':
+    case 'S':
+    case 'T':
+    case 'U':
+    case 'V':
+    case 'W':
+    case 'X':
+    case 'Y':
+    case 'Z':
+    case 'a':
+    case 'b':
+    case 'c':
+    case 'd':
+    case 'e':
+    case 'f':
+    case 'g':
+    case 'h':
+    case 'i':
+    case 'j':
+    case 'k':
+    case 'l':
+    case 'm':
+    case 'n':
+    case 'o':
+    case 'p':
+    case 'q':
+    case 'r':
+    case 's':
+    case 't':
+    case 'v':
+    case 'w':
+    case 'x':
+    case 'y':
+    case 'z':    goto yy74;
+    case 'u':    goto yy405;
+    default:    goto yy400;
     }
 yy400:
-    yych = *++m_curPos;
-    switch (yych) {
-    case 'r':    goto yy401;
-    default:    goto yy75;
-    }
+    { m_brigId = Brig::BRIG_COMPARE_GE;        return m_token = EMCompare;    }
 yy401:
-    yych = *++m_curPos;
-    switch (yych) {
-    case 'g':    goto yy402;
-    default:    goto yy75;
+    ++m_curPos;
+    switch ((yych = *m_curPos)) {
+    case '0':
+    case '1':
+    case '2':
+    case '3':
+    case '4':
+    case '5':
+    case '6':
+    case '7':
+    case '8':
+    case '9':
+    case 'A':
+    case 'B':
+    case 'C':
+    case 'D':
+    case 'E':
+    case 'F':
+    case 'G':
+    case 'H':
+    case 'I':
+    case 'J':
+    case 'K':
+    case 'L':
+    case 'M':
+    case 'N':
+    case 'O':
+    case 'P':
+    case 'Q':
+    case 'R':
+    case 'S':
+    case 'T':
+    case 'U':
+    case 'V':
+    case 'W':
+    case 'X':
+    case 'Y':
+    case 'Z':
+    case 'a':
+    case 'b':
+    case 'c':
+    case 'd':
+    case 'e':
+    case 'f':
+    case 'g':
+    case 'h':
+    case 'i':
+    case 'j':
+    case 'k':
+    case 'l':
+    case 'm':
+    case 'n':
+    case 'o':
+    case 'p':
+    case 'q':
+    case 'r':
+    case 's':
+    case 't':
+    case 'v':
+    case 'w':
+    case 'x':
+    case 'y':
+    case 'z':    goto yy74;
+    case 'u':    goto yy403;
+    default:    goto yy402;
     }
 yy402:
+    { m_brigId = Brig::BRIG_COMPARE_GT;        return m_token = EMCompare;    }
+yy403:
     ++m_curPos;
     switch ((yych = *m_curPos)) {
     case '0':
@@ -6990,16 +7171,10 @@ yy402:
     case 'x':
     case 'y':
     case 'z':    goto yy74;
-    default:    goto yy403;
+    default:    goto yy404;
     }
-yy403:
-    { m_brigId = Brig::BRIG_SEGMENT_KERNARG;   return m_token = EMSegment;    }
 yy404:
-    yych = *++m_curPos;
-    switch (yych) {
-    case 'c':    goto yy405;
-    default:    goto yy75;
-    }
+    { m_brigId = Brig::BRIG_COMPARE_GTU;       return m_token = EMCompare;    }
 yy405:
     ++m_curPos;
     switch ((yych = *m_curPos)) {
@@ -7068,17 +7243,17 @@ yy405:
     default:    goto yy406;
     }
 yy406:
-    { m_brigId = Brig::BRIG_ATOMIC_INC;        return m_token = EMAtomicOp;   }
+    { m_brigId = Brig::BRIG_COMPARE_GEU;       return m_token = EMCompare;    }
 yy407:
     yych = *++m_curPos;
     switch (yych) {
-    case 'o':    goto yy421;
+    case 'u':    goto yy408;
     default:    goto yy75;
     }
 yy408:
     yych = *++m_curPos;
     switch (yych) {
-    case 'o':    goto yy417;
+    case 'p':    goto yy409;
     default:    goto yy75;
     }
 yy409:
@@ -7140,155 +7315,35 @@ yy409:
     case 'r':
     case 's':
     case 't':
+    case 'u':
     case 'v':
     case 'w':
     case 'x':
     case 'y':
     case 'z':    goto yy74;
-    case 'u':    goto yy415;
     default:    goto yy410;
     }
 yy410:
-    { m_brigId = Brig::BRIG_COMPARE_GE;        return m_token = EMCompare;    }
+    { m_brigId = Brig::BRIG_SEGMENT_GROUP;     return m_token = EMSegment;    }
 yy411:
-    ++m_curPos;
-    switch ((yych = *m_curPos)) {
-    case '0':
-    case '1':
-    case '2':
-    case '3':
-    case '4':
-    case '5':
-    case '6':
-    case '7':
-    case '8':
-    case '9':
-    case 'A':
-    case 'B':
-    case 'C':
-    case 'D':
-    case 'E':
-    case 'F':
-    case 'G':
-    case 'H':
-    case 'I':
-    case 'J':
-    case 'K':
-    case 'L':
-    case 'M':
-    case 'N':
-    case 'O':
-    case 'P':
-    case 'Q':
-    case 'R':
-    case 'S':
-    case 'T':
-    case 'U':
-    case 'V':
-    case 'W':
-    case 'X':
-    case 'Y':
-    case 'Z':
-    case 'a':
-    case 'b':
-    case 'c':
-    case 'd':
-    case 'e':
-    case 'f':
-    case 'g':
-    case 'h':
-    case 'i':
-    case 'j':
-    case 'k':
-    case 'l':
-    case 'm':
-    case 'n':
-    case 'o':
-    case 'p':
-    case 'q':
-    case 'r':
-    case 's':
-    case 't':
-    case 'v':
-    case 'w':
-    case 'x':
-    case 'y':
-    case 'z':    goto yy74;
-    case 'u':    goto yy413;
-    default:    goto yy412;
+    yych = *++m_curPos;
+    switch (yych) {
+    case 'b':    goto yy412;
+    default:    goto yy75;
     }
 yy412:
-    { m_brigId = Brig::BRIG_COMPARE_GT;        return m_token = EMCompare;    }
+    yych = *++m_curPos;
+    switch (yych) {
+    case 'a':    goto yy413;
+    default:    goto yy75;
+    }
 yy413:
-    ++m_curPos;
-    switch ((yych = *m_curPos)) {
-    case '0':
-    case '1':
-    case '2':
-    case '3':
-    case '4':
-    case '5':
-    case '6':
-    case '7':
-    case '8':
-    case '9':
-    case 'A':
-    case 'B':
-    case 'C':
-    case 'D':
-    case 'E':
-    case 'F':
-    case 'G':
-    case 'H':
-    case 'I':
-    case 'J':
-    case 'K':
-    case 'L':
-    case 'M':
-    case 'N':
-    case 'O':
-    case 'P':
-    case 'Q':
-    case 'R':
-    case 'S':
-    case 'T':
-    case 'U':
-    case 'V':
-    case 'W':
-    case 'X':
-    case 'Y':
-    case 'Z':
-    case 'a':
-    case 'b':
-    case 'c':
-    case 'd':
-    case 'e':
-    case 'f':
-    case 'g':
-    case 'h':
-    case 'i':
-    case 'j':
-    case 'k':
-    case 'l':
-    case 'm':
-    case 'n':
-    case 'o':
-    case 'p':
-    case 'q':
-    case 'r':
-    case 's':
-    case 't':
-    case 'u':
-    case 'v':
-    case 'w':
-    case 'x':
-    case 'y':
-    case 'z':    goto yy74;
-    default:    goto yy414;
+    yych = *++m_curPos;
+    switch (yych) {
+    case 'l':    goto yy414;
+    default:    goto yy75;
     }
 yy414:
-    { m_brigId = Brig::BRIG_COMPARE_GTU;       return m_token = EMCompare;    }
-yy415:
     ++m_curPos;
     switch ((yych = *m_curPos)) {
     case '0':
@@ -7353,107 +7408,58 @@ yy415:
     case 'x':
     case 'y':
     case 'z':    goto yy74;
-    default:    goto yy416;
+    default:    goto yy415;
     }
+yy415:
+    { m_brigId = Brig::BRIG_SEGMENT_GLOBAL;    return m_token = EMSegment;    }
 yy416:
-    { m_brigId = Brig::BRIG_COMPARE_GEU;       return m_token = EMCompare;    }
+    yych = *++m_curPos;
+    switch (yych) {
+    case '6':    goto yy472;
+    default:    goto yy75;
+    }
 yy417:
     yych = *++m_curPos;
     switch (yych) {
-    case 'u':    goto yy418;
+    case '2':    goto yy465;
     default:    goto yy75;
     }
 yy418:
     yych = *++m_curPos;
     switch (yych) {
-    case 'p':    goto yy419;
+    case '4':    goto yy460;
     default:    goto yy75;
     }
 yy419:
-    ++m_curPos;
-    switch ((yych = *m_curPos)) {
-    case '0':
-    case '1':
-    case '2':
-    case '3':
-    case '4':
-    case '5':
-    case '6':
-    case '7':
-    case '8':
-    case '9':
-    case 'A':
-    case 'B':
-    case 'C':
-    case 'D':
-    case 'E':
-    case 'F':
-    case 'G':
-    case 'H':
-    case 'I':
-    case 'J':
-    case 'K':
-    case 'L':
-    case 'M':
-    case 'N':
-    case 'O':
-    case 'P':
-    case 'Q':
-    case 'R':
-    case 'S':
-    case 'T':
-    case 'U':
-    case 'V':
-    case 'W':
-    case 'X':
-    case 'Y':
-    case 'Z':
-    case 'a':
-    case 'b':
-    case 'c':
-    case 'd':
-    case 'e':
-    case 'f':
-    case 'g':
-    case 'h':
-    case 'i':
-    case 'j':
-    case 'k':
-    case 'l':
-    case 'm':
-    case 'n':
-    case 'o':
-    case 'p':
-    case 'q':
-    case 'r':
-    case 's':
-    case 't':
-    case 'u':
-    case 'v':
-    case 'w':
-    case 'x':
-    case 'y':
-    case 'z':    goto yy74;
-    default:    goto yy420;
+    yych = *++m_curPos;
+    switch (yych) {
+    case 'a':    goto yy453;
+    case 'o':    goto yy454;
+    default:    goto yy75;
     }
 yy420:
-    { m_brigId = Brig::BRIG_SEGMENT_GROUP;     return m_token = EMSegment;    }
+    yych = *++m_curPos;
+    switch (yych) {
+    case 'l':    goto yy442;
+    case 'r':    goto yy443;
+    default:    goto yy75;
+    }
 yy421:
     yych = *++m_curPos;
     switch (yych) {
-    case 'b':    goto yy422;
+    case 'o':    goto yy438;
     default:    goto yy75;
     }
 yy422:
     yych = *++m_curPos;
     switch (yych) {
-    case 'a':    goto yy423;
+    case 'a':    goto yy426;
     default:    goto yy75;
     }
 yy423:
     yych = *++m_curPos;
     switch (yych) {
-    case 'l':    goto yy424;
+    case 'z':    goto yy424;
     default:    goto yy75;
     }
 yy424:
@@ -7524,58 +7530,125 @@ yy424:
     default:    goto yy425;
     }
 yy425:
-    { m_brigId = Brig::BRIG_SEGMENT_GLOBAL;    return m_token = EMSegment;    }
+    { return m_token = EMFTZ; }
 yy426:
     yych = *++m_curPos;
     switch (yych) {
-    case '6':    goto yy481;
+    case 'r':    goto yy427;
     default:    goto yy75;
     }
 yy427:
     yych = *++m_curPos;
     switch (yych) {
-    case '2':    goto yy474;
+    case 't':    goto yy428;
     default:    goto yy75;
     }
 yy428:
     yych = *++m_curPos;
     switch (yych) {
-    case '4':    goto yy469;
+    case 'i':    goto yy429;
     default:    goto yy75;
     }
 yy429:
     yych = *++m_curPos;
     switch (yych) {
-    case 'a':    goto yy462;
-    case 'o':    goto yy463;
+    case 'a':    goto yy430;
     default:    goto yy75;
     }
 yy430:
     yych = *++m_curPos;
     switch (yych) {
-    case 'a':    goto yy459;
+    case 'l':    goto yy431;
     default:    goto yy75;
     }
 yy431:
-    yych = *++m_curPos;
-    switch (yych) {
-    case 'l':    goto yy448;
-    case 'r':    goto yy449;
-    default:    goto yy75;
+    ++m_curPos;
+    switch ((yych = *m_curPos)) {
+    case '0':
+    case '1':
+    case '2':
+    case '3':
+    case '4':
+    case '5':
+    case '6':
+    case '7':
+    case '8':
+    case '9':
+    case 'A':
+    case 'B':
+    case 'C':
+    case 'D':
+    case 'E':
+    case 'F':
+    case 'G':
+    case 'H':
+    case 'I':
+    case 'J':
+    case 'K':
+    case 'L':
+    case 'M':
+    case 'N':
+    case 'O':
+    case 'P':
+    case 'Q':
+    case 'R':
+    case 'S':
+    case 'T':
+    case 'U':
+    case 'V':
+    case 'W':
+    case 'X':
+    case 'Y':
+    case 'Z':
+    case 'a':
+    case 'c':
+    case 'd':
+    case 'e':
+    case 'f':
+    case 'g':
+    case 'h':
+    case 'i':
+    case 'j':
+    case 'k':
+    case 'l':
+    case 'm':
+    case 'n':
+    case 'o':
+    case 'p':
+    case 'q':
+    case 'r':
+    case 's':
+    case 't':
+    case 'u':
+    case 'v':
+    case 'w':
+    case 'x':
+    case 'y':
+    case 'z':    goto yy74;
+    case 'b':    goto yy433;
+    default:    goto yy432;
     }
 yy432:
-    yych = *++m_curPos;
-    switch (yych) {
-    case 'a':    goto yy436;
-    default:    goto yy75;
-    }
+    { m_brigId = Brig::BRIG_FENCE_PARTIAL;     return m_token = EMMemoryFence; }
 yy433:
     yych = *++m_curPos;
     switch (yych) {
-    case 'z':    goto yy434;
+    case 'o':    goto yy434;
     default:    goto yy75;
     }
 yy434:
+    yych = *++m_curPos;
+    switch (yych) {
+    case 't':    goto yy435;
+    default:    goto yy75;
+    }
+yy435:
+    yych = *++m_curPos;
+    switch (yych) {
+    case 'h':    goto yy436;
+    default:    goto yy75;
+    }
+yy436:
     ++m_curPos;
     switch ((yych = *m_curPos)) {
     case '0':
@@ -7640,41 +7713,23 @@ yy434:
     case 'x':
     case 'y':
     case 'z':    goto yy74;
-    default:    goto yy435;
-    }
-yy435:
-    { return m_token = EMFTZ; }
-yy436:
-    yych = *++m_curPos;
-    switch (yych) {
-    case 'r':    goto yy437;
-    default:    goto yy75;
+    default:    goto yy437;
     }
 yy437:
-    yych = *++m_curPos;
-    switch (yych) {
-    case 't':    goto yy438;
-    default:    goto yy75;
-    }
+    { m_brigId = Brig::BRIG_FENCE_PARTIAL_BOTH; return m_token = EMMemoryFence; }
 yy438:
     yych = *++m_curPos;
     switch (yych) {
-    case 'i':    goto yy439;
+    case 'n':    goto yy439;
     default:    goto yy75;
     }
 yy439:
     yych = *++m_curPos;
     switch (yych) {
-    case 'a':    goto yy440;
+    case 'e':    goto yy440;
     default:    goto yy75;
     }
 yy440:
-    yych = *++m_curPos;
-    switch (yych) {
-    case 'l':    goto yy441;
-    default:    goto yy75;
-    }
-yy441:
     ++m_curPos;
     switch ((yych = *m_curPos)) {
     case '0':
@@ -7714,6 +7769,7 @@ yy441:
     case 'Y':
     case 'Z':
     case 'a':
+    case 'b':
     case 'c':
     case 'd':
     case 'e':
@@ -7738,11 +7794,16 @@ yy441:
     case 'x':
     case 'y':
     case 'z':    goto yy74;
-    case 'b':    goto yy443;
-    default:    goto yy442;
+    default:    goto yy441;
     }
+yy441:
+    { m_brigId = Brig::BRIG_FENCE_NONE;        return m_token = EMMemoryFence; }
 yy442:
-    { m_brigId = Brig::BRIG_FENCE_PARTIAL;     return m_token = EMMemoryFence; }
+    yych = *++m_curPos;
+    switch (yych) {
+    case 'o':    goto yy448;
+    default:    goto yy75;
+    }
 yy443:
     yych = *++m_curPos;
     switch (yych) {
@@ -7752,13 +7813,13 @@ yy443:
 yy444:
     yych = *++m_curPos;
     switch (yych) {
-    case 't':    goto yy445;
+    case 'u':    goto yy445;
     default:    goto yy75;
     }
 yy445:
     yych = *++m_curPos;
     switch (yych) {
-    case 'h':    goto yy446;
+    case 'p':    goto yy446;
     default:    goto yy75;
     }
 yy446:
@@ -7829,32 +7890,26 @@ yy446:
     default:    goto yy447;
     }
 yy447:
-    { m_brigId = Brig::BRIG_FENCE_PARTIAL_BOTH; return m_token = EMMemoryFence; }
+    { m_brigId = Brig::BRIG_FENCE_GROUP;       return m_token = EMMemoryFence; }
 yy448:
     yych = *++m_curPos;
     switch (yych) {
-    case 'o':    goto yy454;
+    case 'b':    goto yy449;
     default:    goto yy75;
     }
 yy449:
     yych = *++m_curPos;
     switch (yych) {
-    case 'o':    goto yy450;
+    case 'a':    goto yy450;
     default:    goto yy75;
     }
 yy450:
     yych = *++m_curPos;
     switch (yych) {
-    case 'u':    goto yy451;
+    case 'l':    goto yy451;
     default:    goto yy75;
     }
 yy451:
-    yych = *++m_curPos;
-    switch (yych) {
-    case 'p':    goto yy452;
-    default:    goto yy75;
-    }
-yy452:
     ++m_curPos;
     switch ((yych = *m_curPos)) {
     case '0':
@@ -7919,29 +7974,29 @@ yy452:
     case 'x':
     case 'y':
     case 'z':    goto yy74;
-    default:    goto yy453;
+    default:    goto yy452;
     }
+yy452:
+    { m_brigId = Brig::BRIG_FENCE_GLOBAL;      return m_token = EMMemoryFence; }
 yy453:
-    { m_brigId = Brig::BRIG_FENCE_GROUP;       return m_token = EMMemoryFence; }
+    yych = *++m_curPos;
+    switch (yych) {
+    case 'r':    goto yy458;
+    default:    goto yy75;
+    }
 yy454:
     yych = *++m_curPos;
     switch (yych) {
-    case 'b':    goto yy455;
+    case 't':    goto yy455;
     default:    goto yy75;
     }
 yy455:
     yych = *++m_curPos;
     switch (yych) {
-    case 'a':    goto yy456;
+    case 'h':    goto yy456;
     default:    goto yy75;
     }
 yy456:
-    yych = *++m_curPos;
-    switch (yych) {
-    case 'l':    goto yy457;
-    default:    goto yy75;
-    }
-yy457:
     ++m_curPos;
     switch ((yych = *m_curPos)) {
     case '0':
@@ -8006,16 +8061,79 @@ yy457:
     case 'x':
     case 'y':
     case 'z':    goto yy74;
-    default:    goto yy458;
+    default:    goto yy457;
     }
+yy457:
+    { m_brigId = Brig::BRIG_FENCE_BOTH;        return m_token = EMMemoryFence; }
 yy458:
-    { m_brigId = Brig::BRIG_FENCE_GLOBAL;      return m_token = EMMemoryFence; }
-yy459:
-    yych = *++m_curPos;
-    switch (yych) {
-    case 't':    goto yy460;
-    default:    goto yy75;
+    ++m_curPos;
+    switch ((yych = *m_curPos)) {
+    case '0':
+    case '1':
+    case '2':
+    case '3':
+    case '4':
+    case '5':
+    case '6':
+    case '7':
+    case '8':
+    case '9':
+    case 'A':
+    case 'B':
+    case 'C':
+    case 'D':
+    case 'E':
+    case 'F':
+    case 'G':
+    case 'H':
+    case 'I':
+    case 'J':
+    case 'K':
+    case 'L':
+    case 'M':
+    case 'N':
+    case 'O':
+    case 'P':
+    case 'Q':
+    case 'R':
+    case 'S':
+    case 'T':
+    case 'U':
+    case 'V':
+    case 'W':
+    case 'X':
+    case 'Y':
+    case 'Z':
+    case 'a':
+    case 'b':
+    case 'c':
+    case 'd':
+    case 'e':
+    case 'f':
+    case 'g':
+    case 'h':
+    case 'i':
+    case 'j':
+    case 'k':
+    case 'l':
+    case 'm':
+    case 'n':
+    case 'o':
+    case 'p':
+    case 'q':
+    case 'r':
+    case 's':
+    case 't':
+    case 'u':
+    case 'v':
+    case 'w':
+    case 'x':
+    case 'y':
+    case 'z':    goto yy74;
+    default:    goto yy459;
     }
+yy459:
+    { m_brigId = Brig::BRIG_TYPE_FBAR;         return m_token = EMType;       }
 yy460:
     ++m_curPos;
     switch ((yych = *m_curPos)) {
@@ -8078,31 +8196,88 @@ yy460:
     case 'u':
     case 'v':
     case 'w':
-    case 'x':
     case 'y':
     case 'z':    goto yy74;
+    case 'x':    goto yy462;
     default:    goto yy461;
     }
 yy461:
-    { m_brigId = Brig::BRIG_SEGMENT_FLAT;      return m_token = EMSegment;    }
+    { m_brigId = Brig::BRIG_TYPE_F64;          return m_token = EMType;       }
 yy462:
     yych = *++m_curPos;
     switch (yych) {
-    case 'r':    goto yy467;
+    case '2':    goto yy463;
     default:    goto yy75;
     }
 yy463:
-    yych = *++m_curPos;
-    switch (yych) {
-    case 't':    goto yy464;
-    default:    goto yy75;
+    ++m_curPos;
+    switch ((yych = *m_curPos)) {
+    case '0':
+    case '1':
+    case '2':
+    case '3':
+    case '4':
+    case '5':
+    case '6':
+    case '7':
+    case '8':
+    case '9':
+    case 'A':
+    case 'B':
+    case 'C':
+    case 'D':
+    case 'E':
+    case 'F':
+    case 'G':
+    case 'H':
+    case 'I':
+    case 'J':
+    case 'K':
+    case 'L':
+    case 'M':
+    case 'N':
+    case 'O':
+    case 'P':
+    case 'Q':
+    case 'R':
+    case 'S':
+    case 'T':
+    case 'U':
+    case 'V':
+    case 'W':
+    case 'X':
+    case 'Y':
+    case 'Z':
+    case 'a':
+    case 'b':
+    case 'c':
+    case 'd':
+    case 'e':
+    case 'f':
+    case 'g':
+    case 'h':
+    case 'i':
+    case 'j':
+    case 'k':
+    case 'l':
+    case 'm':
+    case 'n':
+    case 'o':
+    case 'p':
+    case 'q':
+    case 'r':
+    case 's':
+    case 't':
+    case 'u':
+    case 'v':
+    case 'w':
+    case 'x':
+    case 'y':
+    case 'z':    goto yy74;
+    default:    goto yy464;
     }
 yy464:
-    yych = *++m_curPos;
-    switch (yych) {
-    case 'h':    goto yy465;
-    default:    goto yy75;
-    }
+    { m_brigId = Brig::BRIG_TYPE_F64X2;        return m_token = EMType;       }
 yy465:
     ++m_curPos;
     switch ((yych = *m_curPos)) {
@@ -8165,14 +8340,21 @@ yy465:
     case 'u':
     case 'v':
     case 'w':
-    case 'x':
     case 'y':
     case 'z':    goto yy74;
+    case 'x':    goto yy467;
     default:    goto yy466;
     }
 yy466:
-    { m_brigId = Brig::BRIG_FENCE_BOTH;        return m_token = EMMemoryFence; }
+    { m_brigId = Brig::BRIG_TYPE_F32;          return m_token = EMType;       }
 yy467:
+    yych = *++m_curPos;
+    switch (yych) {
+    case '2':    goto yy468;
+    case '4':    goto yy470;
+    default:    goto yy75;
+    }
+yy468:
     ++m_curPos;
     switch ((yych = *m_curPos)) {
     case '0':
@@ -8237,11 +8419,11 @@ yy467:
     case 'x':
     case 'y':
     case 'z':    goto yy74;
-    default:    goto yy468;
+    default:    goto yy469;
     }
-yy468:
-    { m_brigId = Brig::BRIG_TYPE_FBAR;         return m_token = EMType;       }
 yy469:
+    { m_brigId = Brig::BRIG_TYPE_F32X2;        return m_token = EMType;       }
+yy470:
     ++m_curPos;
     switch ((yych = *m_curPos)) {
     case '0':
@@ -8303,19 +8485,13 @@ yy469:
     case 'u':
     case 'v':
     case 'w':
+    case 'x':
     case 'y':
     case 'z':    goto yy74;
-    case 'x':    goto yy471;
-    default:    goto yy470;
+    default:    goto yy471;
     }
-yy470:
-    { m_brigId = Brig::BRIG_TYPE_F64;          return m_token = EMType;       }
 yy471:
-    yych = *++m_curPos;
-    switch (yych) {
-    case '2':    goto yy472;
-    default:    goto yy75;
-    }
+    { m_brigId = Brig::BRIG_TYPE_F32X4;        return m_token = EMType;       }
 yy472:
     ++m_curPos;
     switch ((yych = *m_curPos)) {
@@ -8378,14 +8554,22 @@ yy472:
     case 'u':
     case 'v':
     case 'w':
-    case 'x':
     case 'y':
     case 'z':    goto yy74;
+    case 'x':    goto yy474;
     default:    goto yy473;
     }
 yy473:
-    { m_brigId = Brig::BRIG_TYPE_F64X2;        return m_token = EMType;       }
+    { m_brigId = Brig::BRIG_TYPE_F16;          return m_token = EMType;       }
 yy474:
+    yych = *++m_curPos;
+    switch (yych) {
+    case '2':    goto yy475;
+    case '4':    goto yy477;
+    case '8':    goto yy479;
+    default:    goto yy75;
+    }
+yy475:
     ++m_curPos;
     switch ((yych = *m_curPos)) {
     case '0':
@@ -8447,20 +8631,13 @@ yy474:
     case 'u':
     case 'v':
     case 'w':
+    case 'x':
     case 'y':
     case 'z':    goto yy74;
-    case 'x':    goto yy476;
-    default:    goto yy475;
+    default:    goto yy476;
     }
-yy475:
-    { m_brigId = Brig::BRIG_TYPE_F32;          return m_token = EMType;       }
 yy476:
-    yych = *++m_curPos;
-    switch (yych) {
-    case '2':    goto yy477;
-    case '4':    goto yy479;
-    default:    goto yy75;
-    }
+    { m_brigId = Brig::BRIG_TYPE_F16X2;        return m_token = EMType;       }
 yy477:
     ++m_curPos;
     switch ((yych = *m_curPos)) {
@@ -8529,7 +8706,7 @@ yy477:
     default:    goto yy478;
     }
 yy478:
-    { m_brigId = Brig::BRIG_TYPE_F32X2;        return m_token = EMType;       }
+    { m_brigId = Brig::BRIG_TYPE_F16X4;        return m_token = EMType;       }
 yy479:
     ++m_curPos;
     switch ((yych = *m_curPos)) {
@@ -8598,8 +8775,15 @@ yy479:
     default:    goto yy480;
     }
 yy480:
-    { m_brigId = Brig::BRIG_TYPE_F32X4;        return m_token = EMType;       }
+    { m_brigId = Brig::BRIG_TYPE_F16X8;        return m_token = EMType;       }
 yy481:
+    yych = *++m_curPos;
+    switch (yych) {
+    case 'c':    goto yy489;
+    case 't':    goto yy490;
+    default:    goto yy75;
+    }
+yy482:
     ++m_curPos;
     switch ((yych = *m_curPos)) {
     case '0':
@@ -8658,24 +8842,16 @@ yy481:
     case 'r':
     case 's':
     case 't':
-    case 'u':
     case 'v':
     case 'w':
+    case 'x':
     case 'y':
     case 'z':    goto yy74;
-    case 'x':    goto yy483;
-    default:    goto yy482;
+    case 'u':    goto yy484;
+    default:    goto yy483;
     }
-yy482:
-    { m_brigId = Brig::BRIG_TYPE_F16;          return m_token = EMType;       }
 yy483:
-    yych = *++m_curPos;
-    switch (yych) {
-    case '2':    goto yy484;
-    case '4':    goto yy486;
-    case '8':    goto yy488;
-    default:    goto yy75;
-    }
+    { m_brigId = Brig::BRIG_COMPARE_EQ;        return m_token = EMCompare;    }
 yy484:
     ++m_curPos;
     switch ((yych = *m_curPos)) {
@@ -8723,7 +8899,6 @@ yy484:
     case 'f':
     case 'g':
     case 'h':
-    case 'i':
     case 'j':
     case 'k':
     case 'l':
@@ -8741,80 +8916,18 @@ yy484:
     case 'x':
     case 'y':
     case 'z':    goto yy74;
+    case 'i':    goto yy486;
     default:    goto yy485;
     }
 yy485:
-    { m_brigId = Brig::BRIG_TYPE_F16X2;        return m_token = EMType;       }
+    { m_brigId = Brig::BRIG_COMPARE_EQU;       return m_token = EMCompare;    }
 yy486:
-    ++m_curPos;
-    switch ((yych = *m_curPos)) {
-    case '0':
-    case '1':
-    case '2':
-    case '3':
-    case '4':
-    case '5':
-    case '6':
-    case '7':
-    case '8':
-    case '9':
-    case 'A':
-    case 'B':
-    case 'C':
-    case 'D':
-    case 'E':
-    case 'F':
-    case 'G':
-    case 'H':
-    case 'I':
-    case 'J':
-    case 'K':
-    case 'L':
-    case 'M':
-    case 'N':
-    case 'O':
-    case 'P':
-    case 'Q':
-    case 'R':
-    case 'S':
-    case 'T':
-    case 'U':
-    case 'V':
-    case 'W':
-    case 'X':
-    case 'Y':
-    case 'Z':
-    case 'a':
-    case 'b':
-    case 'c':
-    case 'd':
-    case 'e':
-    case 'f':
-    case 'g':
-    case 'h':
-    case 'i':
-    case 'j':
-    case 'k':
-    case 'l':
-    case 'm':
-    case 'n':
-    case 'o':
-    case 'p':
-    case 'q':
-    case 'r':
-    case 's':
-    case 't':
-    case 'u':
-    case 'v':
-    case 'w':
-    case 'x':
-    case 'y':
-    case 'z':    goto yy74;
-    default:    goto yy487;
+    yych = *++m_curPos;
+    switch (yych) {
+    case 'v':    goto yy487;
+    default:    goto yy75;
     }
 yy487:
-    { m_brigId = Brig::BRIG_TYPE_F16X4;        return m_token = EMType;       }
-yy488:
     ++m_curPos;
     switch ((yych = *m_curPos)) {
     case '0':
@@ -8879,159 +8992,50 @@ yy488:
     case 'x':
     case 'y':
     case 'z':    goto yy74;
-    default:    goto yy489;
+    default:    goto yy488;
     }
+yy488:
+    { return m_token = EMEquiv; }
 yy489:
-    { m_brigId = Brig::BRIG_TYPE_F16X8;        return m_token = EMType;       }
+    yych = *++m_curPos;
+    switch (yych) {
+    case 'h':    goto yy498;
+    default:    goto yy75;
+    }
 yy490:
     yych = *++m_curPos;
     switch (yych) {
-    case 'c':    goto yy498;
-    case 't':    goto yy499;
+    case 's':    goto yy491;
     default:    goto yy75;
     }
 yy491:
-    ++m_curPos;
-    switch ((yych = *m_curPos)) {
-    case '0':
-    case '1':
-    case '2':
-    case '3':
-    case '4':
-    case '5':
-    case '6':
-    case '7':
-    case '8':
-    case '9':
-    case 'A':
-    case 'B':
-    case 'C':
-    case 'D':
-    case 'E':
-    case 'F':
-    case 'G':
-    case 'H':
-    case 'I':
-    case 'J':
-    case 'K':
-    case 'L':
-    case 'M':
-    case 'N':
-    case 'O':
-    case 'P':
-    case 'Q':
-    case 'R':
-    case 'S':
-    case 'T':
-    case 'U':
-    case 'V':
-    case 'W':
-    case 'X':
-    case 'Y':
-    case 'Z':
-    case 'a':
-    case 'b':
-    case 'c':
-    case 'd':
-    case 'e':
-    case 'f':
-    case 'g':
-    case 'h':
-    case 'i':
-    case 'j':
-    case 'k':
-    case 'l':
-    case 'm':
-    case 'n':
-    case 'o':
-    case 'p':
-    case 'q':
-    case 'r':
-    case 's':
-    case 't':
-    case 'v':
-    case 'w':
-    case 'x':
-    case 'y':
-    case 'z':    goto yy74;
-    case 'u':    goto yy493;
-    default:    goto yy492;
+    yych = *++m_curPos;
+    switch (yych) {
+    case 'p':    goto yy492;
+    default:    goto yy75;
     }
 yy492:
-    { m_brigId = Brig::BRIG_COMPARE_EQ;        return m_token = EMCompare;    }
+    yych = *++m_curPos;
+    switch (yych) {
+    case 'a':    goto yy493;
+    default:    goto yy75;
+    }
 yy493:
-    ++m_curPos;
-    switch ((yych = *m_curPos)) {
-    case '0':
-    case '1':
-    case '2':
-    case '3':
-    case '4':
-    case '5':
-    case '6':
-    case '7':
-    case '8':
-    case '9':
-    case 'A':
-    case 'B':
-    case 'C':
-    case 'D':
-    case 'E':
-    case 'F':
-    case 'G':
-    case 'H':
-    case 'I':
-    case 'J':
-    case 'K':
-    case 'L':
-    case 'M':
-    case 'N':
-    case 'O':
-    case 'P':
-    case 'Q':
-    case 'R':
-    case 'S':
-    case 'T':
-    case 'U':
-    case 'V':
-    case 'W':
-    case 'X':
-    case 'Y':
-    case 'Z':
-    case 'a':
-    case 'b':
-    case 'c':
-    case 'd':
-    case 'e':
-    case 'f':
-    case 'g':
-    case 'h':
-    case 'j':
-    case 'k':
-    case 'l':
-    case 'm':
-    case 'n':
-    case 'o':
-    case 'p':
-    case 'q':
-    case 'r':
-    case 's':
-    case 't':
-    case 'u':
-    case 'v':
-    case 'w':
-    case 'x':
-    case 'y':
-    case 'z':    goto yy74;
-    case 'i':    goto yy495;
-    default:    goto yy494;
+    yych = *++m_curPos;
+    switch (yych) {
+    case 'c':    goto yy494;
+    default:    goto yy75;
     }
 yy494:
-    { m_brigId = Brig::BRIG_COMPARE_EQU;       return m_token = EMCompare;    }
+    yych = *++m_curPos;
+    switch (yych) {
+    case 'e':    goto yy495;
+    default:    goto yy75;
+    }
 yy495:
     yych = *++m_curPos;
     switch (yych) {
-    case 'v':    goto yy496;
+    case '0':    goto yy496;
     default:    goto yy75;
     }
 yy496:
@@ -9102,276 +9106,165 @@ yy496:
     default:    goto yy497;
     }
 yy497:
-    { return m_token = EMEquiv; }
+    { m_brigId = Brig::BRIG_SEGMENT_EXTSPACE0; return m_token = EMSegment;    }
 yy498:
-    yych = *++m_curPos;
-    switch (yych) {
-    case 'h':    goto yy507;
-    default:    goto yy75;
+    ++m_curPos;
+    switch ((yych = *m_curPos)) {
+    case '0':
+    case '1':
+    case '2':
+    case '3':
+    case '4':
+    case '5':
+    case '6':
+    case '7':
+    case '8':
+    case '9':
+    case 'A':
+    case 'B':
+    case 'C':
+    case 'D':
+    case 'E':
+    case 'F':
+    case 'G':
+    case 'H':
+    case 'I':
+    case 'J':
+    case 'K':
+    case 'L':
+    case 'M':
+    case 'N':
+    case 'O':
+    case 'P':
+    case 'Q':
+    case 'R':
+    case 'S':
+    case 'T':
+    case 'U':
+    case 'V':
+    case 'W':
+    case 'X':
+    case 'Y':
+    case 'Z':
+    case 'a':
+    case 'b':
+    case 'c':
+    case 'd':
+    case 'e':
+    case 'f':
+    case 'g':
+    case 'h':
+    case 'i':
+    case 'j':
+    case 'k':
+    case 'l':
+    case 'm':
+    case 'n':
+    case 'o':
+    case 'p':
+    case 'q':
+    case 'r':
+    case 's':
+    case 't':
+    case 'u':
+    case 'v':
+    case 'w':
+    case 'x':
+    case 'y':
+    case 'z':    goto yy74;
+    default:    goto yy499;
     }
 yy499:
-    yych = *++m_curPos;
-    switch (yych) {
-    case 's':    goto yy500;
-    default:    goto yy75;
-    }
+    { m_brigId = Brig::BRIG_ATOMIC_EXCH;       return m_token = EMAtomicOp;   }
 yy500:
     yych = *++m_curPos;
     switch (yych) {
-    case 'p':    goto yy501;
+    case 'c':    goto yy512;
     default:    goto yy75;
     }
 yy501:
     yych = *++m_curPos;
     switch (yych) {
-    case 'a':    goto yy502;
+    case 'w':    goto yy502;
     default:    goto yy75;
     }
 yy502:
     yych = *++m_curPos;
     switch (yych) {
-    case 'c':    goto yy503;
+    case 'n':    goto yy503;
     default:    goto yy75;
     }
 yy503:
-    yych = *++m_curPos;
-    switch (yych) {
-    case 'e':    goto yy504;
-    default:    goto yy75;
+    ++m_curPos;
+    switch ((yych = *m_curPos)) {
+    case '0':
+    case '1':
+    case '2':
+    case '3':
+    case '4':
+    case '5':
+    case '6':
+    case '7':
+    case '8':
+    case '9':
+    case 'A':
+    case 'B':
+    case 'C':
+    case 'D':
+    case 'E':
+    case 'F':
+    case 'G':
+    case 'H':
+    case 'I':
+    case 'J':
+    case 'K':
+    case 'L':
+    case 'M':
+    case 'N':
+    case 'O':
+    case 'P':
+    case 'Q':
+    case 'R':
+    case 'S':
+    case 'T':
+    case 'U':
+    case 'V':
+    case 'W':
+    case 'X':
+    case 'Y':
+    case 'Z':
+    case 'a':
+    case 'b':
+    case 'c':
+    case 'd':
+    case 'e':
+    case 'f':
+    case 'g':
+    case 'h':
+    case 'j':
+    case 'k':
+    case 'l':
+    case 'm':
+    case 'n':
+    case 'o':
+    case 'p':
+    case 'q':
+    case 'r':
+    case 's':
+    case 't':
+    case 'u':
+    case 'v':
+    case 'w':
+    case 'x':
+    case 'y':
+    case 'z':    goto yy74;
+    case 'i':    goto yy505;
+    default:    goto yy504;
     }
 yy504:
-    yych = *++m_curPos;
-    switch (yych) {
-    case '0':    goto yy505;
-    default:    goto yy75;
-    }
-yy505:
-    ++m_curPos;
-    switch ((yych = *m_curPos)) {
-    case '0':
-    case '1':
-    case '2':
-    case '3':
-    case '4':
-    case '5':
-    case '6':
-    case '7':
-    case '8':
-    case '9':
-    case 'A':
-    case 'B':
-    case 'C':
-    case 'D':
-    case 'E':
-    case 'F':
-    case 'G':
-    case 'H':
-    case 'I':
-    case 'J':
-    case 'K':
-    case 'L':
-    case 'M':
-    case 'N':
-    case 'O':
-    case 'P':
-    case 'Q':
-    case 'R':
-    case 'S':
-    case 'T':
-    case 'U':
-    case 'V':
-    case 'W':
-    case 'X':
-    case 'Y':
-    case 'Z':
-    case 'a':
-    case 'b':
-    case 'c':
-    case 'd':
-    case 'e':
-    case 'f':
-    case 'g':
-    case 'h':
-    case 'i':
-    case 'j':
-    case 'k':
-    case 'l':
-    case 'm':
-    case 'n':
-    case 'o':
-    case 'p':
-    case 'q':
-    case 'r':
-    case 's':
-    case 't':
-    case 'u':
-    case 'v':
-    case 'w':
-    case 'x':
-    case 'y':
-    case 'z':    goto yy74;
-    default:    goto yy506;
-    }
-yy506:
-    { m_brigId = Brig::BRIG_SEGMENT_EXTSPACE0; return m_token = EMSegment;    }
-yy507:
-    ++m_curPos;
-    switch ((yych = *m_curPos)) {
-    case '0':
-    case '1':
-    case '2':
-    case '3':
-    case '4':
-    case '5':
-    case '6':
-    case '7':
-    case '8':
-    case '9':
-    case 'A':
-    case 'B':
-    case 'C':
-    case 'D':
-    case 'E':
-    case 'F':
-    case 'G':
-    case 'H':
-    case 'I':
-    case 'J':
-    case 'K':
-    case 'L':
-    case 'M':
-    case 'N':
-    case 'O':
-    case 'P':
-    case 'Q':
-    case 'R':
-    case 'S':
-    case 'T':
-    case 'U':
-    case 'V':
-    case 'W':
-    case 'X':
-    case 'Y':
-    case 'Z':
-    case 'a':
-    case 'b':
-    case 'c':
-    case 'd':
-    case 'e':
-    case 'f':
-    case 'g':
-    case 'h':
-    case 'i':
-    case 'j':
-    case 'k':
-    case 'l':
-    case 'm':
-    case 'n':
-    case 'o':
-    case 'p':
-    case 'q':
-    case 'r':
-    case 's':
-    case 't':
-    case 'u':
-    case 'v':
-    case 'w':
-    case 'x':
-    case 'y':
-    case 'z':    goto yy74;
-    default:    goto yy508;
-    }
-yy508:
-    { m_brigId = Brig::BRIG_ATOMIC_EXCH;       return m_token = EMAtomicOp;   }
-yy509:
-    yych = *++m_curPos;
-    switch (yych) {
-    case 'c':    goto yy521;
-    default:    goto yy75;
-    }
-yy510:
-    yych = *++m_curPos;
-    switch (yych) {
-    case 'w':    goto yy511;
-    default:    goto yy75;
-    }
-yy511:
-    yych = *++m_curPos;
-    switch (yych) {
-    case 'n':    goto yy512;
-    default:    goto yy75;
-    }
-yy512:
-    ++m_curPos;
-    switch ((yych = *m_curPos)) {
-    case '0':
-    case '1':
-    case '2':
-    case '3':
-    case '4':
-    case '5':
-    case '6':
-    case '7':
-    case '8':
-    case '9':
-    case 'A':
-    case 'B':
-    case 'C':
-    case 'D':
-    case 'E':
-    case 'F':
-    case 'G':
-    case 'H':
-    case 'I':
-    case 'J':
-    case 'K':
-    case 'L':
-    case 'M':
-    case 'N':
-    case 'O':
-    case 'P':
-    case 'Q':
-    case 'R':
-    case 'S':
-    case 'T':
-    case 'U':
-    case 'V':
-    case 'W':
-    case 'X':
-    case 'Y':
-    case 'Z':
-    case 'a':
-    case 'b':
-    case 'c':
-    case 'd':
-    case 'e':
-    case 'f':
-    case 'g':
-    case 'h':
-    case 'j':
-    case 'k':
-    case 'l':
-    case 'm':
-    case 'n':
-    case 'o':
-    case 'p':
-    case 'q':
-    case 'r':
-    case 's':
-    case 't':
-    case 'u':
-    case 'v':
-    case 'w':
-    case 'x':
-    case 'y':
-    case 'z':    goto yy74;
-    case 'i':    goto yy514;
-    default:    goto yy513;
-    }
-yy513:
     { m_brigId = Brig::BRIG_ROUND_FLOAT_MINUS_INFINITY; return m_token = EMRound;      }
-yy514:
-    yyaccept = 12;
+yy505:
+    yyaccept = 11;
     yych = *(marker = ++m_curPos);
     switch (yych) {
     case '0':
@@ -9436,32 +9329,257 @@ yy514:
     case 'x':
     case 'y':
     case 'z':    goto yy74;
-    case '_':    goto yy516;
-    default:    goto yy515;
+    case '_':    goto yy507;
+    default:    goto yy506;
     }
-yy515:
+yy506:
     { m_brigId = Brig::BRIG_ROUND_INTEGER_MINUS_INFINITY; return m_token = EMRound;      }
-yy516:
+yy507:
     yych = *++m_curPos;
     switch (yych) {
-    case 's':    goto yy517;
+    case 's':    goto yy508;
     default:    goto yy73;
     }
-yy517:
+yy508:
     yych = *++m_curPos;
     switch (yych) {
-    case 'a':    goto yy518;
+    case 'a':    goto yy509;
     default:    goto yy73;
     }
-yy518:
+yy509:
     yych = *++m_curPos;
     switch (yych) {
-    case 't':    goto yy519;
+    case 't':    goto yy510;
     default:    goto yy73;
     }
-yy519:
+yy510:
     ++m_curPos;
     { m_brigId = Brig::BRIG_ROUND_INTEGER_MINUS_INFINITY_SAT; return m_token = EMRound;      }
+yy512:
+    ++m_curPos;
+    switch ((yych = *m_curPos)) {
+    case '0':
+    case '1':
+    case '2':
+    case '3':
+    case '4':
+    case '5':
+    case '6':
+    case '7':
+    case '8':
+    case '9':
+    case 'A':
+    case 'B':
+    case 'C':
+    case 'D':
+    case 'E':
+    case 'F':
+    case 'G':
+    case 'H':
+    case 'I':
+    case 'J':
+    case 'K':
+    case 'L':
+    case 'M':
+    case 'N':
+    case 'O':
+    case 'P':
+    case 'Q':
+    case 'R':
+    case 'S':
+    case 'T':
+    case 'U':
+    case 'V':
+    case 'W':
+    case 'X':
+    case 'Y':
+    case 'Z':
+    case 'a':
+    case 'b':
+    case 'c':
+    case 'd':
+    case 'e':
+    case 'f':
+    case 'g':
+    case 'h':
+    case 'i':
+    case 'j':
+    case 'k':
+    case 'l':
+    case 'm':
+    case 'n':
+    case 'o':
+    case 'p':
+    case 'q':
+    case 'r':
+    case 's':
+    case 't':
+    case 'u':
+    case 'v':
+    case 'w':
+    case 'x':
+    case 'y':
+    case 'z':    goto yy74;
+    default:    goto yy513;
+    }
+yy513:
+    { m_brigId = Brig::BRIG_ATOMIC_DEC;        return m_token = EMAtomicOp;   }
+yy514:
+    yych = *++m_curPos;
+    switch (yych) {
+    case 's':    goto yy515;
+    default:    goto yy75;
+    }
+yy515:
+    ++m_curPos;
+    switch ((yych = *m_curPos)) {
+    case '0':
+    case '1':
+    case '2':
+    case '3':
+    case '4':
+    case '5':
+    case '6':
+    case '7':
+    case '8':
+    case '9':
+    case 'A':
+    case 'B':
+    case 'C':
+    case 'D':
+    case 'E':
+    case 'F':
+    case 'G':
+    case 'H':
+    case 'I':
+    case 'J':
+    case 'K':
+    case 'L':
+    case 'M':
+    case 'N':
+    case 'O':
+    case 'P':
+    case 'Q':
+    case 'R':
+    case 'S':
+    case 'T':
+    case 'U':
+    case 'V':
+    case 'W':
+    case 'X':
+    case 'Y':
+    case 'Z':
+    case 'a':
+    case 'b':
+    case 'c':
+    case 'd':
+    case 'e':
+    case 'f':
+    case 'g':
+    case 'h':
+    case 'i':
+    case 'j':
+    case 'k':
+    case 'l':
+    case 'm':
+    case 'n':
+    case 'o':
+    case 'p':
+    case 'q':
+    case 'r':
+    case 's':
+    case 't':
+    case 'u':
+    case 'v':
+    case 'w':
+    case 'x':
+    case 'y':
+    case 'z':    goto yy74;
+    default:    goto yy516;
+    }
+yy516:
+    { m_brigId = Brig::BRIG_ATOMIC_CAS;        return m_token = EMAtomicOp;   }
+yy517:
+    ++m_curPos;
+    switch ((yych = *m_curPos)) {
+    case '0':
+    case '1':
+    case '3':
+    case '4':
+    case '5':
+    case '7':
+    case '8':
+    case '9':
+    case 'A':
+    case 'B':
+    case 'C':
+    case 'D':
+    case 'E':
+    case 'F':
+    case 'G':
+    case 'H':
+    case 'I':
+    case 'J':
+    case 'K':
+    case 'L':
+    case 'M':
+    case 'N':
+    case 'O':
+    case 'P':
+    case 'Q':
+    case 'R':
+    case 'S':
+    case 'T':
+    case 'U':
+    case 'V':
+    case 'W':
+    case 'X':
+    case 'Y':
+    case 'Z':
+    case 'a':
+    case 'b':
+    case 'c':
+    case 'd':
+    case 'e':
+    case 'f':
+    case 'g':
+    case 'h':
+    case 'i':
+    case 'j':
+    case 'k':
+    case 'l':
+    case 'm':
+    case 'n':
+    case 'o':
+    case 'p':
+    case 'q':
+    case 'r':
+    case 's':
+    case 't':
+    case 'u':
+    case 'v':
+    case 'w':
+    case 'x':
+    case 'y':
+    case 'z':    goto yy74;
+    case '2':    goto yy527;
+    case '6':    goto yy528;
+    default:    goto yy518;
+    }
+yy518:
+    { m_brigId = Brig::BRIG_TYPE_B1;           return m_token = EMType;       }
+yy519:
+    yych = *++m_curPos;
+    switch (yych) {
+    case '2':    goto yy525;
+    default:    goto yy75;
+    }
+yy520:
+    yych = *++m_curPos;
+    switch (yych) {
+    case '4':    goto yy523;
+    default:    goto yy75;
+    }
 yy521:
     ++m_curPos;
     switch ((yych = *m_curPos)) {
@@ -9530,14 +9648,8 @@ yy521:
     default:    goto yy522;
     }
 yy522:
-    { m_brigId = Brig::BRIG_ATOMIC_DEC;        return m_token = EMAtomicOp;   }
+    { m_brigId = Brig::BRIG_TYPE_B8;           return m_token = EMType;       }
 yy523:
-    yych = *++m_curPos;
-    switch (yych) {
-    case 's':    goto yy524;
-    default:    goto yy75;
-    }
-yy524:
     ++m_curPos;
     switch ((yych = *m_curPos)) {
     case '0':
@@ -9602,18 +9714,20 @@ yy524:
     case 'x':
     case 'y':
     case 'z':    goto yy74;
-    default:    goto yy525;
+    default:    goto yy524;
     }
+yy524:
+    { m_brigId = Brig::BRIG_TYPE_B64;          return m_token = EMType;       }
 yy525:
-    { m_brigId = Brig::BRIG_ATOMIC_CAS;        return m_token = EMAtomicOp;   }
-yy526:
     ++m_curPos;
     switch ((yych = *m_curPos)) {
     case '0':
     case '1':
+    case '2':
     case '3':
     case '4':
     case '5':
+    case '6':
     case '7':
     case '8':
     case '9':
@@ -9669,24 +9783,85 @@ yy526:
     case 'x':
     case 'y':
     case 'z':    goto yy74;
-    case '2':    goto yy540;
-    case '6':    goto yy541;
-    default:    goto yy527;
+    default:    goto yy526;
     }
+yy526:
+    { m_brigId = Brig::BRIG_TYPE_B32;          return m_token = EMType;       }
 yy527:
-    { m_brigId = Brig::BRIG_TYPE_B1;           return m_token = EMType;       }
-yy528:
     yych = *++m_curPos;
     switch (yych) {
-    case '2':    goto yy538;
+    case '8':    goto yy530;
     default:    goto yy75;
+    }
+yy528:
+    ++m_curPos;
+    switch ((yych = *m_curPos)) {
+    case '0':
+    case '1':
+    case '2':
+    case '3':
+    case '4':
+    case '5':
+    case '6':
+    case '7':
+    case '8':
+    case '9':
+    case 'A':
+    case 'B':
+    case 'C':
+    case 'D':
+    case 'E':
+    case 'F':
+    case 'G':
+    case 'H':
+    case 'I':
+    case 'J':
+    case 'K':
+    case 'L':
+    case 'M':
+    case 'N':
+    case 'O':
+    case 'P':
+    case 'Q':
+    case 'R':
+    case 'S':
+    case 'T':
+    case 'U':
+    case 'V':
+    case 'W':
+    case 'X':
+    case 'Y':
+    case 'Z':
+    case 'a':
+    case 'b':
+    case 'c':
+    case 'd':
+    case 'e':
+    case 'f':
+    case 'g':
+    case 'h':
+    case 'i':
+    case 'j':
+    case 'k':
+    case 'l':
+    case 'm':
+    case 'n':
+    case 'o':
+    case 'p':
+    case 'q':
+    case 'r':
+    case 's':
+    case 't':
+    case 'u':
+    case 'v':
+    case 'w':
+    case 'x':
+    case 'y':
+    case 'z':    goto yy74;
+    default:    goto yy529;
     }
 yy529:
-    yych = *++m_curPos;
-    switch (yych) {
-    case '4':    goto yy536;
-    default:    goto yy75;
-    }
+    { m_brigId = Brig::BRIG_TYPE_B16;          return m_token = EMType;       }
 yy530:
     ++m_curPos;
     switch ((yych = *m_curPos)) {
@@ -9755,376 +9930,262 @@ yy530:
     default:    goto yy531;
     }
 yy531:
-    { m_brigId = Brig::BRIG_TYPE_B8;           return m_token = EMType;       }
+    { m_brigId = Brig::BRIG_TYPE_B128;         return m_token = EMType;       }
 yy532:
     yych = *++m_curPos;
     switch (yych) {
-    case 't':    goto yy533;
+    case 'q':    goto yy550;
     default:    goto yy75;
     }
 yy533:
-    yych = *++m_curPos;
-    switch (yych) {
-    case 'h':    goto yy534;
-    default:    goto yy75;
+    ++m_curPos;
+    switch ((yych = *m_curPos)) {
+    case '0':
+    case '1':
+    case '2':
+    case '3':
+    case '4':
+    case '5':
+    case '6':
+    case '7':
+    case '8':
+    case '9':
+    case 'A':
+    case 'B':
+    case 'C':
+    case 'D':
+    case 'E':
+    case 'F':
+    case 'G':
+    case 'H':
+    case 'I':
+    case 'J':
+    case 'K':
+    case 'L':
+    case 'M':
+    case 'N':
+    case 'O':
+    case 'P':
+    case 'Q':
+    case 'R':
+    case 'S':
+    case 'T':
+    case 'U':
+    case 'V':
+    case 'W':
+    case 'X':
+    case 'Y':
+    case 'Z':
+    case 'a':
+    case 'b':
+    case 'c':
+    case 'd':
+    case 'e':
+    case 'f':
+    case 'h':
+    case 'i':
+    case 'j':
+    case 'k':
+    case 'l':
+    case 'm':
+    case 'n':
+    case 'o':
+    case 'p':
+    case 'q':
+    case 'r':
+    case 's':
+    case 't':
+    case 'u':
+    case 'v':
+    case 'w':
+    case 'x':
+    case 'y':
+    case 'z':    goto yy74;
+    case 'g':    goto yy548;
+    default:    goto yy534;
     }
 yy534:
-    ++m_curPos;
-    switch ((yych = *m_curPos)) {
-    case '0':
-    case '1':
-    case '2':
-    case '3':
-    case '4':
-    case '5':
-    case '6':
-    case '7':
-    case '8':
-    case '9':
-    case 'A':
-    case 'B':
-    case 'C':
-    case 'D':
-    case 'E':
-    case 'F':
-    case 'G':
-    case 'H':
-    case 'I':
-    case 'J':
-    case 'K':
-    case 'L':
-    case 'M':
-    case 'N':
-    case 'O':
-    case 'P':
-    case 'Q':
-    case 'R':
-    case 'S':
-    case 'T':
-    case 'U':
-    case 'V':
-    case 'W':
-    case 'X':
-    case 'Y':
-    case 'Z':
-    case 'a':
-    case 'b':
-    case 'c':
-    case 'd':
-    case 'e':
-    case 'f':
-    case 'g':
-    case 'h':
-    case 'i':
-    case 'j':
-    case 'k':
-    case 'l':
-    case 'm':
-    case 'n':
-    case 'o':
-    case 'p':
-    case 'q':
-    case 'r':
-    case 's':
-    case 't':
-    case 'u':
-    case 'v':
-    case 'w':
-    case 'x':
-    case 'y':
-    case 'z':    goto yy74;
-    default:    goto yy535;
-    }
+    { m_brigId = Brig::BRIG_SEMANTIC_ACQUIRE_RELEASE; return m_token = EMSemantics;  }
 yy535:
-    { m_brigId = Brig::BRIG_FENCE_BOTH;          return m_token = EMMemoryFence; }
+    yych = *++m_curPos;
+    switch (yych) {
+    case 'd':    goto yy546;
+    default:    goto yy75;
+    }
 yy536:
-    ++m_curPos;
-    switch ((yych = *m_curPos)) {
-    case '0':
-    case '1':
-    case '2':
-    case '3':
-    case '4':
-    case '5':
-    case '6':
-    case '7':
-    case '8':
-    case '9':
-    case 'A':
-    case 'B':
-    case 'C':
-    case 'D':
-    case 'E':
-    case 'F':
-    case 'G':
-    case 'H':
-    case 'I':
-    case 'J':
-    case 'K':
-    case 'L':
-    case 'M':
-    case 'N':
-    case 'O':
-    case 'P':
-    case 'Q':
-    case 'R':
-    case 'S':
-    case 'T':
-    case 'U':
-    case 'V':
-    case 'W':
-    case 'X':
-    case 'Y':
-    case 'Z':
-    case 'a':
-    case 'b':
-    case 'c':
-    case 'd':
-    case 'e':
-    case 'f':
-    case 'g':
-    case 'h':
-    case 'i':
-    case 'j':
-    case 'k':
-    case 'l':
-    case 'm':
-    case 'n':
-    case 'o':
-    case 'p':
-    case 'q':
-    case 'r':
-    case 's':
-    case 't':
-    case 'u':
-    case 'v':
-    case 'w':
-    case 'x':
-    case 'y':
-    case 'z':    goto yy74;
-    default:    goto yy537;
+    yych = *++m_curPos;
+    switch (yych) {
+    case 'd':    goto yy544;
+    default:    goto yy75;
     }
 yy537:
-    { m_brigId = Brig::BRIG_TYPE_B64;          return m_token = EMType;       }
+    yych = *++m_curPos;
+    switch (yych) {
+    case 'i':    goto yy538;
+    default:    goto yy75;
+    }
 yy538:
-    ++m_curPos;
-    switch ((yych = *m_curPos)) {
-    case '0':
-    case '1':
-    case '2':
-    case '3':
-    case '4':
-    case '5':
-    case '6':
-    case '7':
-    case '8':
-    case '9':
-    case 'A':
-    case 'B':
-    case 'C':
-    case 'D':
-    case 'E':
-    case 'F':
-    case 'G':
-    case 'H':
-    case 'I':
-    case 'J':
-    case 'K':
-    case 'L':
-    case 'M':
-    case 'N':
-    case 'O':
-    case 'P':
-    case 'Q':
-    case 'R':
-    case 'S':
-    case 'T':
-    case 'U':
-    case 'V':
-    case 'W':
-    case 'X':
-    case 'Y':
-    case 'Z':
-    case 'a':
-    case 'b':
-    case 'c':
-    case 'd':
-    case 'e':
-    case 'f':
-    case 'g':
-    case 'h':
-    case 'i':
-    case 'j':
-    case 'k':
-    case 'l':
-    case 'm':
-    case 'n':
-    case 'o':
-    case 'p':
-    case 'q':
-    case 'r':
-    case 's':
-    case 't':
-    case 'u':
-    case 'v':
-    case 'w':
-    case 'x':
-    case 'y':
-    case 'z':    goto yy74;
-    default:    goto yy539;
+    yych = *++m_curPos;
+    switch (yych) {
+    case 'g':    goto yy539;
+    default:    goto yy75;
     }
 yy539:
-    { m_brigId = Brig::BRIG_TYPE_B32;          return m_token = EMType;       }
+    yych = *++m_curPos;
+    switch (yych) {
+    case 'n':    goto yy540;
+    default:    goto yy75;
+    }
 yy540:
     yych = *++m_curPos;
     switch (yych) {
-    case '8':    goto yy543;
+    case 'e':    goto yy541;
     default:    goto yy75;
     }
 yy541:
-    ++m_curPos;
-    switch ((yych = *m_curPos)) {
-    case '0':
-    case '1':
-    case '2':
-    case '3':
-    case '4':
-    case '5':
-    case '6':
-    case '7':
-    case '8':
-    case '9':
-    case 'A':
-    case 'B':
-    case 'C':
-    case 'D':
-    case 'E':
-    case 'F':
-    case 'G':
-    case 'H':
-    case 'I':
-    case 'J':
-    case 'K':
-    case 'L':
-    case 'M':
-    case 'N':
-    case 'O':
-    case 'P':
-    case 'Q':
-    case 'R':
-    case 'S':
-    case 'T':
-    case 'U':
-    case 'V':
-    case 'W':
-    case 'X':
-    case 'Y':
-    case 'Z':
-    case 'a':
-    case 'b':
-    case 'c':
-    case 'd':
-    case 'e':
-    case 'f':
-    case 'g':
-    case 'h':
-    case 'i':
-    case 'j':
-    case 'k':
-    case 'l':
-    case 'm':
-    case 'n':
-    case 'o':
-    case 'p':
-    case 'q':
-    case 'r':
-    case 's':
-    case 't':
-    case 'u':
-    case 'v':
-    case 'w':
-    case 'x':
-    case 'y':
-    case 'z':    goto yy74;
-    default:    goto yy542;
-    }
-yy542:
-    { m_brigId = Brig::BRIG_TYPE_B16;          return m_token = EMType;       }
-yy543:
-    ++m_curPos;
-    switch ((yych = *m_curPos)) {
-    case '0':
-    case '1':
-    case '2':
-    case '3':
-    case '4':
-    case '5':
-    case '6':
-    case '7':
-    case '8':
-    case '9':
-    case 'A':
-    case 'B':
-    case 'C':
-    case 'D':
-    case 'E':
-    case 'F':
-    case 'G':
-    case 'H':
-    case 'I':
-    case 'J':
-    case 'K':
-    case 'L':
-    case 'M':
-    case 'N':
-    case 'O':
-    case 'P':
-    case 'Q':
-    case 'R':
-    case 'S':
-    case 'T':
-    case 'U':
-    case 'V':
-    case 'W':
-    case 'X':
-    case 'Y':
-    case 'Z':
-    case 'a':
-    case 'b':
-    case 'c':
-    case 'd':
-    case 'e':
-    case 'f':
-    case 'g':
-    case 'h':
-    case 'i':
-    case 'j':
-    case 'k':
-    case 'l':
-    case 'm':
-    case 'n':
-    case 'o':
-    case 'p':
-    case 'q':
-    case 'r':
-    case 's':
-    case 't':
-    case 'u':
-    case 'v':
-    case 'w':
-    case 'x':
-    case 'y':
-    case 'z':    goto yy74;
-    default:    goto yy544;
-    }
-yy544:
-    { m_brigId = Brig::BRIG_TYPE_B128;         return m_token = EMType;       }
-yy545:
     yych = *++m_curPos;
     switch (yych) {
-    case 'q':    goto yy563;
+    case 'd':    goto yy542;
     default:    goto yy75;
     }
+yy542:
+    ++m_curPos;
+    switch ((yych = *m_curPos)) {
+    case '0':
+    case '1':
+    case '2':
+    case '3':
+    case '4':
+    case '5':
+    case '6':
+    case '7':
+    case '8':
+    case '9':
+    case 'A':
+    case 'B':
+    case 'C':
+    case 'D':
+    case 'E':
+    case 'F':
+    case 'G':
+    case 'H':
+    case 'I':
+    case 'J':
+    case 'K':
+    case 'L':
+    case 'M':
+    case 'N':
+    case 'O':
+    case 'P':
+    case 'Q':
+    case 'R':
+    case 'S':
+    case 'T':
+    case 'U':
+    case 'V':
+    case 'W':
+    case 'X':
+    case 'Y':
+    case 'Z':
+    case 'a':
+    case 'b':
+    case 'c':
+    case 'd':
+    case 'e':
+    case 'f':
+    case 'g':
+    case 'h':
+    case 'i':
+    case 'j':
+    case 'k':
+    case 'l':
+    case 'm':
+    case 'n':
+    case 'o':
+    case 'p':
+    case 'q':
+    case 'r':
+    case 's':
+    case 't':
+    case 'u':
+    case 'v':
+    case 'w':
+    case 'x':
+    case 'y':
+    case 'z':    goto yy74;
+    default:    goto yy543;
+    }
+yy543:
+    { m_brigId = Brig::BRIG_MEMORY_ALIGNED; return m_token = EMAligned; }
+yy544:
+    ++m_curPos;
+    switch ((yych = *m_curPos)) {
+    case '0':
+    case '1':
+    case '2':
+    case '3':
+    case '4':
+    case '5':
+    case '6':
+    case '7':
+    case '8':
+    case '9':
+    case 'A':
+    case 'B':
+    case 'C':
+    case 'D':
+    case 'E':
+    case 'F':
+    case 'G':
+    case 'H':
+    case 'I':
+    case 'J':
+    case 'K':
+    case 'L':
+    case 'M':
+    case 'N':
+    case 'O':
+    case 'P':
+    case 'Q':
+    case 'R':
+    case 'S':
+    case 'T':
+    case 'U':
+    case 'V':
+    case 'W':
+    case 'X':
+    case 'Y':
+    case 'Z':
+    case 'a':
+    case 'b':
+    case 'c':
+    case 'd':
+    case 'e':
+    case 'f':
+    case 'g':
+    case 'h':
+    case 'i':
+    case 'j':
+    case 'k':
+    case 'l':
+    case 'm':
+    case 'n':
+    case 'o':
+    case 'p':
+    case 'q':
+    case 'r':
+    case 's':
+    case 't':
+    case 'u':
+    case 'v':
+    case 'w':
+    case 'x':
+    case 'y':
+    case 'z':    goto yy74;
+    default:    goto yy545;
+    }
+yy545:
+    { m_brigId = Brig::BRIG_ATOMIC_AND;        return m_token = EMAtomicOp;   }
 yy546:
     ++m_curPos;
     switch ((yych = *m_curPos)) {
@@ -10170,6 +10231,7 @@ yy546:
     case 'd':
     case 'e':
     case 'f':
+    case 'g':
     case 'h':
     case 'i':
     case 'j':
@@ -10189,397 +10251,147 @@ yy546:
     case 'x':
     case 'y':
     case 'z':    goto yy74;
-    case 'g':    goto yy561;
     default:    goto yy547;
     }
 yy547:
-    { m_brigId = Brig::BRIG_SEMANTIC_ACQUIRE_RELEASE; return m_token = EMSemantics;  }
+    { m_brigId = Brig::BRIG_ATOMIC_ADD;        return m_token = EMAtomicOp;   }
 yy548:
-    yych = *++m_curPos;
-    switch (yych) {
-    case 'd':    goto yy559;
-    default:    goto yy75;
+    ++m_curPos;
+    switch ((yych = *m_curPos)) {
+    case '0':
+    case '1':
+    case '2':
+    case '3':
+    case '4':
+    case '5':
+    case '6':
+    case '7':
+    case '8':
+    case '9':
+    case 'A':
+    case 'B':
+    case 'C':
+    case 'D':
+    case 'E':
+    case 'F':
+    case 'G':
+    case 'H':
+    case 'I':
+    case 'J':
+    case 'K':
+    case 'L':
+    case 'M':
+    case 'N':
+    case 'O':
+    case 'P':
+    case 'Q':
+    case 'R':
+    case 'S':
+    case 'T':
+    case 'U':
+    case 'V':
+    case 'W':
+    case 'X':
+    case 'Y':
+    case 'Z':
+    case 'a':
+    case 'b':
+    case 'c':
+    case 'd':
+    case 'e':
+    case 'f':
+    case 'g':
+    case 'h':
+    case 'i':
+    case 'j':
+    case 'k':
+    case 'l':
+    case 'm':
+    case 'n':
+    case 'o':
+    case 'p':
+    case 'q':
+    case 'r':
+    case 's':
+    case 't':
+    case 'u':
+    case 'v':
+    case 'w':
+    case 'x':
+    case 'y':
+    case 'z':    goto yy74;
+    default:    goto yy549;
     }
 yy549:
-    yych = *++m_curPos;
-    switch (yych) {
-    case 'd':    goto yy557;
-    default:    goto yy75;
-    }
+    { m_brigId = Brig::BRIG_SEGMENT_ARG;       return m_token = EMSegment;    }
 yy550:
-    yych = *++m_curPos;
-    switch (yych) {
-    case 'i':    goto yy551;
-    default:    goto yy75;
+    ++m_curPos;
+    switch ((yych = *m_curPos)) {
+    case '0':
+    case '1':
+    case '2':
+    case '3':
+    case '4':
+    case '5':
+    case '6':
+    case '7':
+    case '8':
+    case '9':
+    case 'A':
+    case 'B':
+    case 'C':
+    case 'D':
+    case 'E':
+    case 'F':
+    case 'G':
+    case 'H':
+    case 'I':
+    case 'J':
+    case 'K':
+    case 'L':
+    case 'M':
+    case 'N':
+    case 'O':
+    case 'P':
+    case 'Q':
+    case 'R':
+    case 'S':
+    case 'T':
+    case 'U':
+    case 'V':
+    case 'W':
+    case 'X':
+    case 'Y':
+    case 'Z':
+    case 'a':
+    case 'b':
+    case 'c':
+    case 'd':
+    case 'e':
+    case 'f':
+    case 'g':
+    case 'h':
+    case 'i':
+    case 'j':
+    case 'k':
+    case 'l':
+    case 'm':
+    case 'n':
+    case 'o':
+    case 'p':
+    case 'q':
+    case 'r':
+    case 's':
+    case 't':
+    case 'u':
+    case 'v':
+    case 'w':
+    case 'x':
+    case 'y':
+    case 'z':    goto yy74;
+    default:    goto yy551;
     }
 yy551:
-    yych = *++m_curPos;
-    switch (yych) {
-    case 'g':    goto yy552;
-    default:    goto yy75;
-    }
-yy552:
-    yych = *++m_curPos;
-    switch (yych) {
-    case 'n':    goto yy553;
-    default:    goto yy75;
-    }
-yy553:
-    yych = *++m_curPos;
-    switch (yych) {
-    case 'e':    goto yy554;
-    default:    goto yy75;
-    }
-yy554:
-    yych = *++m_curPos;
-    switch (yych) {
-    case 'd':    goto yy555;
-    default:    goto yy75;
-    }
-yy555:
-    ++m_curPos;
-    switch ((yych = *m_curPos)) {
-    case '0':
-    case '1':
-    case '2':
-    case '3':
-    case '4':
-    case '5':
-    case '6':
-    case '7':
-    case '8':
-    case '9':
-    case 'A':
-    case 'B':
-    case 'C':
-    case 'D':
-    case 'E':
-    case 'F':
-    case 'G':
-    case 'H':
-    case 'I':
-    case 'J':
-    case 'K':
-    case 'L':
-    case 'M':
-    case 'N':
-    case 'O':
-    case 'P':
-    case 'Q':
-    case 'R':
-    case 'S':
-    case 'T':
-    case 'U':
-    case 'V':
-    case 'W':
-    case 'X':
-    case 'Y':
-    case 'Z':
-    case 'a':
-    case 'b':
-    case 'c':
-    case 'd':
-    case 'e':
-    case 'f':
-    case 'g':
-    case 'h':
-    case 'i':
-    case 'j':
-    case 'k':
-    case 'l':
-    case 'm':
-    case 'n':
-    case 'o':
-    case 'p':
-    case 'q':
-    case 'r':
-    case 's':
-    case 't':
-    case 'u':
-    case 'v':
-    case 'w':
-    case 'x':
-    case 'y':
-    case 'z':    goto yy74;
-    default:    goto yy556;
-    }
-yy556:
-    { m_brigId = Brig::BRIG_MEMORY_ALIGNED; return m_token = EMAligned; }
-yy557:
-    ++m_curPos;
-    switch ((yych = *m_curPos)) {
-    case '0':
-    case '1':
-    case '2':
-    case '3':
-    case '4':
-    case '5':
-    case '6':
-    case '7':
-    case '8':
-    case '9':
-    case 'A':
-    case 'B':
-    case 'C':
-    case 'D':
-    case 'E':
-    case 'F':
-    case 'G':
-    case 'H':
-    case 'I':
-    case 'J':
-    case 'K':
-    case 'L':
-    case 'M':
-    case 'N':
-    case 'O':
-    case 'P':
-    case 'Q':
-    case 'R':
-    case 'S':
-    case 'T':
-    case 'U':
-    case 'V':
-    case 'W':
-    case 'X':
-    case 'Y':
-    case 'Z':
-    case 'a':
-    case 'b':
-    case 'c':
-    case 'd':
-    case 'e':
-    case 'f':
-    case 'g':
-    case 'h':
-    case 'i':
-    case 'j':
-    case 'k':
-    case 'l':
-    case 'm':
-    case 'n':
-    case 'o':
-    case 'p':
-    case 'q':
-    case 'r':
-    case 's':
-    case 't':
-    case 'u':
-    case 'v':
-    case 'w':
-    case 'x':
-    case 'y':
-    case 'z':    goto yy74;
-    default:    goto yy558;
-    }
-yy558:
-    { m_brigId = Brig::BRIG_ATOMIC_AND;        return m_token = EMAtomicOp;   }
-yy559:
-    ++m_curPos;
-    switch ((yych = *m_curPos)) {
-    case '0':
-    case '1':
-    case '2':
-    case '3':
-    case '4':
-    case '5':
-    case '6':
-    case '7':
-    case '8':
-    case '9':
-    case 'A':
-    case 'B':
-    case 'C':
-    case 'D':
-    case 'E':
-    case 'F':
-    case 'G':
-    case 'H':
-    case 'I':
-    case 'J':
-    case 'K':
-    case 'L':
-    case 'M':
-    case 'N':
-    case 'O':
-    case 'P':
-    case 'Q':
-    case 'R':
-    case 'S':
-    case 'T':
-    case 'U':
-    case 'V':
-    case 'W':
-    case 'X':
-    case 'Y':
-    case 'Z':
-    case 'a':
-    case 'b':
-    case 'c':
-    case 'd':
-    case 'e':
-    case 'f':
-    case 'g':
-    case 'h':
-    case 'i':
-    case 'j':
-    case 'k':
-    case 'l':
-    case 'm':
-    case 'n':
-    case 'o':
-    case 'p':
-    case 'q':
-    case 'r':
-    case 's':
-    case 't':
-    case 'u':
-    case 'v':
-    case 'w':
-    case 'x':
-    case 'y':
-    case 'z':    goto yy74;
-    default:    goto yy560;
-    }
-yy560:
-    { m_brigId = Brig::BRIG_ATOMIC_ADD;        return m_token = EMAtomicOp;   }
-yy561:
-    ++m_curPos;
-    switch ((yych = *m_curPos)) {
-    case '0':
-    case '1':
-    case '2':
-    case '3':
-    case '4':
-    case '5':
-    case '6':
-    case '7':
-    case '8':
-    case '9':
-    case 'A':
-    case 'B':
-    case 'C':
-    case 'D':
-    case 'E':
-    case 'F':
-    case 'G':
-    case 'H':
-    case 'I':
-    case 'J':
-    case 'K':
-    case 'L':
-    case 'M':
-    case 'N':
-    case 'O':
-    case 'P':
-    case 'Q':
-    case 'R':
-    case 'S':
-    case 'T':
-    case 'U':
-    case 'V':
-    case 'W':
-    case 'X':
-    case 'Y':
-    case 'Z':
-    case 'a':
-    case 'b':
-    case 'c':
-    case 'd':
-    case 'e':
-    case 'f':
-    case 'g':
-    case 'h':
-    case 'i':
-    case 'j':
-    case 'k':
-    case 'l':
-    case 'm':
-    case 'n':
-    case 'o':
-    case 'p':
-    case 'q':
-    case 'r':
-    case 's':
-    case 't':
-    case 'u':
-    case 'v':
-    case 'w':
-    case 'x':
-    case 'y':
-    case 'z':    goto yy74;
-    default:    goto yy562;
-    }
-yy562:
-    { m_brigId = Brig::BRIG_SEGMENT_ARG;       return m_token = EMSegment;    }
-yy563:
-    ++m_curPos;
-    switch ((yych = *m_curPos)) {
-    case '0':
-    case '1':
-    case '2':
-    case '3':
-    case '4':
-    case '5':
-    case '6':
-    case '7':
-    case '8':
-    case '9':
-    case 'A':
-    case 'B':
-    case 'C':
-    case 'D':
-    case 'E':
-    case 'F':
-    case 'G':
-    case 'H':
-    case 'I':
-    case 'J':
-    case 'K':
-    case 'L':
-    case 'M':
-    case 'N':
-    case 'O':
-    case 'P':
-    case 'Q':
-    case 'R':
-    case 'S':
-    case 'T':
-    case 'U':
-    case 'V':
-    case 'W':
-    case 'X':
-    case 'Y':
-    case 'Z':
-    case 'a':
-    case 'b':
-    case 'c':
-    case 'd':
-    case 'e':
-    case 'f':
-    case 'g':
-    case 'h':
-    case 'i':
-    case 'j':
-    case 'k':
-    case 'l':
-    case 'm':
-    case 'n':
-    case 'o':
-    case 'p':
-    case 'q':
-    case 'r':
-    case 's':
-    case 't':
-    case 'u':
-    case 'v':
-    case 'w':
-    case 'x':
-    case 'y':
-    case 'z':    goto yy74;
-    default:    goto yy564;
-    }
-yy564:
     { m_brigId = Brig::BRIG_SEMANTIC_ACQUIRE;  return m_token = EMSemantics;  }
 }
 
@@ -10598,501 +10410,501 @@ Brig::BrigImageFormat8_t Scanner::scanImageFormat()
     if ((m_end - m_curPos) < 18) YYFILL(18);
     yych = *(marker = m_curPos);
     switch (yych) {
-    case 'f':    goto yy568;
-    case 'h':    goto yy570;
-    case 's':    goto yy571;
-    case 'u':    goto yy572;
-    default:    goto yy567;
+    case 'f':    goto yy555;
+    case 'h':    goto yy557;
+    case 's':    goto yy558;
+    case 'u':    goto yy559;
+    default:    goto yy554;
+    }
+yy554:
+    { syntaxError("unknown image format"); }
+yy555:
+    yych = *++m_curPos;
+    switch (yych) {
+    case 'l':    goto yy654;
+    default:    goto yy556;
+    }
+yy556:
+    m_curPos = marker;
+    goto yy554;
+yy557:
+    yych = *++m_curPos;
+    switch (yych) {
+    case 'a':    goto yy644;
+    default:    goto yy556;
+    }
+yy558:
+    yych = *++m_curPos;
+    switch (yych) {
+    case 'i':    goto yy615;
+    case 'n':    goto yy614;
+    default:    goto yy556;
+    }
+yy559:
+    yych = *++m_curPos;
+    switch (yych) {
+    case 'n':    goto yy560;
+    default:    goto yy556;
+    }
+yy560:
+    yych = *++m_curPos;
+    switch (yych) {
+    case 'o':    goto yy561;
+    case 's':    goto yy562;
+    default:    goto yy556;
+    }
+yy561:
+    yych = *++m_curPos;
+    switch (yych) {
+    case 'r':    goto yy580;
+    default:    goto yy556;
+    }
+yy562:
+    yych = *++m_curPos;
+    switch (yych) {
+    case 'i':    goto yy563;
+    default:    goto yy556;
+    }
+yy563:
+    yych = *++m_curPos;
+    switch (yych) {
+    case 'g':    goto yy564;
+    default:    goto yy556;
+    }
+yy564:
+    yych = *++m_curPos;
+    switch (yych) {
+    case 'n':    goto yy565;
+    default:    goto yy556;
+    }
+yy565:
+    yych = *++m_curPos;
+    switch (yych) {
+    case 'e':    goto yy566;
+    default:    goto yy556;
+    }
+yy566:
+    yych = *++m_curPos;
+    switch (yych) {
+    case 'd':    goto yy567;
+    default:    goto yy556;
     }
 yy567:
-    { syntaxError("unknown image format"); }
+    yych = *++m_curPos;
+    switch (yych) {
+    case '_':    goto yy568;
+    default:    goto yy556;
+    }
 yy568:
     yych = *++m_curPos;
     switch (yych) {
-    case 'l':    goto yy667;
-    default:    goto yy569;
+    case 'i':    goto yy569;
+    default:    goto yy556;
     }
 yy569:
-    m_curPos = marker;
-    goto yy567;
+    yych = *++m_curPos;
+    switch (yych) {
+    case 'n':    goto yy570;
+    default:    goto yy556;
+    }
 yy570:
     yych = *++m_curPos;
     switch (yych) {
-    case 'a':    goto yy657;
-    default:    goto yy569;
+    case 't':    goto yy571;
+    default:    goto yy556;
     }
 yy571:
     yych = *++m_curPos;
     switch (yych) {
-    case 'i':    goto yy628;
-    case 'n':    goto yy627;
-    default:    goto yy569;
+    case '1':    goto yy572;
+    case '3':    goto yy573;
+    case '8':    goto yy574;
+    default:    goto yy556;
     }
 yy572:
     yych = *++m_curPos;
     switch (yych) {
-    case 'n':    goto yy573;
-    default:    goto yy569;
+    case '6':    goto yy578;
+    default:    goto yy556;
     }
 yy573:
     yych = *++m_curPos;
     switch (yych) {
-    case 'o':    goto yy574;
-    case 's':    goto yy575;
-    default:    goto yy569;
+    case '2':    goto yy576;
+    default:    goto yy556;
     }
 yy574:
-    yych = *++m_curPos;
-    switch (yych) {
-    case 'r':    goto yy593;
-    default:    goto yy569;
-    }
-yy575:
-    yych = *++m_curPos;
-    switch (yych) {
-    case 'i':    goto yy576;
-    default:    goto yy569;
-    }
+    ++m_curPos;
+    { return Brig::BRIG_FORMAT_UNSIGNED_INT8;  }
 yy576:
-    yych = *++m_curPos;
-    switch (yych) {
-    case 'g':    goto yy577;
-    default:    goto yy569;
-    }
-yy577:
-    yych = *++m_curPos;
-    switch (yych) {
-    case 'n':    goto yy578;
-    default:    goto yy569;
-    }
+    ++m_curPos;
+    { return Brig::BRIG_FORMAT_UNSIGNED_INT32; }
 yy578:
-    yych = *++m_curPos;
-    switch (yych) {
-    case 'e':    goto yy579;
-    default:    goto yy569;
-    }
-yy579:
-    yych = *++m_curPos;
-    switch (yych) {
-    case 'd':    goto yy580;
-    default:    goto yy569;
-    }
+    ++m_curPos;
+    { return Brig::BRIG_FORMAT_UNSIGNED_INT16; }
 yy580:
     yych = *++m_curPos;
     switch (yych) {
-    case '_':    goto yy581;
-    default:    goto yy569;
+    case 'm':    goto yy581;
+    default:    goto yy556;
     }
 yy581:
     yych = *++m_curPos;
     switch (yych) {
-    case 'i':    goto yy582;
-    default:    goto yy569;
+    case '_':    goto yy582;
+    default:    goto yy556;
     }
 yy582:
     yych = *++m_curPos;
     switch (yych) {
-    case 'n':    goto yy583;
-    default:    goto yy569;
+    case 'i':    goto yy583;
+    case 's':    goto yy584;
+    default:    goto yy556;
     }
 yy583:
     yych = *++m_curPos;
     switch (yych) {
-    case 't':    goto yy584;
-    default:    goto yy569;
+    case 'n':    goto yy604;
+    default:    goto yy556;
     }
 yy584:
     yych = *++m_curPos;
     switch (yych) {
-    case '1':    goto yy585;
-    case '3':    goto yy586;
-    case '8':    goto yy587;
-    default:    goto yy569;
+    case 'h':    goto yy585;
+    default:    goto yy556;
     }
 yy585:
     yych = *++m_curPos;
     switch (yych) {
-    case '6':    goto yy591;
-    default:    goto yy569;
+    case 'o':    goto yy586;
+    default:    goto yy556;
     }
 yy586:
     yych = *++m_curPos;
     switch (yych) {
-    case '2':    goto yy589;
-    default:    goto yy569;
+    case 'r':    goto yy587;
+    default:    goto yy556;
     }
 yy587:
-    ++m_curPos;
-    { return Brig::BRIG_FORMAT_UNSIGNED_INT8;  }
+    yych = *++m_curPos;
+    switch (yych) {
+    case 't':    goto yy588;
+    default:    goto yy556;
+    }
+yy588:
+    yych = *++m_curPos;
+    switch (yych) {
+    case '_':    goto yy589;
+    default:    goto yy556;
+    }
 yy589:
-    ++m_curPos;
-    { return Brig::BRIG_FORMAT_UNSIGNED_INT32; }
+    yych = *++m_curPos;
+    switch (yych) {
+    case '1':    goto yy590;
+    case '5':    goto yy591;
+    default:    goto yy556;
+    }
+yy590:
+    yych = *++m_curPos;
+    switch (yych) {
+    case '0':    goto yy598;
+    default:    goto yy556;
+    }
 yy591:
-    ++m_curPos;
-    { return Brig::BRIG_FORMAT_UNSIGNED_INT16; }
+    yych = *++m_curPos;
+    switch (yych) {
+    case '5':    goto yy593;
+    case '6':    goto yy592;
+    default:    goto yy556;
+    }
+yy592:
+    yych = *++m_curPos;
+    switch (yych) {
+    case '5':    goto yy596;
+    default:    goto yy556;
+    }
 yy593:
     yych = *++m_curPos;
     switch (yych) {
-    case 'm':    goto yy594;
-    default:    goto yy569;
+    case '5':    goto yy594;
+    default:    goto yy556;
     }
 yy594:
-    yych = *++m_curPos;
-    switch (yych) {
-    case '_':    goto yy595;
-    default:    goto yy569;
-    }
-yy595:
-    yych = *++m_curPos;
-    switch (yych) {
-    case 'i':    goto yy596;
-    case 's':    goto yy597;
-    default:    goto yy569;
-    }
+    ++m_curPos;
+    { return Brig::BRIG_FORMAT_UNORM_SHORT_555; }
 yy596:
-    yych = *++m_curPos;
-    switch (yych) {
-    case 'n':    goto yy617;
-    default:    goto yy569;
-    }
-yy597:
-    yych = *++m_curPos;
-    switch (yych) {
-    case 'h':    goto yy598;
-    default:    goto yy569;
-    }
+    ++m_curPos;
+    { return Brig::BRIG_FORMAT_UNORM_SHORT_565; }
 yy598:
     yych = *++m_curPos;
     switch (yych) {
-    case 'o':    goto yy599;
-    default:    goto yy569;
+    case '1':    goto yy599;
+    default:    goto yy556;
     }
 yy599:
     yych = *++m_curPos;
     switch (yych) {
-    case 'r':    goto yy600;
-    default:    goto yy569;
+    case '0':    goto yy600;
+    default:    goto yy556;
     }
 yy600:
     yych = *++m_curPos;
     switch (yych) {
-    case 't':    goto yy601;
-    default:    goto yy569;
+    case '1':    goto yy601;
+    default:    goto yy556;
     }
 yy601:
     yych = *++m_curPos;
     switch (yych) {
-    case '_':    goto yy602;
-    default:    goto yy569;
+    case '0':    goto yy602;
+    default:    goto yy556;
     }
 yy602:
-    yych = *++m_curPos;
-    switch (yych) {
-    case '1':    goto yy603;
-    case '5':    goto yy604;
-    default:    goto yy569;
-    }
-yy603:
-    yych = *++m_curPos;
-    switch (yych) {
-    case '0':    goto yy611;
-    default:    goto yy569;
-    }
+    ++m_curPos;
+    { return Brig::BRIG_FORMAT_UNORM_SHORT_101010; }
 yy604:
     yych = *++m_curPos;
     switch (yych) {
-    case '5':    goto yy606;
-    case '6':    goto yy605;
-    default:    goto yy569;
+    case 't':    goto yy605;
+    default:    goto yy556;
     }
 yy605:
     yych = *++m_curPos;
     switch (yych) {
-    case '5':    goto yy609;
-    default:    goto yy569;
+    case '1':    goto yy609;
+    case '2':    goto yy608;
+    case '8':    goto yy606;
+    default:    goto yy556;
     }
 yy606:
+    ++m_curPos;
+    { return Brig::BRIG_FORMAT_UNORM_INT8;     }
+yy608:
     yych = *++m_curPos;
     switch (yych) {
-    case '5':    goto yy607;
-    default:    goto yy569;
+    case '4':    goto yy612;
+    default:    goto yy556;
     }
-yy607:
-    ++m_curPos;
-    { return Brig::BRIG_FORMAT_UNORM_SHORT_555; }
 yy609:
+    yych = *++m_curPos;
+    switch (yych) {
+    case '6':    goto yy610;
+    default:    goto yy556;
+    }
+yy610:
     ++m_curPos;
-    { return Brig::BRIG_FORMAT_UNORM_SHORT_565; }
-yy611:
-    yych = *++m_curPos;
-    switch (yych) {
-    case '1':    goto yy612;
-    default:    goto yy569;
-    }
+    { return Brig::BRIG_FORMAT_UNORM_INT16;    }
 yy612:
-    yych = *++m_curPos;
-    switch (yych) {
-    case '0':    goto yy613;
-    default:    goto yy569;
-    }
-yy613:
-    yych = *++m_curPos;
-    switch (yych) {
-    case '1':    goto yy614;
-    default:    goto yy569;
-    }
+    ++m_curPos;
+    { return Brig::BRIG_FORMAT_UNORM_INT24;    }
 yy614:
     yych = *++m_curPos;
     switch (yych) {
-    case '0':    goto yy615;
-    default:    goto yy569;
+    case 'o':    goto yy632;
+    default:    goto yy556;
     }
 yy615:
-    ++m_curPos;
-    { return Brig::BRIG_FORMAT_UNORM_SHORT_101010; }
+    yych = *++m_curPos;
+    switch (yych) {
+    case 'g':    goto yy616;
+    default:    goto yy556;
+    }
+yy616:
+    yych = *++m_curPos;
+    switch (yych) {
+    case 'n':    goto yy617;
+    default:    goto yy556;
+    }
 yy617:
     yych = *++m_curPos;
     switch (yych) {
-    case 't':    goto yy618;
-    default:    goto yy569;
+    case 'e':    goto yy618;
+    default:    goto yy556;
     }
 yy618:
     yych = *++m_curPos;
     switch (yych) {
-    case '1':    goto yy622;
-    case '2':    goto yy621;
-    case '8':    goto yy619;
-    default:    goto yy569;
+    case 'd':    goto yy619;
+    default:    goto yy556;
     }
 yy619:
-    ++m_curPos;
-    { return Brig::BRIG_FORMAT_UNORM_INT8;     }
+    yych = *++m_curPos;
+    switch (yych) {
+    case '_':    goto yy620;
+    default:    goto yy556;
+    }
+yy620:
+    yych = *++m_curPos;
+    switch (yych) {
+    case 'i':    goto yy621;
+    default:    goto yy556;
+    }
 yy621:
     yych = *++m_curPos;
     switch (yych) {
-    case '4':    goto yy625;
-    default:    goto yy569;
+    case 'n':    goto yy622;
+    default:    goto yy556;
     }
 yy622:
     yych = *++m_curPos;
     switch (yych) {
-    case '6':    goto yy623;
-    default:    goto yy569;
+    case 't':    goto yy623;
+    default:    goto yy556;
     }
 yy623:
-    ++m_curPos;
-    { return Brig::BRIG_FORMAT_UNORM_INT16;    }
+    yych = *++m_curPos;
+    switch (yych) {
+    case '1':    goto yy624;
+    case '3':    goto yy625;
+    case '8':    goto yy626;
+    default:    goto yy556;
+    }
+yy624:
+    yych = *++m_curPos;
+    switch (yych) {
+    case '6':    goto yy630;
+    default:    goto yy556;
+    }
 yy625:
+    yych = *++m_curPos;
+    switch (yych) {
+    case '2':    goto yy628;
+    default:    goto yy556;
+    }
+yy626:
     ++m_curPos;
-    { return Brig::BRIG_FORMAT_UNORM_INT24;    }
-yy627:
-    yych = *++m_curPos;
-    switch (yych) {
-    case 'o':    goto yy645;
-    default:    goto yy569;
-    }
+    { return Brig::BRIG_FORMAT_SIGNED_INT8;    }
 yy628:
-    yych = *++m_curPos;
-    switch (yych) {
-    case 'g':    goto yy629;
-    default:    goto yy569;
-    }
-yy629:
-    yych = *++m_curPos;
-    switch (yych) {
-    case 'n':    goto yy630;
-    default:    goto yy569;
-    }
+    ++m_curPos;
+    { return Brig::BRIG_FORMAT_SIGNED_INT32;   }
 yy630:
-    yych = *++m_curPos;
-    switch (yych) {
-    case 'e':    goto yy631;
-    default:    goto yy569;
-    }
-yy631:
-    yych = *++m_curPos;
-    switch (yych) {
-    case 'd':    goto yy632;
-    default:    goto yy569;
-    }
+    ++m_curPos;
+    { return Brig::BRIG_FORMAT_SIGNED_INT16;   }
 yy632:
     yych = *++m_curPos;
     switch (yych) {
-    case '_':    goto yy633;
-    default:    goto yy569;
+    case 'r':    goto yy633;
+    default:    goto yy556;
     }
 yy633:
     yych = *++m_curPos;
     switch (yych) {
-    case 'i':    goto yy634;
-    default:    goto yy569;
+    case 'm':    goto yy634;
+    default:    goto yy556;
     }
 yy634:
     yych = *++m_curPos;
     switch (yych) {
-    case 'n':    goto yy635;
-    default:    goto yy569;
+    case '_':    goto yy635;
+    default:    goto yy556;
     }
 yy635:
     yych = *++m_curPos;
     switch (yych) {
-    case 't':    goto yy636;
-    default:    goto yy569;
+    case 'i':    goto yy636;
+    default:    goto yy556;
     }
 yy636:
     yych = *++m_curPos;
     switch (yych) {
-    case '1':    goto yy637;
-    case '3':    goto yy638;
-    case '8':    goto yy639;
-    default:    goto yy569;
+    case 'n':    goto yy637;
+    default:    goto yy556;
     }
 yy637:
     yych = *++m_curPos;
     switch (yych) {
-    case '6':    goto yy643;
-    default:    goto yy569;
+    case 't':    goto yy638;
+    default:    goto yy556;
     }
 yy638:
     yych = *++m_curPos;
     switch (yych) {
-    case '2':    goto yy641;
-    default:    goto yy569;
+    case '1':    goto yy641;
+    case '8':    goto yy639;
+    default:    goto yy556;
     }
 yy639:
     ++m_curPos;
-    { return Brig::BRIG_FORMAT_SIGNED_INT8;    }
+    { return Brig::BRIG_FORMAT_SNORM_INT8;     }
 yy641:
+    yych = *++m_curPos;
+    switch (yych) {
+    case '6':    goto yy642;
+    default:    goto yy556;
+    }
+yy642:
     ++m_curPos;
-    { return Brig::BRIG_FORMAT_SIGNED_INT32;   }
-yy643:
-    ++m_curPos;
-    { return Brig::BRIG_FORMAT_SIGNED_INT16;   }
+    { return Brig::BRIG_FORMAT_SNORM_INT16;    }
+yy644:
+    yych = *++m_curPos;
+    switch (yych) {
+    case 'l':    goto yy645;
+    default:    goto yy556;
+    }
 yy645:
     yych = *++m_curPos;
     switch (yych) {
-    case 'r':    goto yy646;
-    default:    goto yy569;
+    case 'f':    goto yy646;
+    default:    goto yy556;
     }
 yy646:
     yych = *++m_curPos;
     switch (yych) {
-    case 'm':    goto yy647;
-    default:    goto yy569;
+    case '_':    goto yy647;
+    default:    goto yy556;
     }
 yy647:
     yych = *++m_curPos;
     switch (yych) {
-    case '_':    goto yy648;
-    default:    goto yy569;
+    case 'f':    goto yy648;
+    default:    goto yy556;
     }
 yy648:
     yych = *++m_curPos;
     switch (yych) {
-    case 'i':    goto yy649;
-    default:    goto yy569;
+    case 'l':    goto yy649;
+    default:    goto yy556;
     }
 yy649:
     yych = *++m_curPos;
     switch (yych) {
-    case 'n':    goto yy650;
-    default:    goto yy569;
+    case 'o':    goto yy650;
+    default:    goto yy556;
     }
 yy650:
     yych = *++m_curPos;
     switch (yych) {
-    case 't':    goto yy651;
-    default:    goto yy569;
+    case 'a':    goto yy651;
+    default:    goto yy556;
     }
 yy651:
     yych = *++m_curPos;
     switch (yych) {
-    case '1':    goto yy654;
-    case '8':    goto yy652;
-    default:    goto yy569;
+    case 't':    goto yy652;
+    default:    goto yy556;
     }
 yy652:
     ++m_curPos;
-    { return Brig::BRIG_FORMAT_SNORM_INT8;     }
+    { return Brig::BRIG_FORMAT_HALF_FLOAT;     }
 yy654:
     yych = *++m_curPos;
     switch (yych) {
-    case '6':    goto yy655;
-    default:    goto yy569;
+    case 'o':    goto yy655;
+    default:    goto yy556;
     }
 yy655:
-    ++m_curPos;
-    { return Brig::BRIG_FORMAT_SNORM_INT16;    }
+    yych = *++m_curPos;
+    switch (yych) {
+    case 'a':    goto yy656;
+    default:    goto yy556;
+    }
+yy656:
+    yych = *++m_curPos;
+    switch (yych) {
+    case 't':    goto yy657;
+    default:    goto yy556;
+    }
 yy657:
-    yych = *++m_curPos;
-    switch (yych) {
-    case 'l':    goto yy658;
-    default:    goto yy569;
-    }
-yy658:
-    yych = *++m_curPos;
-    switch (yych) {
-    case 'f':    goto yy659;
-    default:    goto yy569;
-    }
-yy659:
-    yych = *++m_curPos;
-    switch (yych) {
-    case '_':    goto yy660;
-    default:    goto yy569;
-    }
-yy660:
-    yych = *++m_curPos;
-    switch (yych) {
-    case 'f':    goto yy661;
-    default:    goto yy569;
-    }
-yy661:
-    yych = *++m_curPos;
-    switch (yych) {
-    case 'l':    goto yy662;
-    default:    goto yy569;
-    }
-yy662:
-    yych = *++m_curPos;
-    switch (yych) {
-    case 'o':    goto yy663;
-    default:    goto yy569;
-    }
-yy663:
-    yych = *++m_curPos;
-    switch (yych) {
-    case 'a':    goto yy664;
-    default:    goto yy569;
-    }
-yy664:
-    yych = *++m_curPos;
-    switch (yych) {
-    case 't':    goto yy665;
-    default:    goto yy569;
-    }
-yy665:
-    ++m_curPos;
-    { return Brig::BRIG_FORMAT_HALF_FLOAT;     }
-yy667:
-    yych = *++m_curPos;
-    switch (yych) {
-    case 'o':    goto yy668;
-    default:    goto yy569;
-    }
-yy668:
-    yych = *++m_curPos;
-    switch (yych) {
-    case 'a':    goto yy669;
-    default:    goto yy569;
-    }
-yy669:
-    yych = *++m_curPos;
-    switch (yych) {
-    case 't':    goto yy670;
-    default:    goto yy569;
-    }
-yy670:
     ++m_curPos;
     { return Brig::BRIG_FORMAT_FLOAT;          }
 }
@@ -11111,265 +10923,265 @@ Brig::BrigImageOrder8_t Scanner::scanImageOrder()
     if ((m_end - m_curPos) < 9) YYFILL(9);
     yych = *(marker = m_curPos);
     switch (yych) {
-    case 'a':    goto yy675;
-    case 'b':    goto yy677;
-    case 'i':    goto yy679;
-    case 'l':    goto yy680;
-    case 'r':    goto yy681;
-    case 's':    goto yy683;
-    default:    goto yy674;
+    case 'a':    goto yy662;
+    case 'b':    goto yy664;
+    case 'i':    goto yy666;
+    case 'l':    goto yy667;
+    case 'r':    goto yy668;
+    case 's':    goto yy670;
+    default:    goto yy661;
     }
-yy674:
+yy661:
     { syntaxError("unknown image order"); }
-yy675:
+yy662:
     yyaccept = 1;
     yych = *(marker = ++m_curPos);
     switch (yych) {
-    case 'r':    goto yy733;
-    default:    goto yy676;
+    case 'r':    goto yy720;
+    default:    goto yy663;
     }
-yy676:
+yy663:
     { return Brig::BRIG_ORDER_A;               }
+yy664:
+    yych = *++m_curPos;
+    switch (yych) {
+    case 'g':    goto yy716;
+    default:    goto yy665;
+    }
+yy665:
+    m_curPos = marker;
+    switch (yyaccept) {
+    case 0: 	goto yy661;
+    case 1: 	goto yy663;
+    }
+yy666:
+    yych = *++m_curPos;
+    switch (yych) {
+    case 'n':    goto yy707;
+    default:    goto yy665;
+    }
+yy667:
+    yych = *++m_curPos;
+    switch (yych) {
+    case 'u':    goto yy698;
+    default:    goto yy665;
+    }
+yy668:
+    ++m_curPos;
+    switch ((yych = *m_curPos)) {
+    case 'a':    goto yy688;
+    case 'g':    goto yy686;
+    case 'x':    goto yy684;
+    default:    goto yy669;
+    }
+yy669:
+    { return Brig::BRIG_ORDER_R;               }
+yy670:
+    yych = *++m_curPos;
+    switch (yych) {
+    case 'b':    goto yy672;
+    case 'r':    goto yy671;
+    default:    goto yy665;
+    }
+yy671:
+    yych = *++m_curPos;
+    switch (yych) {
+    case 'g':    goto yy677;
+    default:    goto yy665;
+    }
+yy672:
+    yych = *++m_curPos;
+    switch (yych) {
+    case 'g':    goto yy673;
+    default:    goto yy665;
+    }
+yy673:
+    yych = *++m_curPos;
+    switch (yych) {
+    case 'r':    goto yy674;
+    default:    goto yy665;
+    }
+yy674:
+    yych = *++m_curPos;
+    switch (yych) {
+    case 'a':    goto yy675;
+    default:    goto yy665;
+    }
+yy675:
+    ++m_curPos;
+    { return Brig::BRIG_ORDER_SBGRA;           }
 yy677:
     yych = *++m_curPos;
     switch (yych) {
-    case 'g':    goto yy729;
-    default:    goto yy678;
+    case 'b':    goto yy678;
+    default:    goto yy665;
     }
 yy678:
-    m_curPos = marker;
-    switch (yyaccept) {
-    case 0: 	goto yy674;
-    case 1: 	goto yy676;
+    ++m_curPos;
+    switch ((yych = *m_curPos)) {
+    case 'a':    goto yy680;
+    case 'x':    goto yy682;
+    default:    goto yy679;
     }
 yy679:
-    yych = *++m_curPos;
-    switch (yych) {
-    case 'n':    goto yy720;
-    default:    goto yy678;
-    }
-yy680:
-    yych = *++m_curPos;
-    switch (yych) {
-    case 'u':    goto yy711;
-    default:    goto yy678;
-    }
-yy681:
-    ++m_curPos;
-    switch ((yych = *m_curPos)) {
-    case 'a':    goto yy701;
-    case 'g':    goto yy699;
-    case 'x':    goto yy697;
-    default:    goto yy682;
-    }
-yy682:
-    { return Brig::BRIG_ORDER_R;               }
-yy683:
-    yych = *++m_curPos;
-    switch (yych) {
-    case 'b':    goto yy685;
-    case 'r':    goto yy684;
-    default:    goto yy678;
-    }
-yy684:
-    yych = *++m_curPos;
-    switch (yych) {
-    case 'g':    goto yy690;
-    default:    goto yy678;
-    }
-yy685:
-    yych = *++m_curPos;
-    switch (yych) {
-    case 'g':    goto yy686;
-    default:    goto yy678;
-    }
-yy686:
-    yych = *++m_curPos;
-    switch (yych) {
-    case 'r':    goto yy687;
-    default:    goto yy678;
-    }
-yy687:
-    yych = *++m_curPos;
-    switch (yych) {
-    case 'a':    goto yy688;
-    default:    goto yy678;
-    }
-yy688:
-    ++m_curPos;
-    { return Brig::BRIG_ORDER_SBGRA;           }
-yy690:
-    yych = *++m_curPos;
-    switch (yych) {
-    case 'b':    goto yy691;
-    default:    goto yy678;
-    }
-yy691:
-    ++m_curPos;
-    switch ((yych = *m_curPos)) {
-    case 'a':    goto yy693;
-    case 'x':    goto yy695;
-    default:    goto yy692;
-    }
-yy692:
     { return Brig::BRIG_ORDER_SRGB;            }
-yy693:
+yy680:
     ++m_curPos;
     { return Brig::BRIG_ORDER_SRGBA;           }
-yy695:
+yy682:
     ++m_curPos;
     { return Brig::BRIG_ORDER_SRGBX;           }
-yy697:
+yy684:
     ++m_curPos;
     { return Brig::BRIG_ORDER_RX;              }
-yy699:
+yy686:
     ++m_curPos;
     switch ((yych = *m_curPos)) {
-    case 'b':    goto yy703;
-    case 'x':    goto yy705;
-    default:    goto yy700;
+    case 'b':    goto yy690;
+    case 'x':    goto yy692;
+    default:    goto yy687;
     }
-yy700:
+yy687:
     { return Brig::BRIG_ORDER_RG;              }
-yy701:
+yy688:
     ++m_curPos;
     { return Brig::BRIG_ORDER_RA;              }
-yy703:
+yy690:
     ++m_curPos;
     switch ((yych = *m_curPos)) {
-    case 'a':    goto yy709;
-    case 'x':    goto yy707;
-    default:    goto yy704;
+    case 'a':    goto yy696;
+    case 'x':    goto yy694;
+    default:    goto yy691;
     }
-yy704:
+yy691:
     { return Brig::BRIG_ORDER_RGB;             }
-yy705:
+yy692:
     ++m_curPos;
     { return Brig::BRIG_ORDER_RGX;             }
-yy707:
+yy694:
     ++m_curPos;
     { return Brig::BRIG_ORDER_RGBX;            }
-yy709:
+yy696:
     ++m_curPos;
     { return Brig::BRIG_ORDER_RGBA;            }
+yy698:
+    yych = *++m_curPos;
+    switch (yych) {
+    case 'm':    goto yy699;
+    default:    goto yy665;
+    }
+yy699:
+    yych = *++m_curPos;
+    switch (yych) {
+    case 'i':    goto yy700;
+    default:    goto yy665;
+    }
+yy700:
+    yych = *++m_curPos;
+    switch (yych) {
+    case 'n':    goto yy701;
+    default:    goto yy665;
+    }
+yy701:
+    yych = *++m_curPos;
+    switch (yych) {
+    case 'a':    goto yy702;
+    default:    goto yy665;
+    }
+yy702:
+    yych = *++m_curPos;
+    switch (yych) {
+    case 'n':    goto yy703;
+    default:    goto yy665;
+    }
+yy703:
+    yych = *++m_curPos;
+    switch (yych) {
+    case 'c':    goto yy704;
+    default:    goto yy665;
+    }
+yy704:
+    yych = *++m_curPos;
+    switch (yych) {
+    case 'e':    goto yy705;
+    default:    goto yy665;
+    }
+yy705:
+    ++m_curPos;
+    { return Brig::BRIG_ORDER_LUMINANCE;       }
+yy707:
+    yych = *++m_curPos;
+    switch (yych) {
+    case 't':    goto yy708;
+    default:    goto yy665;
+    }
+yy708:
+    yych = *++m_curPos;
+    switch (yych) {
+    case 'e':    goto yy709;
+    default:    goto yy665;
+    }
+yy709:
+    yych = *++m_curPos;
+    switch (yych) {
+    case 'n':    goto yy710;
+    default:    goto yy665;
+    }
+yy710:
+    yych = *++m_curPos;
+    switch (yych) {
+    case 's':    goto yy711;
+    default:    goto yy665;
+    }
 yy711:
     yych = *++m_curPos;
     switch (yych) {
-    case 'm':    goto yy712;
-    default:    goto yy678;
+    case 'i':    goto yy712;
+    default:    goto yy665;
     }
 yy712:
     yych = *++m_curPos;
     switch (yych) {
-    case 'i':    goto yy713;
-    default:    goto yy678;
+    case 't':    goto yy713;
+    default:    goto yy665;
     }
 yy713:
     yych = *++m_curPos;
     switch (yych) {
-    case 'n':    goto yy714;
-    default:    goto yy678;
+    case 'y':    goto yy714;
+    default:    goto yy665;
     }
 yy714:
-    yych = *++m_curPos;
-    switch (yych) {
-    case 'a':    goto yy715;
-    default:    goto yy678;
-    }
-yy715:
-    yych = *++m_curPos;
-    switch (yych) {
-    case 'n':    goto yy716;
-    default:    goto yy678;
-    }
+    ++m_curPos;
+    { return Brig::BRIG_ORDER_INTENSITY;       }
 yy716:
     yych = *++m_curPos;
     switch (yych) {
-    case 'c':    goto yy717;
-    default:    goto yy678;
+    case 'r':    goto yy717;
+    default:    goto yy665;
     }
 yy717:
     yych = *++m_curPos;
     switch (yych) {
-    case 'e':    goto yy718;
-    default:    goto yy678;
+    case 'a':    goto yy718;
+    default:    goto yy665;
     }
 yy718:
     ++m_curPos;
-    { return Brig::BRIG_ORDER_LUMINANCE;       }
+    { return Brig::BRIG_ORDER_BGRA;            }
 yy720:
     yych = *++m_curPos;
     switch (yych) {
-    case 't':    goto yy721;
-    default:    goto yy678;
+    case 'g':    goto yy721;
+    default:    goto yy665;
     }
 yy721:
     yych = *++m_curPos;
     switch (yych) {
-    case 'e':    goto yy722;
-    default:    goto yy678;
+    case 'b':    goto yy722;
+    default:    goto yy665;
     }
 yy722:
-    yych = *++m_curPos;
-    switch (yych) {
-    case 'n':    goto yy723;
-    default:    goto yy678;
-    }
-yy723:
-    yych = *++m_curPos;
-    switch (yych) {
-    case 's':    goto yy724;
-    default:    goto yy678;
-    }
-yy724:
-    yych = *++m_curPos;
-    switch (yych) {
-    case 'i':    goto yy725;
-    default:    goto yy678;
-    }
-yy725:
-    yych = *++m_curPos;
-    switch (yych) {
-    case 't':    goto yy726;
-    default:    goto yy678;
-    }
-yy726:
-    yych = *++m_curPos;
-    switch (yych) {
-    case 'y':    goto yy727;
-    default:    goto yy678;
-    }
-yy727:
-    ++m_curPos;
-    { return Brig::BRIG_ORDER_INTENSITY;       }
-yy729:
-    yych = *++m_curPos;
-    switch (yych) {
-    case 'r':    goto yy730;
-    default:    goto yy678;
-    }
-yy730:
-    yych = *++m_curPos;
-    switch (yych) {
-    case 'a':    goto yy731;
-    default:    goto yy678;
-    }
-yy731:
-    ++m_curPos;
-    { return Brig::BRIG_ORDER_BGRA;            }
-yy733:
-    yych = *++m_curPos;
-    switch (yych) {
-    case 'g':    goto yy734;
-    default:    goto yy678;
-    }
-yy734:
-    yych = *++m_curPos;
-    switch (yych) {
-    case 'b':    goto yy735;
-    default:    goto yy678;
-    }
-yy735:
     ++m_curPos;
     { return Brig::BRIG_ORDER_ARGB;            }
 }
@@ -11391,18 +11203,18 @@ ETokens Scanner::scan()
         if ((m_end - m_curPos) < 26) YYFILL(26);
         yych = *(marker = m_curPos);
         switch (yych) {
-        case 0x00:        goto yy807;
-        case '"':        goto yy800;
-        case '$':        goto yy798;
-        case '%':        goto yy797;
-        case '&':        goto yy796;
-        case '(':        goto yy744;
-        case ')':        goto yy746;
-        case '+':        goto yy764;
-        case ',':        goto yy758;
-        case '-':        goto yy766;
-        case '.':        goto yy756;
-        case '0':        goto yy803;
+        case 0x00:        goto yy794;
+        case '"':        goto yy787;
+        case '$':        goto yy785;
+        case '%':        goto yy784;
+        case '&':        goto yy783;
+        case '(':        goto yy731;
+        case ')':        goto yy733;
+        case '+':        goto yy751;
+        case ',':        goto yy745;
+        case '-':        goto yy753;
+        case '.':        goto yy743;
+        case '0':        goto yy790;
         case '1':
         case '2':
         case '3':
@@ -11411,72 +11223,72 @@ ETokens Scanner::scan()
         case '6':
         case '7':
         case '8':
-        case '9':        goto yy805;
-        case ':':        goto yy762;
-        case ';':        goto yy760;
-        case '<':        goto yy752;
-        case '=':        goto yy768;
-        case '>':        goto yy754;
-        case '@':        goto yy795;
-        case 'W':        goto yy799;
-        case '[':        goto yy748;
-        case ']':        goto yy750;
-        case '_':        goto yy802;
-        case 'a':        goto yy779;
-        case 'b':        goto yy785;
-        case 'c':        goto yy786;
-        case 'd':        goto yy783;
-        case 'e':        goto yy778;
-        case 'f':        goto yy773;
-        case 'g':        goto yy789;
-        case 'h':        goto yy782;
-        case 'i':        goto yy790;
-        case 'j':        goto yy791;
-        case 'k':        goto yy772;
-        case 'l':        goto yy777;
-        case 'm':        goto yy780;
-        case 'n':        goto yy787;
-        case 'o':        goto yy784;
-        case 'p':        goto yy774;
-        case 'q':        goto yy792;
-        case 'r':        goto yy776;
-        case 's':        goto yy775;
-        case 't':        goto yy793;
-        case 'u':        goto yy788;
-        case 'v':        goto yy770;
-        case 'w':        goto yy781;
-        case 'x':        goto yy794;
-        case '{':        goto yy740;
-        case '}':        goto yy742;
-        default:        goto yy739;
+        case '9':        goto yy792;
+        case ':':        goto yy749;
+        case ';':        goto yy747;
+        case '<':        goto yy739;
+        case '=':        goto yy755;
+        case '>':        goto yy741;
+        case '@':        goto yy782;
+        case 'W':        goto yy786;
+        case '[':        goto yy735;
+        case ']':        goto yy737;
+        case '_':        goto yy789;
+        case 'a':        goto yy766;
+        case 'b':        goto yy772;
+        case 'c':        goto yy773;
+        case 'd':        goto yy770;
+        case 'e':        goto yy765;
+        case 'f':        goto yy760;
+        case 'g':        goto yy776;
+        case 'h':        goto yy769;
+        case 'i':        goto yy777;
+        case 'j':        goto yy778;
+        case 'k':        goto yy759;
+        case 'l':        goto yy764;
+        case 'm':        goto yy767;
+        case 'n':        goto yy774;
+        case 'o':        goto yy771;
+        case 'p':        goto yy761;
+        case 'q':        goto yy779;
+        case 'r':        goto yy763;
+        case 's':        goto yy762;
+        case 't':        goto yy780;
+        case 'u':        goto yy775;
+        case 'v':        goto yy757;
+        case 'w':        goto yy768;
+        case 'x':        goto yy781;
+        case '{':        goto yy727;
+        case '}':        goto yy729;
+        default:        goto yy726;
         }
-yy739:
+yy726:
         { syntaxError("Syntax error"); }
-yy740:
+yy727:
         ++m_curPos;
         { return m_token = ELCurl; }
-yy742:
+yy729:
         ++m_curPos;
         { return m_token = ERCurl; }
-yy744:
+yy731:
         ++m_curPos;
         { return m_token = ELParen; }
-yy746:
+yy733:
         ++m_curPos;
         { return m_token = ERParen; }
-yy748:
+yy735:
         ++m_curPos;
         { return m_token = ELBrace; }
-yy750:
+yy737:
         ++m_curPos;
         { return m_token = ERBrace; }
-yy752:
+yy739:
         ++m_curPos;
         { return m_token = ELAngle; }
-yy754:
+yy741:
         ++m_curPos;
         { return m_token = ERAngle; }
-yy756:
+yy743:
         ++m_curPos;
         switch ((yych = *m_curPos)) {
         case '0':
@@ -11488,26 +11300,26 @@ yy756:
         case '6':
         case '7':
         case '8':
-        case '9':        goto yy2133;
-        default:        goto yy757;
+        case '9':        goto yy2120;
+        default:        goto yy744;
         }
-yy757:
+yy744:
         { return m_token = EDot; }
-yy758:
+yy745:
         ++m_curPos;
         { return m_token = EComma; }
-yy760:
+yy747:
         ++m_curPos;
         { return m_token = ESemi; }
-yy762:
+yy749:
         ++m_curPos;
         { return m_token = EColon; }
-yy764:
+yy751:
         yyaccept = 1;
         yych = *(marker = ++m_curPos);
         switch (yych) {
-        case '.':        goto yy2132;
-        case '0':        goto yy2129;
+        case '.':        goto yy2119;
+        case '0':        goto yy2116;
         case '1':
         case '2':
         case '3':
@@ -11516,17 +11328,17 @@ yy764:
         case '6':
         case '7':
         case '8':
-        case '9':        goto yy2130;
-        default:        goto yy765;
+        case '9':        goto yy2117;
+        default:        goto yy752;
         }
-yy765:
+yy752:
         { return m_token = EPlus; }
-yy766:
+yy753:
         yyaccept = 2;
         yych = *(marker = ++m_curPos);
         switch (yych) {
-        case '.':        goto yy2132;
-        case '0':        goto yy2129;
+        case '.':        goto yy2119;
+        case '0':        goto yy2116;
         case '1':
         case '2':
         case '3':
@@ -11535,499 +11347,499 @@ yy766:
         case '6':
         case '7':
         case '8':
-        case '9':        goto yy2130;
-        default:        goto yy767;
+        case '9':        goto yy2117;
+        default:        goto yy754;
         }
-yy767:
+yy754:
         { return m_token = EMinus; }
-yy768:
+yy755:
         ++m_curPos;
         { return m_token = EEqual; }
+yy757:
+        yych = *++m_curPos;
+        switch (yych) {
+        case 'e':        goto yy2109;
+        default:        goto yy758;
+        }
+yy758:
+        m_curPos = marker;
+        switch (yyaccept) {
+        case 0: 	goto yy726;
+        case 1: 	goto yy752;
+        case 2: 	goto yy754;
+        case 3: 	goto yy791;
+        case 4: 	goto yy798;
+        case 5: 	goto yy851;
+        case 6: 	goto yy1112;
+        case 7: 	goto yy1393;
+        case 8: 	goto yy1410;
+        case 9: 	goto yy1521;
+        case 10: 	goto yy1523;
+        case 11: 	goto yy1533;
+        case 12: 	goto yy1599;
+        case 13: 	goto yy1608;
+        case 14: 	goto yy1612;
+        case 15: 	goto yy1645;
+        case 16: 	goto yy1657;
+        case 17: 	goto yy1665;
+        case 18: 	goto yy1738;
+        case 19: 	goto yy1915;
+        case 20: 	goto yy1937;
+        case 21: 	goto yy2029;
+        case 22: 	goto yy2093;
+        }
+yy759:
+        yych = *++m_curPos;
+        switch (yych) {
+        case 'e':        goto yy2099;
+        default:        goto yy758;
+        }
+yy760:
+        yych = *++m_curPos;
+        switch (yych) {
+        case 'b':        goto yy2041;
+        case 'i':        goto yy2046;
+        case 'l':        goto yy2045;
+        case 'm':        goto yy2044;
+        case 'o':        goto yy2047;
+        case 'r':        goto yy2043;
+        case 't':        goto yy2042;
+        case 'u':        goto yy2048;
+        default:        goto yy758;
+        }
+yy761:
+        yych = *++m_curPos;
+        switch (yych) {
+        case 'a':        goto yy2014;
+        case 'o':        goto yy2013;
+        case 'r':        goto yy2015;
+        default:        goto yy758;
+        }
+yy762:
+        yych = *++m_curPos;
+        switch (yych) {
+        case 'a':        goto yy1921;
+        case 'e':        goto yy1920;
+        case 'h':        goto yy1919;
+        case 'i':        goto yy1923;
+        case 'p':        goto yy1922;
+        case 'q':        goto yy1918;
+        case 't':        goto yy1914;
+        case 'u':        goto yy1917;
+        case 'y':        goto yy1916;
+        default:        goto yy758;
+        }
+yy763:
+        yych = *++m_curPos;
+        switch (yych) {
+        case 'd':        goto yy1796;
+        case 'e':        goto yy1795;
+        case 'i':        goto yy1794;
+        case 't':        goto yy1797;
+        default:        goto yy758;
+        }
+yy764:
+        yych = *++m_curPos;
+        switch (yych) {
+        case 'a':        goto yy1739;
+        case 'd':        goto yy1737;
+        case 'e':        goto yy1736;
+        case 'i':        goto yy1740;
+        case 'o':        goto yy1741;
+        default:        goto yy758;
+        }
+yy765:
+        yych = *++m_curPos;
+        switch (yych) {
+        case 'n':        goto yy1674;
+        case 'x':        goto yy1675;
+        default:        goto yy758;
+        }
+yy766:
+        yych = *++m_curPos;
+        switch (yych) {
+        case 'b':        goto yy1623;
+        case 'd':        goto yy1622;
+        case 'l':        goto yy1618;
+        case 'n':        goto yy1621;
+        case 'r':        goto yy1620;
+        case 't':        goto yy1619;
+        default:        goto yy758;
+        }
+yy767:
+        yych = *++m_curPos;
+        switch (yych) {
+        case 'a':        goto yy1519;
+        case 'i':        goto yy1518;
+        case 'o':        goto yy1517;
+        case 'u':        goto yy1516;
+        default:        goto yy758;
+        }
+yy768:
+        yych = *++m_curPos;
+        switch (yych) {
+        case 'a':        goto yy1453;
+        case 'i':        goto yy1455;
+        case 'o':        goto yy1452;
+        case 'r':        goto yy1454;
+        default:        goto yy758;
+        }
+yy769:
+        yych = *++m_curPos;
+        switch (yych) {
+        case 'e':        goto yy1446;
+        default:        goto yy758;
+        }
 yy770:
         yych = *++m_curPos;
         switch (yych) {
-        case 'e':        goto yy2122;
-        default:        goto yy771;
+        case 'e':        goto yy1416;
+        case 'i':        goto yy1415;
+        default:        goto yy758;
         }
 yy771:
-        m_curPos = marker;
-        switch (yyaccept) {
-        case 0: 	goto yy739;
-        case 1: 	goto yy765;
-        case 2: 	goto yy767;
-        case 3: 	goto yy804;
-        case 4: 	goto yy811;
-        case 5: 	goto yy864;
-        case 6: 	goto yy1125;
-        case 7: 	goto yy1406;
-        case 8: 	goto yy1423;
-        case 9: 	goto yy1534;
-        case 10: 	goto yy1536;
-        case 11: 	goto yy1546;
-        case 12: 	goto yy1612;
-        case 13: 	goto yy1621;
-        case 14: 	goto yy1625;
-        case 15: 	goto yy1658;
-        case 16: 	goto yy1670;
-        case 17: 	goto yy1678;
-        case 18: 	goto yy1751;
-        case 19: 	goto yy1928;
-        case 20: 	goto yy1950;
-        case 21: 	goto yy2042;
-        case 22: 	goto yy2106;
+        yych = *++m_curPos;
+        switch (yych) {
+        case 'r':        goto yy1409;
+        default:        goto yy758;
         }
 yy772:
         yych = *++m_curPos;
         switch (yych) {
-        case 'e':        goto yy2112;
-        default:        goto yy771;
+        case 'a':        goto yy1314;
+        case 'i':        goto yy1313;
+        case 'l':        goto yy1309;
+        case 'o':        goto yy1312;
+        case 'r':        goto yy1311;
+        case 'y':        goto yy1310;
+        default:        goto yy758;
         }
 yy773:
         yych = *++m_curPos;
         switch (yych) {
-        case 'b':        goto yy2054;
-        case 'i':        goto yy2059;
-        case 'l':        goto yy2058;
-        case 'm':        goto yy2057;
-        case 'o':        goto yy2060;
-        case 'r':        goto yy2056;
-        case 't':        goto yy2055;
-        case 'u':        goto yy2061;
-        default:        goto yy771;
+        case 'a':        goto yy1204;
+        case 'b':        goto yy1203;
+        case 'e':        goto yy1202;
+        case 'l':        goto yy1201;
+        case 'm':        goto yy1200;
+        case 'o':        goto yy1197;
+        case 'u':        goto yy1199;
+        case 'v':        goto yy1198;
+        default:        goto yy758;
         }
 yy774:
         yych = *++m_curPos;
         switch (yych) {
-        case 'a':        goto yy2027;
-        case 'o':        goto yy2026;
-        case 'r':        goto yy2028;
-        default:        goto yy771;
+        case 'c':        goto yy1140;
+        case 'e':        goto yy1139;
+        case 'f':        goto yy1138;
+        case 'l':        goto yy1137;
+        case 'o':        goto yy1136;
+        case 'r':        goto yy1135;
+        case 's':        goto yy1134;
+        case 'u':        goto yy1133;
+        default:        goto yy758;
         }
 yy775:
         yych = *++m_curPos;
         switch (yych) {
-        case 'a':        goto yy1934;
-        case 'e':        goto yy1933;
-        case 'h':        goto yy1932;
-        case 'i':        goto yy1936;
-        case 'p':        goto yy1935;
-        case 'q':        goto yy1931;
-        case 't':        goto yy1927;
-        case 'u':        goto yy1930;
-        case 'y':        goto yy1929;
-        default:        goto yy771;
+        case 'n':        goto yy1106;
+        default:        goto yy758;
         }
 yy776:
         yych = *++m_curPos;
         switch (yych) {
-        case 'd':        goto yy1809;
-        case 'e':        goto yy1808;
-        case 'i':        goto yy1807;
-        case 't':        goto yy1810;
-        default:        goto yy771;
+        case 'e':        goto yy1067;
+        case 'l':        goto yy1068;
+        case 'r':        goto yy1066;
+        default:        goto yy758;
         }
 yy777:
         yych = *++m_curPos;
         switch (yych) {
-        case 'a':        goto yy1752;
-        case 'd':        goto yy1750;
-        case 'e':        goto yy1749;
-        case 'i':        goto yy1753;
-        case 'o':        goto yy1754;
-        default:        goto yy771;
+        case 'n':        goto yy1058;
+        default:        goto yy758;
         }
 yy778:
         yych = *++m_curPos;
         switch (yych) {
-        case 'n':        goto yy1687;
-        case 'x':        goto yy1688;
-        default:        goto yy771;
+        case 'o':        goto yy1050;
+        default:        goto yy758;
         }
 yy779:
         yych = *++m_curPos;
         switch (yych) {
-        case 'b':        goto yy1636;
-        case 'd':        goto yy1635;
-        case 'l':        goto yy1631;
-        case 'n':        goto yy1634;
-        case 'r':        goto yy1633;
-        case 't':        goto yy1632;
-        default:        goto yy771;
+        case 'i':        goto yy978;
+        case 'p':        goto yy977;
+        case 'u':        goto yy976;
+        default:        goto yy758;
         }
 yy780:
         yych = *++m_curPos;
         switch (yych) {
-        case 'a':        goto yy1532;
-        case 'i':        goto yy1531;
-        case 'o':        goto yy1530;
-        case 'u':        goto yy1529;
-        default:        goto yy771;
+        case 'r':        goto yy971;
+        default:        goto yy758;
         }
 yy781:
         yych = *++m_curPos;
         switch (yych) {
-        case 'a':        goto yy1466;
-        case 'i':        goto yy1468;
-        case 'o':        goto yy1465;
-        case 'r':        goto yy1467;
-        default:        goto yy771;
+        case 'o':        goto yy968;
+        default:        goto yy758;
         }
 yy782:
         yych = *++m_curPos;
         switch (yych) {
-        case 'e':        goto yy1459;
-        default:        goto yy771;
+        case 'A':
+        case 'B':
+        case 'C':
+        case 'D':
+        case 'E':
+        case 'F':
+        case 'G':
+        case 'H':
+        case 'I':
+        case 'J':
+        case 'K':
+        case 'L':
+        case 'M':
+        case 'N':
+        case 'O':
+        case 'P':
+        case 'Q':
+        case 'R':
+        case 'S':
+        case 'T':
+        case 'U':
+        case 'V':
+        case 'W':
+        case 'X':
+        case 'Y':
+        case 'Z':
+        case '_':
+        case 'a':
+        case 'b':
+        case 'c':
+        case 'd':
+        case 'e':
+        case 'f':
+        case 'g':
+        case 'h':
+        case 'i':
+        case 'j':
+        case 'k':
+        case 'l':
+        case 'm':
+        case 'n':
+        case 'o':
+        case 'p':
+        case 'q':
+        case 'r':
+        case 's':
+        case 't':
+        case 'u':
+        case 'v':
+        case 'w':
+        case 'x':
+        case 'y':
+        case 'z':        goto yy965;
+        default:        goto yy758;
         }
 yy783:
         yych = *++m_curPos;
         switch (yych) {
-        case 'e':        goto yy1429;
-        case 'i':        goto yy1428;
-        default:        goto yy771;
+        case 'A':
+        case 'B':
+        case 'C':
+        case 'D':
+        case 'E':
+        case 'F':
+        case 'G':
+        case 'H':
+        case 'I':
+        case 'J':
+        case 'K':
+        case 'L':
+        case 'M':
+        case 'N':
+        case 'O':
+        case 'P':
+        case 'Q':
+        case 'R':
+        case 'S':
+        case 'T':
+        case 'U':
+        case 'V':
+        case 'W':
+        case 'X':
+        case 'Y':
+        case 'Z':
+        case '_':
+        case 'a':
+        case 'b':
+        case 'c':
+        case 'd':
+        case 'e':
+        case 'f':
+        case 'g':
+        case 'h':
+        case 'i':
+        case 'j':
+        case 'k':
+        case 'l':
+        case 'm':
+        case 'n':
+        case 'o':
+        case 'p':
+        case 'q':
+        case 'r':
+        case 's':
+        case 't':
+        case 'u':
+        case 'v':
+        case 'w':
+        case 'x':
+        case 'y':
+        case 'z':        goto yy962;
+        default:        goto yy758;
         }
 yy784:
         yych = *++m_curPos;
         switch (yych) {
-        case 'r':        goto yy1422;
-        default:        goto yy771;
+        case 'A':
+        case 'B':
+        case 'C':
+        case 'D':
+        case 'E':
+        case 'F':
+        case 'G':
+        case 'H':
+        case 'I':
+        case 'J':
+        case 'K':
+        case 'L':
+        case 'M':
+        case 'N':
+        case 'O':
+        case 'P':
+        case 'Q':
+        case 'R':
+        case 'S':
+        case 'T':
+        case 'U':
+        case 'V':
+        case 'W':
+        case 'X':
+        case 'Y':
+        case 'Z':
+        case '_':
+        case 'a':
+        case 'b':
+        case 'c':
+        case 'd':
+        case 'e':
+        case 'f':
+        case 'g':
+        case 'h':
+        case 'i':
+        case 'j':
+        case 'k':
+        case 'l':
+        case 'm':
+        case 'n':
+        case 'o':
+        case 'p':
+        case 'q':
+        case 'r':
+        case 's':
+        case 't':
+        case 'u':
+        case 'v':
+        case 'w':
+        case 'x':
+        case 'y':
+        case 'z':        goto yy959;
+        default:        goto yy758;
         }
 yy785:
         yych = *++m_curPos;
         switch (yych) {
-        case 'a':        goto yy1327;
-        case 'i':        goto yy1326;
-        case 'l':        goto yy1322;
-        case 'o':        goto yy1325;
-        case 'r':        goto yy1324;
-        case 'y':        goto yy1323;
-        default:        goto yy771;
+        case 'A':
+        case 'B':
+        case 'C':
+        case 'D':
+        case 'E':
+        case 'F':
+        case 'G':
+        case 'H':
+        case 'I':
+        case 'J':
+        case 'K':
+        case 'L':
+        case 'M':
+        case 'N':
+        case 'O':
+        case 'P':
+        case 'Q':
+        case 'R':
+        case 'S':
+        case 'T':
+        case 'U':
+        case 'V':
+        case 'W':
+        case 'X':
+        case 'Y':
+        case 'Z':
+        case '_':
+        case 'a':
+        case 'b':
+        case 'c':
+        case 'd':
+        case 'e':
+        case 'f':
+        case 'g':
+        case 'h':
+        case 'i':
+        case 'j':
+        case 'k':
+        case 'l':
+        case 'm':
+        case 'n':
+        case 'o':
+        case 'p':
+        case 'q':
+        case 'r':
+        case 's':
+        case 't':
+        case 'u':
+        case 'v':
+        case 'w':
+        case 'x':
+        case 'y':
+        case 'z':        goto yy956;
+        default:        goto yy758;
         }
 yy786:
         yych = *++m_curPos;
         switch (yych) {
-        case 'a':        goto yy1217;
-        case 'b':        goto yy1216;
-        case 'e':        goto yy1215;
-        case 'l':        goto yy1214;
-        case 'm':        goto yy1213;
-        case 'o':        goto yy1210;
-        case 'u':        goto yy1212;
-        case 'v':        goto yy1211;
-        default:        goto yy771;
+        case 'A':        goto yy948;
+        default:        goto yy758;
         }
 yy787:
-        yych = *++m_curPos;
-        switch (yych) {
-        case 'c':        goto yy1153;
-        case 'e':        goto yy1152;
-        case 'f':        goto yy1151;
-        case 'l':        goto yy1150;
-        case 'o':        goto yy1149;
-        case 'r':        goto yy1148;
-        case 's':        goto yy1147;
-        case 'u':        goto yy1146;
-        default:        goto yy771;
-        }
-yy788:
-        yych = *++m_curPos;
-        switch (yych) {
-        case 'n':        goto yy1119;
-        default:        goto yy771;
-        }
+        ++m_curPos;
+        { return m_token = EQuot; }
 yy789:
         yych = *++m_curPos;
         switch (yych) {
-        case 'e':        goto yy1080;
-        case 'l':        goto yy1081;
-        case 'r':        goto yy1079;
-        default:        goto yy771;
+        case 'f':        goto yy864;
+        case 's':        goto yy865;
+        case 'u':        goto yy866;
+        default:        goto yy758;
         }
 yy790:
-        yych = *++m_curPos;
-        switch (yych) {
-        case 'n':        goto yy1071;
-        default:        goto yy771;
-        }
-yy791:
-        yych = *++m_curPos;
-        switch (yych) {
-        case 'o':        goto yy1063;
-        default:        goto yy771;
-        }
-yy792:
-        yych = *++m_curPos;
-        switch (yych) {
-        case 'i':        goto yy991;
-        case 'p':        goto yy990;
-        case 'u':        goto yy989;
-        default:        goto yy771;
-        }
-yy793:
-        yych = *++m_curPos;
-        switch (yych) {
-        case 'r':        goto yy984;
-        default:        goto yy771;
-        }
-yy794:
-        yych = *++m_curPos;
-        switch (yych) {
-        case 'o':        goto yy981;
-        default:        goto yy771;
-        }
-yy795:
-        yych = *++m_curPos;
-        switch (yych) {
-        case 'A':
-        case 'B':
-        case 'C':
-        case 'D':
-        case 'E':
-        case 'F':
-        case 'G':
-        case 'H':
-        case 'I':
-        case 'J':
-        case 'K':
-        case 'L':
-        case 'M':
-        case 'N':
-        case 'O':
-        case 'P':
-        case 'Q':
-        case 'R':
-        case 'S':
-        case 'T':
-        case 'U':
-        case 'V':
-        case 'W':
-        case 'X':
-        case 'Y':
-        case 'Z':
-        case '_':
-        case 'a':
-        case 'b':
-        case 'c':
-        case 'd':
-        case 'e':
-        case 'f':
-        case 'g':
-        case 'h':
-        case 'i':
-        case 'j':
-        case 'k':
-        case 'l':
-        case 'm':
-        case 'n':
-        case 'o':
-        case 'p':
-        case 'q':
-        case 'r':
-        case 's':
-        case 't':
-        case 'u':
-        case 'v':
-        case 'w':
-        case 'x':
-        case 'y':
-        case 'z':        goto yy978;
-        default:        goto yy771;
-        }
-yy796:
-        yych = *++m_curPos;
-        switch (yych) {
-        case 'A':
-        case 'B':
-        case 'C':
-        case 'D':
-        case 'E':
-        case 'F':
-        case 'G':
-        case 'H':
-        case 'I':
-        case 'J':
-        case 'K':
-        case 'L':
-        case 'M':
-        case 'N':
-        case 'O':
-        case 'P':
-        case 'Q':
-        case 'R':
-        case 'S':
-        case 'T':
-        case 'U':
-        case 'V':
-        case 'W':
-        case 'X':
-        case 'Y':
-        case 'Z':
-        case '_':
-        case 'a':
-        case 'b':
-        case 'c':
-        case 'd':
-        case 'e':
-        case 'f':
-        case 'g':
-        case 'h':
-        case 'i':
-        case 'j':
-        case 'k':
-        case 'l':
-        case 'm':
-        case 'n':
-        case 'o':
-        case 'p':
-        case 'q':
-        case 'r':
-        case 's':
-        case 't':
-        case 'u':
-        case 'v':
-        case 'w':
-        case 'x':
-        case 'y':
-        case 'z':        goto yy975;
-        default:        goto yy771;
-        }
-yy797:
-        yych = *++m_curPos;
-        switch (yych) {
-        case 'A':
-        case 'B':
-        case 'C':
-        case 'D':
-        case 'E':
-        case 'F':
-        case 'G':
-        case 'H':
-        case 'I':
-        case 'J':
-        case 'K':
-        case 'L':
-        case 'M':
-        case 'N':
-        case 'O':
-        case 'P':
-        case 'Q':
-        case 'R':
-        case 'S':
-        case 'T':
-        case 'U':
-        case 'V':
-        case 'W':
-        case 'X':
-        case 'Y':
-        case 'Z':
-        case '_':
-        case 'a':
-        case 'b':
-        case 'c':
-        case 'd':
-        case 'e':
-        case 'f':
-        case 'g':
-        case 'h':
-        case 'i':
-        case 'j':
-        case 'k':
-        case 'l':
-        case 'm':
-        case 'n':
-        case 'o':
-        case 'p':
-        case 'q':
-        case 'r':
-        case 's':
-        case 't':
-        case 'u':
-        case 'v':
-        case 'w':
-        case 'x':
-        case 'y':
-        case 'z':        goto yy972;
-        default:        goto yy771;
-        }
-yy798:
-        yych = *++m_curPos;
-        switch (yych) {
-        case 'A':
-        case 'B':
-        case 'C':
-        case 'D':
-        case 'E':
-        case 'F':
-        case 'G':
-        case 'H':
-        case 'I':
-        case 'J':
-        case 'K':
-        case 'L':
-        case 'M':
-        case 'N':
-        case 'O':
-        case 'P':
-        case 'Q':
-        case 'R':
-        case 'S':
-        case 'T':
-        case 'U':
-        case 'V':
-        case 'W':
-        case 'X':
-        case 'Y':
-        case 'Z':
-        case '_':
-        case 'a':
-        case 'b':
-        case 'c':
-        case 'd':
-        case 'e':
-        case 'f':
-        case 'g':
-        case 'h':
-        case 'i':
-        case 'j':
-        case 'k':
-        case 'l':
-        case 'm':
-        case 'n':
-        case 'o':
-        case 'p':
-        case 'q':
-        case 'r':
-        case 's':
-        case 't':
-        case 'u':
-        case 'v':
-        case 'w':
-        case 'x':
-        case 'y':
-        case 'z':        goto yy969;
-        default:        goto yy771;
-        }
-yy799:
-        yych = *++m_curPos;
-        switch (yych) {
-        case 'A':        goto yy961;
-        default:        goto yy771;
-        }
-yy800:
-        ++m_curPos;
-        { return m_token = EQuot; }
-yy802:
-        yych = *++m_curPos;
-        switch (yych) {
-        case 'f':        goto yy877;
-        case 's':        goto yy878;
-        case 'u':        goto yy879;
-        default:        goto yy771;
-        }
-yy803:
         yyaccept = 3;
         yych = *(marker = ++m_curPos);
         switch (yych) {
-        case '.':        goto yy809;
+        case '.':        goto yy796;
         case '0':
         case '1':
         case '2':
@@ -12035,30 +11847,30 @@ yy803:
         case '4':
         case '5':
         case '6':
-        case '7':        goto yy829;
+        case '7':        goto yy816;
         case '8':
-        case '9':        goto yy805;
+        case '9':        goto yy792;
         case 'D':
-        case 'd':        goto yy826;
+        case 'd':        goto yy813;
         case 'E':
-        case 'e':        goto yy812;
+        case 'e':        goto yy799;
         case 'F':
-        case 'f':        goto yy827;
+        case 'f':        goto yy814;
         case 'H':
-        case 'h':        goto yy828;
+        case 'h':        goto yy815;
         case 'X':
-        case 'x':        goto yy825;
-        default:        goto yy804;
+        case 'x':        goto yy812;
+        default:        goto yy791;
         }
-yy804:
+yy791:
         { return m_token = EDecimalNumber; }
-yy805:
+yy792:
         yyaccept = 3;
         marker = ++m_curPos;
         if ((m_end - m_curPos) < 3) YYFILL(3);
         yych = *m_curPos;
         switch (yych) {
-        case '.':        goto yy809;
+        case '.':        goto yy796;
         case '0':
         case '1':
         case '2':
@@ -12068,15 +11880,15 @@ yy805:
         case '6':
         case '7':
         case '8':
-        case '9':        goto yy805;
+        case '9':        goto yy792;
         case 'E':
-        case 'e':        goto yy812;
-        default:        goto yy804;
+        case 'e':        goto yy799;
+        default:        goto yy791;
         }
-yy807:
+yy794:
         ++m_curPos;
         { --m_curPos; return m_token = EEndOfSource; }
-yy809:
+yy796:
         yyaccept = 4;
         marker = ++m_curPos;
         if ((m_end - m_curPos) < 3) YYFILL(3);
@@ -12091,24 +11903,24 @@ yy809:
         case '6':
         case '7':
         case '8':
-        case '9':        goto yy809;
+        case '9':        goto yy796;
         case 'E':
-        case 'e':        goto yy821;
+        case 'e':        goto yy808;
         case 'F':
-        case 'f':        goto yy817;
+        case 'f':        goto yy804;
         case 'H':
-        case 'h':        goto yy819;
+        case 'h':        goto yy806;
         case 'L':
-        case 'l':        goto yy816;
-        default:        goto yy811;
+        case 'l':        goto yy803;
+        default:        goto yy798;
         }
-yy811:
+yy798:
         { return m_token = EDblNumber; }
-yy812:
+yy799:
         yych = *++m_curPos;
         switch (yych) {
         case '+':
-        case '-':        goto yy813;
+        case '-':        goto yy800;
         case '0':
         case '1':
         case '2':
@@ -12118,8 +11930,137 @@ yy812:
         case '6':
         case '7':
         case '8':
-        case '9':        goto yy814;
-        default:        goto yy771;
+        case '9':        goto yy801;
+        default:        goto yy758;
+        }
+yy800:
+        yych = *++m_curPos;
+        switch (yych) {
+        case '0':
+        case '1':
+        case '2':
+        case '3':
+        case '4':
+        case '5':
+        case '6':
+        case '7':
+        case '8':
+        case '9':        goto yy801;
+        default:        goto yy758;
+        }
+yy801:
+        ++m_curPos;
+        if (m_end <= m_curPos) YYFILL(1);
+        yych = *m_curPos;
+        switch (yych) {
+        case '0':
+        case '1':
+        case '2':
+        case '3':
+        case '4':
+        case '5':
+        case '6':
+        case '7':
+        case '8':
+        case '9':        goto yy801;
+        case 'F':
+        case 'f':        goto yy804;
+        case 'H':
+        case 'h':        goto yy806;
+        case 'L':
+        case 'l':        goto yy803;
+        default:        goto yy798;
+        }
+yy803:
+        yych = *++m_curPos;
+        goto yy798;
+yy804:
+        ++m_curPos;
+        { return m_token = ESglNumber; }
+yy806:
+        ++m_curPos;
+        { return m_token = EHlfNumber; }
+yy808:
+        yych = *++m_curPos;
+        switch (yych) {
+        case '+':
+        case '-':        goto yy809;
+        case '0':
+        case '1':
+        case '2':
+        case '3':
+        case '4':
+        case '5':
+        case '6':
+        case '7':
+        case '8':
+        case '9':        goto yy810;
+        default:        goto yy758;
+        }
+yy809:
+        yych = *++m_curPos;
+        switch (yych) {
+        case '0':
+        case '1':
+        case '2':
+        case '3':
+        case '4':
+        case '5':
+        case '6':
+        case '7':
+        case '8':
+        case '9':        goto yy810;
+        default:        goto yy758;
+        }
+yy810:
+        ++m_curPos;
+        if (m_end <= m_curPos) YYFILL(1);
+        yych = *m_curPos;
+        switch (yych) {
+        case '0':
+        case '1':
+        case '2':
+        case '3':
+        case '4':
+        case '5':
+        case '6':
+        case '7':
+        case '8':
+        case '9':        goto yy810;
+        case 'F':
+        case 'f':        goto yy804;
+        case 'H':
+        case 'h':        goto yy806;
+        case 'L':
+        case 'l':        goto yy803;
+        default:        goto yy798;
+        }
+yy812:
+        yych = *++m_curPos;
+        switch (yych) {
+        case '0':
+        case '1':
+        case '2':
+        case '3':
+        case '4':
+        case '5':
+        case '6':
+        case '7':
+        case '8':
+        case '9':
+        case 'A':
+        case 'B':
+        case 'C':
+        case 'D':
+        case 'E':
+        case 'F':
+        case 'a':
+        case 'b':
+        case 'c':
+        case 'd':
+        case 'e':
+        case 'f':        goto yy849;
+        default:        goto yy758;
         }
 yy813:
         yych = *++m_curPos;
@@ -12133,13 +12074,23 @@ yy813:
         case '6':
         case '7':
         case '8':
-        case '9':        goto yy814;
-        default:        goto yy771;
+        case '9':
+        case 'A':
+        case 'B':
+        case 'C':
+        case 'D':
+        case 'E':
+        case 'F':
+        case 'a':
+        case 'b':
+        case 'c':
+        case 'd':
+        case 'e':
+        case 'f':        goto yy832;
+        default:        goto yy758;
         }
 yy814:
-        ++m_curPos;
-        if (m_end <= m_curPos) YYFILL(1);
-        yych = *m_curPos;
+        yych = *++m_curPos;
         switch (yych) {
         case '0':
         case '1':
@@ -12150,61 +12101,72 @@ yy814:
         case '6':
         case '7':
         case '8':
-        case '9':        goto yy814;
+        case '9':
+        case 'A':
+        case 'B':
+        case 'C':
+        case 'D':
+        case 'E':
         case 'F':
-        case 'f':        goto yy817;
-        case 'H':
-        case 'h':        goto yy819;
-        case 'L':
-        case 'l':        goto yy816;
-        default:        goto yy811;
+        case 'a':
+        case 'b':
+        case 'c':
+        case 'd':
+        case 'e':
+        case 'f':        goto yy823;
+        default:        goto yy758;
+        }
+yy815:
+        yych = *++m_curPos;
+        switch (yych) {
+        case '0':
+        case '1':
+        case '2':
+        case '3':
+        case '4':
+        case '5':
+        case '6':
+        case '7':
+        case '8':
+        case '9':
+        case 'A':
+        case 'B':
+        case 'C':
+        case 'D':
+        case 'E':
+        case 'F':
+        case 'a':
+        case 'b':
+        case 'c':
+        case 'd':
+        case 'e':
+        case 'f':        goto yy818;
+        default:        goto yy758;
         }
 yy816:
-        yych = *++m_curPos;
-        goto yy811;
-yy817:
-        ++m_curPos;
-        { return m_token = ESglNumber; }
-yy819:
-        ++m_curPos;
-        { return m_token = EHlfNumber; }
-yy821:
-        yych = *++m_curPos;
-        switch (yych) {
-        case '+':
-        case '-':        goto yy822;
-        case '0':
-        case '1':
-        case '2':
-        case '3':
-        case '4':
-        case '5':
-        case '6':
-        case '7':
-        case '8':
-        case '9':        goto yy823;
-        default:        goto yy771;
-        }
-yy822:
-        yych = *++m_curPos;
-        switch (yych) {
-        case '0':
-        case '1':
-        case '2':
-        case '3':
-        case '4':
-        case '5':
-        case '6':
-        case '7':
-        case '8':
-        case '9':        goto yy823;
-        default:        goto yy771;
-        }
-yy823:
-        ++m_curPos;
-        if (m_end <= m_curPos) YYFILL(1);
+        yyaccept = 3;
+        marker = ++m_curPos;
+        if ((m_end - m_curPos) < 3) YYFILL(3);
         yych = *m_curPos;
         switch (yych) {
+        case '.':        goto yy796;
+        case '0':
+        case '1':
+        case '2':
+        case '3':
+        case '4':
+        case '5':
+        case '6':
+        case '7':        goto yy816;
+        case '8':
+        case '9':        goto yy792;
+        case 'E':
+        case 'e':        goto yy799;
+        default:        goto yy791;
+        }
+yy818:
+        yych = *++m_curPos;
+        switch (yych) {
         case '0':
         case '1':
         case '2':
@@ -12214,14 +12176,131 @@ yy823:
         case '6':
         case '7':
         case '8':
-        case '9':        goto yy823;
+        case '9':
+        case 'A':
+        case 'B':
+        case 'C':
+        case 'D':
+        case 'E':
         case 'F':
-        case 'f':        goto yy817;
-        case 'H':
-        case 'h':        goto yy819;
-        case 'L':
-        case 'l':        goto yy816;
-        default:        goto yy811;
+        case 'a':
+        case 'b':
+        case 'c':
+        case 'd':
+        case 'e':
+        case 'f':        goto yy819;
+        default:        goto yy758;
+        }
+yy819:
+        yych = *++m_curPos;
+        switch (yych) {
+        case '0':
+        case '1':
+        case '2':
+        case '3':
+        case '4':
+        case '5':
+        case '6':
+        case '7':
+        case '8':
+        case '9':
+        case 'A':
+        case 'B':
+        case 'C':
+        case 'D':
+        case 'E':
+        case 'F':
+        case 'a':
+        case 'b':
+        case 'c':
+        case 'd':
+        case 'e':
+        case 'f':        goto yy820;
+        default:        goto yy758;
+        }
+yy820:
+        yych = *++m_curPos;
+        switch (yych) {
+        case '0':
+        case '1':
+        case '2':
+        case '3':
+        case '4':
+        case '5':
+        case '6':
+        case '7':
+        case '8':
+        case '9':
+        case 'A':
+        case 'B':
+        case 'C':
+        case 'D':
+        case 'E':
+        case 'F':
+        case 'a':
+        case 'b':
+        case 'c':
+        case 'd':
+        case 'e':
+        case 'f':        goto yy821;
+        default:        goto yy758;
+        }
+yy821:
+        ++m_curPos;
+        { return m_token = EHlfHexNumber; }
+yy823:
+        yych = *++m_curPos;
+        switch (yych) {
+        case '0':
+        case '1':
+        case '2':
+        case '3':
+        case '4':
+        case '5':
+        case '6':
+        case '7':
+        case '8':
+        case '9':
+        case 'A':
+        case 'B':
+        case 'C':
+        case 'D':
+        case 'E':
+        case 'F':
+        case 'a':
+        case 'b':
+        case 'c':
+        case 'd':
+        case 'e':
+        case 'f':        goto yy824;
+        default:        goto yy758;
+        }
+yy824:
+        yych = *++m_curPos;
+        switch (yych) {
+        case '0':
+        case '1':
+        case '2':
+        case '3':
+        case '4':
+        case '5':
+        case '6':
+        case '7':
+        case '8':
+        case '9':
+        case 'A':
+        case 'B':
+        case 'C':
+        case 'D':
+        case 'E':
+        case 'F':
+        case 'a':
+        case 'b':
+        case 'c':
+        case 'd':
+        case 'e':
+        case 'f':        goto yy825;
+        default:        goto yy758;
         }
 yy825:
         yych = *++m_curPos;
@@ -12247,8 +12326,8 @@ yy825:
         case 'c':
         case 'd':
         case 'e':
-        case 'f':        goto yy862;
-        default:        goto yy771;
+        case 'f':        goto yy826;
+        default:        goto yy758;
         }
 yy826:
         yych = *++m_curPos;
@@ -12274,8 +12353,8 @@ yy826:
         case 'c':
         case 'd':
         case 'e':
-        case 'f':        goto yy845;
-        default:        goto yy771;
+        case 'f':        goto yy827;
+        default:        goto yy758;
         }
 yy827:
         yych = *++m_curPos;
@@ -12301,8 +12380,8 @@ yy827:
         case 'c':
         case 'd':
         case 'e':
-        case 'f':        goto yy836;
-        default:        goto yy771;
+        case 'f':        goto yy828;
+        default:        goto yy758;
         }
 yy828:
         yych = *++m_curPos;
@@ -12328,31 +12407,10 @@ yy828:
         case 'c':
         case 'd':
         case 'e':
-        case 'f':        goto yy831;
-        default:        goto yy771;
+        case 'f':        goto yy829;
+        default:        goto yy758;
         }
 yy829:
-        yyaccept = 3;
-        marker = ++m_curPos;
-        if ((m_end - m_curPos) < 3) YYFILL(3);
-        yych = *m_curPos;
-        switch (yych) {
-        case '.':        goto yy809;
-        case '0':
-        case '1':
-        case '2':
-        case '3':
-        case '4':
-        case '5':
-        case '6':
-        case '7':        goto yy829;
-        case '8':
-        case '9':        goto yy805;
-        case 'E':
-        case 'e':        goto yy812;
-        default:        goto yy804;
-        }
-yy831:
         yych = *++m_curPos;
         switch (yych) {
         case '0':
@@ -12376,9 +12434,12 @@ yy831:
         case 'c':
         case 'd':
         case 'e':
-        case 'f':        goto yy832;
-        default:        goto yy771;
+        case 'f':        goto yy830;
+        default:        goto yy758;
         }
+yy830:
+        ++m_curPos;
+        { return m_token = ESglHexNumber; }
 yy832:
         yych = *++m_curPos;
         switch (yych) {
@@ -12404,7 +12465,7 @@ yy832:
         case 'd':
         case 'e':
         case 'f':        goto yy833;
-        default:        goto yy771;
+        default:        goto yy758;
         }
 yy833:
         yych = *++m_curPos;
@@ -12431,11 +12492,62 @@ yy833:
         case 'd':
         case 'e':
         case 'f':        goto yy834;
-        default:        goto yy771;
+        default:        goto yy758;
         }
 yy834:
-        ++m_curPos;
-        { return m_token = EHlfHexNumber; }
+        yych = *++m_curPos;
+        switch (yych) {
+        case '0':
+        case '1':
+        case '2':
+        case '3':
+        case '4':
+        case '5':
+        case '6':
+        case '7':
+        case '8':
+        case '9':
+        case 'A':
+        case 'B':
+        case 'C':
+        case 'D':
+        case 'E':
+        case 'F':
+        case 'a':
+        case 'b':
+        case 'c':
+        case 'd':
+        case 'e':
+        case 'f':        goto yy835;
+        default:        goto yy758;
+        }
+yy835:
+        yych = *++m_curPos;
+        switch (yych) {
+        case '0':
+        case '1':
+        case '2':
+        case '3':
+        case '4':
+        case '5':
+        case '6':
+        case '7':
+        case '8':
+        case '9':
+        case 'A':
+        case 'B':
+        case 'C':
+        case 'D':
+        case 'E':
+        case 'F':
+        case 'a':
+        case 'b':
+        case 'c':
+        case 'd':
+        case 'e':
+        case 'f':        goto yy836;
+        default:        goto yy758;
+        }
 yy836:
         yych = *++m_curPos;
         switch (yych) {
@@ -12461,7 +12573,7 @@ yy836:
         case 'd':
         case 'e':
         case 'f':        goto yy837;
-        default:        goto yy771;
+        default:        goto yy758;
         }
 yy837:
         yych = *++m_curPos;
@@ -12488,7 +12600,7 @@ yy837:
         case 'd':
         case 'e':
         case 'f':        goto yy838;
-        default:        goto yy771;
+        default:        goto yy758;
         }
 yy838:
         yych = *++m_curPos;
@@ -12515,7 +12627,7 @@ yy838:
         case 'd':
         case 'e':
         case 'f':        goto yy839;
-        default:        goto yy771;
+        default:        goto yy758;
         }
 yy839:
         yych = *++m_curPos;
@@ -12542,7 +12654,7 @@ yy839:
         case 'd':
         case 'e':
         case 'f':        goto yy840;
-        default:        goto yy771;
+        default:        goto yy758;
         }
 yy840:
         yych = *++m_curPos;
@@ -12569,7 +12681,7 @@ yy840:
         case 'd':
         case 'e':
         case 'f':        goto yy841;
-        default:        goto yy771;
+        default:        goto yy758;
         }
 yy841:
         yych = *++m_curPos;
@@ -12596,7 +12708,7 @@ yy841:
         case 'd':
         case 'e':
         case 'f':        goto yy842;
-        default:        goto yy771;
+        default:        goto yy758;
         }
 yy842:
         yych = *++m_curPos;
@@ -12623,11 +12735,62 @@ yy842:
         case 'd':
         case 'e':
         case 'f':        goto yy843;
-        default:        goto yy771;
+        default:        goto yy758;
         }
 yy843:
-        ++m_curPos;
-        { return m_token = ESglHexNumber; }
+        yych = *++m_curPos;
+        switch (yych) {
+        case '0':
+        case '1':
+        case '2':
+        case '3':
+        case '4':
+        case '5':
+        case '6':
+        case '7':
+        case '8':
+        case '9':
+        case 'A':
+        case 'B':
+        case 'C':
+        case 'D':
+        case 'E':
+        case 'F':
+        case 'a':
+        case 'b':
+        case 'c':
+        case 'd':
+        case 'e':
+        case 'f':        goto yy844;
+        default:        goto yy758;
+        }
+yy844:
+        yych = *++m_curPos;
+        switch (yych) {
+        case '0':
+        case '1':
+        case '2':
+        case '3':
+        case '4':
+        case '5':
+        case '6':
+        case '7':
+        case '8':
+        case '9':
+        case 'A':
+        case 'B':
+        case 'C':
+        case 'D':
+        case 'E':
+        case 'F':
+        case 'a':
+        case 'b':
+        case 'c':
+        case 'd':
+        case 'e':
+        case 'f':        goto yy845;
+        default:        goto yy758;
+        }
 yy845:
         yych = *++m_curPos;
         switch (yych) {
@@ -12653,7 +12816,7 @@ yy845:
         case 'd':
         case 'e':
         case 'f':        goto yy846;
-        default:        goto yy771;
+        default:        goto yy758;
         }
 yy846:
         yych = *++m_curPos;
@@ -12680,38 +12843,18 @@ yy846:
         case 'd':
         case 'e':
         case 'f':        goto yy847;
-        default:        goto yy771;
+        default:        goto yy758;
         }
 yy847:
-        yych = *++m_curPos;
+        ++m_curPos;
+        { return m_token = EDblHexNumber; }
+yy849:
+        yyaccept = 5;
+        marker = ++m_curPos;
+        if ((m_end - m_curPos) < 3) YYFILL(3);
+        yych = *m_curPos;
         switch (yych) {
-        case '0':
-        case '1':
-        case '2':
-        case '3':
-        case '4':
-        case '5':
-        case '6':
-        case '7':
-        case '8':
-        case '9':
-        case 'A':
-        case 'B':
-        case 'C':
-        case 'D':
-        case 'E':
-        case 'F':
-        case 'a':
-        case 'b':
-        case 'c':
-        case 'd':
-        case 'e':
-        case 'f':        goto yy848;
-        default:        goto yy771;
-        }
-yy848:
-        yych = *++m_curPos;
-        switch (yych) {
+        case '.':        goto yy852;
         case '0':
         case '1':
         case '2':
@@ -12734,64 +12877,16 @@ yy848:
         case 'd':
         case 'e':
         case 'f':        goto yy849;
-        default:        goto yy771;
-        }
-yy849:
-        yych = *++m_curPos;
-        switch (yych) {
-        case '0':
-        case '1':
-        case '2':
-        case '3':
-        case '4':
-        case '5':
-        case '6':
-        case '7':
-        case '8':
-        case '9':
-        case 'A':
-        case 'B':
-        case 'C':
-        case 'D':
-        case 'E':
-        case 'F':
-        case 'a':
-        case 'b':
-        case 'c':
-        case 'd':
-        case 'e':
-        case 'f':        goto yy850;
-        default:        goto yy771;
-        }
-yy850:
-        yych = *++m_curPos;
-        switch (yych) {
-        case '0':
-        case '1':
-        case '2':
-        case '3':
-        case '4':
-        case '5':
-        case '6':
-        case '7':
-        case '8':
-        case '9':
-        case 'A':
-        case 'B':
-        case 'C':
-        case 'D':
-        case 'E':
-        case 'F':
-        case 'a':
-        case 'b':
-        case 'c':
-        case 'd':
-        case 'e':
-        case 'f':        goto yy851;
-        default:        goto yy771;
+        case 'P':
+        case 'p':        goto yy854;
+        default:        goto yy851;
         }
 yy851:
-        yych = *++m_curPos;
+        { return m_token = EHexNumber; }
+yy852:
+        ++m_curPos;
+        if ((m_end - m_curPos) < 3) YYFILL(3);
+        yych = *m_curPos;
         switch (yych) {
         case '0':
         case '1':
@@ -12815,65 +12910,15 @@ yy851:
         case 'd':
         case 'e':
         case 'f':        goto yy852;
-        default:        goto yy771;
-        }
-yy852:
-        yych = *++m_curPos;
-        switch (yych) {
-        case '0':
-        case '1':
-        case '2':
-        case '3':
-        case '4':
-        case '5':
-        case '6':
-        case '7':
-        case '8':
-        case '9':
-        case 'A':
-        case 'B':
-        case 'C':
-        case 'D':
-        case 'E':
-        case 'F':
-        case 'a':
-        case 'b':
-        case 'c':
-        case 'd':
-        case 'e':
-        case 'f':        goto yy853;
-        default:        goto yy771;
-        }
-yy853:
-        yych = *++m_curPos;
-        switch (yych) {
-        case '0':
-        case '1':
-        case '2':
-        case '3':
-        case '4':
-        case '5':
-        case '6':
-        case '7':
-        case '8':
-        case '9':
-        case 'A':
-        case 'B':
-        case 'C':
-        case 'D':
-        case 'E':
-        case 'F':
-        case 'a':
-        case 'b':
-        case 'c':
-        case 'd':
-        case 'e':
-        case 'f':        goto yy854;
-        default:        goto yy771;
+        case 'P':
+        case 'p':        goto yy854;
+        default:        goto yy758;
         }
 yy854:
         yych = *++m_curPos;
         switch (yych) {
+        case '+':
+        case '-':        goto yy855;
         case '0':
         case '1':
         case '2':
@@ -12883,20 +12928,8 @@ yy854:
         case '6':
         case '7':
         case '8':
-        case '9':
-        case 'A':
-        case 'B':
-        case 'C':
-        case 'D':
-        case 'E':
-        case 'F':
-        case 'a':
-        case 'b':
-        case 'c':
-        case 'd':
-        case 'e':
-        case 'f':        goto yy855;
-        default:        goto yy771;
+        case '9':        goto yy856;
+        default:        goto yy758;
         }
 yy855:
         yych = *++m_curPos;
@@ -12910,23 +12943,13 @@ yy855:
         case '6':
         case '7':
         case '8':
-        case '9':
-        case 'A':
-        case 'B':
-        case 'C':
-        case 'D':
-        case 'E':
-        case 'F':
-        case 'a':
-        case 'b':
-        case 'c':
-        case 'd':
-        case 'e':
-        case 'f':        goto yy856;
-        default:        goto yy771;
+        case '9':        goto yy856;
+        default:        goto yy758;
         }
 yy856:
-        yych = *++m_curPos;
+        ++m_curPos;
+        if (m_end <= m_curPos) YYFILL(1);
+        yych = *m_curPos;
         switch (yych) {
         case '0':
         case '1':
@@ -12937,6222 +12960,6011 @@ yy856:
         case '6':
         case '7':
         case '8':
-        case '9':
-        case 'A':
-        case 'B':
-        case 'C':
-        case 'D':
-        case 'E':
+        case '9':        goto yy856;
         case 'F':
-        case 'a':
-        case 'b':
-        case 'c':
-        case 'd':
-        case 'e':
-        case 'f':        goto yy857;
-        default:        goto yy771;
-        }
-yy857:
-        yych = *++m_curPos;
-        switch (yych) {
-        case '0':
-        case '1':
-        case '2':
-        case '3':
-        case '4':
-        case '5':
-        case '6':
-        case '7':
-        case '8':
-        case '9':
-        case 'A':
-        case 'B':
-        case 'C':
-        case 'D':
-        case 'E':
-        case 'F':
-        case 'a':
-        case 'b':
-        case 'c':
-        case 'd':
-        case 'e':
-        case 'f':        goto yy858;
-        default:        goto yy771;
+        case 'f':        goto yy860;
+        case 'H':
+        case 'h':        goto yy862;
+        case 'L':
+        case 'l':        goto yy859;
+        default:        goto yy858;
         }
 yy858:
-        yych = *++m_curPos;
-        switch (yych) {
-        case '0':
-        case '1':
-        case '2':
-        case '3':
-        case '4':
-        case '5':
-        case '6':
-        case '7':
-        case '8':
-        case '9':
-        case 'A':
-        case 'B':
-        case 'C':
-        case 'D':
-        case 'E':
-        case 'F':
-        case 'a':
-        case 'b':
-        case 'c':
-        case 'd':
-        case 'e':
-        case 'f':        goto yy859;
-        default:        goto yy771;
-        }
+        { return m_token = EDblC99Number; }
 yy859:
         yych = *++m_curPos;
-        switch (yych) {
-        case '0':
-        case '1':
-        case '2':
-        case '3':
-        case '4':
-        case '5':
-        case '6':
-        case '7':
-        case '8':
-        case '9':
-        case 'A':
-        case 'B':
-        case 'C':
-        case 'D':
-        case 'E':
-        case 'F':
-        case 'a':
-        case 'b':
-        case 'c':
-        case 'd':
-        case 'e':
-        case 'f':        goto yy860;
-        default:        goto yy771;
-        }
+        goto yy858;
 yy860:
         ++m_curPos;
-        { return m_token = EDblHexNumber; }
+        { return m_token = ESglC99Number; }
 yy862:
-        yyaccept = 5;
-        marker = ++m_curPos;
-        if ((m_end - m_curPos) < 3) YYFILL(3);
-        yych = *m_curPos;
-        switch (yych) {
-        case '.':        goto yy865;
-        case '0':
-        case '1':
-        case '2':
-        case '3':
-        case '4':
-        case '5':
-        case '6':
-        case '7':
-        case '8':
-        case '9':
-        case 'A':
-        case 'B':
-        case 'C':
-        case 'D':
-        case 'E':
-        case 'F':
-        case 'a':
-        case 'b':
-        case 'c':
-        case 'd':
-        case 'e':
-        case 'f':        goto yy862;
-        case 'P':
-        case 'p':        goto yy867;
-        default:        goto yy864;
-        }
-yy864:
-        { return m_token = EHexNumber; }
-yy865:
         ++m_curPos;
-        if ((m_end - m_curPos) < 3) YYFILL(3);
-        yych = *m_curPos;
+        { return m_token = EHlfC99Number; }
+yy864:
+        yych = *++m_curPos;
         switch (yych) {
-        case '0':
-        case '1':
-        case '2':
-        case '3':
-        case '4':
-        case '5':
-        case '6':
-        case '7':
-        case '8':
-        case '9':
-        case 'A':
-        case 'B':
-        case 'C':
-        case 'D':
-        case 'E':
-        case 'F':
-        case 'a':
-        case 'b':
-        case 'c':
-        case 'd':
-        case 'e':
-        case 'f':        goto yy865;
-        case 'P':
-        case 'p':        goto yy867;
-        default:        goto yy771;
+        case '1':        goto yy927;
+        case '3':        goto yy928;
+        case '6':        goto yy929;
+        default:        goto yy758;
+        }
+yy865:
+        yych = *++m_curPos;
+        switch (yych) {
+        case '1':        goto yy898;
+        case '3':        goto yy899;
+        case '6':        goto yy900;
+        case '8':        goto yy897;
+        default:        goto yy758;
+        }
+yy866:
+        yych = *++m_curPos;
+        switch (yych) {
+        case '1':        goto yy868;
+        case '3':        goto yy869;
+        case '6':        goto yy870;
+        case '8':        goto yy867;
+        default:        goto yy758;
         }
 yy867:
         yych = *++m_curPos;
         switch (yych) {
-        case '+':
-        case '-':        goto yy868;
-        case '0':
-        case '1':
-        case '2':
-        case '3':
-        case '4':
-        case '5':
-        case '6':
-        case '7':
-        case '8':
-        case '9':        goto yy869;
-        default:        goto yy771;
+        case 'x':        goto yy889;
+        default:        goto yy758;
         }
 yy868:
         yych = *++m_curPos;
         switch (yych) {
-        case '0':
-        case '1':
-        case '2':
-        case '3':
-        case '4':
-        case '5':
-        case '6':
-        case '7':
-        case '8':
-        case '9':        goto yy869;
-        default:        goto yy771;
+        case '6':        goto yy881;
+        default:        goto yy758;
         }
 yy869:
-        ++m_curPos;
-        if (m_end <= m_curPos) YYFILL(1);
-        yych = *m_curPos;
+        yych = *++m_curPos;
         switch (yych) {
-        case '0':
-        case '1':
-        case '2':
-        case '3':
-        case '4':
-        case '5':
-        case '6':
-        case '7':
-        case '8':
-        case '9':        goto yy869;
-        case 'F':
-        case 'f':        goto yy873;
-        case 'H':
-        case 'h':        goto yy875;
-        case 'L':
-        case 'l':        goto yy872;
-        default:        goto yy871;
+        case '2':        goto yy875;
+        default:        goto yy758;
+        }
+yy870:
+        yych = *++m_curPos;
+        switch (yych) {
+        case '4':        goto yy871;
+        default:        goto yy758;
         }
 yy871:
-        { return m_token = EDblC99Number; }
+        yych = *++m_curPos;
+        switch (yych) {
+        case 'x':        goto yy872;
+        default:        goto yy758;
+        }
 yy872:
         yych = *++m_curPos;
-        goto yy871;
+        switch (yych) {
+        case '2':        goto yy873;
+        default:        goto yy758;
+        }
 yy873:
         ++m_curPos;
-        { return m_token = ESglC99Number; }
+        { m_brigId = Brig::BRIG_TYPE_U64X2; return m_token = EPackedLiteral; }
 yy875:
-        ++m_curPos;
-        { return m_token = EHlfC99Number; }
+        yych = *++m_curPos;
+        switch (yych) {
+        case 'x':        goto yy876;
+        default:        goto yy758;
+        }
+yy876:
+        yych = *++m_curPos;
+        switch (yych) {
+        case '2':        goto yy879;
+        case '4':        goto yy877;
+        default:        goto yy758;
+        }
 yy877:
-        yych = *++m_curPos;
-        switch (yych) {
-        case '1':        goto yy940;
-        case '3':        goto yy941;
-        case '6':        goto yy942;
-        default:        goto yy771;
-        }
-yy878:
-        yych = *++m_curPos;
-        switch (yych) {
-        case '1':        goto yy911;
-        case '3':        goto yy912;
-        case '6':        goto yy913;
-        case '8':        goto yy910;
-        default:        goto yy771;
-        }
+        ++m_curPos;
+        { m_brigId = Brig::BRIG_TYPE_U32X4; return m_token = EPackedLiteral; }
 yy879:
-        yych = *++m_curPos;
-        switch (yych) {
-        case '1':        goto yy881;
-        case '3':        goto yy882;
-        case '6':        goto yy883;
-        case '8':        goto yy880;
-        default:        goto yy771;
-        }
-yy880:
-        yych = *++m_curPos;
-        switch (yych) {
-        case 'x':        goto yy902;
-        default:        goto yy771;
-        }
+        ++m_curPos;
+        { m_brigId = Brig::BRIG_TYPE_U32X2; return m_token = EPackedLiteral; }
 yy881:
         yych = *++m_curPos;
         switch (yych) {
-        case '6':        goto yy894;
-        default:        goto yy771;
+        case 'x':        goto yy882;
+        default:        goto yy758;
         }
 yy882:
         yych = *++m_curPos;
         switch (yych) {
-        case '2':        goto yy888;
-        default:        goto yy771;
+        case '2':        goto yy887;
+        case '4':        goto yy885;
+        case '8':        goto yy883;
+        default:        goto yy758;
         }
 yy883:
-        yych = *++m_curPos;
-        switch (yych) {
-        case '4':        goto yy884;
-        default:        goto yy771;
-        }
-yy884:
-        yych = *++m_curPos;
-        switch (yych) {
-        case 'x':        goto yy885;
-        default:        goto yy771;
-        }
-yy885:
-        yych = *++m_curPos;
-        switch (yych) {
-        case '2':        goto yy886;
-        default:        goto yy771;
-        }
-yy886:
         ++m_curPos;
-        { m_brigId = Brig::BRIG_TYPE_U64X2; return m_token = EPackedLiteral; }
-yy888:
-        yych = *++m_curPos;
-        switch (yych) {
-        case 'x':        goto yy889;
-        default:        goto yy771;
-        }
+        { m_brigId = Brig::BRIG_TYPE_U16X8; return m_token = EPackedLiteral; }
+yy885:
+        ++m_curPos;
+        { m_brigId = Brig::BRIG_TYPE_U16X4; return m_token = EPackedLiteral; }
+yy887:
+        ++m_curPos;
+        { m_brigId = Brig::BRIG_TYPE_U16X2; return m_token = EPackedLiteral; }
 yy889:
         yych = *++m_curPos;
         switch (yych) {
-        case '2':        goto yy892;
+        case '1':        goto yy894;
         case '4':        goto yy890;
-        default:        goto yy771;
+        case '8':        goto yy892;
+        default:        goto yy758;
         }
 yy890:
         ++m_curPos;
-        { m_brigId = Brig::BRIG_TYPE_U32X4; return m_token = EPackedLiteral; }
+        { m_brigId = Brig::BRIG_TYPE_U8X4;  return m_token = EPackedLiteral; }
 yy892:
         ++m_curPos;
-        { m_brigId = Brig::BRIG_TYPE_U32X2; return m_token = EPackedLiteral; }
+        { m_brigId = Brig::BRIG_TYPE_U8X8;  return m_token = EPackedLiteral; }
 yy894:
         yych = *++m_curPos;
         switch (yych) {
-        case 'x':        goto yy895;
-        default:        goto yy771;
+        case '6':        goto yy895;
+        default:        goto yy758;
         }
 yy895:
+        ++m_curPos;
+        { m_brigId = Brig::BRIG_TYPE_U8X16; return m_token = EPackedLiteral; }
+yy897:
         yych = *++m_curPos;
         switch (yych) {
-        case '2':        goto yy900;
-        case '4':        goto yy898;
-        case '8':        goto yy896;
-        default:        goto yy771;
+        case 'x':        goto yy919;
+        default:        goto yy758;
         }
-yy896:
-        ++m_curPos;
-        { m_brigId = Brig::BRIG_TYPE_U16X8; return m_token = EPackedLiteral; }
 yy898:
-        ++m_curPos;
-        { m_brigId = Brig::BRIG_TYPE_U16X4; return m_token = EPackedLiteral; }
+        yych = *++m_curPos;
+        switch (yych) {
+        case '6':        goto yy911;
+        default:        goto yy758;
+        }
+yy899:
+        yych = *++m_curPos;
+        switch (yych) {
+        case '2':        goto yy905;
+        default:        goto yy758;
+        }
 yy900:
-        ++m_curPos;
-        { m_brigId = Brig::BRIG_TYPE_U16X2; return m_token = EPackedLiteral; }
+        yych = *++m_curPos;
+        switch (yych) {
+        case '4':        goto yy901;
+        default:        goto yy758;
+        }
+yy901:
+        yych = *++m_curPos;
+        switch (yych) {
+        case 'x':        goto yy902;
+        default:        goto yy758;
+        }
 yy902:
         yych = *++m_curPos;
         switch (yych) {
-        case '1':        goto yy907;
-        case '4':        goto yy903;
-        case '8':        goto yy905;
-        default:        goto yy771;
+        case '2':        goto yy903;
+        default:        goto yy758;
         }
 yy903:
         ++m_curPos;
-        { m_brigId = Brig::BRIG_TYPE_U8X4;  return m_token = EPackedLiteral; }
+        { m_brigId = Brig::BRIG_TYPE_S64X2; return m_token = EPackedLiteral; }
 yy905:
-        ++m_curPos;
-        { m_brigId = Brig::BRIG_TYPE_U8X8;  return m_token = EPackedLiteral; }
+        yych = *++m_curPos;
+        switch (yych) {
+        case 'x':        goto yy906;
+        default:        goto yy758;
+        }
+yy906:
+        yych = *++m_curPos;
+        switch (yych) {
+        case '2':        goto yy909;
+        case '4':        goto yy907;
+        default:        goto yy758;
+        }
 yy907:
-        yych = *++m_curPos;
-        switch (yych) {
-        case '6':        goto yy908;
-        default:        goto yy771;
-        }
-yy908:
         ++m_curPos;
-        { m_brigId = Brig::BRIG_TYPE_U8X16; return m_token = EPackedLiteral; }
-yy910:
-        yych = *++m_curPos;
-        switch (yych) {
-        case 'x':        goto yy932;
-        default:        goto yy771;
-        }
+        { m_brigId = Brig::BRIG_TYPE_S32X4; return m_token = EPackedLiteral; }
+yy909:
+        ++m_curPos;
+        { m_brigId = Brig::BRIG_TYPE_S32X2; return m_token = EPackedLiteral; }
 yy911:
         yych = *++m_curPos;
         switch (yych) {
-        case '6':        goto yy924;
-        default:        goto yy771;
+        case 'x':        goto yy912;
+        default:        goto yy758;
         }
 yy912:
         yych = *++m_curPos;
         switch (yych) {
-        case '2':        goto yy918;
-        default:        goto yy771;
+        case '2':        goto yy917;
+        case '4':        goto yy915;
+        case '8':        goto yy913;
+        default:        goto yy758;
         }
 yy913:
-        yych = *++m_curPos;
-        switch (yych) {
-        case '4':        goto yy914;
-        default:        goto yy771;
-        }
-yy914:
-        yych = *++m_curPos;
-        switch (yych) {
-        case 'x':        goto yy915;
-        default:        goto yy771;
-        }
-yy915:
-        yych = *++m_curPos;
-        switch (yych) {
-        case '2':        goto yy916;
-        default:        goto yy771;
-        }
-yy916:
         ++m_curPos;
-        { m_brigId = Brig::BRIG_TYPE_S64X2; return m_token = EPackedLiteral; }
-yy918:
-        yych = *++m_curPos;
-        switch (yych) {
-        case 'x':        goto yy919;
-        default:        goto yy771;
-        }
+        { m_brigId = Brig::BRIG_TYPE_S16X8; return m_token = EPackedLiteral; }
+yy915:
+        ++m_curPos;
+        { m_brigId = Brig::BRIG_TYPE_S16X4; return m_token = EPackedLiteral; }
+yy917:
+        ++m_curPos;
+        { m_brigId = Brig::BRIG_TYPE_S16X2; return m_token = EPackedLiteral; }
 yy919:
         yych = *++m_curPos;
         switch (yych) {
-        case '2':        goto yy922;
+        case '1':        goto yy924;
         case '4':        goto yy920;
-        default:        goto yy771;
+        case '8':        goto yy922;
+        default:        goto yy758;
         }
 yy920:
         ++m_curPos;
-        { m_brigId = Brig::BRIG_TYPE_S32X4; return m_token = EPackedLiteral; }
+        { m_brigId = Brig::BRIG_TYPE_S8X4;  return m_token = EPackedLiteral; }
 yy922:
         ++m_curPos;
-        { m_brigId = Brig::BRIG_TYPE_S32X2; return m_token = EPackedLiteral; }
+        { m_brigId = Brig::BRIG_TYPE_S8X8;  return m_token = EPackedLiteral; }
 yy924:
         yych = *++m_curPos;
         switch (yych) {
-        case 'x':        goto yy925;
-        default:        goto yy771;
+        case '6':        goto yy925;
+        default:        goto yy758;
         }
 yy925:
-        yych = *++m_curPos;
-        switch (yych) {
-        case '2':        goto yy930;
-        case '4':        goto yy928;
-        case '8':        goto yy926;
-        default:        goto yy771;
-        }
-yy926:
-        ++m_curPos;
-        { m_brigId = Brig::BRIG_TYPE_S16X8; return m_token = EPackedLiteral; }
-yy928:
-        ++m_curPos;
-        { m_brigId = Brig::BRIG_TYPE_S16X4; return m_token = EPackedLiteral; }
-yy930:
-        ++m_curPos;
-        { m_brigId = Brig::BRIG_TYPE_S16X2; return m_token = EPackedLiteral; }
-yy932:
-        yych = *++m_curPos;
-        switch (yych) {
-        case '1':        goto yy937;
-        case '4':        goto yy933;
-        case '8':        goto yy935;
-        default:        goto yy771;
-        }
-yy933:
-        ++m_curPos;
-        { m_brigId = Brig::BRIG_TYPE_S8X4;  return m_token = EPackedLiteral; }
-yy935:
-        ++m_curPos;
-        { m_brigId = Brig::BRIG_TYPE_S8X8;  return m_token = EPackedLiteral; }
-yy937:
-        yych = *++m_curPos;
-        switch (yych) {
-        case '6':        goto yy938;
-        default:        goto yy771;
-        }
-yy938:
         ++m_curPos;
         { m_brigId = Brig::BRIG_TYPE_S8X16; return m_token = EPackedLiteral; }
+yy927:
+        yych = *++m_curPos;
+        switch (yych) {
+        case '6':        goto yy940;
+        default:        goto yy758;
+        }
+yy928:
+        yych = *++m_curPos;
+        switch (yych) {
+        case '2':        goto yy934;
+        default:        goto yy758;
+        }
+yy929:
+        yych = *++m_curPos;
+        switch (yych) {
+        case '4':        goto yy930;
+        default:        goto yy758;
+        }
+yy930:
+        yych = *++m_curPos;
+        switch (yych) {
+        case 'x':        goto yy931;
+        default:        goto yy758;
+        }
+yy931:
+        yych = *++m_curPos;
+        switch (yych) {
+        case '2':        goto yy932;
+        default:        goto yy758;
+        }
+yy932:
+        ++m_curPos;
+        { m_brigId = Brig::BRIG_TYPE_F64X2; return m_token = EPackedLiteral; }
+yy934:
+        yych = *++m_curPos;
+        switch (yych) {
+        case 'x':        goto yy935;
+        default:        goto yy758;
+        }
+yy935:
+        yych = *++m_curPos;
+        switch (yych) {
+        case '2':        goto yy938;
+        case '4':        goto yy936;
+        default:        goto yy758;
+        }
+yy936:
+        ++m_curPos;
+        { m_brigId = Brig::BRIG_TYPE_F32X4; return m_token = EPackedLiteral; }
+yy938:
+        ++m_curPos;
+        { m_brigId = Brig::BRIG_TYPE_F32X2; return m_token = EPackedLiteral; }
 yy940:
         yych = *++m_curPos;
         switch (yych) {
-        case '6':        goto yy953;
-        default:        goto yy771;
+        case 'x':        goto yy941;
+        default:        goto yy758;
         }
 yy941:
         yych = *++m_curPos;
         switch (yych) {
-        case '2':        goto yy947;
-        default:        goto yy771;
+        case '2':        goto yy946;
+        case '4':        goto yy944;
+        case '8':        goto yy942;
+        default:        goto yy758;
         }
 yy942:
-        yych = *++m_curPos;
-        switch (yych) {
-        case '4':        goto yy943;
-        default:        goto yy771;
-        }
-yy943:
-        yych = *++m_curPos;
-        switch (yych) {
-        case 'x':        goto yy944;
-        default:        goto yy771;
-        }
-yy944:
-        yych = *++m_curPos;
-        switch (yych) {
-        case '2':        goto yy945;
-        default:        goto yy771;
-        }
-yy945:
         ++m_curPos;
-        { m_brigId = Brig::BRIG_TYPE_F64X2; return m_token = EPackedLiteral; }
-yy947:
-        yych = *++m_curPos;
-        switch (yych) {
-        case 'x':        goto yy948;
-        default:        goto yy771;
-        }
+        { m_brigId = Brig::BRIG_TYPE_F16X8; return m_token = EPackedLiteral; }
+yy944:
+        ++m_curPos;
+        { m_brigId = Brig::BRIG_TYPE_F16X4; return m_token = EPackedLiteral; }
+yy946:
+        ++m_curPos;
+        { m_brigId = Brig::BRIG_TYPE_F16X2; return m_token = EPackedLiteral; }
 yy948:
         yych = *++m_curPos;
         switch (yych) {
-        case '2':        goto yy951;
-        case '4':        goto yy949;
-        default:        goto yy771;
+        case 'V':        goto yy949;
+        default:        goto yy758;
         }
 yy949:
-        ++m_curPos;
-        { m_brigId = Brig::BRIG_TYPE_F32X4; return m_token = EPackedLiteral; }
+        yych = *++m_curPos;
+        switch (yych) {
+        case 'E':        goto yy950;
+        default:        goto yy758;
+        }
+yy950:
+        yych = *++m_curPos;
+        switch (yych) {
+        case 'S':        goto yy951;
+        default:        goto yy758;
+        }
 yy951:
-        ++m_curPos;
-        { m_brigId = Brig::BRIG_TYPE_F32X2; return m_token = EPackedLiteral; }
+        yych = *++m_curPos;
+        switch (yych) {
+        case 'I':        goto yy952;
+        default:        goto yy758;
+        }
+yy952:
+        yych = *++m_curPos;
+        switch (yych) {
+        case 'Z':        goto yy953;
+        default:        goto yy758;
+        }
 yy953:
         yych = *++m_curPos;
         switch (yych) {
-        case 'x':        goto yy954;
-        default:        goto yy771;
+        case 'E':        goto yy954;
+        default:        goto yy758;
         }
 yy954:
-        yych = *++m_curPos;
-        switch (yych) {
-        case '2':        goto yy959;
-        case '4':        goto yy957;
-        case '8':        goto yy955;
-        default:        goto yy771;
-        }
-yy955:
-        ++m_curPos;
-        { m_brigId = Brig::BRIG_TYPE_F16X8; return m_token = EPackedLiteral; }
-yy957:
-        ++m_curPos;
-        { m_brigId = Brig::BRIG_TYPE_F16X4; return m_token = EPackedLiteral; }
-yy959:
-        ++m_curPos;
-        { m_brigId = Brig::BRIG_TYPE_F16X2; return m_token = EPackedLiteral; }
-yy961:
-        yych = *++m_curPos;
-        switch (yych) {
-        case 'V':        goto yy962;
-        default:        goto yy771;
-        }
-yy962:
-        yych = *++m_curPos;
-        switch (yych) {
-        case 'E':        goto yy963;
-        default:        goto yy771;
-        }
-yy963:
-        yych = *++m_curPos;
-        switch (yych) {
-        case 'S':        goto yy964;
-        default:        goto yy771;
-        }
-yy964:
-        yych = *++m_curPos;
-        switch (yych) {
-        case 'I':        goto yy965;
-        default:        goto yy771;
-        }
-yy965:
-        yych = *++m_curPos;
-        switch (yych) {
-        case 'Z':        goto yy966;
-        default:        goto yy771;
-        }
-yy966:
-        yych = *++m_curPos;
-        switch (yych) {
-        case 'E':        goto yy967;
-        default:        goto yy771;
-        }
-yy967:
         ++m_curPos;
         { return m_token = EWaveSizeMacro; }
+yy956:
+        ++m_curPos;
+        if (m_end <= m_curPos) YYFILL(1);
+        yych = *m_curPos;
+        switch (yych) {
+        case '0':
+        case '1':
+        case '2':
+        case '3':
+        case '4':
+        case '5':
+        case '6':
+        case '7':
+        case '8':
+        case '9':
+        case 'A':
+        case 'B':
+        case 'C':
+        case 'D':
+        case 'E':
+        case 'F':
+        case 'G':
+        case 'H':
+        case 'I':
+        case 'J':
+        case 'K':
+        case 'L':
+        case 'M':
+        case 'N':
+        case 'O':
+        case 'P':
+        case 'Q':
+        case 'R':
+        case 'S':
+        case 'T':
+        case 'U':
+        case 'V':
+        case 'W':
+        case 'X':
+        case 'Y':
+        case 'Z':
+        case '_':
+        case 'a':
+        case 'b':
+        case 'c':
+        case 'd':
+        case 'e':
+        case 'f':
+        case 'g':
+        case 'h':
+        case 'i':
+        case 'j':
+        case 'k':
+        case 'l':
+        case 'm':
+        case 'n':
+        case 'o':
+        case 'p':
+        case 'q':
+        case 'r':
+        case 's':
+        case 't':
+        case 'u':
+        case 'v':
+        case 'w':
+        case 'x':
+        case 'y':
+        case 'z':        goto yy956;
+        default:        goto yy958;
+        }
+yy958:
+        { return m_token = ERegister; }
+yy959:
+        ++m_curPos;
+        if (m_end <= m_curPos) YYFILL(1);
+        yych = *m_curPos;
+        switch (yych) {
+        case '0':
+        case '1':
+        case '2':
+        case '3':
+        case '4':
+        case '5':
+        case '6':
+        case '7':
+        case '8':
+        case '9':
+        case 'A':
+        case 'B':
+        case 'C':
+        case 'D':
+        case 'E':
+        case 'F':
+        case 'G':
+        case 'H':
+        case 'I':
+        case 'J':
+        case 'K':
+        case 'L':
+        case 'M':
+        case 'N':
+        case 'O':
+        case 'P':
+        case 'Q':
+        case 'R':
+        case 'S':
+        case 'T':
+        case 'U':
+        case 'V':
+        case 'W':
+        case 'X':
+        case 'Y':
+        case 'Z':
+        case '_':
+        case 'a':
+        case 'b':
+        case 'c':
+        case 'd':
+        case 'e':
+        case 'f':
+        case 'g':
+        case 'h':
+        case 'i':
+        case 'j':
+        case 'k':
+        case 'l':
+        case 'm':
+        case 'n':
+        case 'o':
+        case 'p':
+        case 'q':
+        case 'r':
+        case 's':
+        case 't':
+        case 'u':
+        case 'v':
+        case 'w':
+        case 'x':
+        case 'y':
+        case 'z':        goto yy959;
+        default:        goto yy961;
+        }
+yy961:
+        { return m_token = EIDLocal; }
+yy962:
+        ++m_curPos;
+        if (m_end <= m_curPos) YYFILL(1);
+        yych = *m_curPos;
+        switch (yych) {
+        case '0':
+        case '1':
+        case '2':
+        case '3':
+        case '4':
+        case '5':
+        case '6':
+        case '7':
+        case '8':
+        case '9':
+        case 'A':
+        case 'B':
+        case 'C':
+        case 'D':
+        case 'E':
+        case 'F':
+        case 'G':
+        case 'H':
+        case 'I':
+        case 'J':
+        case 'K':
+        case 'L':
+        case 'M':
+        case 'N':
+        case 'O':
+        case 'P':
+        case 'Q':
+        case 'R':
+        case 'S':
+        case 'T':
+        case 'U':
+        case 'V':
+        case 'W':
+        case 'X':
+        case 'Y':
+        case 'Z':
+        case '_':
+        case 'a':
+        case 'b':
+        case 'c':
+        case 'd':
+        case 'e':
+        case 'f':
+        case 'g':
+        case 'h':
+        case 'i':
+        case 'j':
+        case 'k':
+        case 'l':
+        case 'm':
+        case 'n':
+        case 'o':
+        case 'p':
+        case 'q':
+        case 'r':
+        case 's':
+        case 't':
+        case 'u':
+        case 'v':
+        case 'w':
+        case 'x':
+        case 'y':
+        case 'z':        goto yy962;
+        default:        goto yy964;
+        }
+yy964:
+        { return m_token = EIDStatic; }
+yy965:
+        ++m_curPos;
+        if (m_end <= m_curPos) YYFILL(1);
+        yych = *m_curPos;
+        switch (yych) {
+        case '0':
+        case '1':
+        case '2':
+        case '3':
+        case '4':
+        case '5':
+        case '6':
+        case '7':
+        case '8':
+        case '9':
+        case 'A':
+        case 'B':
+        case 'C':
+        case 'D':
+        case 'E':
+        case 'F':
+        case 'G':
+        case 'H':
+        case 'I':
+        case 'J':
+        case 'K':
+        case 'L':
+        case 'M':
+        case 'N':
+        case 'O':
+        case 'P':
+        case 'Q':
+        case 'R':
+        case 'S':
+        case 'T':
+        case 'U':
+        case 'V':
+        case 'W':
+        case 'X':
+        case 'Y':
+        case 'Z':
+        case '_':
+        case 'a':
+        case 'b':
+        case 'c':
+        case 'd':
+        case 'e':
+        case 'f':
+        case 'g':
+        case 'h':
+        case 'i':
+        case 'j':
+        case 'k':
+        case 'l':
+        case 'm':
+        case 'n':
+        case 'o':
+        case 'p':
+        case 'q':
+        case 'r':
+        case 's':
+        case 't':
+        case 'u':
+        case 'v':
+        case 'w':
+        case 'x':
+        case 'y':
+        case 'z':        goto yy965;
+        default:        goto yy967;
+        }
+yy967:
+        { return m_token = ELabel; }
+yy968:
+        yych = *++m_curPos;
+        switch (yych) {
+        case 'r':        goto yy969;
+        default:        goto yy758;
+        }
 yy969:
         ++m_curPos;
-        if (m_end <= m_curPos) YYFILL(1);
-        yych = *m_curPos;
-        switch (yych) {
-        case '0':
-        case '1':
-        case '2':
-        case '3':
-        case '4':
-        case '5':
-        case '6':
-        case '7':
-        case '8':
-        case '9':
-        case 'A':
-        case 'B':
-        case 'C':
-        case 'D':
-        case 'E':
-        case 'F':
-        case 'G':
-        case 'H':
-        case 'I':
-        case 'J':
-        case 'K':
-        case 'L':
-        case 'M':
-        case 'N':
-        case 'O':
-        case 'P':
-        case 'Q':
-        case 'R':
-        case 'S':
-        case 'T':
-        case 'U':
-        case 'V':
-        case 'W':
-        case 'X':
-        case 'Y':
-        case 'Z':
-        case '_':
-        case 'a':
-        case 'b':
-        case 'c':
-        case 'd':
-        case 'e':
-        case 'f':
-        case 'g':
-        case 'h':
-        case 'i':
-        case 'j':
-        case 'k':
-        case 'l':
-        case 'm':
-        case 'n':
-        case 'o':
-        case 'p':
-        case 'q':
-        case 'r':
-        case 's':
-        case 't':
-        case 'u':
-        case 'v':
-        case 'w':
-        case 'x':
-        case 'y':
-        case 'z':        goto yy969;
-        default:        goto yy971;
-        }
+        { m_brigId = Brig::BRIG_OPCODE_XOR;        return m_token = EInstruction; }
 yy971:
-        { return m_token = ERegister; }
-yy972:
-        ++m_curPos;
-        if (m_end <= m_curPos) YYFILL(1);
-        yych = *m_curPos;
+        yych = *++m_curPos;
         switch (yych) {
-        case '0':
-        case '1':
-        case '2':
-        case '3':
-        case '4':
-        case '5':
-        case '6':
-        case '7':
-        case '8':
-        case '9':
-        case 'A':
-        case 'B':
-        case 'C':
-        case 'D':
-        case 'E':
-        case 'F':
-        case 'G':
-        case 'H':
-        case 'I':
-        case 'J':
-        case 'K':
-        case 'L':
-        case 'M':
-        case 'N':
-        case 'O':
-        case 'P':
-        case 'Q':
-        case 'R':
-        case 'S':
-        case 'T':
-        case 'U':
-        case 'V':
-        case 'W':
-        case 'X':
-        case 'Y':
-        case 'Z':
-        case '_':
-        case 'a':
-        case 'b':
-        case 'c':
-        case 'd':
-        case 'e':
-        case 'f':
-        case 'g':
-        case 'h':
-        case 'i':
-        case 'j':
-        case 'k':
-        case 'l':
-        case 'm':
-        case 'n':
-        case 'o':
-        case 'p':
-        case 'q':
-        case 'r':
-        case 's':
-        case 't':
-        case 'u':
-        case 'v':
-        case 'w':
-        case 'x':
-        case 'y':
-        case 'z':        goto yy972;
-        default:        goto yy974;
+        case 'u':        goto yy972;
+        default:        goto yy758;
+        }
+yy972:
+        yych = *++m_curPos;
+        switch (yych) {
+        case 'n':        goto yy973;
+        default:        goto yy758;
+        }
+yy973:
+        yych = *++m_curPos;
+        switch (yych) {
+        case 'c':        goto yy974;
+        default:        goto yy758;
         }
 yy974:
-        { return m_token = EIDLocal; }
-yy975:
         ++m_curPos;
-        if (m_end <= m_curPos) YYFILL(1);
-        yych = *m_curPos;
+        { m_brigId = Brig::BRIG_OPCODE_TRUNC;      return m_token = EInstruction; }
+yy976:
+        yych = *++m_curPos;
         switch (yych) {
-        case '0':
-        case '1':
-        case '2':
-        case '3':
-        case '4':
-        case '5':
-        case '6':
-        case '7':
-        case '8':
-        case '9':
-        case 'A':
-        case 'B':
-        case 'C':
-        case 'D':
-        case 'E':
-        case 'F':
-        case 'G':
-        case 'H':
-        case 'I':
-        case 'J':
-        case 'K':
-        case 'L':
-        case 'M':
-        case 'N':
-        case 'O':
-        case 'P':
-        case 'Q':
-        case 'R':
-        case 'S':
-        case 'T':
-        case 'U':
-        case 'V':
-        case 'W':
-        case 'X':
-        case 'Y':
-        case 'Z':
-        case '_':
-        case 'a':
-        case 'b':
-        case 'c':
-        case 'd':
-        case 'e':
-        case 'f':
-        case 'g':
-        case 'h':
-        case 'i':
-        case 'j':
-        case 'k':
-        case 'l':
-        case 'm':
-        case 'n':
-        case 'o':
-        case 'p':
-        case 'q':
-        case 'r':
-        case 's':
-        case 't':
-        case 'u':
-        case 'v':
-        case 'w':
-        case 'x':
-        case 'y':
-        case 'z':        goto yy975;
-        default:        goto yy977;
+        case 'e':        goto yy984;
+        default:        goto yy758;
         }
 yy977:
-        { return m_token = EIDStatic; }
-yy978:
-        ++m_curPos;
-        if (m_end <= m_curPos) YYFILL(1);
-        yych = *m_curPos;
+        yych = *++m_curPos;
         switch (yych) {
-        case '0':
-        case '1':
-        case '2':
-        case '3':
-        case '4':
-        case '5':
-        case '6':
-        case '7':
-        case '8':
-        case '9':
-        case 'A':
-        case 'B':
-        case 'C':
-        case 'D':
-        case 'E':
-        case 'F':
-        case 'G':
-        case 'H':
-        case 'I':
-        case 'J':
-        case 'K':
-        case 'L':
-        case 'M':
-        case 'N':
-        case 'O':
-        case 'P':
-        case 'Q':
-        case 'R':
-        case 'S':
-        case 'T':
-        case 'U':
-        case 'V':
-        case 'W':
-        case 'X':
-        case 'Y':
-        case 'Z':
-        case '_':
-        case 'a':
-        case 'b':
-        case 'c':
-        case 'd':
-        case 'e':
-        case 'f':
-        case 'g':
-        case 'h':
-        case 'i':
-        case 'j':
-        case 'k':
-        case 'l':
-        case 'm':
-        case 'n':
-        case 'o':
-        case 'p':
-        case 'q':
-        case 'r':
-        case 's':
-        case 't':
-        case 'u':
-        case 'v':
-        case 'w':
-        case 'x':
-        case 'y':
-        case 'z':        goto yy978;
-        default:        goto yy980;
+        case 't':        goto yy981;
+        default:        goto yy758;
         }
-yy980:
-        { return m_token = ELabel; }
+yy978:
+        yych = *++m_curPos;
+        switch (yych) {
+        case 'd':        goto yy979;
+        default:        goto yy758;
+        }
+yy979:
+        ++m_curPos;
+        { m_brigId = Brig::BRIG_OPCODE_QID;        return m_token = EInstruction; }
 yy981:
         yych = *++m_curPos;
         switch (yych) {
         case 'r':        goto yy982;
-        default:        goto yy771;
+        default:        goto yy758;
         }
 yy982:
         ++m_curPos;
-        { m_brigId = Brig::BRIG_OPCODE_XOR;        return m_token = EInstruction; }
+        { m_brigId = Brig::BRIG_OPCODE_QPTR;       return m_token = EInstruction; }
 yy984:
         yych = *++m_curPos;
         switch (yych) {
-        case 'u':        goto yy985;
-        default:        goto yy771;
+        case 'r':        goto yy985;
+        default:        goto yy758;
         }
 yy985:
         yych = *++m_curPos;
         switch (yych) {
-        case 'n':        goto yy986;
-        default:        goto yy771;
+        case 'y':        goto yy986;
+        default:        goto yy758;
         }
 yy986:
         yych = *++m_curPos;
         switch (yych) {
-        case 'c':        goto yy987;
-        default:        goto yy771;
+        case 'i':        goto yy988;
+        case 's':        goto yy987;
+        default:        goto yy758;
         }
 yy987:
-        ++m_curPos;
-        { m_brigId = Brig::BRIG_OPCODE_TRUNC;      return m_token = EInstruction; }
+        yych = *++m_curPos;
+        switch (yych) {
+        case 'a':        goto yy1031;
+        default:        goto yy758;
+        }
+yy988:
+        yych = *++m_curPos;
+        switch (yych) {
+        case 'm':        goto yy989;
+        default:        goto yy758;
+        }
 yy989:
         yych = *++m_curPos;
         switch (yych) {
-        case 'e':        goto yy997;
-        default:        goto yy771;
+        case 'a':        goto yy990;
+        default:        goto yy758;
         }
 yy990:
         yych = *++m_curPos;
         switch (yych) {
-        case 't':        goto yy994;
-        default:        goto yy771;
+        case 'g':        goto yy991;
+        default:        goto yy758;
         }
 yy991:
         yych = *++m_curPos;
         switch (yych) {
-        case 'd':        goto yy992;
-        default:        goto yy771;
+        case 'e':        goto yy992;
+        default:        goto yy758;
         }
 yy992:
-        ++m_curPos;
-        { m_brigId = Brig::BRIG_OPCODE_QID;        return m_token = EInstruction; }
+        yych = *++m_curPos;
+        switch (yych) {
+        case 'a':        goto yy993;
+        case 'd':        goto yy994;
+        case 'f':        goto yy995;
+        case 'h':        goto yy996;
+        case 'o':        goto yy997;
+        case 'w':        goto yy998;
+        default:        goto yy758;
+        }
+yy993:
+        yych = *++m_curPos;
+        switch (yych) {
+        case 'r':        goto yy1026;
+        default:        goto yy758;
+        }
 yy994:
         yych = *++m_curPos;
         switch (yych) {
-        case 'r':        goto yy995;
-        default:        goto yy771;
+        case 'e':        goto yy1021;
+        default:        goto yy758;
         }
 yy995:
-        ++m_curPos;
-        { m_brigId = Brig::BRIG_OPCODE_QPTR;       return m_token = EInstruction; }
+        yych = *++m_curPos;
+        switch (yych) {
+        case 'o':        goto yy1015;
+        default:        goto yy758;
+        }
+yy996:
+        yych = *++m_curPos;
+        switch (yych) {
+        case 'e':        goto yy1009;
+        default:        goto yy758;
+        }
 yy997:
         yych = *++m_curPos;
         switch (yych) {
-        case 'r':        goto yy998;
-        default:        goto yy771;
+        case 'r':        goto yy1004;
+        default:        goto yy758;
         }
 yy998:
         yych = *++m_curPos;
         switch (yych) {
-        case 'y':        goto yy999;
-        default:        goto yy771;
+        case 'i':        goto yy999;
+        default:        goto yy758;
         }
 yy999:
         yych = *++m_curPos;
         switch (yych) {
-        case 'i':        goto yy1001;
-        case 's':        goto yy1000;
-        default:        goto yy771;
+        case 'd':        goto yy1000;
+        default:        goto yy758;
         }
 yy1000:
         yych = *++m_curPos;
         switch (yych) {
-        case 'a':        goto yy1044;
-        default:        goto yy771;
+        case 't':        goto yy1001;
+        default:        goto yy758;
         }
 yy1001:
         yych = *++m_curPos;
         switch (yych) {
-        case 'm':        goto yy1002;
-        default:        goto yy771;
+        case 'h':        goto yy1002;
+        default:        goto yy758;
         }
 yy1002:
-        yych = *++m_curPos;
-        switch (yych) {
-        case 'a':        goto yy1003;
-        default:        goto yy771;
-        }
-yy1003:
-        yych = *++m_curPos;
-        switch (yych) {
-        case 'g':        goto yy1004;
-        default:        goto yy771;
-        }
+        ++m_curPos;
+        { m_brigId = Brig::BRIG_OPCODE_QUERYIMAGEWIDTH; return m_token = EInstruction; }
 yy1004:
         yych = *++m_curPos;
         switch (yych) {
-        case 'e':        goto yy1005;
-        default:        goto yy771;
+        case 'd':        goto yy1005;
+        default:        goto yy758;
         }
 yy1005:
         yych = *++m_curPos;
         switch (yych) {
-        case 'a':        goto yy1006;
-        case 'd':        goto yy1007;
-        case 'f':        goto yy1008;
-        case 'h':        goto yy1009;
-        case 'o':        goto yy1010;
-        case 'w':        goto yy1011;
-        default:        goto yy771;
+        case 'e':        goto yy1006;
+        default:        goto yy758;
         }
 yy1006:
         yych = *++m_curPos;
         switch (yych) {
-        case 'r':        goto yy1039;
-        default:        goto yy771;
+        case 'r':        goto yy1007;
+        default:        goto yy758;
         }
 yy1007:
-        yych = *++m_curPos;
-        switch (yych) {
-        case 'e':        goto yy1034;
-        default:        goto yy771;
-        }
-yy1008:
-        yych = *++m_curPos;
-        switch (yych) {
-        case 'o':        goto yy1028;
-        default:        goto yy771;
-        }
+        ++m_curPos;
+        { m_brigId = Brig::BRIG_OPCODE_QUERYIMAGEORDER; return m_token = EInstruction; }
 yy1009:
         yych = *++m_curPos;
         switch (yych) {
-        case 'e':        goto yy1022;
-        default:        goto yy771;
+        case 'i':        goto yy1010;
+        default:        goto yy758;
         }
 yy1010:
         yych = *++m_curPos;
         switch (yych) {
-        case 'r':        goto yy1017;
-        default:        goto yy771;
+        case 'g':        goto yy1011;
+        default:        goto yy758;
         }
 yy1011:
         yych = *++m_curPos;
         switch (yych) {
-        case 'i':        goto yy1012;
-        default:        goto yy771;
+        case 'h':        goto yy1012;
+        default:        goto yy758;
         }
 yy1012:
         yych = *++m_curPos;
         switch (yych) {
-        case 'd':        goto yy1013;
-        default:        goto yy771;
+        case 't':        goto yy1013;
+        default:        goto yy758;
         }
 yy1013:
-        yych = *++m_curPos;
-        switch (yych) {
-        case 't':        goto yy1014;
-        default:        goto yy771;
-        }
-yy1014:
-        yych = *++m_curPos;
-        switch (yych) {
-        case 'h':        goto yy1015;
-        default:        goto yy771;
-        }
-yy1015:
         ++m_curPos;
-        { m_brigId = Brig::BRIG_OPCODE_QUERYIMAGEWIDTH; return m_token = EInstruction; }
+        { m_brigId = Brig::BRIG_OPCODE_QUERYIMAGEHEIGHT; return m_token = EInstruction; }
+yy1015:
+        yych = *++m_curPos;
+        switch (yych) {
+        case 'r':        goto yy1016;
+        default:        goto yy758;
+        }
+yy1016:
+        yych = *++m_curPos;
+        switch (yych) {
+        case 'm':        goto yy1017;
+        default:        goto yy758;
+        }
 yy1017:
         yych = *++m_curPos;
         switch (yych) {
-        case 'd':        goto yy1018;
-        default:        goto yy771;
+        case 'a':        goto yy1018;
+        default:        goto yy758;
         }
 yy1018:
         yych = *++m_curPos;
         switch (yych) {
-        case 'e':        goto yy1019;
-        default:        goto yy771;
+        case 't':        goto yy1019;
+        default:        goto yy758;
         }
 yy1019:
+        ++m_curPos;
+        { m_brigId = Brig::BRIG_OPCODE_QUERYIMAGEFORMAT; return m_token = EInstruction; }
+yy1021:
         yych = *++m_curPos;
         switch (yych) {
-        case 'r':        goto yy1020;
-        default:        goto yy771;
+        case 'p':        goto yy1022;
+        default:        goto yy758;
         }
-yy1020:
-        ++m_curPos;
-        { m_brigId = Brig::BRIG_OPCODE_QUERYIMAGEORDER; return m_token = EInstruction; }
 yy1022:
         yych = *++m_curPos;
         switch (yych) {
-        case 'i':        goto yy1023;
-        default:        goto yy771;
+        case 't':        goto yy1023;
+        default:        goto yy758;
         }
 yy1023:
         yych = *++m_curPos;
         switch (yych) {
-        case 'g':        goto yy1024;
-        default:        goto yy771;
+        case 'h':        goto yy1024;
+        default:        goto yy758;
         }
 yy1024:
-        yych = *++m_curPos;
-        switch (yych) {
-        case 'h':        goto yy1025;
-        default:        goto yy771;
-        }
-yy1025:
-        yych = *++m_curPos;
-        switch (yych) {
-        case 't':        goto yy1026;
-        default:        goto yy771;
-        }
-yy1026:
         ++m_curPos;
-        { m_brigId = Brig::BRIG_OPCODE_QUERYIMAGEHEIGHT; return m_token = EInstruction; }
+        { m_brigId = Brig::BRIG_OPCODE_QUERYIMAGEDEPTH; return m_token = EInstruction; }
+yy1026:
+        yych = *++m_curPos;
+        switch (yych) {
+        case 'r':        goto yy1027;
+        default:        goto yy758;
+        }
+yy1027:
+        yych = *++m_curPos;
+        switch (yych) {
+        case 'a':        goto yy1028;
+        default:        goto yy758;
+        }
 yy1028:
         yych = *++m_curPos;
         switch (yych) {
-        case 'r':        goto yy1029;
-        default:        goto yy771;
+        case 'y':        goto yy1029;
+        default:        goto yy758;
         }
 yy1029:
-        yych = *++m_curPos;
-        switch (yych) {
-        case 'm':        goto yy1030;
-        default:        goto yy771;
-        }
-yy1030:
-        yych = *++m_curPos;
-        switch (yych) {
-        case 'a':        goto yy1031;
-        default:        goto yy771;
-        }
+        ++m_curPos;
+        { m_brigId = Brig::BRIG_OPCODE_QUERYIMAGEARRAY; return m_token = EInstruction; }
 yy1031:
         yych = *++m_curPos;
         switch (yych) {
-        case 't':        goto yy1032;
-        default:        goto yy771;
+        case 'm':        goto yy1032;
+        default:        goto yy758;
         }
 yy1032:
-        ++m_curPos;
-        { m_brigId = Brig::BRIG_OPCODE_QUERYIMAGEFORMAT; return m_token = EInstruction; }
+        yych = *++m_curPos;
+        switch (yych) {
+        case 'p':        goto yy1033;
+        default:        goto yy758;
+        }
+yy1033:
+        yych = *++m_curPos;
+        switch (yych) {
+        case 'l':        goto yy1034;
+        default:        goto yy758;
+        }
 yy1034:
         yych = *++m_curPos;
         switch (yych) {
-        case 'p':        goto yy1035;
-        default:        goto yy771;
+        case 'e':        goto yy1035;
+        default:        goto yy758;
         }
 yy1035:
         yych = *++m_curPos;
         switch (yych) {
-        case 't':        goto yy1036;
-        default:        goto yy771;
+        case 'r':        goto yy1036;
+        default:        goto yy758;
         }
 yy1036:
         yych = *++m_curPos;
         switch (yych) {
-        case 'h':        goto yy1037;
-        default:        goto yy771;
+        case 'c':        goto yy1037;
+        case 'f':        goto yy1038;
+        default:        goto yy758;
         }
 yy1037:
-        ++m_curPos;
-        { m_brigId = Brig::BRIG_OPCODE_QUERYIMAGEDEPTH; return m_token = EInstruction; }
+        yych = *++m_curPos;
+        switch (yych) {
+        case 'o':        goto yy1045;
+        default:        goto yy758;
+        }
+yy1038:
+        yych = *++m_curPos;
+        switch (yych) {
+        case 'i':        goto yy1039;
+        default:        goto yy758;
+        }
 yy1039:
         yych = *++m_curPos;
         switch (yych) {
-        case 'r':        goto yy1040;
-        default:        goto yy771;
+        case 'l':        goto yy1040;
+        default:        goto yy758;
         }
 yy1040:
         yych = *++m_curPos;
         switch (yych) {
-        case 'a':        goto yy1041;
-        default:        goto yy771;
+        case 't':        goto yy1041;
+        default:        goto yy758;
         }
 yy1041:
         yych = *++m_curPos;
         switch (yych) {
-        case 'y':        goto yy1042;
-        default:        goto yy771;
+        case 'e':        goto yy1042;
+        default:        goto yy758;
         }
 yy1042:
-        ++m_curPos;
-        { m_brigId = Brig::BRIG_OPCODE_QUERYIMAGEARRAY; return m_token = EInstruction; }
-yy1044:
         yych = *++m_curPos;
         switch (yych) {
-        case 'm':        goto yy1045;
-        default:        goto yy771;
+        case 'r':        goto yy1043;
+        default:        goto yy758;
         }
+yy1043:
+        ++m_curPos;
+        { m_brigId = Brig::BRIG_OPCODE_QUERYSAMPLERFILTER; return m_token = EInstruction; }
 yy1045:
         yych = *++m_curPos;
         switch (yych) {
-        case 'p':        goto yy1046;
-        default:        goto yy771;
+        case 'o':        goto yy1046;
+        default:        goto yy758;
         }
 yy1046:
         yych = *++m_curPos;
         switch (yych) {
-        case 'l':        goto yy1047;
-        default:        goto yy771;
+        case 'r':        goto yy1047;
+        default:        goto yy758;
         }
 yy1047:
         yych = *++m_curPos;
         switch (yych) {
-        case 'e':        goto yy1048;
-        default:        goto yy771;
+        case 'd':        goto yy1048;
+        default:        goto yy758;
         }
 yy1048:
-        yych = *++m_curPos;
-        switch (yych) {
-        case 'r':        goto yy1049;
-        default:        goto yy771;
-        }
-yy1049:
-        yych = *++m_curPos;
-        switch (yych) {
-        case 'c':        goto yy1050;
-        case 'f':        goto yy1051;
-        default:        goto yy771;
-        }
+        ++m_curPos;
+        { m_brigId = Brig::BRIG_OPCODE_QUERYSAMPLERCOORD; return m_token = EInstruction; }
 yy1050:
         yych = *++m_curPos;
         switch (yych) {
-        case 'o':        goto yy1058;
-        default:        goto yy771;
+        case 'i':        goto yy1051;
+        default:        goto yy758;
         }
 yy1051:
         yych = *++m_curPos;
         switch (yych) {
-        case 'i':        goto yy1052;
-        default:        goto yy771;
+        case 'n':        goto yy1052;
+        default:        goto yy758;
         }
 yy1052:
         yych = *++m_curPos;
         switch (yych) {
-        case 'l':        goto yy1053;
-        default:        goto yy771;
+        case 'f':        goto yy1053;
+        default:        goto yy758;
         }
 yy1053:
         yych = *++m_curPos;
         switch (yych) {
-        case 't':        goto yy1054;
-        default:        goto yy771;
+        case 'b':        goto yy1054;
+        default:        goto yy758;
         }
 yy1054:
         yych = *++m_curPos;
         switch (yych) {
-        case 'e':        goto yy1055;
-        default:        goto yy771;
+        case 'a':        goto yy1055;
+        default:        goto yy758;
         }
 yy1055:
         yych = *++m_curPos;
         switch (yych) {
         case 'r':        goto yy1056;
-        default:        goto yy771;
+        default:        goto yy758;
         }
 yy1056:
         ++m_curPos;
-        { m_brigId = Brig::BRIG_OPCODE_QUERYSAMPLERFILTER; return m_token = EInstruction; }
+        { m_brigId = Brig::BRIG_OPCODE_JOINFBAR;   return m_token = EInstruction; }
 yy1058:
         yych = *++m_curPos;
         switch (yych) {
-        case 'o':        goto yy1059;
-        default:        goto yy771;
+        case 'i':        goto yy1059;
+        default:        goto yy758;
         }
 yy1059:
         yych = *++m_curPos;
         switch (yych) {
-        case 'r':        goto yy1060;
-        default:        goto yy771;
+        case 't':        goto yy1060;
+        default:        goto yy758;
         }
 yy1060:
         yych = *++m_curPos;
         switch (yych) {
-        case 'd':        goto yy1061;
-        default:        goto yy771;
+        case 'f':        goto yy1061;
+        default:        goto yy758;
         }
 yy1061:
-        ++m_curPos;
-        { m_brigId = Brig::BRIG_OPCODE_QUERYSAMPLERCOORD; return m_token = EInstruction; }
+        yych = *++m_curPos;
+        switch (yych) {
+        case 'b':        goto yy1062;
+        default:        goto yy758;
+        }
+yy1062:
+        yych = *++m_curPos;
+        switch (yych) {
+        case 'a':        goto yy1063;
+        default:        goto yy758;
+        }
 yy1063:
         yych = *++m_curPos;
         switch (yych) {
-        case 'i':        goto yy1064;
-        default:        goto yy771;
+        case 'r':        goto yy1064;
+        default:        goto yy758;
         }
 yy1064:
-        yych = *++m_curPos;
-        switch (yych) {
-        case 'n':        goto yy1065;
-        default:        goto yy771;
-        }
-yy1065:
-        yych = *++m_curPos;
-        switch (yych) {
-        case 'f':        goto yy1066;
-        default:        goto yy771;
-        }
+        ++m_curPos;
+        { m_brigId = Brig::BRIG_OPCODE_INITFBAR;   return m_token = EInstruction; }
 yy1066:
         yych = *++m_curPos;
         switch (yych) {
-        case 'b':        goto yy1067;
-        default:        goto yy771;
+        case 'i':        goto yy1089;
+        case 'o':        goto yy1088;
+        default:        goto yy758;
         }
 yy1067:
         yych = *++m_curPos;
         switch (yych) {
-        case 'a':        goto yy1068;
-        default:        goto yy771;
+        case 't':        goto yy1074;
+        default:        goto yy758;
         }
 yy1068:
         yych = *++m_curPos;
         switch (yych) {
-        case 'r':        goto yy1069;
-        default:        goto yy771;
+        case 'o':        goto yy1069;
+        default:        goto yy758;
         }
 yy1069:
-        ++m_curPos;
-        { m_brigId = Brig::BRIG_OPCODE_JOINFBAR;   return m_token = EInstruction; }
+        yych = *++m_curPos;
+        switch (yych) {
+        case 'b':        goto yy1070;
+        default:        goto yy758;
+        }
+yy1070:
+        yych = *++m_curPos;
+        switch (yych) {
+        case 'a':        goto yy1071;
+        default:        goto yy758;
+        }
 yy1071:
         yych = *++m_curPos;
         switch (yych) {
-        case 'i':        goto yy1072;
-        default:        goto yy771;
+        case 'l':        goto yy1072;
+        default:        goto yy758;
         }
 yy1072:
-        yych = *++m_curPos;
-        switch (yych) {
-        case 't':        goto yy1073;
-        default:        goto yy771;
-        }
-yy1073:
-        yych = *++m_curPos;
-        switch (yych) {
-        case 'f':        goto yy1074;
-        default:        goto yy771;
-        }
+        ++m_curPos;
+        { m_brigId = Brig::BRIG_SEGMENT_GLOBAL;    return m_token = ESegment; }
 yy1074:
         yych = *++m_curPos;
         switch (yych) {
-        case 'b':        goto yy1075;
-        default:        goto yy771;
+        case 'd':        goto yy1075;
+        default:        goto yy758;
         }
 yy1075:
         yych = *++m_curPos;
         switch (yych) {
-        case 'a':        goto yy1076;
-        default:        goto yy771;
+        case 'e':        goto yy1076;
+        default:        goto yy758;
         }
 yy1076:
         yych = *++m_curPos;
         switch (yych) {
-        case 'r':        goto yy1077;
-        default:        goto yy771;
+        case 't':        goto yy1077;
+        default:        goto yy758;
         }
 yy1077:
-        ++m_curPos;
-        { m_brigId = Brig::BRIG_OPCODE_INITFBAR;   return m_token = EInstruction; }
+        yych = *++m_curPos;
+        switch (yych) {
+        case 'e':        goto yy1078;
+        default:        goto yy758;
+        }
+yy1078:
+        yych = *++m_curPos;
+        switch (yych) {
+        case 'c':        goto yy1079;
+        default:        goto yy758;
+        }
 yy1079:
         yych = *++m_curPos;
         switch (yych) {
-        case 'i':        goto yy1102;
-        case 'o':        goto yy1101;
-        default:        goto yy771;
+        case 't':        goto yy1080;
+        default:        goto yy758;
         }
 yy1080:
         yych = *++m_curPos;
         switch (yych) {
-        case 't':        goto yy1087;
-        default:        goto yy771;
+        case 'e':        goto yy1081;
+        default:        goto yy758;
         }
 yy1081:
         yych = *++m_curPos;
         switch (yych) {
-        case 'o':        goto yy1082;
-        default:        goto yy771;
+        case 'x':        goto yy1082;
+        default:        goto yy758;
         }
 yy1082:
         yych = *++m_curPos;
         switch (yych) {
-        case 'b':        goto yy1083;
-        default:        goto yy771;
+        case 'c':        goto yy1083;
+        default:        goto yy758;
         }
 yy1083:
         yych = *++m_curPos;
         switch (yych) {
-        case 'a':        goto yy1084;
-        default:        goto yy771;
+        case 'e':        goto yy1084;
+        default:        goto yy758;
         }
 yy1084:
         yych = *++m_curPos;
         switch (yych) {
-        case 'l':        goto yy1085;
-        default:        goto yy771;
+        case 'p':        goto yy1085;
+        default:        goto yy758;
         }
 yy1085:
-        ++m_curPos;
-        { m_brigId = Brig::BRIG_SEGMENT_GLOBAL;    return m_token = ESegment; }
-yy1087:
         yych = *++m_curPos;
         switch (yych) {
-        case 'd':        goto yy1088;
-        default:        goto yy771;
+        case 't':        goto yy1086;
+        default:        goto yy758;
         }
+yy1086:
+        ++m_curPos;
+        { m_brigId = Brig::BRIG_OPCODE_GETDETECTEXCEPT; return m_token = EInstruction; }
 yy1088:
         yych = *++m_curPos;
         switch (yych) {
-        case 'e':        goto yy1089;
-        default:        goto yy771;
+        case 'u':        goto yy1103;
+        default:        goto yy758;
         }
 yy1089:
         yych = *++m_curPos;
         switch (yych) {
-        case 't':        goto yy1090;
-        default:        goto yy771;
+        case 'd':        goto yy1090;
+        default:        goto yy758;
         }
 yy1090:
         yych = *++m_curPos;
         switch (yych) {
-        case 'e':        goto yy1091;
-        default:        goto yy771;
+        case 'g':        goto yy1091;
+        case 's':        goto yy1092;
+        default:        goto yy758;
         }
 yy1091:
         yych = *++m_curPos;
         switch (yych) {
-        case 'c':        goto yy1092;
-        default:        goto yy771;
+        case 'r':        goto yy1097;
+        default:        goto yy758;
         }
 yy1092:
         yych = *++m_curPos;
         switch (yych) {
-        case 't':        goto yy1093;
-        default:        goto yy771;
+        case 'i':        goto yy1093;
+        default:        goto yy758;
         }
 yy1093:
         yych = *++m_curPos;
         switch (yych) {
-        case 'e':        goto yy1094;
-        default:        goto yy771;
+        case 'z':        goto yy1094;
+        default:        goto yy758;
         }
 yy1094:
         yych = *++m_curPos;
         switch (yych) {
-        case 'x':        goto yy1095;
-        default:        goto yy771;
+        case 'e':        goto yy1095;
+        default:        goto yy758;
         }
 yy1095:
-        yych = *++m_curPos;
-        switch (yych) {
-        case 'c':        goto yy1096;
-        default:        goto yy771;
-        }
-yy1096:
-        yych = *++m_curPos;
-        switch (yych) {
-        case 'e':        goto yy1097;
-        default:        goto yy771;
-        }
+        ++m_curPos;
+        { m_brigId = Brig::BRIG_OPCODE_GRIDSIZE;   return m_token = EInstruction; }
 yy1097:
         yych = *++m_curPos;
         switch (yych) {
-        case 'p':        goto yy1098;
-        default:        goto yy771;
+        case 'o':        goto yy1098;
+        default:        goto yy758;
         }
 yy1098:
         yych = *++m_curPos;
         switch (yych) {
-        case 't':        goto yy1099;
-        default:        goto yy771;
+        case 'u':        goto yy1099;
+        default:        goto yy758;
         }
 yy1099:
-        ++m_curPos;
-        { m_brigId = Brig::BRIG_OPCODE_GETDETECTEXCEPT; return m_token = EInstruction; }
+        yych = *++m_curPos;
+        switch (yych) {
+        case 'p':        goto yy1100;
+        default:        goto yy758;
+        }
+yy1100:
+        yych = *++m_curPos;
+        switch (yych) {
+        case 's':        goto yy1101;
+        default:        goto yy758;
+        }
 yy1101:
-        yych = *++m_curPos;
-        switch (yych) {
-        case 'u':        goto yy1116;
-        default:        goto yy771;
-        }
-yy1102:
-        yych = *++m_curPos;
-        switch (yych) {
-        case 'd':        goto yy1103;
-        default:        goto yy771;
-        }
+        ++m_curPos;
+        { m_brigId = Brig::BRIG_OPCODE_GRIDGROUPS; return m_token = EInstruction; }
 yy1103:
         yych = *++m_curPos;
         switch (yych) {
-        case 'g':        goto yy1104;
-        case 's':        goto yy1105;
-        default:        goto yy771;
+        case 'p':        goto yy1104;
+        default:        goto yy758;
         }
 yy1104:
-        yych = *++m_curPos;
-        switch (yych) {
-        case 'r':        goto yy1110;
-        default:        goto yy771;
-        }
-yy1105:
-        yych = *++m_curPos;
-        switch (yych) {
-        case 'i':        goto yy1106;
-        default:        goto yy771;
-        }
+        ++m_curPos;
+        { m_brigId = Brig::BRIG_SEGMENT_GROUP;     return m_token = ESegment; }
 yy1106:
         yych = *++m_curPos;
         switch (yych) {
-        case 'z':        goto yy1107;
-        default:        goto yy771;
+        case 'n':        goto yy1107;
+        case 'p':        goto yy1108;
+        default:        goto yy758;
         }
 yy1107:
         yych = *++m_curPos;
         switch (yych) {
-        case 'e':        goto yy1108;
-        default:        goto yy771;
+        case 'o':        goto yy1123;
+        default:        goto yy758;
         }
 yy1108:
-        ++m_curPos;
-        { m_brigId = Brig::BRIG_OPCODE_GRIDSIZE;   return m_token = EInstruction; }
+        yych = *++m_curPos;
+        switch (yych) {
+        case 'a':        goto yy1109;
+        default:        goto yy758;
+        }
+yy1109:
+        yych = *++m_curPos;
+        switch (yych) {
+        case 'c':        goto yy1110;
+        default:        goto yy758;
+        }
 yy1110:
         yych = *++m_curPos;
         switch (yych) {
-        case 'o':        goto yy1111;
-        default:        goto yy771;
+        case 'k':        goto yy1111;
+        default:        goto yy758;
         }
 yy1111:
-        yych = *++m_curPos;
-        switch (yych) {
-        case 'u':        goto yy1112;
-        default:        goto yy771;
-        }
-yy1112:
-        yych = *++m_curPos;
-        switch (yych) {
-        case 'p':        goto yy1113;
-        default:        goto yy771;
-        }
-yy1113:
-        yych = *++m_curPos;
-        switch (yych) {
-        case 's':        goto yy1114;
-        default:        goto yy771;
-        }
-yy1114:
-        ++m_curPos;
-        { m_brigId = Brig::BRIG_OPCODE_GRIDGROUPS; return m_token = EInstruction; }
-yy1116:
-        yych = *++m_curPos;
-        switch (yych) {
-        case 'p':        goto yy1117;
-        default:        goto yy771;
-        }
-yy1117:
-        ++m_curPos;
-        { m_brigId = Brig::BRIG_SEGMENT_GROUP;     return m_token = ESegment; }
-yy1119:
-        yych = *++m_curPos;
-        switch (yych) {
-        case 'n':        goto yy1120;
-        case 'p':        goto yy1121;
-        default:        goto yy771;
-        }
-yy1120:
-        yych = *++m_curPos;
-        switch (yych) {
-        case 'o':        goto yy1136;
-        default:        goto yy771;
-        }
-yy1121:
-        yych = *++m_curPos;
-        switch (yych) {
-        case 'a':        goto yy1122;
-        default:        goto yy771;
-        }
-yy1122:
-        yych = *++m_curPos;
-        switch (yych) {
-        case 'c':        goto yy1123;
-        default:        goto yy771;
-        }
-yy1123:
-        yych = *++m_curPos;
-        switch (yych) {
-        case 'k':        goto yy1124;
-        default:        goto yy771;
-        }
-yy1124:
         yyaccept = 6;
         yych = *(marker = ++m_curPos);
         switch (yych) {
-        case 'c':        goto yy1126;
-        case 'h':        goto yy1127;
-        case 'l':        goto yy1128;
-        default:        goto yy1125;
+        case 'c':        goto yy1113;
+        case 'h':        goto yy1114;
+        case 'l':        goto yy1115;
+        default:        goto yy1112;
+        }
+yy1112:
+        { m_brigId = Brig::BRIG_OPCODE_UNPACK;     return m_token = EInstruction; }
+yy1113:
+        yych = *++m_curPos;
+        switch (yych) {
+        case 'v':        goto yy1120;
+        default:        goto yy758;
+        }
+yy1114:
+        yych = *++m_curPos;
+        switch (yych) {
+        case 'i':        goto yy1118;
+        default:        goto yy758;
+        }
+yy1115:
+        yych = *++m_curPos;
+        switch (yych) {
+        case 'o':        goto yy1116;
+        default:        goto yy758;
+        }
+yy1116:
+        ++m_curPos;
+        { m_brigId = Brig::BRIG_OPCODE_UNPACKLO;   return m_token = EInstruction; }
+yy1118:
+        ++m_curPos;
+        { m_brigId = Brig::BRIG_OPCODE_UNPACKHI;   return m_token = EInstruction; }
+yy1120:
+        yych = *++m_curPos;
+        switch (yych) {
+        case 't':        goto yy1121;
+        default:        goto yy758;
+        }
+yy1121:
+        ++m_curPos;
+        { m_brigId = Brig::BRIG_OPCODE_UNPACKCVT;  return m_token = EInstruction; }
+yy1123:
+        yych = *++m_curPos;
+        switch (yych) {
+        case 'r':        goto yy1124;
+        default:        goto yy758;
+        }
+yy1124:
+        yych = *++m_curPos;
+        switch (yych) {
+        case 'm':        goto yy1125;
+        default:        goto yy758;
         }
 yy1125:
-        { m_brigId = Brig::BRIG_OPCODE_UNPACK;     return m_token = EInstruction; }
+        yych = *++m_curPos;
+        switch (yych) {
+        case 'a':        goto yy1126;
+        default:        goto yy758;
+        }
 yy1126:
         yych = *++m_curPos;
         switch (yych) {
-        case 'v':        goto yy1133;
-        default:        goto yy771;
+        case 'l':        goto yy1127;
+        default:        goto yy758;
         }
 yy1127:
         yych = *++m_curPos;
         switch (yych) {
-        case 'i':        goto yy1131;
-        default:        goto yy771;
+        case 'i':        goto yy1128;
+        default:        goto yy758;
         }
 yy1128:
         yych = *++m_curPos;
         switch (yych) {
-        case 'o':        goto yy1129;
-        default:        goto yy771;
+        case 'z':        goto yy1129;
+        default:        goto yy758;
         }
 yy1129:
-        ++m_curPos;
-        { m_brigId = Brig::BRIG_OPCODE_UNPACKLO;   return m_token = EInstruction; }
+        yych = *++m_curPos;
+        switch (yych) {
+        case 'e':        goto yy1130;
+        default:        goto yy758;
+        }
+yy1130:
+        yych = *++m_curPos;
+        switch (yych) {
+        case 'd':        goto yy1131;
+        default:        goto yy758;
+        }
 yy1131:
         ++m_curPos;
-        { m_brigId = Brig::BRIG_OPCODE_UNPACKHI;   return m_token = EInstruction; }
+        { m_brigId = 0;                            return m_token = ESamplerCoord;  }
 yy1133:
         yych = *++m_curPos;
         switch (yych) {
-        case 't':        goto yy1134;
-        default:        goto yy771;
+        case 'l':        goto yy1191;
+        default:        goto yy758;
         }
 yy1134:
-        ++m_curPos;
-        { m_brigId = Brig::BRIG_OPCODE_UNPACKCVT;  return m_token = EInstruction; }
+        yych = *++m_curPos;
+        switch (yych) {
+        case 'i':        goto yy1184;
+        case 'q':        goto yy1185;
+        default:        goto yy758;
+        }
+yy1135:
+        yych = *++m_curPos;
+        switch (yych) {
+        case 'c':        goto yy1176;
+        case 's':        goto yy1177;
+        default:        goto yy758;
+        }
 yy1136:
         yych = *++m_curPos;
         switch (yych) {
-        case 'r':        goto yy1137;
-        default:        goto yy771;
+        case 'p':        goto yy1164;
+        case 'r':        goto yy1163;
+        case 't':        goto yy1166;
+        default:        goto yy758;
         }
 yy1137:
         yych = *++m_curPos;
         switch (yych) {
-        case 'm':        goto yy1138;
-        default:        goto yy771;
+        case 'o':        goto yy1159;
+        default:        goto yy758;
         }
 yy1138:
         yych = *++m_curPos;
         switch (yych) {
-        case 'a':        goto yy1139;
-        default:        goto yy771;
+        case 'm':        goto yy1156;
+        default:        goto yy758;
         }
 yy1139:
         yych = *++m_curPos;
         switch (yych) {
-        case 'l':        goto yy1140;
-        default:        goto yy771;
+        case 'a':        goto yy1144;
+        case 'g':        goto yy1145;
+        case 'x':        goto yy1147;
+        default:        goto yy758;
         }
 yy1140:
         yych = *++m_curPos;
         switch (yych) {
-        case 'i':        goto yy1141;
-        default:        goto yy771;
+        case 'o':        goto yy1141;
+        default:        goto yy758;
         }
 yy1141:
         yych = *++m_curPos;
         switch (yych) {
-        case 'z':        goto yy1142;
-        default:        goto yy771;
+        case 's':        goto yy1142;
+        default:        goto yy758;
         }
 yy1142:
-        yych = *++m_curPos;
-        switch (yych) {
-        case 'e':        goto yy1143;
-        default:        goto yy771;
-        }
-yy1143:
-        yych = *++m_curPos;
-        switch (yych) {
-        case 'd':        goto yy1144;
-        default:        goto yy771;
-        }
-yy1144:
         ++m_curPos;
-        { m_brigId = 0;                            return m_token = ESamplerCoord;  }
-yy1146:
+        { m_brigId = Brig::BRIG_OPCODE_NCOS;       return m_token = EInstruction; }
+yy1144:
         yych = *++m_curPos;
         switch (yych) {
-        case 'l':        goto yy1204;
-        default:        goto yy771;
+        case 'r':        goto yy1151;
+        default:        goto yy758;
         }
+yy1145:
+        ++m_curPos;
+        { m_brigId = Brig::BRIG_OPCODE_NEG;        return m_token = EInstruction; }
 yy1147:
         yych = *++m_curPos;
         switch (yych) {
-        case 'i':        goto yy1197;
-        case 'q':        goto yy1198;
-        default:        goto yy771;
+        case 'p':        goto yy1148;
+        default:        goto yy758;
         }
 yy1148:
         yych = *++m_curPos;
         switch (yych) {
-        case 'c':        goto yy1189;
-        case 's':        goto yy1190;
-        default:        goto yy771;
+        case '2':        goto yy1149;
+        default:        goto yy758;
         }
 yy1149:
-        yych = *++m_curPos;
-        switch (yych) {
-        case 'p':        goto yy1177;
-        case 'r':        goto yy1176;
-        case 't':        goto yy1179;
-        default:        goto yy771;
-        }
-yy1150:
-        yych = *++m_curPos;
-        switch (yych) {
-        case 'o':        goto yy1172;
-        default:        goto yy771;
-        }
+        ++m_curPos;
+        { m_brigId = Brig::BRIG_OPCODE_NEXP2;      return m_token = EInstruction; }
 yy1151:
         yych = *++m_curPos;
         switch (yych) {
-        case 'm':        goto yy1169;
-        default:        goto yy771;
+        case 'e':        goto yy1152;
+        default:        goto yy758;
         }
 yy1152:
         yych = *++m_curPos;
         switch (yych) {
-        case 'a':        goto yy1157;
-        case 'g':        goto yy1158;
-        case 'x':        goto yy1160;
-        default:        goto yy771;
+        case 's':        goto yy1153;
+        default:        goto yy758;
         }
 yy1153:
         yych = *++m_curPos;
         switch (yych) {
-        case 'o':        goto yy1154;
-        default:        goto yy771;
+        case 't':        goto yy1154;
+        default:        goto yy758;
         }
 yy1154:
+        ++m_curPos;
+        { m_brigId = Brig::BRIG_FILTER_NEAREST;    return m_token = ESamplerFilter; }
+yy1156:
         yych = *++m_curPos;
         switch (yych) {
-        case 's':        goto yy1155;
-        default:        goto yy771;
+        case 'a':        goto yy1157;
+        default:        goto yy758;
         }
-yy1155:
-        ++m_curPos;
-        { m_brigId = Brig::BRIG_OPCODE_NCOS;       return m_token = EInstruction; }
 yy1157:
+        ++m_curPos;
+        { m_brigId = Brig::BRIG_OPCODE_NFMA;       return m_token = EInstruction; }
+yy1159:
         yych = *++m_curPos;
         switch (yych) {
-        case 'r':        goto yy1164;
-        default:        goto yy771;
+        case 'g':        goto yy1160;
+        default:        goto yy758;
         }
-yy1158:
-        ++m_curPos;
-        { m_brigId = Brig::BRIG_OPCODE_NEG;        return m_token = EInstruction; }
 yy1160:
         yych = *++m_curPos;
         switch (yych) {
-        case 'p':        goto yy1161;
-        default:        goto yy771;
+        case '2':        goto yy1161;
+        default:        goto yy758;
         }
 yy1161:
+        ++m_curPos;
+        { m_brigId = Brig::BRIG_OPCODE_NLOG2;      return m_token = EInstruction; }
+yy1163:
         yych = *++m_curPos;
         switch (yych) {
-        case '2':        goto yy1162;
-        default:        goto yy771;
+        case 'm':        goto yy1168;
+        default:        goto yy758;
         }
-yy1162:
-        ++m_curPos;
-        { m_brigId = Brig::BRIG_OPCODE_NEXP2;      return m_token = EInstruction; }
 yy1164:
-        yych = *++m_curPos;
-        switch (yych) {
-        case 'e':        goto yy1165;
-        default:        goto yy771;
-        }
-yy1165:
-        yych = *++m_curPos;
-        switch (yych) {
-        case 's':        goto yy1166;
-        default:        goto yy771;
-        }
-yy1166:
-        yych = *++m_curPos;
-        switch (yych) {
-        case 't':        goto yy1167;
-        default:        goto yy771;
-        }
-yy1167:
         ++m_curPos;
-        { m_brigId = Brig::BRIG_FILTER_NEAREST;    return m_token = ESamplerFilter; }
+        { m_brigId = Brig::BRIG_OPCODE_NOP;        return m_token = EInstruction; }
+yy1166:
+        ++m_curPos;
+        { m_brigId = Brig::BRIG_OPCODE_NOT;        return m_token = EInstruction; }
+yy1168:
+        yych = *++m_curPos;
+        switch (yych) {
+        case 'a':        goto yy1169;
+        default:        goto yy758;
+        }
 yy1169:
         yych = *++m_curPos;
         switch (yych) {
-        case 'a':        goto yy1170;
-        default:        goto yy771;
+        case 'l':        goto yy1170;
+        default:        goto yy758;
         }
 yy1170:
-        ++m_curPos;
-        { m_brigId = Brig::BRIG_OPCODE_NFMA;       return m_token = EInstruction; }
+        yych = *++m_curPos;
+        switch (yych) {
+        case 'i':        goto yy1171;
+        default:        goto yy758;
+        }
+yy1171:
+        yych = *++m_curPos;
+        switch (yych) {
+        case 'z':        goto yy1172;
+        default:        goto yy758;
+        }
 yy1172:
         yych = *++m_curPos;
         switch (yych) {
-        case 'g':        goto yy1173;
-        default:        goto yy771;
+        case 'e':        goto yy1173;
+        default:        goto yy758;
         }
 yy1173:
         yych = *++m_curPos;
         switch (yych) {
-        case '2':        goto yy1174;
-        default:        goto yy771;
+        case 'd':        goto yy1174;
+        default:        goto yy758;
         }
 yy1174:
         ++m_curPos;
-        { m_brigId = Brig::BRIG_OPCODE_NLOG2;      return m_token = EInstruction; }
+        { m_brigId = 1;                            return m_token = ESamplerCoord;  }
 yy1176:
         yych = *++m_curPos;
         switch (yych) {
-        case 'm':        goto yy1181;
-        default:        goto yy771;
+        case 'p':        goto yy1182;
+        default:        goto yy758;
         }
 yy1177:
-        ++m_curPos;
-        { m_brigId = Brig::BRIG_OPCODE_NOP;        return m_token = EInstruction; }
+        yych = *++m_curPos;
+        switch (yych) {
+        case 'q':        goto yy1178;
+        default:        goto yy758;
+        }
+yy1178:
+        yych = *++m_curPos;
+        switch (yych) {
+        case 'r':        goto yy1179;
+        default:        goto yy758;
+        }
 yy1179:
+        yych = *++m_curPos;
+        switch (yych) {
+        case 't':        goto yy1180;
+        default:        goto yy758;
+        }
+yy1180:
         ++m_curPos;
-        { m_brigId = Brig::BRIG_OPCODE_NOT;        return m_token = EInstruction; }
-yy1181:
-        yych = *++m_curPos;
-        switch (yych) {
-        case 'a':        goto yy1182;
-        default:        goto yy771;
-        }
+        { m_brigId = Brig::BRIG_OPCODE_NRSQRT;     return m_token = EInstruction; }
 yy1182:
-        yych = *++m_curPos;
-        switch (yych) {
-        case 'l':        goto yy1183;
-        default:        goto yy771;
-        }
-yy1183:
-        yych = *++m_curPos;
-        switch (yych) {
-        case 'i':        goto yy1184;
-        default:        goto yy771;
-        }
+        ++m_curPos;
+        { m_brigId = Brig::BRIG_OPCODE_NRCP;       return m_token = EInstruction; }
 yy1184:
         yych = *++m_curPos;
         switch (yych) {
-        case 'z':        goto yy1185;
-        default:        goto yy771;
+        case 'n':        goto yy1189;
+        default:        goto yy758;
         }
 yy1185:
         yych = *++m_curPos;
         switch (yych) {
-        case 'e':        goto yy1186;
-        default:        goto yy771;
+        case 'r':        goto yy1186;
+        default:        goto yy758;
         }
 yy1186:
         yych = *++m_curPos;
         switch (yych) {
-        case 'd':        goto yy1187;
-        default:        goto yy771;
+        case 't':        goto yy1187;
+        default:        goto yy758;
         }
 yy1187:
         ++m_curPos;
-        { m_brigId = 1;                            return m_token = ESamplerCoord;  }
+        { m_brigId = Brig::BRIG_OPCODE_NSQRT;      return m_token = EInstruction; }
 yy1189:
-        yych = *++m_curPos;
-        switch (yych) {
-        case 'p':        goto yy1195;
-        default:        goto yy771;
-        }
-yy1190:
-        yych = *++m_curPos;
-        switch (yych) {
-        case 'q':        goto yy1191;
-        default:        goto yy771;
-        }
+        ++m_curPos;
+        { m_brigId = Brig::BRIG_OPCODE_NSIN;       return m_token = EInstruction; }
 yy1191:
         yych = *++m_curPos;
         switch (yych) {
-        case 'r':        goto yy1192;
-        default:        goto yy771;
+        case 'l':        goto yy1192;
+        default:        goto yy758;
         }
 yy1192:
         yych = *++m_curPos;
         switch (yych) {
-        case 't':        goto yy1193;
-        default:        goto yy771;
+        case 'p':        goto yy1193;
+        default:        goto yy758;
         }
 yy1193:
-        ++m_curPos;
-        { m_brigId = Brig::BRIG_OPCODE_NRSQRT;     return m_token = EInstruction; }
+        yych = *++m_curPos;
+        switch (yych) {
+        case 't':        goto yy1194;
+        default:        goto yy758;
+        }
+yy1194:
+        yych = *++m_curPos;
+        switch (yych) {
+        case 'r':        goto yy1195;
+        default:        goto yy758;
+        }
 yy1195:
         ++m_curPos;
-        { m_brigId = Brig::BRIG_OPCODE_NRCP;       return m_token = EInstruction; }
+        { m_brigId = Brig::BRIG_OPCODE_NULLPTR;    return m_token = EInstruction; }
 yy1197:
         yych = *++m_curPos;
         switch (yych) {
-        case 'n':        goto yy1202;
-        default:        goto yy771;
+        case 'm':        goto yy1274;
+        case 'n':        goto yy1277;
+        case 'o':        goto yy1273;
+        case 'p':        goto yy1275;
+        case 'u':        goto yy1276;
+        default:        goto yy758;
         }
 yy1198:
         yych = *++m_curPos;
         switch (yych) {
-        case 'r':        goto yy1199;
-        default:        goto yy771;
+        case 't':        goto yy1271;
+        default:        goto yy758;
         }
 yy1199:
         yych = *++m_curPos;
         switch (yych) {
-        case 't':        goto yy1200;
-        default:        goto yy771;
+        case 'i':        goto yy1249;
+        case 'r':        goto yy1250;
+        default:        goto yy758;
         }
 yy1200:
-        ++m_curPos;
-        { m_brigId = Brig::BRIG_OPCODE_NSQRT;      return m_token = EInstruction; }
+        yych = *++m_curPos;
+        switch (yych) {
+        case 'o':        goto yy1244;
+        case 'p':        goto yy1245;
+        default:        goto yy758;
+        }
+yy1201:
+        yych = *++m_curPos;
+        switch (yych) {
+        case 'a':        goto yy1217;
+        case 'e':        goto yy1218;
+        case 'o':        goto yy1219;
+        default:        goto yy758;
+        }
 yy1202:
-        ++m_curPos;
-        { m_brigId = Brig::BRIG_OPCODE_NSIN;       return m_token = EInstruction; }
+        yych = *++m_curPos;
+        switch (yych) {
+        case 'i':        goto yy1214;
+        default:        goto yy758;
+        }
+yy1203:
+        yych = *++m_curPos;
+        switch (yych) {
+        case 'r':        goto yy1212;
+        default:        goto yy758;
+        }
 yy1204:
         yych = *++m_curPos;
         switch (yych) {
         case 'l':        goto yy1205;
-        default:        goto yy771;
+        case 'r':        goto yy1206;
+        default:        goto yy758;
         }
 yy1205:
         yych = *++m_curPos;
         switch (yych) {
-        case 'p':        goto yy1206;
-        default:        goto yy771;
+        case 'l':        goto yy1210;
+        default:        goto yy758;
         }
 yy1206:
         yych = *++m_curPos;
         switch (yych) {
-        case 't':        goto yy1207;
-        default:        goto yy771;
+        case 'r':        goto yy1207;
+        default:        goto yy758;
         }
 yy1207:
         yych = *++m_curPos;
         switch (yych) {
-        case 'r':        goto yy1208;
-        default:        goto yy771;
+        case 'y':        goto yy1208;
+        default:        goto yy758;
         }
 yy1208:
         ++m_curPos;
-        { m_brigId = Brig::BRIG_OPCODE_NULLPTR;    return m_token = EInstruction; }
+        { m_brigId = Brig::BRIG_OPCODE_CARRY;      return m_token = EInstruction; }
 yy1210:
-        yych = *++m_curPos;
-        switch (yych) {
-        case 'm':        goto yy1287;
-        case 'n':        goto yy1290;
-        case 'o':        goto yy1286;
-        case 'p':        goto yy1288;
-        case 'u':        goto yy1289;
-        default:        goto yy771;
-        }
-yy1211:
-        yych = *++m_curPos;
-        switch (yych) {
-        case 't':        goto yy1284;
-        default:        goto yy771;
-        }
+        ++m_curPos;
+        { m_brigId = Brig::BRIG_OPCODE_CALL;       return m_token = EInstruction; }
 yy1212:
-        yych = *++m_curPos;
-        switch (yych) {
-        case 'i':        goto yy1262;
-        case 'r':        goto yy1263;
-        default:        goto yy771;
-        }
-yy1213:
-        yych = *++m_curPos;
-        switch (yych) {
-        case 'o':        goto yy1257;
-        case 'p':        goto yy1258;
-        default:        goto yy771;
-        }
+        ++m_curPos;
+        { m_brigId = Brig::BRIG_OPCODE_CBR;        return m_token = EInstruction; }
 yy1214:
         yych = *++m_curPos;
         switch (yych) {
-        case 'a':        goto yy1230;
-        case 'e':        goto yy1231;
-        case 'o':        goto yy1232;
-        default:        goto yy771;
+        case 'l':        goto yy1215;
+        default:        goto yy758;
         }
 yy1215:
-        yych = *++m_curPos;
-        switch (yych) {
-        case 'i':        goto yy1227;
-        default:        goto yy771;
-        }
-yy1216:
-        yych = *++m_curPos;
-        switch (yych) {
-        case 'r':        goto yy1225;
-        default:        goto yy771;
-        }
+        ++m_curPos;
+        { m_brigId = Brig::BRIG_OPCODE_CEIL;       return m_token = EInstruction; }
 yy1217:
         yych = *++m_curPos;
         switch (yych) {
-        case 'l':        goto yy1218;
-        case 'r':        goto yy1219;
-        default:        goto yy771;
+        case 'm':        goto yy1239;
+        case 's':        goto yy1238;
+        default:        goto yy758;
         }
 yy1218:
         yych = *++m_curPos;
         switch (yych) {
-        case 'l':        goto yy1223;
-        default:        goto yy771;
+        case 'a':        goto yy1223;
+        default:        goto yy758;
         }
 yy1219:
         yych = *++m_curPos;
         switch (yych) {
-        case 'r':        goto yy1220;
-        default:        goto yy771;
+        case 'c':        goto yy1220;
+        default:        goto yy758;
         }
 yy1220:
         yych = *++m_curPos;
         switch (yych) {
-        case 'y':        goto yy1221;
-        default:        goto yy771;
+        case 'k':        goto yy1221;
+        default:        goto yy758;
         }
 yy1221:
         ++m_curPos;
-        { m_brigId = Brig::BRIG_OPCODE_CARRY;      return m_token = EInstruction; }
+        { m_brigId = Brig::BRIG_OPCODE_CLOCK;      return m_token = EInstruction; }
 yy1223:
-        ++m_curPos;
-        { m_brigId = Brig::BRIG_OPCODE_CALL;       return m_token = EInstruction; }
+        yych = *++m_curPos;
+        switch (yych) {
+        case 'r':        goto yy1224;
+        default:        goto yy758;
+        }
+yy1224:
+        yych = *++m_curPos;
+        switch (yych) {
+        case 'd':        goto yy1225;
+        default:        goto yy758;
+        }
 yy1225:
-        ++m_curPos;
-        { m_brigId = Brig::BRIG_OPCODE_CBR;        return m_token = EInstruction; }
+        yych = *++m_curPos;
+        switch (yych) {
+        case 'e':        goto yy1226;
+        default:        goto yy758;
+        }
+yy1226:
+        yych = *++m_curPos;
+        switch (yych) {
+        case 't':        goto yy1227;
+        default:        goto yy758;
+        }
 yy1227:
         yych = *++m_curPos;
         switch (yych) {
-        case 'l':        goto yy1228;
-        default:        goto yy771;
+        case 'e':        goto yy1228;
+        default:        goto yy758;
         }
 yy1228:
-        ++m_curPos;
-        { m_brigId = Brig::BRIG_OPCODE_CEIL;       return m_token = EInstruction; }
+        yych = *++m_curPos;
+        switch (yych) {
+        case 'c':        goto yy1229;
+        default:        goto yy758;
+        }
+yy1229:
+        yych = *++m_curPos;
+        switch (yych) {
+        case 't':        goto yy1230;
+        default:        goto yy758;
+        }
 yy1230:
         yych = *++m_curPos;
         switch (yych) {
-        case 'm':        goto yy1252;
-        case 's':        goto yy1251;
-        default:        goto yy771;
+        case 'e':        goto yy1231;
+        default:        goto yy758;
         }
 yy1231:
         yych = *++m_curPos;
         switch (yych) {
-        case 'a':        goto yy1236;
-        default:        goto yy771;
+        case 'x':        goto yy1232;
+        default:        goto yy758;
         }
 yy1232:
         yych = *++m_curPos;
         switch (yych) {
         case 'c':        goto yy1233;
-        default:        goto yy771;
+        default:        goto yy758;
         }
 yy1233:
         yych = *++m_curPos;
         switch (yych) {
-        case 'k':        goto yy1234;
-        default:        goto yy771;
+        case 'e':        goto yy1234;
+        default:        goto yy758;
         }
 yy1234:
-        ++m_curPos;
-        { m_brigId = Brig::BRIG_OPCODE_CLOCK;      return m_token = EInstruction; }
+        yych = *++m_curPos;
+        switch (yych) {
+        case 'p':        goto yy1235;
+        default:        goto yy758;
+        }
+yy1235:
+        yych = *++m_curPos;
+        switch (yych) {
+        case 't':        goto yy1236;
+        default:        goto yy758;
+        }
 yy1236:
-        yych = *++m_curPos;
-        switch (yych) {
-        case 'r':        goto yy1237;
-        default:        goto yy771;
-        }
-yy1237:
-        yych = *++m_curPos;
-        switch (yych) {
-        case 'd':        goto yy1238;
-        default:        goto yy771;
-        }
+        ++m_curPos;
+        { m_brigId = Brig::BRIG_OPCODE_CLEARDETECTEXCEPT; return m_token = EInstruction; }
 yy1238:
         yych = *++m_curPos;
         switch (yych) {
-        case 'e':        goto yy1239;
-        default:        goto yy771;
+        case 's':        goto yy1242;
+        default:        goto yy758;
         }
 yy1239:
         yych = *++m_curPos;
         switch (yych) {
-        case 't':        goto yy1240;
-        default:        goto yy771;
+        case 'p':        goto yy1240;
+        default:        goto yy758;
         }
 yy1240:
-        yych = *++m_curPos;
-        switch (yych) {
-        case 'e':        goto yy1241;
-        default:        goto yy771;
-        }
-yy1241:
-        yych = *++m_curPos;
-        switch (yych) {
-        case 'c':        goto yy1242;
-        default:        goto yy771;
-        }
+        ++m_curPos;
+        { m_brigId = Brig::BRIG_BOUNDARY_CLAMP;    return m_token = ESamplerBoundaryMode; }
 yy1242:
-        yych = *++m_curPos;
-        switch (yych) {
-        case 't':        goto yy1243;
-        default:        goto yy771;
-        }
-yy1243:
-        yych = *++m_curPos;
-        switch (yych) {
-        case 'e':        goto yy1244;
-        default:        goto yy771;
-        }
+        ++m_curPos;
+        { m_brigId = Brig::BRIG_OPCODE_CLASS;      return m_token = EInstruction; }
 yy1244:
         yych = *++m_curPos;
         switch (yych) {
-        case 'x':        goto yy1245;
-        default:        goto yy771;
+        case 'v':        goto yy1247;
+        default:        goto yy758;
         }
 yy1245:
-        yych = *++m_curPos;
-        switch (yych) {
-        case 'c':        goto yy1246;
-        default:        goto yy771;
-        }
-yy1246:
-        yych = *++m_curPos;
-        switch (yych) {
-        case 'e':        goto yy1247;
-        default:        goto yy771;
-        }
-yy1247:
-        yych = *++m_curPos;
-        switch (yych) {
-        case 'p':        goto yy1248;
-        default:        goto yy771;
-        }
-yy1248:
-        yych = *++m_curPos;
-        switch (yych) {
-        case 't':        goto yy1249;
-        default:        goto yy771;
-        }
-yy1249:
         ++m_curPos;
-        { m_brigId = Brig::BRIG_OPCODE_CLEARDETECTEXCEPT; return m_token = EInstruction; }
+        { m_brigId = Brig::BRIG_OPCODE_CMP;        return m_token = EInstruction; }
+yy1247:
+        ++m_curPos;
+        { m_brigId = Brig::BRIG_OPCODE_CMOV;       return m_token = EInstruction; }
+yy1249:
+        yych = *++m_curPos;
+        switch (yych) {
+        case 'd':        goto yy1269;
+        default:        goto yy758;
+        }
+yy1250:
+        yych = *++m_curPos;
+        switch (yych) {
+        case 'r':        goto yy1251;
+        default:        goto yy758;
+        }
 yy1251:
         yych = *++m_curPos;
         switch (yych) {
-        case 's':        goto yy1255;
-        default:        goto yy771;
+        case 'e':        goto yy1252;
+        default:        goto yy758;
         }
 yy1252:
         yych = *++m_curPos;
         switch (yych) {
-        case 'p':        goto yy1253;
-        default:        goto yy771;
+        case 'n':        goto yy1253;
+        default:        goto yy758;
         }
 yy1253:
-        ++m_curPos;
-        { m_brigId = Brig::BRIG_BOUNDARY_CLAMP;    return m_token = ESamplerBoundaryMode; }
+        yych = *++m_curPos;
+        switch (yych) {
+        case 't':        goto yy1254;
+        default:        goto yy758;
+        }
+yy1254:
+        yych = *++m_curPos;
+        switch (yych) {
+        case 'w':        goto yy1255;
+        default:        goto yy758;
+        }
 yy1255:
-        ++m_curPos;
-        { m_brigId = Brig::BRIG_OPCODE_CLASS;      return m_token = EInstruction; }
+        yych = *++m_curPos;
+        switch (yych) {
+        case 'o':        goto yy1256;
+        default:        goto yy758;
+        }
+yy1256:
+        yych = *++m_curPos;
+        switch (yych) {
+        case 'r':        goto yy1257;
+        default:        goto yy758;
+        }
 yy1257:
         yych = *++m_curPos;
         switch (yych) {
-        case 'v':        goto yy1260;
-        default:        goto yy771;
+        case 'k':        goto yy1258;
+        default:        goto yy758;
         }
 yy1258:
-        ++m_curPos;
-        { m_brigId = Brig::BRIG_OPCODE_CMP;        return m_token = EInstruction; }
+        yych = *++m_curPos;
+        switch (yych) {
+        case 'g':        goto yy1259;
+        default:        goto yy758;
+        }
+yy1259:
+        yych = *++m_curPos;
+        switch (yych) {
+        case 'r':        goto yy1260;
+        default:        goto yy758;
+        }
 yy1260:
-        ++m_curPos;
-        { m_brigId = Brig::BRIG_OPCODE_CMOV;       return m_token = EInstruction; }
+        yych = *++m_curPos;
+        switch (yych) {
+        case 'o':        goto yy1261;
+        default:        goto yy758;
+        }
+yy1261:
+        yych = *++m_curPos;
+        switch (yych) {
+        case 'u':        goto yy1262;
+        default:        goto yy758;
+        }
 yy1262:
         yych = *++m_curPos;
         switch (yych) {
-        case 'd':        goto yy1282;
-        default:        goto yy771;
+        case 'p':        goto yy1263;
+        default:        goto yy758;
         }
 yy1263:
         yych = *++m_curPos;
         switch (yych) {
-        case 'r':        goto yy1264;
-        default:        goto yy771;
+        case 's':        goto yy1264;
+        default:        goto yy758;
         }
 yy1264:
         yych = *++m_curPos;
         switch (yych) {
-        case 'e':        goto yy1265;
-        default:        goto yy771;
+        case 'i':        goto yy1265;
+        default:        goto yy758;
         }
 yy1265:
         yych = *++m_curPos;
         switch (yych) {
-        case 'n':        goto yy1266;
-        default:        goto yy771;
+        case 'z':        goto yy1266;
+        default:        goto yy758;
         }
 yy1266:
         yych = *++m_curPos;
         switch (yych) {
-        case 't':        goto yy1267;
-        default:        goto yy771;
+        case 'e':        goto yy1267;
+        default:        goto yy758;
         }
 yy1267:
-        yych = *++m_curPos;
-        switch (yych) {
-        case 'w':        goto yy1268;
-        default:        goto yy771;
-        }
-yy1268:
-        yych = *++m_curPos;
-        switch (yych) {
-        case 'o':        goto yy1269;
-        default:        goto yy771;
-        }
+        ++m_curPos;
+        { m_brigId = Brig::BRIG_OPCODE_CURRENTWORKGROUPSIZE; return m_token = EInstruction; }
 yy1269:
-        yych = *++m_curPos;
-        switch (yych) {
-        case 'r':        goto yy1270;
-        default:        goto yy771;
-        }
-yy1270:
-        yych = *++m_curPos;
-        switch (yych) {
-        case 'k':        goto yy1271;
-        default:        goto yy771;
-        }
+        ++m_curPos;
+        { m_brigId = Brig::BRIG_OPCODE_CUID;       return m_token = EInstruction; }
 yy1271:
-        yych = *++m_curPos;
-        switch (yych) {
-        case 'g':        goto yy1272;
-        default:        goto yy771;
-        }
-yy1272:
-        yych = *++m_curPos;
-        switch (yych) {
-        case 'r':        goto yy1273;
-        default:        goto yy771;
-        }
+        ++m_curPos;
+        { m_brigId = Brig::BRIG_OPCODE_CVT;        return m_token = EInstruction; }
 yy1273:
         yych = *++m_curPos;
         switch (yych) {
-        case 'o':        goto yy1274;
-        default:        goto yy771;
+        case 'r':        goto yy1306;
+        default:        goto yy758;
         }
 yy1274:
         yych = *++m_curPos;
         switch (yych) {
-        case 'u':        goto yy1275;
-        default:        goto yy771;
+        case 'b':        goto yy1301;
+        default:        goto yy758;
         }
 yy1275:
         yych = *++m_curPos;
         switch (yych) {
-        case 'p':        goto yy1276;
-        default:        goto yy771;
+        case 'y':        goto yy1295;
+        default:        goto yy758;
         }
 yy1276:
         yych = *++m_curPos;
         switch (yych) {
-        case 's':        goto yy1277;
-        default:        goto yy771;
+        case 'n':        goto yy1281;
+        default:        goto yy758;
         }
 yy1277:
         yych = *++m_curPos;
         switch (yych) {
-        case 'i':        goto yy1278;
-        default:        goto yy771;
+        case 's':        goto yy1278;
+        default:        goto yy758;
         }
 yy1278:
         yych = *++m_curPos;
         switch (yych) {
-        case 'z':        goto yy1279;
-        default:        goto yy771;
+        case 't':        goto yy1279;
+        default:        goto yy758;
         }
 yy1279:
+        ++m_curPos;
+        { return m_token = EKWConst; }
+yy1281:
         yych = *++m_curPos;
         switch (yych) {
-        case 'e':        goto yy1280;
-        default:        goto yy771;
+        case 't':        goto yy1282;
+        default:        goto yy758;
         }
-yy1280:
-        ++m_curPos;
-        { m_brigId = Brig::BRIG_OPCODE_CURRENTWORKGROUPSIZE; return m_token = EInstruction; }
 yy1282:
-        ++m_curPos;
-        { m_brigId = Brig::BRIG_OPCODE_CUID;       return m_token = EInstruction; }
+        yych = *++m_curPos;
+        switch (yych) {
+        case 'l':        goto yy1284;
+        case 'u':        goto yy1283;
+        default:        goto yy758;
+        }
+yy1283:
+        yych = *++m_curPos;
+        switch (yych) {
+        case 'p':        goto yy1289;
+        default:        goto yy758;
+        }
 yy1284:
-        ++m_curPos;
-        { m_brigId = Brig::BRIG_OPCODE_CVT;        return m_token = EInstruction; }
+        yych = *++m_curPos;
+        switch (yych) {
+        case 'a':        goto yy1285;
+        default:        goto yy758;
+        }
+yy1285:
+        yych = *++m_curPos;
+        switch (yych) {
+        case 'n':        goto yy1286;
+        default:        goto yy758;
+        }
 yy1286:
         yych = *++m_curPos;
         switch (yych) {
-        case 'r':        goto yy1319;
-        default:        goto yy771;
+        case 'e':        goto yy1287;
+        default:        goto yy758;
         }
 yy1287:
-        yych = *++m_curPos;
-        switch (yych) {
-        case 'b':        goto yy1314;
-        default:        goto yy771;
-        }
-yy1288:
-        yych = *++m_curPos;
-        switch (yych) {
-        case 'y':        goto yy1308;
-        default:        goto yy771;
-        }
+        ++m_curPos;
+        { m_brigId = Brig::BRIG_OPCODE_COUNTLANE;  return m_token = EInstruction; }
 yy1289:
         yych = *++m_curPos;
         switch (yych) {
-        case 'n':        goto yy1294;
-        default:        goto yy771;
+        case 'l':        goto yy1290;
+        default:        goto yy758;
         }
 yy1290:
         yych = *++m_curPos;
         switch (yych) {
-        case 's':        goto yy1291;
-        default:        goto yy771;
+        case 'a':        goto yy1291;
+        default:        goto yy758;
         }
 yy1291:
         yych = *++m_curPos;
         switch (yych) {
-        case 't':        goto yy1292;
-        default:        goto yy771;
+        case 'n':        goto yy1292;
+        default:        goto yy758;
         }
 yy1292:
-        ++m_curPos;
-        { return m_token = EKWConst; }
-yy1294:
         yych = *++m_curPos;
         switch (yych) {
-        case 't':        goto yy1295;
-        default:        goto yy771;
+        case 'e':        goto yy1293;
+        default:        goto yy758;
         }
+yy1293:
+        ++m_curPos;
+        { m_brigId = Brig::BRIG_OPCODE_COUNTUPLANE; return m_token = EInstruction; }
 yy1295:
         yych = *++m_curPos;
         switch (yych) {
-        case 'l':        goto yy1297;
-        case 'u':        goto yy1296;
-        default:        goto yy771;
+        case 's':        goto yy1296;
+        default:        goto yy758;
         }
 yy1296:
         yych = *++m_curPos;
         switch (yych) {
-        case 'p':        goto yy1302;
-        default:        goto yy771;
+        case 'i':        goto yy1297;
+        default:        goto yy758;
         }
 yy1297:
         yych = *++m_curPos;
         switch (yych) {
-        case 'a':        goto yy1298;
-        default:        goto yy771;
+        case 'g':        goto yy1298;
+        default:        goto yy758;
         }
 yy1298:
         yych = *++m_curPos;
         switch (yych) {
         case 'n':        goto yy1299;
-        default:        goto yy771;
+        default:        goto yy758;
         }
 yy1299:
+        ++m_curPos;
+        { m_brigId = Brig::BRIG_OPCODE_COPYSIGN;   return m_token = EInstruction; }
+yy1301:
         yych = *++m_curPos;
         switch (yych) {
-        case 'e':        goto yy1300;
-        default:        goto yy771;
+        case 'i':        goto yy1302;
+        default:        goto yy758;
         }
-yy1300:
-        ++m_curPos;
-        { m_brigId = Brig::BRIG_OPCODE_COUNTLANE;  return m_token = EInstruction; }
 yy1302:
         yych = *++m_curPos;
         switch (yych) {
-        case 'l':        goto yy1303;
-        default:        goto yy771;
+        case 'n':        goto yy1303;
+        default:        goto yy758;
         }
 yy1303:
         yych = *++m_curPos;
         switch (yych) {
-        case 'a':        goto yy1304;
-        default:        goto yy771;
+        case 'e':        goto yy1304;
+        default:        goto yy758;
         }
 yy1304:
-        yych = *++m_curPos;
-        switch (yych) {
-        case 'n':        goto yy1305;
-        default:        goto yy771;
-        }
-yy1305:
-        yych = *++m_curPos;
-        switch (yych) {
-        case 'e':        goto yy1306;
-        default:        goto yy771;
-        }
-yy1306:
         ++m_curPos;
-        { m_brigId = Brig::BRIG_OPCODE_COUNTUPLANE; return m_token = EInstruction; }
-yy1308:
+        { m_brigId = Brig::BRIG_OPCODE_COMBINE;    return m_token = EInstruction_Vx; }
+yy1306:
         yych = *++m_curPos;
         switch (yych) {
-        case 's':        goto yy1309;
-        default:        goto yy771;
+        case 'd':        goto yy1307;
+        default:        goto yy758;
         }
+yy1307:
+        ++m_curPos;
+        { return m_token = EKWSamplerCoord; }
 yy1309:
         yych = *++m_curPos;
         switch (yych) {
-        case 'i':        goto yy1310;
-        default:        goto yy771;
+        case 'o':        goto yy1390;
+        default:        goto yy758;
         }
 yy1310:
         yych = *++m_curPos;
         switch (yych) {
-        case 'g':        goto yy1311;
-        default:        goto yy771;
+        case 't':        goto yy1382;
+        default:        goto yy758;
         }
 yy1311:
         yych = *++m_curPos;
         switch (yych) {
-        case 'n':        goto yy1312;
-        default:        goto yy771;
+        case 'n':        goto yy1380;
+        default:        goto yy758;
         }
 yy1312:
-        ++m_curPos;
-        { m_brigId = Brig::BRIG_OPCODE_COPYSIGN;   return m_token = EInstruction; }
+        yych = *++m_curPos;
+        switch (yych) {
+        case 'r':        goto yy1360;
+        case 'u':        goto yy1359;
+        default:        goto yy758;
+        }
+yy1313:
+        yych = *++m_curPos;
+        switch (yych) {
+        case 't':        goto yy1321;
+        default:        goto yy758;
+        }
 yy1314:
         yych = *++m_curPos;
         switch (yych) {
-        case 'i':        goto yy1315;
-        default:        goto yy771;
+        case 'r':        goto yy1315;
+        default:        goto yy758;
         }
 yy1315:
         yych = *++m_curPos;
         switch (yych) {
-        case 'n':        goto yy1316;
-        default:        goto yy771;
+        case 'r':        goto yy1316;
+        default:        goto yy758;
         }
 yy1316:
         yych = *++m_curPos;
         switch (yych) {
-        case 'e':        goto yy1317;
-        default:        goto yy771;
+        case 'i':        goto yy1317;
+        default:        goto yy758;
         }
 yy1317:
-        ++m_curPos;
-        { m_brigId = Brig::BRIG_OPCODE_COMBINE;    return m_token = EInstruction; }
-yy1319:
         yych = *++m_curPos;
         switch (yych) {
-        case 'd':        goto yy1320;
-        default:        goto yy771;
+        case 'e':        goto yy1318;
+        default:        goto yy758;
         }
-yy1320:
+yy1318:
+        yych = *++m_curPos;
+        switch (yych) {
+        case 'r':        goto yy1319;
+        default:        goto yy758;
+        }
+yy1319:
         ++m_curPos;
-        { return m_token = EKWSamplerCoord; }
+        { m_brigId = Brig::BRIG_OPCODE_BARRIER;    return m_token = EInstruction; }
+yy1321:
+        yych = *++m_curPos;
+        switch (yych) {
+        case 'a':        goto yy1327;
+        case 'e':        goto yy1326;
+        case 'i':        goto yy1325;
+        case 'm':        goto yy1324;
+        case 'r':        goto yy1323;
+        case 's':        goto yy1322;
+        default:        goto yy758;
+        }
 yy1322:
         yych = *++m_curPos;
         switch (yych) {
-        case 'o':        goto yy1403;
-        default:        goto yy771;
+        case 'e':        goto yy1353;
+        default:        goto yy758;
         }
 yy1323:
         yych = *++m_curPos;
         switch (yych) {
-        case 't':        goto yy1395;
-        default:        goto yy771;
+        case 'e':        goto yy1350;
+        default:        goto yy758;
         }
 yy1324:
         yych = *++m_curPos;
         switch (yych) {
-        case 'n':        goto yy1393;
-        default:        goto yy771;
+        case 'a':        goto yy1346;
+        default:        goto yy758;
         }
 yy1325:
         yych = *++m_curPos;
         switch (yych) {
-        case 'r':        goto yy1373;
-        case 'u':        goto yy1372;
-        default:        goto yy771;
+        case 'n':        goto yy1340;
+        default:        goto yy758;
         }
 yy1326:
         yych = *++m_curPos;
         switch (yych) {
-        case 't':        goto yy1334;
-        default:        goto yy771;
+        case 'x':        goto yy1333;
+        default:        goto yy758;
         }
 yy1327:
         yych = *++m_curPos;
         switch (yych) {
-        case 'r':        goto yy1328;
-        default:        goto yy771;
+        case 'l':        goto yy1328;
+        default:        goto yy758;
         }
 yy1328:
         yych = *++m_curPos;
         switch (yych) {
-        case 'r':        goto yy1329;
-        default:        goto yy771;
+        case 'i':        goto yy1329;
+        default:        goto yy758;
         }
 yy1329:
         yych = *++m_curPos;
         switch (yych) {
-        case 'i':        goto yy1330;
-        default:        goto yy771;
+        case 'g':        goto yy1330;
+        default:        goto yy758;
         }
 yy1330:
         yych = *++m_curPos;
         switch (yych) {
-        case 'e':        goto yy1331;
-        default:        goto yy771;
+        case 'n':        goto yy1331;
+        default:        goto yy758;
         }
 yy1331:
+        ++m_curPos;
+        { m_brigId = Brig::BRIG_OPCODE_BITALIGN;   return m_token = EInstruction; }
+yy1333:
         yych = *++m_curPos;
         switch (yych) {
-        case 'r':        goto yy1332;
-        default:        goto yy771;
+        case 't':        goto yy1334;
+        default:        goto yy758;
         }
-yy1332:
-        ++m_curPos;
-        { m_brigId = Brig::BRIG_OPCODE_BARRIER;    return m_token = EInstruction; }
 yy1334:
         yych = *++m_curPos;
         switch (yych) {
-        case 'a':        goto yy1340;
-        case 'e':        goto yy1339;
-        case 'i':        goto yy1338;
-        case 'm':        goto yy1337;
-        case 'r':        goto yy1336;
-        case 's':        goto yy1335;
-        default:        goto yy771;
+        case 'r':        goto yy1335;
+        default:        goto yy758;
         }
 yy1335:
         yych = *++m_curPos;
         switch (yych) {
-        case 'e':        goto yy1366;
-        default:        goto yy771;
+        case 'a':        goto yy1336;
+        default:        goto yy758;
         }
 yy1336:
         yych = *++m_curPos;
         switch (yych) {
-        case 'e':        goto yy1363;
-        default:        goto yy771;
+        case 'c':        goto yy1337;
+        default:        goto yy758;
         }
 yy1337:
         yych = *++m_curPos;
         switch (yych) {
-        case 'a':        goto yy1359;
-        default:        goto yy771;
+        case 't':        goto yy1338;
+        default:        goto yy758;
         }
 yy1338:
-        yych = *++m_curPos;
-        switch (yych) {
-        case 'n':        goto yy1353;
-        default:        goto yy771;
-        }
-yy1339:
-        yych = *++m_curPos;
-        switch (yych) {
-        case 'x':        goto yy1346;
-        default:        goto yy771;
-        }
+        ++m_curPos;
+        { m_brigId = Brig::BRIG_OPCODE_BITEXTRACT; return m_token = EInstruction; }
 yy1340:
         yych = *++m_curPos;
         switch (yych) {
-        case 'l':        goto yy1341;
-        default:        goto yy771;
+        case 's':        goto yy1341;
+        default:        goto yy758;
         }
 yy1341:
         yych = *++m_curPos;
         switch (yych) {
-        case 'i':        goto yy1342;
-        default:        goto yy771;
+        case 'e':        goto yy1342;
+        default:        goto yy758;
         }
 yy1342:
         yych = *++m_curPos;
         switch (yych) {
-        case 'g':        goto yy1343;
-        default:        goto yy771;
+        case 'r':        goto yy1343;
+        default:        goto yy758;
         }
 yy1343:
         yych = *++m_curPos;
         switch (yych) {
-        case 'n':        goto yy1344;
-        default:        goto yy771;
+        case 't':        goto yy1344;
+        default:        goto yy758;
         }
 yy1344:
         ++m_curPos;
-        { m_brigId = Brig::BRIG_OPCODE_BITALIGN;   return m_token = EInstruction; }
+        { m_brigId = Brig::BRIG_OPCODE_BITINSERT;  return m_token = EInstruction; }
 yy1346:
         yych = *++m_curPos;
         switch (yych) {
-        case 't':        goto yy1347;
-        default:        goto yy771;
+        case 's':        goto yy1347;
+        default:        goto yy758;
         }
 yy1347:
         yych = *++m_curPos;
         switch (yych) {
-        case 'r':        goto yy1348;
-        default:        goto yy771;
+        case 'k':        goto yy1348;
+        default:        goto yy758;
         }
 yy1348:
-        yych = *++m_curPos;
-        switch (yych) {
-        case 'a':        goto yy1349;
-        default:        goto yy771;
-        }
-yy1349:
-        yych = *++m_curPos;
-        switch (yych) {
-        case 'c':        goto yy1350;
-        default:        goto yy771;
-        }
+        ++m_curPos;
+        { m_brigId = Brig::BRIG_OPCODE_BITMASK;    return m_token = EInstruction; }
 yy1350:
         yych = *++m_curPos;
         switch (yych) {
-        case 't':        goto yy1351;
-        default:        goto yy771;
+        case 'v':        goto yy1351;
+        default:        goto yy758;
         }
 yy1351:
         ++m_curPos;
-        { m_brigId = Brig::BRIG_OPCODE_BITEXTRACT; return m_token = EInstruction; }
+        { m_brigId = Brig::BRIG_OPCODE_BITREV;     return m_token = EInstruction; }
 yy1353:
         yych = *++m_curPos;
         switch (yych) {
-        case 's':        goto yy1354;
-        default:        goto yy771;
+        case 'l':        goto yy1354;
+        default:        goto yy758;
         }
 yy1354:
         yych = *++m_curPos;
         switch (yych) {
         case 'e':        goto yy1355;
-        default:        goto yy771;
+        default:        goto yy758;
         }
 yy1355:
         yych = *++m_curPos;
         switch (yych) {
-        case 'r':        goto yy1356;
-        default:        goto yy771;
+        case 'c':        goto yy1356;
+        default:        goto yy758;
         }
 yy1356:
         yych = *++m_curPos;
         switch (yych) {
         case 't':        goto yy1357;
-        default:        goto yy771;
+        default:        goto yy758;
         }
 yy1357:
         ++m_curPos;
-        { m_brigId = Brig::BRIG_OPCODE_BITINSERT;  return m_token = EInstruction; }
+        { m_brigId = Brig::BRIG_OPCODE_BITSELECT;  return m_token = EInstruction; }
 yy1359:
         yych = *++m_curPos;
         switch (yych) {
-        case 's':        goto yy1360;
-        default:        goto yy771;
+        case 'n':        goto yy1369;
+        default:        goto yy758;
         }
 yy1360:
         yych = *++m_curPos;
         switch (yych) {
-        case 'k':        goto yy1361;
-        default:        goto yy771;
+        case 'd':        goto yy1362;
+        case 'r':        goto yy1361;
+        default:        goto yy758;
         }
 yy1361:
-        ++m_curPos;
-        { m_brigId = Brig::BRIG_OPCODE_BITMASK;    return m_token = EInstruction; }
+        yych = *++m_curPos;
+        switch (yych) {
+        case 'o':        goto yy1366;
+        default:        goto yy758;
+        }
+yy1362:
+        yych = *++m_curPos;
+        switch (yych) {
+        case 'e':        goto yy1363;
+        default:        goto yy758;
+        }
 yy1363:
         yych = *++m_curPos;
         switch (yych) {
-        case 'v':        goto yy1364;
-        default:        goto yy771;
+        case 'r':        goto yy1364;
+        default:        goto yy758;
         }
 yy1364:
         ++m_curPos;
-        { m_brigId = Brig::BRIG_OPCODE_BITREV;     return m_token = EInstruction; }
+        { m_brigId = Brig::BRIG_BOUNDARY_BORDER;   return m_token = ESamplerBoundaryMode; }
 yy1366:
         yych = *++m_curPos;
         switch (yych) {
-        case 'l':        goto yy1367;
-        default:        goto yy771;
+        case 'w':        goto yy1367;
+        default:        goto yy758;
         }
 yy1367:
-        yych = *++m_curPos;
-        switch (yych) {
-        case 'e':        goto yy1368;
-        default:        goto yy771;
-        }
-yy1368:
-        yych = *++m_curPos;
-        switch (yych) {
-        case 'c':        goto yy1369;
-        default:        goto yy771;
-        }
+        ++m_curPos;
+        { m_brigId = Brig::BRIG_OPCODE_BORROW;     return m_token = EInstruction; }
 yy1369:
         yych = *++m_curPos;
         switch (yych) {
-        case 't':        goto yy1370;
-        default:        goto yy771;
+        case 'd':        goto yy1370;
+        default:        goto yy758;
         }
 yy1370:
-        ++m_curPos;
-        { m_brigId = Brig::BRIG_OPCODE_BITSELECT;  return m_token = EInstruction; }
+        yych = *++m_curPos;
+        switch (yych) {
+        case 'a':        goto yy1371;
+        default:        goto yy758;
+        }
+yy1371:
+        yych = *++m_curPos;
+        switch (yych) {
+        case 'r':        goto yy1372;
+        default:        goto yy758;
+        }
 yy1372:
         yych = *++m_curPos;
         switch (yych) {
-        case 'n':        goto yy1382;
-        default:        goto yy771;
+        case 'y':        goto yy1373;
+        default:        goto yy758;
         }
 yy1373:
         yych = *++m_curPos;
         switch (yych) {
-        case 'd':        goto yy1375;
-        case 'r':        goto yy1374;
-        default:        goto yy771;
+        case 'U':        goto yy1374;
+        case 'V':        goto yy1376;
+        case 'W':        goto yy1378;
+        default:        goto yy758;
         }
 yy1374:
-        yych = *++m_curPos;
-        switch (yych) {
-        case 'o':        goto yy1379;
-        default:        goto yy771;
-        }
-yy1375:
-        yych = *++m_curPos;
-        switch (yych) {
-        case 'e':        goto yy1376;
-        default:        goto yy771;
-        }
-yy1376:
-        yych = *++m_curPos;
-        switch (yych) {
-        case 'r':        goto yy1377;
-        default:        goto yy771;
-        }
-yy1377:
         ++m_curPos;
-        { m_brigId = Brig::BRIG_BOUNDARY_BORDER;   return m_token = ESamplerBoundaryMode; }
-yy1379:
-        yych = *++m_curPos;
-        switch (yych) {
-        case 'w':        goto yy1380;
-        default:        goto yy771;
-        }
+        { return m_token = EKWSamplerBoundaryU; }
+yy1376:
+        ++m_curPos;
+        { return m_token = EKWSamplerBoundaryV; }
+yy1378:
+        ++m_curPos;
+        { return m_token = EKWSamplerBoundaryW; }
 yy1380:
         ++m_curPos;
-        { m_brigId = Brig::BRIG_OPCODE_BORROW;     return m_token = EInstruction; }
+        { m_brigId = Brig::BRIG_OPCODE_BRN;        return m_token = EInstruction; }
 yy1382:
         yych = *++m_curPos;
         switch (yych) {
-        case 'd':        goto yy1383;
-        default:        goto yy771;
+        case 'e':        goto yy1383;
+        default:        goto yy758;
         }
 yy1383:
         yych = *++m_curPos;
         switch (yych) {
         case 'a':        goto yy1384;
-        default:        goto yy771;
+        default:        goto yy758;
         }
 yy1384:
         yych = *++m_curPos;
         switch (yych) {
-        case 'r':        goto yy1385;
-        default:        goto yy771;
+        case 'l':        goto yy1385;
+        default:        goto yy758;
         }
 yy1385:
         yych = *++m_curPos;
         switch (yych) {
-        case 'y':        goto yy1386;
-        default:        goto yy771;
+        case 'i':        goto yy1386;
+        default:        goto yy758;
         }
 yy1386:
         yych = *++m_curPos;
         switch (yych) {
-        case 'U':        goto yy1387;
-        case 'V':        goto yy1389;
-        case 'W':        goto yy1391;
-        default:        goto yy771;
+        case 'g':        goto yy1387;
+        default:        goto yy758;
         }
 yy1387:
+        yych = *++m_curPos;
+        switch (yych) {
+        case 'n':        goto yy1388;
+        default:        goto yy758;
+        }
+yy1388:
         ++m_curPos;
-        { return m_token = EKWSamplerBoundaryU; }
-yy1389:
-        ++m_curPos;
-        { return m_token = EKWSamplerBoundaryV; }
+        { m_brigId = Brig::BRIG_OPCODE_BYTEALIGN;  return m_token = EInstruction; }
+yy1390:
+        yych = *++m_curPos;
+        switch (yych) {
+        case 'c':        goto yy1391;
+        default:        goto yy758;
+        }
 yy1391:
-        ++m_curPos;
-        { return m_token = EKWSamplerBoundaryW; }
+        yych = *++m_curPos;
+        switch (yych) {
+        case 'k':        goto yy1392;
+        default:        goto yy758;
+        }
+yy1392:
+        yyaccept = 7;
+        yych = *(marker = ++m_curPos);
+        switch (yych) {
+        case 'n':        goto yy1395;
+        case 's':        goto yy1394;
+        default:        goto yy1393;
+        }
 yy1393:
-        ++m_curPos;
-        { m_brigId = Brig::BRIG_OPCODE_BRN;        return m_token = EInstruction; }
+        { return m_token = EKWBlockStart; }
+yy1394:
+        yych = *++m_curPos;
+        switch (yych) {
+        case 't':        goto yy1403;
+        default:        goto yy758;
+        }
 yy1395:
         yych = *++m_curPos;
         switch (yych) {
-        case 'e':        goto yy1396;
-        default:        goto yy771;
+        case 'u':        goto yy1396;
+        default:        goto yy758;
         }
 yy1396:
         yych = *++m_curPos;
         switch (yych) {
-        case 'a':        goto yy1397;
-        default:        goto yy771;
+        case 'm':        goto yy1397;
+        default:        goto yy758;
         }
 yy1397:
         yych = *++m_curPos;
         switch (yych) {
-        case 'l':        goto yy1398;
-        default:        goto yy771;
+        case 'e':        goto yy1398;
+        default:        goto yy758;
         }
 yy1398:
         yych = *++m_curPos;
         switch (yych) {
-        case 'i':        goto yy1399;
-        default:        goto yy771;
+        case 'r':        goto yy1399;
+        default:        goto yy758;
         }
 yy1399:
         yych = *++m_curPos;
         switch (yych) {
-        case 'g':        goto yy1400;
-        default:        goto yy771;
+        case 'i':        goto yy1400;
+        default:        goto yy758;
         }
 yy1400:
         yych = *++m_curPos;
         switch (yych) {
-        case 'n':        goto yy1401;
-        default:        goto yy771;
+        case 'c':        goto yy1401;
+        default:        goto yy758;
         }
 yy1401:
         ++m_curPos;
-        { m_brigId = Brig::BRIG_OPCODE_BYTEALIGN;  return m_token = EInstruction; }
+        { return m_token = EKWBlockNum; }
 yy1403:
         yych = *++m_curPos;
         switch (yych) {
-        case 'c':        goto yy1404;
-        default:        goto yy771;
+        case 'r':        goto yy1404;
+        default:        goto yy758;
         }
 yy1404:
         yych = *++m_curPos;
         switch (yych) {
-        case 'k':        goto yy1405;
-        default:        goto yy771;
+        case 'i':        goto yy1405;
+        default:        goto yy758;
         }
 yy1405:
-        yyaccept = 7;
-        yych = *(marker = ++m_curPos);
+        yych = *++m_curPos;
         switch (yych) {
-        case 'n':        goto yy1408;
-        case 's':        goto yy1407;
-        default:        goto yy1406;
+        case 'n':        goto yy1406;
+        default:        goto yy758;
         }
 yy1406:
-        { return m_token = EKWBlockStart; }
+        yych = *++m_curPos;
+        switch (yych) {
+        case 'g':        goto yy1407;
+        default:        goto yy758;
+        }
 yy1407:
-        yych = *++m_curPos;
-        switch (yych) {
-        case 't':        goto yy1416;
-        default:        goto yy771;
-        }
-yy1408:
-        yych = *++m_curPos;
-        switch (yych) {
-        case 'u':        goto yy1409;
-        default:        goto yy771;
-        }
+        ++m_curPos;
+        { return m_token = EKWBlockStr; }
 yy1409:
-        yych = *++m_curPos;
+        yyaccept = 8;
+        yych = *(marker = ++m_curPos);
         switch (yych) {
-        case 'm':        goto yy1410;
-        default:        goto yy771;
+        case 'd':        goto yy1411;
+        default:        goto yy1410;
         }
 yy1410:
-        yych = *++m_curPos;
-        switch (yych) {
-        case 'e':        goto yy1411;
-        default:        goto yy771;
-        }
+        { m_brigId = Brig::BRIG_OPCODE_OR;         return m_token = EInstruction; }
 yy1411:
         yych = *++m_curPos;
         switch (yych) {
-        case 'r':        goto yy1412;
-        default:        goto yy771;
+        case 'e':        goto yy1412;
+        default:        goto yy758;
         }
 yy1412:
         yych = *++m_curPos;
         switch (yych) {
-        case 'i':        goto yy1413;
-        default:        goto yy771;
+        case 'r':        goto yy1413;
+        default:        goto yy758;
         }
 yy1413:
+        ++m_curPos;
+        { return m_token = EKWImageOrder; }
+yy1415:
         yych = *++m_curPos;
         switch (yych) {
-        case 'c':        goto yy1414;
-        default:        goto yy771;
+        case 'm':        goto yy1429;
+        case 's':        goto yy1431;
+        case 'v':        goto yy1432;
+        default:        goto yy758;
         }
-yy1414:
-        ++m_curPos;
-        { return m_token = EKWBlockNum; }
 yy1416:
         yych = *++m_curPos;
         switch (yych) {
-        case 'r':        goto yy1417;
-        default:        goto yy771;
+        case 'b':        goto yy1418;
+        case 'p':        goto yy1417;
+        default:        goto yy758;
         }
 yy1417:
         yych = *++m_curPos;
         switch (yych) {
-        case 'i':        goto yy1418;
-        default:        goto yy771;
+        case 't':        goto yy1426;
+        default:        goto yy758;
         }
 yy1418:
         yych = *++m_curPos;
         switch (yych) {
-        case 'n':        goto yy1419;
-        default:        goto yy771;
+        case 'u':        goto yy1419;
+        default:        goto yy758;
         }
 yy1419:
         yych = *++m_curPos;
         switch (yych) {
         case 'g':        goto yy1420;
-        default:        goto yy771;
+        default:        goto yy758;
         }
 yy1420:
-        ++m_curPos;
-        { return m_token = EKWBlockStr; }
-yy1422:
-        yyaccept = 8;
-        yych = *(marker = ++m_curPos);
+        yych = *++m_curPos;
         switch (yych) {
-        case 'd':        goto yy1424;
-        default:        goto yy1423;
+        case 't':        goto yy1421;
+        default:        goto yy758;
+        }
+yy1421:
+        yych = *++m_curPos;
+        switch (yych) {
+        case 'r':        goto yy1422;
+        default:        goto yy758;
+        }
+yy1422:
+        yych = *++m_curPos;
+        switch (yych) {
+        case 'a':        goto yy1423;
+        default:        goto yy758;
         }
 yy1423:
-        { m_brigId = Brig::BRIG_OPCODE_OR;         return m_token = EInstruction; }
+        yych = *++m_curPos;
+        switch (yych) {
+        case 'p':        goto yy1424;
+        default:        goto yy758;
+        }
 yy1424:
-        yych = *++m_curPos;
-        switch (yych) {
-        case 'e':        goto yy1425;
-        default:        goto yy771;
-        }
-yy1425:
-        yych = *++m_curPos;
-        switch (yych) {
-        case 'r':        goto yy1426;
-        default:        goto yy771;
-        }
-yy1426:
         ++m_curPos;
-        { return m_token = EKWImageOrder; }
-yy1428:
+        { m_brigId = Brig::BRIG_OPCODE_DEBUGTRAP;  return m_token = EInstruction; }
+yy1426:
         yych = *++m_curPos;
         switch (yych) {
-        case 'm':        goto yy1442;
-        case 's':        goto yy1444;
-        case 'v':        goto yy1445;
-        default:        goto yy771;
+        case 'h':        goto yy1427;
+        default:        goto yy758;
         }
+yy1427:
+        ++m_curPos;
+        { return m_token = EKWImageDepth; }
 yy1429:
-        yych = *++m_curPos;
-        switch (yych) {
-        case 'b':        goto yy1431;
-        case 'p':        goto yy1430;
-        default:        goto yy771;
-        }
-yy1430:
-        yych = *++m_curPos;
-        switch (yych) {
-        case 't':        goto yy1439;
-        default:        goto yy771;
-        }
+        ++m_curPos;
+        { m_brigId = Brig::BRIG_OPCODE_DIM;        return m_token = EInstruction; }
 yy1431:
         yych = *++m_curPos;
         switch (yych) {
-        case 'u':        goto yy1432;
-        default:        goto yy771;
+        case 'p':        goto yy1434;
+        default:        goto yy758;
         }
 yy1432:
-        yych = *++m_curPos;
-        switch (yych) {
-        case 'g':        goto yy1433;
-        default:        goto yy771;
-        }
-yy1433:
-        yych = *++m_curPos;
-        switch (yych) {
-        case 't':        goto yy1434;
-        default:        goto yy771;
-        }
+        ++m_curPos;
+        { m_brigId = Brig::BRIG_OPCODE_DIV;        return m_token = EInstruction; }
 yy1434:
         yych = *++m_curPos;
         switch (yych) {
-        case 'r':        goto yy1435;
-        default:        goto yy771;
+        case 'a':        goto yy1435;
+        default:        goto yy758;
         }
 yy1435:
         yych = *++m_curPos;
         switch (yych) {
-        case 'a':        goto yy1436;
-        default:        goto yy771;
+        case 't':        goto yy1436;
+        default:        goto yy758;
         }
 yy1436:
         yych = *++m_curPos;
         switch (yych) {
-        case 'p':        goto yy1437;
-        default:        goto yy771;
+        case 'c':        goto yy1437;
+        default:        goto yy758;
         }
 yy1437:
-        ++m_curPos;
-        { m_brigId = Brig::BRIG_OPCODE_DEBUGTRAP;  return m_token = EInstruction; }
+        yych = *++m_curPos;
+        switch (yych) {
+        case 'h':        goto yy1438;
+        default:        goto yy758;
+        }
+yy1438:
+        yych = *++m_curPos;
+        switch (yych) {
+        case 'i':        goto yy1439;
+        case 'p':        goto yy1440;
+        default:        goto yy758;
+        }
 yy1439:
         yych = *++m_curPos;
         switch (yych) {
-        case 'h':        goto yy1440;
-        default:        goto yy771;
+        case 'd':        goto yy1444;
+        default:        goto yy758;
         }
 yy1440:
-        ++m_curPos;
-        { return m_token = EKWImageDepth; }
-yy1442:
-        ++m_curPos;
-        { m_brigId = Brig::BRIG_OPCODE_DIM;        return m_token = EInstruction; }
-yy1444:
         yych = *++m_curPos;
         switch (yych) {
-        case 'p':        goto yy1447;
-        default:        goto yy771;
+        case 't':        goto yy1441;
+        default:        goto yy758;
         }
-yy1445:
+yy1441:
+        yych = *++m_curPos;
+        switch (yych) {
+        case 'r':        goto yy1442;
+        default:        goto yy758;
+        }
+yy1442:
         ++m_curPos;
-        { m_brigId = Brig::BRIG_OPCODE_DIV;        return m_token = EInstruction; }
+        { m_brigId = Brig::BRIG_OPCODE_DISPATCHPTR; return m_token = EInstruction; }
+yy1444:
+        ++m_curPos;
+        { m_brigId = Brig::BRIG_OPCODE_DISPATCHID; return m_token = EInstruction; }
+yy1446:
+        yych = *++m_curPos;
+        switch (yych) {
+        case 'i':        goto yy1447;
+        default:        goto yy758;
+        }
 yy1447:
         yych = *++m_curPos;
         switch (yych) {
-        case 'a':        goto yy1448;
-        default:        goto yy771;
+        case 'g':        goto yy1448;
+        default:        goto yy758;
         }
 yy1448:
         yych = *++m_curPos;
         switch (yych) {
-        case 't':        goto yy1449;
-        default:        goto yy771;
+        case 'h':        goto yy1449;
+        default:        goto yy758;
         }
 yy1449:
         yych = *++m_curPos;
         switch (yych) {
-        case 'c':        goto yy1450;
-        default:        goto yy771;
+        case 't':        goto yy1450;
+        default:        goto yy758;
         }
 yy1450:
-        yych = *++m_curPos;
-        switch (yych) {
-        case 'h':        goto yy1451;
-        default:        goto yy771;
-        }
-yy1451:
-        yych = *++m_curPos;
-        switch (yych) {
-        case 'i':        goto yy1452;
-        case 'p':        goto yy1453;
-        default:        goto yy771;
-        }
+        ++m_curPos;
+        { return m_token = EKWImageHeight; }
 yy1452:
         yych = *++m_curPos;
         switch (yych) {
-        case 'd':        goto yy1457;
-        default:        goto yy771;
+        case 'r':        goto yy1475;
+        default:        goto yy758;
         }
 yy1453:
         yych = *++m_curPos;
         switch (yych) {
-        case 't':        goto yy1454;
-        default:        goto yy771;
+        case 'i':        goto yy1463;
+        case 'v':        goto yy1464;
+        default:        goto yy758;
         }
 yy1454:
         yych = *++m_curPos;
         switch (yych) {
-        case 'r':        goto yy1455;
-        default:        goto yy771;
+        case 'a':        goto yy1460;
+        default:        goto yy758;
         }
 yy1455:
-        ++m_curPos;
-        { m_brigId = Brig::BRIG_OPCODE_DISPATCHPTR; return m_token = EInstruction; }
-yy1457:
-        ++m_curPos;
-        { m_brigId = Brig::BRIG_OPCODE_DISPATCHID; return m_token = EInstruction; }
-yy1459:
         yych = *++m_curPos;
         switch (yych) {
-        case 'i':        goto yy1460;
-        default:        goto yy771;
+        case 'd':        goto yy1456;
+        default:        goto yy758;
         }
+yy1456:
+        yych = *++m_curPos;
+        switch (yych) {
+        case 't':        goto yy1457;
+        default:        goto yy758;
+        }
+yy1457:
+        yych = *++m_curPos;
+        switch (yych) {
+        case 'h':        goto yy1458;
+        default:        goto yy758;
+        }
+yy1458:
+        ++m_curPos;
+        { return m_token = EKWImageWidth; }
 yy1460:
         yych = *++m_curPos;
         switch (yych) {
-        case 'g':        goto yy1461;
-        default:        goto yy771;
+        case 'p':        goto yy1461;
+        default:        goto yy758;
         }
 yy1461:
-        yych = *++m_curPos;
-        switch (yych) {
-        case 'h':        goto yy1462;
-        default:        goto yy771;
-        }
-yy1462:
-        yych = *++m_curPos;
-        switch (yych) {
-        case 't':        goto yy1463;
-        default:        goto yy771;
-        }
-yy1463:
         ++m_curPos;
-        { return m_token = EKWImageHeight; }
+        { m_brigId = Brig::BRIG_BOUNDARY_WRAP;     return m_token = ESamplerBoundaryMode; }
+yy1463:
+        yych = *++m_curPos;
+        switch (yych) {
+        case 't':        goto yy1469;
+        default:        goto yy758;
+        }
+yy1464:
+        yych = *++m_curPos;
+        switch (yych) {
+        case 'e':        goto yy1465;
+        default:        goto yy758;
+        }
 yy1465:
         yych = *++m_curPos;
         switch (yych) {
-        case 'r':        goto yy1488;
-        default:        goto yy771;
+        case 'i':        goto yy1466;
+        default:        goto yy758;
         }
 yy1466:
         yych = *++m_curPos;
         switch (yych) {
-        case 'i':        goto yy1476;
-        case 'v':        goto yy1477;
-        default:        goto yy771;
+        case 'd':        goto yy1467;
+        default:        goto yy758;
         }
 yy1467:
-        yych = *++m_curPos;
-        switch (yych) {
-        case 'a':        goto yy1473;
-        default:        goto yy771;
-        }
-yy1468:
-        yych = *++m_curPos;
-        switch (yych) {
-        case 'd':        goto yy1469;
-        default:        goto yy771;
-        }
+        ++m_curPos;
+        { m_brigId = Brig::BRIG_OPCODE_WAVEID;     return m_token = EInstruction; }
 yy1469:
         yych = *++m_curPos;
         switch (yych) {
-        case 't':        goto yy1470;
-        default:        goto yy771;
+        case 'f':        goto yy1470;
+        default:        goto yy758;
         }
 yy1470:
         yych = *++m_curPos;
         switch (yych) {
-        case 'h':        goto yy1471;
-        default:        goto yy771;
+        case 'b':        goto yy1471;
+        default:        goto yy758;
         }
 yy1471:
-        ++m_curPos;
-        { return m_token = EKWImageWidth; }
-yy1473:
         yych = *++m_curPos;
         switch (yych) {
-        case 'p':        goto yy1474;
-        default:        goto yy771;
+        case 'a':        goto yy1472;
+        default:        goto yy758;
         }
-yy1474:
+yy1472:
+        yych = *++m_curPos;
+        switch (yych) {
+        case 'r':        goto yy1473;
+        default:        goto yy758;
+        }
+yy1473:
         ++m_curPos;
-        { m_brigId = Brig::BRIG_BOUNDARY_WRAP;     return m_token = ESamplerBoundaryMode; }
+        { m_brigId = Brig::BRIG_OPCODE_WAITFBAR;   return m_token = EInstruction; }
+yy1475:
+        yych = *++m_curPos;
+        switch (yych) {
+        case 'k':        goto yy1476;
+        default:        goto yy758;
+        }
 yy1476:
         yych = *++m_curPos;
         switch (yych) {
-        case 't':        goto yy1482;
-        default:        goto yy771;
+        case 'g':        goto yy1477;
+        case 'i':        goto yy1478;
+        default:        goto yy758;
         }
 yy1477:
         yych = *++m_curPos;
         switch (yych) {
-        case 'e':        goto yy1478;
-        default:        goto yy771;
+        case 'r':        goto yy1504;
+        default:        goto yy758;
         }
 yy1478:
         yych = *++m_curPos;
         switch (yych) {
-        case 'i':        goto yy1479;
-        default:        goto yy771;
+        case 't':        goto yy1479;
+        default:        goto yy758;
         }
 yy1479:
         yych = *++m_curPos;
         switch (yych) {
-        case 'd':        goto yy1480;
-        default:        goto yy771;
+        case 'e':        goto yy1480;
+        default:        goto yy758;
         }
 yy1480:
-        ++m_curPos;
-        { m_brigId = Brig::BRIG_OPCODE_WAVEID;     return m_token = EInstruction; }
+        yych = *++m_curPos;
+        switch (yych) {
+        case 'm':        goto yy1481;
+        default:        goto yy758;
+        }
+yy1481:
+        yych = *++m_curPos;
+        switch (yych) {
+        case 'a':        goto yy1482;
+        case 'f':        goto yy1483;
+        case 'i':        goto yy1484;
+        default:        goto yy758;
+        }
 yy1482:
         yych = *++m_curPos;
         switch (yych) {
-        case 'f':        goto yy1483;
-        default:        goto yy771;
+        case 'b':        goto yy1499;
+        default:        goto yy758;
         }
 yy1483:
         yych = *++m_curPos;
         switch (yych) {
-        case 'b':        goto yy1484;
-        default:        goto yy771;
+        case 'l':        goto yy1487;
+        default:        goto yy758;
         }
 yy1484:
         yych = *++m_curPos;
         switch (yych) {
-        case 'a':        goto yy1485;
-        default:        goto yy771;
+        case 'd':        goto yy1485;
+        default:        goto yy758;
         }
 yy1485:
+        ++m_curPos;
+        { m_brigId = Brig::BRIG_OPCODE_WORKITEMID; return m_token = EInstruction; }
+yy1487:
         yych = *++m_curPos;
         switch (yych) {
-        case 'r':        goto yy1486;
-        default:        goto yy771;
+        case 'a':        goto yy1488;
+        default:        goto yy758;
         }
-yy1486:
-        ++m_curPos;
-        { m_brigId = Brig::BRIG_OPCODE_WAITFBAR;   return m_token = EInstruction; }
 yy1488:
         yych = *++m_curPos;
         switch (yych) {
-        case 'k':        goto yy1489;
-        default:        goto yy771;
+        case 't':        goto yy1489;
+        default:        goto yy758;
         }
 yy1489:
         yych = *++m_curPos;
         switch (yych) {
-        case 'g':        goto yy1490;
+        case 'a':        goto yy1490;
         case 'i':        goto yy1491;
-        default:        goto yy771;
+        default:        goto yy758;
         }
 yy1490:
         yych = *++m_curPos;
         switch (yych) {
-        case 'r':        goto yy1517;
-        default:        goto yy771;
+        case 'b':        goto yy1494;
+        default:        goto yy758;
         }
 yy1491:
         yych = *++m_curPos;
         switch (yych) {
-        case 't':        goto yy1492;
-        default:        goto yy771;
+        case 'd':        goto yy1492;
+        default:        goto yy758;
         }
 yy1492:
-        yych = *++m_curPos;
-        switch (yych) {
-        case 'e':        goto yy1493;
-        default:        goto yy771;
-        }
-yy1493:
-        yych = *++m_curPos;
-        switch (yych) {
-        case 'm':        goto yy1494;
-        default:        goto yy771;
-        }
+        ++m_curPos;
+        { m_brigId = Brig::BRIG_OPCODE_WORKITEMFLATID; return m_token = EInstruction; }
 yy1494:
         yych = *++m_curPos;
         switch (yych) {
-        case 'a':        goto yy1495;
-        case 'f':        goto yy1496;
-        case 'i':        goto yy1497;
-        default:        goto yy771;
+        case 's':        goto yy1495;
+        default:        goto yy758;
         }
 yy1495:
         yych = *++m_curPos;
         switch (yych) {
-        case 'b':        goto yy1512;
-        default:        goto yy771;
+        case 'i':        goto yy1496;
+        default:        goto yy758;
         }
 yy1496:
         yych = *++m_curPos;
         switch (yych) {
-        case 'l':        goto yy1500;
-        default:        goto yy771;
+        case 'd':        goto yy1497;
+        default:        goto yy758;
         }
 yy1497:
+        ++m_curPos;
+        { m_brigId = Brig::BRIG_OPCODE_WORKITEMFLATABSID; return m_token = EInstruction; }
+yy1499:
         yych = *++m_curPos;
         switch (yych) {
-        case 'd':        goto yy1498;
-        default:        goto yy771;
+        case 's':        goto yy1500;
+        default:        goto yy758;
         }
-yy1498:
-        ++m_curPos;
-        { m_brigId = Brig::BRIG_OPCODE_WORKITEMID; return m_token = EInstruction; }
 yy1500:
         yych = *++m_curPos;
         switch (yych) {
-        case 'a':        goto yy1501;
-        default:        goto yy771;
+        case 'i':        goto yy1501;
+        default:        goto yy758;
         }
 yy1501:
         yych = *++m_curPos;
         switch (yych) {
-        case 't':        goto yy1502;
-        default:        goto yy771;
+        case 'd':        goto yy1502;
+        default:        goto yy758;
         }
 yy1502:
-        yych = *++m_curPos;
-        switch (yych) {
-        case 'a':        goto yy1503;
-        case 'i':        goto yy1504;
-        default:        goto yy771;
-        }
-yy1503:
-        yych = *++m_curPos;
-        switch (yych) {
-        case 'b':        goto yy1507;
-        default:        goto yy771;
-        }
+        ++m_curPos;
+        { m_brigId = Brig::BRIG_OPCODE_WORKITEMABSID; return m_token = EInstruction; }
 yy1504:
         yych = *++m_curPos;
         switch (yych) {
-        case 'd':        goto yy1505;
-        default:        goto yy771;
+        case 'o':        goto yy1505;
+        default:        goto yy758;
         }
 yy1505:
-        ++m_curPos;
-        { m_brigId = Brig::BRIG_OPCODE_WORKITEMFLATID; return m_token = EInstruction; }
+        yych = *++m_curPos;
+        switch (yych) {
+        case 'u':        goto yy1506;
+        default:        goto yy758;
+        }
+yy1506:
+        yych = *++m_curPos;
+        switch (yych) {
+        case 'p':        goto yy1507;
+        default:        goto yy758;
+        }
 yy1507:
         yych = *++m_curPos;
         switch (yych) {
+        case 'i':        goto yy1509;
         case 's':        goto yy1508;
-        default:        goto yy771;
+        default:        goto yy758;
         }
 yy1508:
         yych = *++m_curPos;
         switch (yych) {
-        case 'i':        goto yy1509;
-        default:        goto yy771;
+        case 'i':        goto yy1512;
+        default:        goto yy758;
         }
 yy1509:
         yych = *++m_curPos;
         switch (yych) {
         case 'd':        goto yy1510;
-        default:        goto yy771;
+        default:        goto yy758;
         }
 yy1510:
         ++m_curPos;
-        { m_brigId = Brig::BRIG_OPCODE_WORKITEMFLATABSID; return m_token = EInstruction; }
+        { m_brigId = Brig::BRIG_OPCODE_WORKGROUPID; return m_token = EInstruction; }
 yy1512:
         yych = *++m_curPos;
         switch (yych) {
-        case 's':        goto yy1513;
-        default:        goto yy771;
+        case 'z':        goto yy1513;
+        default:        goto yy758;
         }
 yy1513:
         yych = *++m_curPos;
         switch (yych) {
-        case 'i':        goto yy1514;
-        default:        goto yy771;
+        case 'e':        goto yy1514;
+        default:        goto yy758;
         }
 yy1514:
+        ++m_curPos;
+        { m_brigId = Brig::BRIG_OPCODE_WORKGROUPSIZE; return m_token = EInstruction; }
+yy1516:
         yych = *++m_curPos;
         switch (yych) {
-        case 'd':        goto yy1515;
-        default:        goto yy771;
+        case 'l':        goto yy1607;
+        default:        goto yy758;
         }
-yy1515:
-        ++m_curPos;
-        { m_brigId = Brig::BRIG_OPCODE_WORKITEMABSID; return m_token = EInstruction; }
 yy1517:
         yych = *++m_curPos;
         switch (yych) {
-        case 'o':        goto yy1518;
-        default:        goto yy771;
+        case 'v':        goto yy1605;
+        default:        goto yy758;
         }
 yy1518:
         yych = *++m_curPos;
         switch (yych) {
-        case 'u':        goto yy1519;
-        default:        goto yy771;
+        case 'n':        goto yy1594;
+        case 'r':        goto yy1593;
+        default:        goto yy758;
         }
 yy1519:
         yych = *++m_curPos;
         switch (yych) {
-        case 'p':        goto yy1520;
-        default:        goto yy771;
+        case 'd':        goto yy1522;
+        case 's':        goto yy1524;
+        case 'x':        goto yy1520;
+        default:        goto yy758;
         }
 yy1520:
-        yych = *++m_curPos;
+        yyaccept = 9;
+        yych = *(marker = ++m_curPos);
         switch (yych) {
-        case 'i':        goto yy1522;
-        case 's':        goto yy1521;
-        default:        goto yy771;
+        case 'c':        goto yy1538;
+        case 'd':        goto yy1540;
+        case 'f':        goto yy1539;
+        case 'w':        goto yy1537;
+        default:        goto yy1521;
         }
 yy1521:
-        yych = *++m_curPos;
-        switch (yych) {
-        case 'i':        goto yy1525;
-        default:        goto yy771;
-        }
+        { m_brigId = Brig::BRIG_OPCODE_MAX;        return m_token = EInstruction; }
 yy1522:
-        yych = *++m_curPos;
+        yyaccept = 10;
+        yych = *(marker = ++m_curPos);
         switch (yych) {
-        case 'd':        goto yy1523;
-        default:        goto yy771;
+        case '2':        goto yy1531;
+        default:        goto yy1523;
         }
 yy1523:
-        ++m_curPos;
-        { m_brigId = Brig::BRIG_OPCODE_WORKGROUPID; return m_token = EInstruction; }
+        { m_brigId = Brig::BRIG_OPCODE_MAD;        return m_token = EInstruction; }
+yy1524:
+        yych = *++m_curPos;
+        switch (yych) {
+        case 'k':        goto yy1525;
+        default:        goto yy758;
+        }
 yy1525:
         yych = *++m_curPos;
         switch (yych) {
-        case 'z':        goto yy1526;
-        default:        goto yy771;
+        case 'l':        goto yy1526;
+        default:        goto yy758;
         }
 yy1526:
         yych = *++m_curPos;
         switch (yych) {
-        case 'e':        goto yy1527;
-        default:        goto yy771;
+        case 'a':        goto yy1527;
+        default:        goto yy758;
         }
 yy1527:
-        ++m_curPos;
-        { m_brigId = Brig::BRIG_OPCODE_WORKGROUPSIZE; return m_token = EInstruction; }
+        yych = *++m_curPos;
+        switch (yych) {
+        case 'n':        goto yy1528;
+        default:        goto yy758;
+        }
+yy1528:
+        yych = *++m_curPos;
+        switch (yych) {
+        case 'e':        goto yy1529;
+        default:        goto yy758;
+        }
 yy1529:
-        yych = *++m_curPos;
-        switch (yych) {
-        case 'l':        goto yy1620;
-        default:        goto yy771;
-        }
-yy1530:
-        yych = *++m_curPos;
-        switch (yych) {
-        case 'v':        goto yy1618;
-        default:        goto yy771;
-        }
+        ++m_curPos;
+        { m_brigId = Brig::BRIG_OPCODE_MASKLANE;   return m_token = EInstruction; }
 yy1531:
         yych = *++m_curPos;
         switch (yych) {
-        case 'n':        goto yy1607;
-        case 'r':        goto yy1606;
-        default:        goto yy771;
+        case '4':        goto yy1532;
+        default:        goto yy758;
         }
 yy1532:
-        yych = *++m_curPos;
+        yyaccept = 11;
+        yych = *(marker = ++m_curPos);
         switch (yych) {
-        case 'd':        goto yy1535;
-        case 's':        goto yy1537;
-        case 'x':        goto yy1533;
-        default:        goto yy771;
+        case 'h':        goto yy1534;
+        default:        goto yy1533;
         }
 yy1533:
-        yyaccept = 9;
-        yych = *(marker = ++m_curPos);
-        switch (yych) {
-        case 'c':        goto yy1551;
-        case 'd':        goto yy1553;
-        case 'f':        goto yy1552;
-        case 'w':        goto yy1550;
-        default:        goto yy1534;
-        }
+        { m_brigId = Brig::BRIG_OPCODE_MAD24;      return m_token = EInstruction; }
 yy1534:
-        { m_brigId = Brig::BRIG_OPCODE_MAX;        return m_token = EInstruction; }
-yy1535:
-        yyaccept = 10;
-        yych = *(marker = ++m_curPos);
+        yych = *++m_curPos;
         switch (yych) {
-        case '2':        goto yy1544;
-        default:        goto yy1536;
+        case 'i':        goto yy1535;
+        default:        goto yy758;
         }
-yy1536:
-        { m_brigId = Brig::BRIG_OPCODE_MAD;        return m_token = EInstruction; }
+yy1535:
+        ++m_curPos;
+        { m_brigId = Brig::BRIG_OPCODE_MAD24HI;    return m_token = EInstruction; }
 yy1537:
         yych = *++m_curPos;
         switch (yych) {
-        case 'k':        goto yy1538;
-        default:        goto yy771;
+        case 'a':        goto yy1587;
+        default:        goto yy758;
         }
 yy1538:
         yych = *++m_curPos;
         switch (yych) {
-        case 'l':        goto yy1539;
-        default:        goto yy771;
+        case 'u':        goto yy1583;
+        default:        goto yy758;
         }
 yy1539:
         yych = *++m_curPos;
         switch (yych) {
-        case 'a':        goto yy1540;
-        default:        goto yy771;
+        case 'l':        goto yy1557;
+        default:        goto yy758;
         }
 yy1540:
         yych = *++m_curPos;
         switch (yych) {
-        case 'n':        goto yy1541;
-        default:        goto yy771;
+        case 'y':        goto yy1541;
+        default:        goto yy758;
         }
 yy1541:
         yych = *++m_curPos;
         switch (yych) {
-        case 'e':        goto yy1542;
-        default:        goto yy771;
+        case 'n':        goto yy1542;
+        default:        goto yy758;
         }
 yy1542:
-        ++m_curPos;
-        { m_brigId = Brig::BRIG_OPCODE_MASKLANE;   return m_token = EInstruction; }
+        yych = *++m_curPos;
+        switch (yych) {
+        case 'a':        goto yy1543;
+        default:        goto yy758;
+        }
+yy1543:
+        yych = *++m_curPos;
+        switch (yych) {
+        case 'm':        goto yy1544;
+        default:        goto yy758;
+        }
 yy1544:
         yych = *++m_curPos;
         switch (yych) {
-        case '4':        goto yy1545;
-        default:        goto yy771;
+        case 'i':        goto yy1545;
+        default:        goto yy758;
         }
 yy1545:
-        yyaccept = 11;
-        yych = *(marker = ++m_curPos);
+        yych = *++m_curPos;
         switch (yych) {
-        case 'h':        goto yy1547;
-        default:        goto yy1546;
+        case 'c':        goto yy1546;
+        default:        goto yy758;
         }
 yy1546:
-        { m_brigId = Brig::BRIG_OPCODE_MAD24;      return m_token = EInstruction; }
+        yych = *++m_curPos;
+        switch (yych) {
+        case 'g':        goto yy1547;
+        default:        goto yy758;
+        }
 yy1547:
         yych = *++m_curPos;
         switch (yych) {
-        case 'i':        goto yy1548;
-        default:        goto yy771;
+        case 'r':        goto yy1548;
+        default:        goto yy758;
         }
 yy1548:
-        ++m_curPos;
-        { m_brigId = Brig::BRIG_OPCODE_MAD24HI;    return m_token = EInstruction; }
+        yych = *++m_curPos;
+        switch (yych) {
+        case 'o':        goto yy1549;
+        default:        goto yy758;
+        }
+yy1549:
+        yych = *++m_curPos;
+        switch (yych) {
+        case 'u':        goto yy1550;
+        default:        goto yy758;
+        }
 yy1550:
         yych = *++m_curPos;
         switch (yych) {
-        case 'a':        goto yy1600;
-        default:        goto yy771;
+        case 'p':        goto yy1551;
+        default:        goto yy758;
         }
 yy1551:
         yych = *++m_curPos;
         switch (yych) {
-        case 'u':        goto yy1596;
-        default:        goto yy771;
+        case 's':        goto yy1552;
+        default:        goto yy758;
         }
 yy1552:
         yych = *++m_curPos;
         switch (yych) {
-        case 'l':        goto yy1570;
-        default:        goto yy771;
+        case 'i':        goto yy1553;
+        default:        goto yy758;
         }
 yy1553:
         yych = *++m_curPos;
         switch (yych) {
-        case 'y':        goto yy1554;
-        default:        goto yy771;
+        case 'z':        goto yy1554;
+        default:        goto yy758;
         }
 yy1554:
         yych = *++m_curPos;
         switch (yych) {
-        case 'n':        goto yy1555;
-        default:        goto yy771;
+        case 'e':        goto yy1555;
+        default:        goto yy758;
         }
 yy1555:
-        yych = *++m_curPos;
-        switch (yych) {
-        case 'a':        goto yy1556;
-        default:        goto yy771;
-        }
-yy1556:
-        yych = *++m_curPos;
-        switch (yych) {
-        case 'm':        goto yy1557;
-        default:        goto yy771;
-        }
+        ++m_curPos;
+        { m_brigId = Brig::BRIG_CONTROL_MAXDYNAMICGROUPSIZE; return m_token = EControl;     }
 yy1557:
         yych = *++m_curPos;
         switch (yych) {
-        case 'i':        goto yy1558;
-        default:        goto yy771;
+        case 'a':        goto yy1558;
+        default:        goto yy758;
         }
 yy1558:
         yych = *++m_curPos;
         switch (yych) {
-        case 'c':        goto yy1559;
-        default:        goto yy771;
+        case 't':        goto yy1559;
+        default:        goto yy758;
         }
 yy1559:
         yych = *++m_curPos;
         switch (yych) {
-        case 'g':        goto yy1560;
-        default:        goto yy771;
+        case 'g':        goto yy1561;
+        case 'w':        goto yy1560;
+        default:        goto yy758;
         }
 yy1560:
         yych = *++m_curPos;
         switch (yych) {
-        case 'r':        goto yy1561;
-        default:        goto yy771;
+        case 'o':        goto yy1570;
+        default:        goto yy758;
         }
 yy1561:
         yych = *++m_curPos;
         switch (yych) {
-        case 'o':        goto yy1562;
-        default:        goto yy771;
+        case 'r':        goto yy1562;
+        default:        goto yy758;
         }
 yy1562:
         yych = *++m_curPos;
         switch (yych) {
-        case 'u':        goto yy1563;
-        default:        goto yy771;
+        case 'i':        goto yy1563;
+        default:        goto yy758;
         }
 yy1563:
         yych = *++m_curPos;
         switch (yych) {
-        case 'p':        goto yy1564;
-        default:        goto yy771;
+        case 'd':        goto yy1564;
+        default:        goto yy758;
         }
 yy1564:
         yych = *++m_curPos;
         switch (yych) {
         case 's':        goto yy1565;
-        default:        goto yy771;
+        default:        goto yy758;
         }
 yy1565:
         yych = *++m_curPos;
         switch (yych) {
         case 'i':        goto yy1566;
-        default:        goto yy771;
+        default:        goto yy758;
         }
 yy1566:
         yych = *++m_curPos;
         switch (yych) {
         case 'z':        goto yy1567;
-        default:        goto yy771;
+        default:        goto yy758;
         }
 yy1567:
         yych = *++m_curPos;
         switch (yych) {
         case 'e':        goto yy1568;
-        default:        goto yy771;
+        default:        goto yy758;
         }
 yy1568:
         ++m_curPos;
-        { m_brigId = Brig::BRIG_CONTROL_MAXDYNAMICGROUPSIZE; return m_token = EControl;     }
+        { m_brigId = Brig::BRIG_CONTROL_MAXFLATGRIDSIZE; return m_token = EControl;     }
 yy1570:
         yych = *++m_curPos;
         switch (yych) {
-        case 'a':        goto yy1571;
-        default:        goto yy771;
+        case 'r':        goto yy1571;
+        default:        goto yy758;
         }
 yy1571:
         yych = *++m_curPos;
         switch (yych) {
-        case 't':        goto yy1572;
-        default:        goto yy771;
+        case 'k':        goto yy1572;
+        default:        goto yy758;
         }
 yy1572:
         yych = *++m_curPos;
         switch (yych) {
-        case 'g':        goto yy1574;
-        case 'w':        goto yy1573;
-        default:        goto yy771;
+        case 'g':        goto yy1573;
+        default:        goto yy758;
         }
 yy1573:
         yych = *++m_curPos;
         switch (yych) {
-        case 'o':        goto yy1583;
-        default:        goto yy771;
+        case 'r':        goto yy1574;
+        default:        goto yy758;
         }
 yy1574:
         yych = *++m_curPos;
         switch (yych) {
-        case 'r':        goto yy1575;
-        default:        goto yy771;
+        case 'o':        goto yy1575;
+        default:        goto yy758;
         }
 yy1575:
         yych = *++m_curPos;
         switch (yych) {
-        case 'i':        goto yy1576;
-        default:        goto yy771;
+        case 'u':        goto yy1576;
+        default:        goto yy758;
         }
 yy1576:
         yych = *++m_curPos;
         switch (yych) {
-        case 'd':        goto yy1577;
-        default:        goto yy771;
+        case 'p':        goto yy1577;
+        default:        goto yy758;
         }
 yy1577:
         yych = *++m_curPos;
         switch (yych) {
         case 's':        goto yy1578;
-        default:        goto yy771;
+        default:        goto yy758;
         }
 yy1578:
         yych = *++m_curPos;
         switch (yych) {
         case 'i':        goto yy1579;
-        default:        goto yy771;
+        default:        goto yy758;
         }
 yy1579:
         yych = *++m_curPos;
         switch (yych) {
         case 'z':        goto yy1580;
-        default:        goto yy771;
+        default:        goto yy758;
         }
 yy1580:
         yych = *++m_curPos;
         switch (yych) {
         case 'e':        goto yy1581;
-        default:        goto yy771;
+        default:        goto yy758;
         }
 yy1581:
         ++m_curPos;
-        { m_brigId = Brig::BRIG_CONTROL_MAXFLATGRIDSIZE; return m_token = EControl;     }
+        { m_brigId = Brig::BRIG_CONTROL_MAXFLATWORKGROUPSIZE; return m_token = EControl;     }
 yy1583:
         yych = *++m_curPos;
         switch (yych) {
-        case 'r':        goto yy1584;
-        default:        goto yy771;
+        case 'i':        goto yy1584;
+        default:        goto yy758;
         }
 yy1584:
         yych = *++m_curPos;
         switch (yych) {
-        case 'k':        goto yy1585;
-        default:        goto yy771;
+        case 'd':        goto yy1585;
+        default:        goto yy758;
         }
 yy1585:
-        yych = *++m_curPos;
-        switch (yych) {
-        case 'g':        goto yy1586;
-        default:        goto yy771;
-        }
-yy1586:
-        yych = *++m_curPos;
-        switch (yych) {
-        case 'r':        goto yy1587;
-        default:        goto yy771;
-        }
+        ++m_curPos;
+        { m_brigId = Brig::BRIG_OPCODE_MAXCUID;    return m_token = EInstruction; }
 yy1587:
         yych = *++m_curPos;
         switch (yych) {
-        case 'o':        goto yy1588;
-        default:        goto yy771;
+        case 'v':        goto yy1588;
+        default:        goto yy758;
         }
 yy1588:
         yych = *++m_curPos;
         switch (yych) {
-        case 'u':        goto yy1589;
-        default:        goto yy771;
+        case 'e':        goto yy1589;
+        default:        goto yy758;
         }
 yy1589:
         yych = *++m_curPos;
         switch (yych) {
-        case 'p':        goto yy1590;
-        default:        goto yy771;
+        case 'i':        goto yy1590;
+        default:        goto yy758;
         }
 yy1590:
         yych = *++m_curPos;
         switch (yych) {
-        case 's':        goto yy1591;
-        default:        goto yy771;
+        case 'd':        goto yy1591;
+        default:        goto yy758;
         }
 yy1591:
-        yych = *++m_curPos;
-        switch (yych) {
-        case 'i':        goto yy1592;
-        default:        goto yy771;
-        }
-yy1592:
-        yych = *++m_curPos;
-        switch (yych) {
-        case 'z':        goto yy1593;
-        default:        goto yy771;
-        }
+        ++m_curPos;
+        { m_brigId = Brig::BRIG_OPCODE_MAXWAVEID;  return m_token = EInstruction; }
 yy1593:
         yych = *++m_curPos;
         switch (yych) {
-        case 'e':        goto yy1594;
-        default:        goto yy771;
+        case 'r':        goto yy1596;
+        default:        goto yy758;
         }
 yy1594:
         ++m_curPos;
-        { m_brigId = Brig::BRIG_CONTROL_MAXFLATWORKGROUPSIZE; return m_token = EControl;     }
+        { m_brigId = Brig::BRIG_OPCODE_MIN;        return m_token = EInstruction; }
 yy1596:
         yych = *++m_curPos;
         switch (yych) {
-        case 'i':        goto yy1597;
-        default:        goto yy771;
+        case 'o':        goto yy1597;
+        default:        goto yy758;
         }
 yy1597:
         yych = *++m_curPos;
         switch (yych) {
-        case 'd':        goto yy1598;
-        default:        goto yy771;
+        case 'r':        goto yy1598;
+        default:        goto yy758;
         }
 yy1598:
-        ++m_curPos;
-        { m_brigId = Brig::BRIG_OPCODE_MAXCUID;    return m_token = EInstruction; }
+        yyaccept = 12;
+        yych = *(marker = ++m_curPos);
+        switch (yych) {
+        case 'o':        goto yy1600;
+        default:        goto yy1599;
+        }
+yy1599:
+        { m_brigId = Brig::BRIG_BOUNDARY_MIRROR;   return m_token = ESamplerBoundaryMode; }
 yy1600:
         yych = *++m_curPos;
         switch (yych) {
-        case 'v':        goto yy1601;
-        default:        goto yy771;
+        case 'n':        goto yy1601;
+        default:        goto yy758;
         }
 yy1601:
         yych = *++m_curPos;
         switch (yych) {
-        case 'e':        goto yy1602;
-        default:        goto yy771;
+        case 'c':        goto yy1602;
+        default:        goto yy758;
         }
 yy1602:
         yych = *++m_curPos;
         switch (yych) {
-        case 'i':        goto yy1603;
-        default:        goto yy771;
+        case 'e':        goto yy1603;
+        default:        goto yy758;
         }
 yy1603:
-        yych = *++m_curPos;
-        switch (yych) {
-        case 'd':        goto yy1604;
-        default:        goto yy771;
-        }
-yy1604:
         ++m_curPos;
-        { m_brigId = Brig::BRIG_OPCODE_MAXWAVEID;  return m_token = EInstruction; }
-yy1606:
-        yych = *++m_curPos;
-        switch (yych) {
-        case 'r':        goto yy1609;
-        default:        goto yy771;
-        }
+        { m_brigId = Brig::BRIG_BOUNDARY_MIRRORONCE; return m_token = ESamplerBoundaryMode; }
+yy1605:
+        ++m_curPos;
+        { m_brigId = Brig::BRIG_OPCODE_MOV;        return m_token = EInstruction; }
 yy1607:
-        ++m_curPos;
-        { m_brigId = Brig::BRIG_OPCODE_MIN;        return m_token = EInstruction; }
+        yyaccept = 13;
+        yych = *(marker = ++m_curPos);
+        switch (yych) {
+        case '2':        goto yy1610;
+        case 'h':        goto yy1609;
+        default:        goto yy1608;
+        }
+yy1608:
+        { m_brigId = Brig::BRIG_OPCODE_MUL;        return m_token = EInstruction; }
 yy1609:
         yych = *++m_curPos;
         switch (yych) {
-        case 'o':        goto yy1610;
-        default:        goto yy771;
+        case 'i':        goto yy1616;
+        default:        goto yy758;
         }
 yy1610:
         yych = *++m_curPos;
         switch (yych) {
-        case 'r':        goto yy1611;
-        default:        goto yy771;
+        case '4':        goto yy1611;
+        default:        goto yy758;
         }
 yy1611:
-        yyaccept = 12;
+        yyaccept = 14;
         yych = *(marker = ++m_curPos);
         switch (yych) {
-        case 'o':        goto yy1613;
+        case 'h':        goto yy1613;
         default:        goto yy1612;
         }
 yy1612:
-        { m_brigId = Brig::BRIG_BOUNDARY_MIRROR;   return m_token = ESamplerBoundaryMode; }
+        { m_brigId = Brig::BRIG_OPCODE_MUL24;      return m_token = EInstruction; }
 yy1613:
         yych = *++m_curPos;
         switch (yych) {
-        case 'n':        goto yy1614;
-        default:        goto yy771;
+        case 'i':        goto yy1614;
+        default:        goto yy758;
         }
 yy1614:
-        yych = *++m_curPos;
-        switch (yych) {
-        case 'c':        goto yy1615;
-        default:        goto yy771;
-        }
-yy1615:
-        yych = *++m_curPos;
-        switch (yych) {
-        case 'e':        goto yy1616;
-        default:        goto yy771;
-        }
+        ++m_curPos;
+        { m_brigId = Brig::BRIG_OPCODE_MUL24HI;    return m_token = EInstruction; }
 yy1616:
         ++m_curPos;
-        { m_brigId = Brig::BRIG_BOUNDARY_MIRRORONCE; return m_token = ESamplerBoundaryMode; }
+        { m_brigId = Brig::BRIG_OPCODE_MULHI;      return m_token = EInstruction; }
 yy1618:
-        ++m_curPos;
-        { m_brigId = Brig::BRIG_OPCODE_MOV;        return m_token = EInstruction; }
-yy1620:
-        yyaccept = 13;
-        yych = *(marker = ++m_curPos);
+        yych = *++m_curPos;
         switch (yych) {
-        case '2':        goto yy1623;
-        case 'h':        goto yy1622;
-        default:        goto yy1621;
+        case 'i':        goto yy1666;
+        case 'l':        goto yy1664;
+        default:        goto yy758;
+        }
+yy1619:
+        yych = *++m_curPos;
+        switch (yych) {
+        case 'o':        goto yy1641;
+        default:        goto yy758;
+        }
+yy1620:
+        yych = *++m_curPos;
+        switch (yych) {
+        case 'g':        goto yy1630;
+        case 'r':        goto yy1632;
+        default:        goto yy758;
         }
 yy1621:
-        { m_brigId = Brig::BRIG_OPCODE_MUL;        return m_token = EInstruction; }
+        yych = *++m_curPos;
+        switch (yych) {
+        case 'd':        goto yy1628;
+        default:        goto yy758;
+        }
 yy1622:
         yych = *++m_curPos;
         switch (yych) {
-        case 'i':        goto yy1629;
-        default:        goto yy771;
+        case 'd':        goto yy1626;
+        default:        goto yy758;
         }
 yy1623:
         yych = *++m_curPos;
         switch (yych) {
-        case '4':        goto yy1624;
-        default:        goto yy771;
+        case 's':        goto yy1624;
+        default:        goto yy758;
         }
 yy1624:
-        yyaccept = 14;
-        yych = *(marker = ++m_curPos);
-        switch (yych) {
-        case 'h':        goto yy1626;
-        default:        goto yy1625;
-        }
-yy1625:
-        { m_brigId = Brig::BRIG_OPCODE_MUL24;      return m_token = EInstruction; }
+        ++m_curPos;
+        { m_brigId = Brig::BRIG_OPCODE_ABS;        return m_token = EInstruction; }
 yy1626:
-        yych = *++m_curPos;
-        switch (yych) {
-        case 'i':        goto yy1627;
-        default:        goto yy771;
-        }
-yy1627:
         ++m_curPos;
-        { m_brigId = Brig::BRIG_OPCODE_MUL24HI;    return m_token = EInstruction; }
-yy1629:
+        { m_brigId = Brig::BRIG_OPCODE_ADD;        return m_token = EInstruction; }
+yy1628:
         ++m_curPos;
-        { m_brigId = Brig::BRIG_OPCODE_MULHI;      return m_token = EInstruction; }
-yy1631:
-        yych = *++m_curPos;
-        switch (yych) {
-        case 'i':        goto yy1679;
-        case 'l':        goto yy1677;
-        default:        goto yy771;
-        }
+        { m_brigId = Brig::BRIG_OPCODE_AND;        return m_token = EInstruction; }
+yy1630:
+        ++m_curPos;
+        { m_brigId = Brig::BRIG_SEGMENT_ARG;       return m_token = ESegment; }
 yy1632:
         yych = *++m_curPos;
         switch (yych) {
-        case 'o':        goto yy1654;
-        default:        goto yy771;
+        case 'i':        goto yy1633;
+        default:        goto yy758;
         }
 yy1633:
         yych = *++m_curPos;
         switch (yych) {
-        case 'g':        goto yy1643;
-        case 'r':        goto yy1645;
-        default:        goto yy771;
+        case 'v':        goto yy1634;
+        default:        goto yy758;
         }
 yy1634:
         yych = *++m_curPos;
         switch (yych) {
-        case 'd':        goto yy1641;
-        default:        goto yy771;
+        case 'e':        goto yy1635;
+        default:        goto yy758;
         }
 yy1635:
         yych = *++m_curPos;
         switch (yych) {
-        case 'd':        goto yy1639;
-        default:        goto yy771;
+        case 'f':        goto yy1636;
+        default:        goto yy758;
         }
 yy1636:
         yych = *++m_curPos;
         switch (yych) {
-        case 's':        goto yy1637;
-        default:        goto yy771;
+        case 'b':        goto yy1637;
+        default:        goto yy758;
         }
 yy1637:
-        ++m_curPos;
-        { m_brigId = Brig::BRIG_OPCODE_ABS;        return m_token = EInstruction; }
-yy1639:
-        ++m_curPos;
-        { m_brigId = Brig::BRIG_OPCODE_ADD;        return m_token = EInstruction; }
-yy1641:
-        ++m_curPos;
-        { m_brigId = Brig::BRIG_OPCODE_AND;        return m_token = EInstruction; }
-yy1643:
-        ++m_curPos;
-        { m_brigId = Brig::BRIG_SEGMENT_ARG;       return m_token = ESegment; }
-yy1645:
         yych = *++m_curPos;
         switch (yych) {
-        case 'i':        goto yy1646;
-        default:        goto yy771;
+        case 'a':        goto yy1638;
+        default:        goto yy758;
         }
+yy1638:
+        yych = *++m_curPos;
+        switch (yych) {
+        case 'r':        goto yy1639;
+        default:        goto yy758;
+        }
+yy1639:
+        ++m_curPos;
+        { m_brigId = Brig::BRIG_OPCODE_ARRIVEFBAR; return m_token = EInstruction; }
+yy1641:
+        yych = *++m_curPos;
+        switch (yych) {
+        case 'm':        goto yy1642;
+        default:        goto yy758;
+        }
+yy1642:
+        yych = *++m_curPos;
+        switch (yych) {
+        case 'i':        goto yy1643;
+        default:        goto yy758;
+        }
+yy1643:
+        yych = *++m_curPos;
+        switch (yych) {
+        case 'c':        goto yy1644;
+        default:        goto yy758;
+        }
+yy1644:
+        yyaccept = 15;
+        yych = *(marker = ++m_curPos);
+        switch (yych) {
+        case 'i':        goto yy1646;
+        case 'n':        goto yy1647;
+        default:        goto yy1645;
+        }
+yy1645:
+        { m_brigId = Brig::BRIG_OPCODE_ATOMIC;     return m_token = EInstruction; }
 yy1646:
         yych = *++m_curPos;
         switch (yych) {
-        case 'v':        goto yy1647;
-        default:        goto yy771;
+        case 'm':        goto yy1653;
+        default:        goto yy758;
         }
 yy1647:
         yych = *++m_curPos;
         switch (yych) {
-        case 'e':        goto yy1648;
-        default:        goto yy771;
+        case 'o':        goto yy1648;
+        default:        goto yy758;
         }
 yy1648:
         yych = *++m_curPos;
         switch (yych) {
-        case 'f':        goto yy1649;
-        default:        goto yy771;
+        case 'r':        goto yy1649;
+        default:        goto yy758;
         }
 yy1649:
         yych = *++m_curPos;
         switch (yych) {
-        case 'b':        goto yy1650;
-        default:        goto yy771;
+        case 'e':        goto yy1650;
+        default:        goto yy758;
         }
 yy1650:
         yych = *++m_curPos;
         switch (yych) {
-        case 'a':        goto yy1651;
-        default:        goto yy771;
+        case 't':        goto yy1651;
+        default:        goto yy758;
         }
 yy1651:
+        ++m_curPos;
+        { m_brigId = Brig::BRIG_OPCODE_ATOMICNORET; return m_token = EInstruction; }
+yy1653:
         yych = *++m_curPos;
         switch (yych) {
-        case 'r':        goto yy1652;
-        default:        goto yy771;
+        case 'a':        goto yy1654;
+        default:        goto yy758;
         }
-yy1652:
-        ++m_curPos;
-        { m_brigId = Brig::BRIG_OPCODE_ARRIVEFBAR; return m_token = EInstruction; }
 yy1654:
         yych = *++m_curPos;
         switch (yych) {
-        case 'm':        goto yy1655;
-        default:        goto yy771;
+        case 'g':        goto yy1655;
+        default:        goto yy758;
         }
 yy1655:
         yych = *++m_curPos;
         switch (yych) {
-        case 'i':        goto yy1656;
-        default:        goto yy771;
+        case 'e':        goto yy1656;
+        default:        goto yy758;
         }
 yy1656:
-        yych = *++m_curPos;
-        switch (yych) {
-        case 'c':        goto yy1657;
-        default:        goto yy771;
-        }
-yy1657:
-        yyaccept = 15;
+        yyaccept = 16;
         yych = *(marker = ++m_curPos);
         switch (yych) {
-        case 'i':        goto yy1659;
-        case 'n':        goto yy1660;
-        default:        goto yy1658;
+        case 'n':        goto yy1658;
+        default:        goto yy1657;
         }
+yy1657:
+        { m_brigId = Brig::BRIG_OPCODE_ATOMICIMAGE; return m_token = EInstruction; }
 yy1658:
-        { m_brigId = Brig::BRIG_OPCODE_ATOMIC;     return m_token = EInstruction; }
+        yych = *++m_curPos;
+        switch (yych) {
+        case 'o':        goto yy1659;
+        default:        goto yy758;
+        }
 yy1659:
         yych = *++m_curPos;
         switch (yych) {
-        case 'm':        goto yy1666;
-        default:        goto yy771;
+        case 'r':        goto yy1660;
+        default:        goto yy758;
         }
 yy1660:
         yych = *++m_curPos;
         switch (yych) {
-        case 'o':        goto yy1661;
-        default:        goto yy771;
+        case 'e':        goto yy1661;
+        default:        goto yy758;
         }
 yy1661:
         yych = *++m_curPos;
         switch (yych) {
-        case 'r':        goto yy1662;
-        default:        goto yy771;
+        case 't':        goto yy1662;
+        default:        goto yy758;
         }
 yy1662:
-        yych = *++m_curPos;
-        switch (yych) {
-        case 'e':        goto yy1663;
-        default:        goto yy771;
-        }
-yy1663:
-        yych = *++m_curPos;
-        switch (yych) {
-        case 't':        goto yy1664;
-        default:        goto yy771;
-        }
-yy1664:
         ++m_curPos;
-        { m_brigId = Brig::BRIG_OPCODE_ATOMICNORET; return m_token = EInstruction; }
+        { m_brigId = Brig::BRIG_OPCODE_ATOMICIMAGENORET; return m_token = EInstruction; }
+yy1664:
+        yyaccept = 17;
+        yych = *(marker = ++m_curPos);
+        switch (yych) {
+        case 'o':        goto yy1670;
+        default:        goto yy1665;
+        }
+yy1665:
+        { return m_token = EKWWidthAll;  }
 yy1666:
         yych = *++m_curPos;
         switch (yych) {
-        case 'a':        goto yy1667;
-        default:        goto yy771;
+        case 'g':        goto yy1667;
+        default:        goto yy758;
         }
 yy1667:
         yych = *++m_curPos;
         switch (yych) {
-        case 'g':        goto yy1668;
-        default:        goto yy771;
+        case 'n':        goto yy1668;
+        default:        goto yy758;
         }
 yy1668:
+        ++m_curPos;
+        { return m_token = EKWAlign; }
+yy1670:
         yych = *++m_curPos;
         switch (yych) {
-        case 'e':        goto yy1669;
-        default:        goto yy771;
+        case 'c':        goto yy1671;
+        default:        goto yy758;
         }
-yy1669:
-        yyaccept = 16;
-        yych = *(marker = ++m_curPos);
-        switch (yych) {
-        case 'n':        goto yy1671;
-        default:        goto yy1670;
-        }
-yy1670:
-        { m_brigId = Brig::BRIG_OPCODE_ATOMICIMAGE; return m_token = EInstruction; }
 yy1671:
         yych = *++m_curPos;
         switch (yych) {
-        case 'o':        goto yy1672;
-        default:        goto yy771;
+        case 'a':        goto yy1672;
+        default:        goto yy758;
         }
 yy1672:
-        yych = *++m_curPos;
-        switch (yych) {
-        case 'r':        goto yy1673;
-        default:        goto yy771;
-        }
-yy1673:
-        yych = *++m_curPos;
-        switch (yych) {
-        case 'e':        goto yy1674;
-        default:        goto yy771;
-        }
+        ++m_curPos;
+        { m_brigId = Brig::BRIG_OPCODE_ALLOCA;     return m_token = EInstruction; }
 yy1674:
         yych = *++m_curPos;
         switch (yych) {
-        case 't':        goto yy1675;
-        default:        goto yy771;
+        case 'a':        goto yy1692;
+        case 'd':        goto yy1693;
+        default:        goto yy758;
         }
 yy1675:
-        ++m_curPos;
-        { m_brigId = Brig::BRIG_OPCODE_ATOMICIMAGENORET; return m_token = EInstruction; }
-yy1677:
-        yyaccept = 17;
-        yych = *(marker = ++m_curPos);
+        yych = *++m_curPos;
         switch (yych) {
-        case 'o':        goto yy1683;
-        default:        goto yy1678;
+        case 'p':        goto yy1677;
+        case 't':        goto yy1676;
+        default:        goto yy758;
+        }
+yy1676:
+        yych = *++m_curPos;
+        switch (yych) {
+        case 'e':        goto yy1682;
+        default:        goto yy758;
+        }
+yy1677:
+        yych = *++m_curPos;
+        switch (yych) {
+        case 'a':        goto yy1678;
+        default:        goto yy758;
         }
 yy1678:
-        { return m_token = EKWWidthAll;  }
+        yych = *++m_curPos;
+        switch (yych) {
+        case 'n':        goto yy1679;
+        default:        goto yy758;
+        }
 yy1679:
         yych = *++m_curPos;
         switch (yych) {
-        case 'g':        goto yy1680;
-        default:        goto yy771;
+        case 'd':        goto yy1680;
+        default:        goto yy758;
         }
 yy1680:
+        ++m_curPos;
+        { m_brigId = Brig::BRIG_OPCODE_EXPAND;     return m_token = EInstruction_Vx; }
+yy1682:
         yych = *++m_curPos;
         switch (yych) {
-        case 'n':        goto yy1681;
-        default:        goto yy771;
+        case 'n':        goto yy1683;
+        case 'r':        goto yy1684;
+        default:        goto yy758;
         }
-yy1681:
-        ++m_curPos;
-        { return m_token = EKWAlign; }
 yy1683:
         yych = *++m_curPos;
         switch (yych) {
-        case 'c':        goto yy1684;
-        default:        goto yy771;
+        case 's':        goto yy1687;
+        default:        goto yy758;
         }
 yy1684:
         yych = *++m_curPos;
         switch (yych) {
-        case 'a':        goto yy1685;
-        default:        goto yy771;
+        case 'n':        goto yy1685;
+        default:        goto yy758;
         }
 yy1685:
         ++m_curPos;
-        { m_brigId = Brig::BRIG_OPCODE_ALLOCA;     return m_token = EInstruction; }
+        { m_brigId = Brig::BRIG_LINKAGE_EXTERN;    return m_token = EAttribute; }
 yy1687:
         yych = *++m_curPos;
         switch (yych) {
-        case 'a':        goto yy1705;
-        case 'd':        goto yy1706;
-        default:        goto yy771;
+        case 'i':        goto yy1688;
+        default:        goto yy758;
         }
 yy1688:
         yych = *++m_curPos;
         switch (yych) {
-        case 'p':        goto yy1690;
-        case 't':        goto yy1689;
-        default:        goto yy771;
+        case 'o':        goto yy1689;
+        default:        goto yy758;
         }
 yy1689:
         yych = *++m_curPos;
         switch (yych) {
-        case 'e':        goto yy1695;
-        default:        goto yy771;
+        case 'n':        goto yy1690;
+        default:        goto yy758;
         }
 yy1690:
-        yych = *++m_curPos;
-        switch (yych) {
-        case 'a':        goto yy1691;
-        default:        goto yy771;
-        }
-yy1691:
-        yych = *++m_curPos;
-        switch (yych) {
-        case 'n':        goto yy1692;
-        default:        goto yy771;
-        }
+        ++m_curPos;
+        { return m_token = EKWExtension; }
 yy1692:
         yych = *++m_curPos;
         switch (yych) {
-        case 'd':        goto yy1693;
-        default:        goto yy771;
+        case 'b':        goto yy1700;
+        default:        goto yy758;
         }
 yy1693:
-        ++m_curPos;
-        { m_brigId = Brig::BRIG_OPCODE_EXPAND;     return m_token = EInstruction; }
+        yych = *++m_curPos;
+        switch (yych) {
+        case 'b':        goto yy1694;
+        default:        goto yy758;
+        }
+yy1694:
+        yych = *++m_curPos;
+        switch (yych) {
+        case 'l':        goto yy1695;
+        default:        goto yy758;
+        }
 yy1695:
         yych = *++m_curPos;
         switch (yych) {
-        case 'n':        goto yy1696;
-        case 'r':        goto yy1697;
-        default:        goto yy771;
+        case 'o':        goto yy1696;
+        default:        goto yy758;
         }
 yy1696:
         yych = *++m_curPos;
         switch (yych) {
-        case 's':        goto yy1700;
-        default:        goto yy771;
+        case 'c':        goto yy1697;
+        default:        goto yy758;
         }
 yy1697:
         yych = *++m_curPos;
         switch (yych) {
-        case 'n':        goto yy1698;
-        default:        goto yy771;
+        case 'k':        goto yy1698;
+        default:        goto yy758;
         }
 yy1698:
         ++m_curPos;
-        { m_brigId = Brig::BRIG_LINKAGE_EXTERN;    return m_token = EAttribute; }
+        { return m_token = EKWBlockEnd; }
 yy1700:
         yych = *++m_curPos;
         switch (yych) {
-        case 'i':        goto yy1701;
-        default:        goto yy771;
+        case 'l':        goto yy1701;
+        default:        goto yy758;
         }
 yy1701:
         yych = *++m_curPos;
         switch (yych) {
-        case 'o':        goto yy1702;
-        default:        goto yy771;
+        case 'e':        goto yy1702;
+        default:        goto yy758;
         }
 yy1702:
         yych = *++m_curPos;
         switch (yych) {
-        case 'n':        goto yy1703;
-        default:        goto yy771;
+        case 'b':        goto yy1703;
+        case 'd':        goto yy1704;
+        default:        goto yy758;
         }
 yy1703:
-        ++m_curPos;
-        { return m_token = EKWExtension; }
+        yych = *++m_curPos;
+        switch (yych) {
+        case 'r':        goto yy1721;
+        default:        goto yy758;
+        }
+yy1704:
+        yych = *++m_curPos;
+        switch (yych) {
+        case 'e':        goto yy1705;
+        default:        goto yy758;
+        }
 yy1705:
         yych = *++m_curPos;
         switch (yych) {
-        case 'b':        goto yy1713;
-        default:        goto yy771;
+        case 't':        goto yy1706;
+        default:        goto yy758;
         }
 yy1706:
         yych = *++m_curPos;
         switch (yych) {
-        case 'b':        goto yy1707;
-        default:        goto yy771;
+        case 'e':        goto yy1707;
+        default:        goto yy758;
         }
 yy1707:
         yych = *++m_curPos;
         switch (yych) {
-        case 'l':        goto yy1708;
-        default:        goto yy771;
+        case 'c':        goto yy1708;
+        default:        goto yy758;
         }
 yy1708:
         yych = *++m_curPos;
         switch (yych) {
-        case 'o':        goto yy1709;
-        default:        goto yy771;
+        case 't':        goto yy1709;
+        default:        goto yy758;
         }
 yy1709:
         yych = *++m_curPos;
         switch (yych) {
-        case 'c':        goto yy1710;
-        default:        goto yy771;
+        case 'e':        goto yy1710;
+        default:        goto yy758;
         }
 yy1710:
         yych = *++m_curPos;
         switch (yych) {
-        case 'k':        goto yy1711;
-        default:        goto yy771;
+        case 'x':        goto yy1711;
+        default:        goto yy758;
         }
 yy1711:
-        ++m_curPos;
-        { return m_token = EKWBlockEnd; }
+        yych = *++m_curPos;
+        switch (yych) {
+        case 'c':        goto yy1712;
+        default:        goto yy758;
+        }
+yy1712:
+        yych = *++m_curPos;
+        switch (yych) {
+        case 'e':        goto yy1713;
+        default:        goto yy758;
+        }
 yy1713:
         yych = *++m_curPos;
         switch (yych) {
-        case 'l':        goto yy1714;
-        default:        goto yy771;
+        case 'p':        goto yy1714;
+        default:        goto yy758;
         }
 yy1714:
         yych = *++m_curPos;
         switch (yych) {
-        case 'e':        goto yy1715;
-        default:        goto yy771;
+        case 't':        goto yy1715;
+        default:        goto yy758;
         }
 yy1715:
         yych = *++m_curPos;
         switch (yych) {
-        case 'b':        goto yy1716;
-        case 'd':        goto yy1717;
-        default:        goto yy771;
+        case 'i':        goto yy1716;
+        default:        goto yy758;
         }
 yy1716:
         yych = *++m_curPos;
         switch (yych) {
-        case 'r':        goto yy1734;
-        default:        goto yy771;
+        case 'o':        goto yy1717;
+        default:        goto yy758;
         }
 yy1717:
         yych = *++m_curPos;
         switch (yych) {
-        case 'e':        goto yy1718;
-        default:        goto yy771;
+        case 'n':        goto yy1718;
+        default:        goto yy758;
         }
 yy1718:
         yych = *++m_curPos;
         switch (yych) {
-        case 't':        goto yy1719;
-        default:        goto yy771;
+        case 's':        goto yy1719;
+        default:        goto yy758;
         }
 yy1719:
-        yych = *++m_curPos;
-        switch (yych) {
-        case 'e':        goto yy1720;
-        default:        goto yy771;
-        }
-yy1720:
-        yych = *++m_curPos;
-        switch (yych) {
-        case 'c':        goto yy1721;
-        default:        goto yy771;
-        }
+        ++m_curPos;
+        { m_brigId = Brig::BRIG_CONTROL_ENABLEDETECTEXCEPTIONS; return m_token = EControl;     }
 yy1721:
         yych = *++m_curPos;
         switch (yych) {
-        case 't':        goto yy1722;
-        default:        goto yy771;
+        case 'e':        goto yy1722;
+        default:        goto yy758;
         }
 yy1722:
         yych = *++m_curPos;
         switch (yych) {
-        case 'e':        goto yy1723;
-        default:        goto yy771;
+        case 'a':        goto yy1723;
+        default:        goto yy758;
         }
 yy1723:
         yych = *++m_curPos;
         switch (yych) {
-        case 'x':        goto yy1724;
-        default:        goto yy771;
+        case 'k':        goto yy1724;
+        default:        goto yy758;
         }
 yy1724:
         yych = *++m_curPos;
         switch (yych) {
-        case 'c':        goto yy1725;
-        default:        goto yy771;
+        case 'e':        goto yy1725;
+        default:        goto yy758;
         }
 yy1725:
         yych = *++m_curPos;
         switch (yych) {
-        case 'e':        goto yy1726;
-        default:        goto yy771;
+        case 'x':        goto yy1726;
+        default:        goto yy758;
         }
 yy1726:
         yych = *++m_curPos;
         switch (yych) {
-        case 'p':        goto yy1727;
-        default:        goto yy771;
+        case 'c':        goto yy1727;
+        default:        goto yy758;
         }
 yy1727:
         yych = *++m_curPos;
         switch (yych) {
-        case 't':        goto yy1728;
-        default:        goto yy771;
+        case 'e':        goto yy1728;
+        default:        goto yy758;
         }
 yy1728:
         yych = *++m_curPos;
         switch (yych) {
-        case 'i':        goto yy1729;
-        default:        goto yy771;
+        case 'p':        goto yy1729;
+        default:        goto yy758;
         }
 yy1729:
         yych = *++m_curPos;
         switch (yych) {
-        case 'o':        goto yy1730;
-        default:        goto yy771;
+        case 't':        goto yy1730;
+        default:        goto yy758;
         }
 yy1730:
         yych = *++m_curPos;
         switch (yych) {
-        case 'n':        goto yy1731;
-        default:        goto yy771;
+        case 'i':        goto yy1731;
+        default:        goto yy758;
         }
 yy1731:
         yych = *++m_curPos;
         switch (yych) {
-        case 's':        goto yy1732;
-        default:        goto yy771;
+        case 'o':        goto yy1732;
+        default:        goto yy758;
         }
 yy1732:
-        ++m_curPos;
-        { m_brigId = Brig::BRIG_CONTROL_ENABLEDETECTEXCEPTIONS; return m_token = EControl;     }
+        yych = *++m_curPos;
+        switch (yych) {
+        case 'n':        goto yy1733;
+        default:        goto yy758;
+        }
+yy1733:
+        yych = *++m_curPos;
+        switch (yych) {
+        case 's':        goto yy1734;
+        default:        goto yy758;
+        }
 yy1734:
-        yych = *++m_curPos;
-        switch (yych) {
-        case 'e':        goto yy1735;
-        default:        goto yy771;
-        }
-yy1735:
-        yych = *++m_curPos;
-        switch (yych) {
-        case 'a':        goto yy1736;
-        default:        goto yy771;
-        }
+        ++m_curPos;
+        { m_brigId = Brig::BRIG_CONTROL_ENABLEBREAKEXCEPTIONS; return m_token = EControl;     }
 yy1736:
         yych = *++m_curPos;
         switch (yych) {
-        case 'k':        goto yy1737;
-        default:        goto yy771;
+        case 'a':        goto yy1783;
+        case 'r':        goto yy1784;
+        default:        goto yy758;
         }
 yy1737:
-        yych = *++m_curPos;
+        yyaccept = 18;
+        yych = *(marker = ++m_curPos);
         switch (yych) {
-        case 'e':        goto yy1738;
-        default:        goto yy771;
+        case 'a':        goto yy1771;
+        case 'c':        goto yy1773;
+        case 'f':        goto yy1775;
+        case 'i':        goto yy1777;
+        default:        goto yy1738;
         }
 yy1738:
-        yych = *++m_curPos;
-        switch (yych) {
-        case 'x':        goto yy1739;
-        default:        goto yy771;
-        }
+        { m_brigId = Brig::BRIG_OPCODE_LD;         return m_token = EInstruction_Vx; }
 yy1739:
         yych = *++m_curPos;
         switch (yych) {
-        case 'c':        goto yy1740;
-        default:        goto yy771;
+        case 'b':        goto yy1749;
+        case 'n':        goto yy1750;
+        case 's':        goto yy1751;
+        default:        goto yy758;
         }
 yy1740:
         yych = *++m_curPos;
         switch (yych) {
-        case 'e':        goto yy1741;
-        default:        goto yy771;
+        case 'n':        goto yy1744;
+        default:        goto yy758;
         }
 yy1741:
         yych = *++m_curPos;
         switch (yych) {
-        case 'p':        goto yy1742;
-        default:        goto yy771;
+        case 'c':        goto yy1742;
+        default:        goto yy758;
         }
 yy1742:
-        yych = *++m_curPos;
-        switch (yych) {
-        case 't':        goto yy1743;
-        default:        goto yy771;
-        }
-yy1743:
-        yych = *++m_curPos;
-        switch (yych) {
-        case 'i':        goto yy1744;
-        default:        goto yy771;
-        }
+        ++m_curPos;
+        { return m_token = EKWLoc; }
 yy1744:
         yych = *++m_curPos;
         switch (yych) {
-        case 'o':        goto yy1745;
-        default:        goto yy771;
+        case 'e':        goto yy1745;
+        default:        goto yy758;
         }
 yy1745:
         yych = *++m_curPos;
         switch (yych) {
-        case 'n':        goto yy1746;
-        default:        goto yy771;
+        case 'a':        goto yy1746;
+        default:        goto yy758;
         }
 yy1746:
         yych = *++m_curPos;
         switch (yych) {
-        case 's':        goto yy1747;
-        default:        goto yy771;
+        case 'r':        goto yy1747;
+        default:        goto yy758;
         }
 yy1747:
         ++m_curPos;
-        { m_brigId = Brig::BRIG_CONTROL_ENABLEBREAKEXCEPTIONS; return m_token = EControl;     }
+        { m_brigId = Brig::BRIG_FILTER_LINEAR;     return m_token = ESamplerFilter; }
 yy1749:
         yych = *++m_curPos;
         switch (yych) {
-        case 'a':        goto yy1796;
-        case 'r':        goto yy1797;
-        default:        goto yy771;
+        case 'e':        goto yy1761;
+        default:        goto yy758;
         }
 yy1750:
-        yyaccept = 18;
-        yych = *(marker = ++m_curPos);
+        yych = *++m_curPos;
         switch (yych) {
-        case 'a':        goto yy1784;
-        case 'c':        goto yy1786;
-        case 'f':        goto yy1788;
-        case 'i':        goto yy1790;
-        default:        goto yy1751;
+        case 'e':        goto yy1757;
+        default:        goto yy758;
         }
 yy1751:
-        { m_brigId = Brig::BRIG_OPCODE_LD;         return m_token = EInstruction; }
+        yych = *++m_curPos;
+        switch (yych) {
+        case 't':        goto yy1752;
+        default:        goto yy758;
+        }
 yy1752:
         yych = *++m_curPos;
         switch (yych) {
-        case 'b':        goto yy1762;
-        case 'n':        goto yy1763;
-        case 's':        goto yy1764;
-        default:        goto yy771;
+        case 'b':        goto yy1753;
+        default:        goto yy758;
         }
 yy1753:
         yych = *++m_curPos;
         switch (yych) {
-        case 'n':        goto yy1757;
-        default:        goto yy771;
+        case 'i':        goto yy1754;
+        default:        goto yy758;
         }
 yy1754:
         yych = *++m_curPos;
         switch (yych) {
-        case 'c':        goto yy1755;
-        default:        goto yy771;
+        case 't':        goto yy1755;
+        default:        goto yy758;
         }
 yy1755:
         ++m_curPos;
-        { return m_token = EKWLoc; }
+        { m_brigId = Brig::BRIG_OPCODE_LASTBIT;    return m_token = EInstruction; }
 yy1757:
         yych = *++m_curPos;
         switch (yych) {
-        case 'e':        goto yy1758;
-        default:        goto yy771;
+        case 'i':        goto yy1758;
+        default:        goto yy758;
         }
 yy1758:
         yych = *++m_curPos;
         switch (yych) {
-        case 'a':        goto yy1759;
-        default:        goto yy771;
+        case 'd':        goto yy1759;
+        default:        goto yy758;
         }
 yy1759:
+        ++m_curPos;
+        { m_brigId = Brig::BRIG_OPCODE_LANEID;     return m_token = EInstruction; }
+yy1761:
         yych = *++m_curPos;
         switch (yych) {
-        case 'r':        goto yy1760;
-        default:        goto yy771;
+        case 'l':        goto yy1762;
+        default:        goto yy758;
         }
-yy1760:
-        ++m_curPos;
-        { m_brigId = Brig::BRIG_FILTER_LINEAR;     return m_token = ESamplerFilter; }
 yy1762:
         yych = *++m_curPos;
         switch (yych) {
-        case 'e':        goto yy1774;
-        default:        goto yy771;
+        case 't':        goto yy1763;
+        default:        goto yy758;
         }
 yy1763:
         yych = *++m_curPos;
         switch (yych) {
-        case 'e':        goto yy1770;
-        default:        goto yy771;
+        case 'a':        goto yy1764;
+        default:        goto yy758;
         }
 yy1764:
         yych = *++m_curPos;
         switch (yych) {
-        case 't':        goto yy1765;
-        default:        goto yy771;
+        case 'r':        goto yy1765;
+        default:        goto yy758;
         }
 yy1765:
         yych = *++m_curPos;
         switch (yych) {
-        case 'b':        goto yy1766;
-        default:        goto yy771;
+        case 'g':        goto yy1766;
+        default:        goto yy758;
         }
 yy1766:
         yych = *++m_curPos;
         switch (yych) {
-        case 'i':        goto yy1767;
-        default:        goto yy771;
+        case 'e':        goto yy1767;
+        default:        goto yy758;
         }
 yy1767:
         yych = *++m_curPos;
         switch (yych) {
         case 't':        goto yy1768;
-        default:        goto yy771;
+        default:        goto yy758;
         }
 yy1768:
-        ++m_curPos;
-        { m_brigId = Brig::BRIG_OPCODE_LASTBIT;    return m_token = EInstruction; }
-yy1770:
         yych = *++m_curPos;
         switch (yych) {
-        case 'i':        goto yy1771;
-        default:        goto yy771;
+        case 's':        goto yy1769;
+        default:        goto yy758;
         }
+yy1769:
+        ++m_curPos;
+        { return m_token = EKWLabelTargets; }
 yy1771:
-        yych = *++m_curPos;
-        switch (yych) {
-        case 'd':        goto yy1772;
-        default:        goto yy771;
-        }
-yy1772:
         ++m_curPos;
-        { m_brigId = Brig::BRIG_OPCODE_LANEID;     return m_token = EInstruction; }
-yy1774:
-        yych = *++m_curPos;
-        switch (yych) {
-        case 'l':        goto yy1775;
-        default:        goto yy771;
-        }
+        { m_brigId = Brig::BRIG_OPCODE_LDA;        return m_token = EInstruction; }
+yy1773:
+        ++m_curPos;
+        { m_brigId = Brig::BRIG_OPCODE_LDC;        return m_token = EInstruction; }
 yy1775:
-        yych = *++m_curPos;
-        switch (yych) {
-        case 't':        goto yy1776;
-        default:        goto yy771;
-        }
-yy1776:
-        yych = *++m_curPos;
-        switch (yych) {
-        case 'a':        goto yy1777;
-        default:        goto yy771;
-        }
+        ++m_curPos;
+        { m_brigId = Brig::BRIG_OPCODE_LDF;        return m_token = EInstruction; }
 yy1777:
         yych = *++m_curPos;
         switch (yych) {
-        case 'r':        goto yy1778;
-        default:        goto yy771;
+        case 'm':        goto yy1778;
+        default:        goto yy758;
         }
 yy1778:
         yych = *++m_curPos;
         switch (yych) {
-        case 'g':        goto yy1779;
-        default:        goto yy771;
+        case 'a':        goto yy1779;
+        default:        goto yy758;
         }
 yy1779:
         yych = *++m_curPos;
         switch (yych) {
-        case 'e':        goto yy1780;
-        default:        goto yy771;
+        case 'g':        goto yy1780;
+        default:        goto yy758;
         }
 yy1780:
         yych = *++m_curPos;
         switch (yych) {
-        case 't':        goto yy1781;
-        default:        goto yy771;
+        case 'e':        goto yy1781;
+        default:        goto yy758;
         }
 yy1781:
+        ++m_curPos;
+        { m_brigId = Brig::BRIG_OPCODE_LDIMAGE;    return m_token = EInstruction; }
+yy1783:
         yych = *++m_curPos;
         switch (yych) {
-        case 's':        goto yy1782;
-        default:        goto yy771;
+        case 'v':        goto yy1787;
+        default:        goto yy758;
         }
-yy1782:
-        ++m_curPos;
-        { return m_token = EKWLabelTargets; }
 yy1784:
+        yych = *++m_curPos;
+        switch (yych) {
+        case 'p':        goto yy1785;
+        default:        goto yy758;
+        }
+yy1785:
         ++m_curPos;
-        { m_brigId = Brig::BRIG_OPCODE_LDA;        return m_token = EInstruction; }
-yy1786:
-        ++m_curPos;
-        { m_brigId = Brig::BRIG_OPCODE_LDC;        return m_token = EInstruction; }
+        { m_brigId = Brig::BRIG_OPCODE_LERP;       return m_token = EInstruction; }
+yy1787:
+        yych = *++m_curPos;
+        switch (yych) {
+        case 'e':        goto yy1788;
+        default:        goto yy758;
+        }
 yy1788:
-        ++m_curPos;
-        { m_brigId = Brig::BRIG_OPCODE_LDF;        return m_token = EInstruction; }
+        yych = *++m_curPos;
+        switch (yych) {
+        case 'f':        goto yy1789;
+        default:        goto yy758;
+        }
+yy1789:
+        yych = *++m_curPos;
+        switch (yych) {
+        case 'b':        goto yy1790;
+        default:        goto yy758;
+        }
 yy1790:
         yych = *++m_curPos;
         switch (yych) {
-        case 'm':        goto yy1791;
-        default:        goto yy771;
+        case 'a':        goto yy1791;
+        default:        goto yy758;
         }
 yy1791:
         yych = *++m_curPos;
         switch (yych) {
-        case 'a':        goto yy1792;
-        default:        goto yy771;
+        case 'r':        goto yy1792;
+        default:        goto yy758;
         }
 yy1792:
-        yych = *++m_curPos;
-        switch (yych) {
-        case 'g':        goto yy1793;
-        default:        goto yy771;
-        }
-yy1793:
-        yych = *++m_curPos;
-        switch (yych) {
-        case 'e':        goto yy1794;
-        default:        goto yy771;
-        }
-yy1794:
         ++m_curPos;
-        { m_brigId = Brig::BRIG_OPCODE_LDIMAGE;    return m_token = EInstruction; }
+        { m_brigId = Brig::BRIG_OPCODE_LEAVEFBAR;  return m_token = EInstruction; }
+yy1794:
+        yych = *++m_curPos;
+        switch (yych) {
+        case 'n':        goto yy1911;
+        default:        goto yy758;
+        }
+yy1795:
+        yych = *++m_curPos;
+        switch (yych) {
+        case 'a':        goto yy1807;
+        case 'c':        goto yy1808;
+        case 'l':        goto yy1809;
+        case 'm':        goto yy1810;
+        case 'q':        goto yy1806;
+        case 't':        goto yy1812;
+        default:        goto yy758;
+        }
 yy1796:
         yych = *++m_curPos;
         switch (yych) {
-        case 'v':        goto yy1800;
-        default:        goto yy771;
+        case 'i':        goto yy1800;
+        default:        goto yy758;
         }
 yy1797:
         yych = *++m_curPos;
         switch (yych) {
-        case 'p':        goto yy1798;
-        default:        goto yy771;
+        case 'i':        goto yy1798;
+        default:        goto yy758;
         }
 yy1798:
         ++m_curPos;
-        { m_brigId = Brig::BRIG_OPCODE_LERP;       return m_token = EInstruction; }
+        { return m_token = EKWRTI; }
 yy1800:
         yych = *++m_curPos;
         switch (yych) {
-        case 'e':        goto yy1801;
-        default:        goto yy771;
+        case 'm':        goto yy1801;
+        default:        goto yy758;
         }
 yy1801:
         yych = *++m_curPos;
         switch (yych) {
-        case 'f':        goto yy1802;
-        default:        goto yy771;
+        case 'a':        goto yy1802;
+        default:        goto yy758;
         }
 yy1802:
         yych = *++m_curPos;
         switch (yych) {
-        case 'b':        goto yy1803;
-        default:        goto yy771;
+        case 'g':        goto yy1803;
+        default:        goto yy758;
         }
 yy1803:
         yych = *++m_curPos;
         switch (yych) {
-        case 'a':        goto yy1804;
-        default:        goto yy771;
+        case 'e':        goto yy1804;
+        default:        goto yy758;
         }
 yy1804:
+        ++m_curPos;
+        { m_brigId = Brig::BRIG_OPCODE_RDIMAGE;    return m_token = EInstruction; }
+yy1806:
         yych = *++m_curPos;
         switch (yych) {
-        case 'r':        goto yy1805;
-        default:        goto yy771;
+        case 'u':        goto yy1838;
+        default:        goto yy758;
         }
-yy1805:
-        ++m_curPos;
-        { m_brigId = Brig::BRIG_OPCODE_LEAVEFBAR;  return m_token = EInstruction; }
 yy1807:
         yych = *++m_curPos;
         switch (yych) {
-        case 'n':        goto yy1924;
-        default:        goto yy771;
+        case 'd':        goto yy1832;
+        default:        goto yy758;
         }
 yy1808:
         yych = *++m_curPos;
         switch (yych) {
-        case 'a':        goto yy1820;
-        case 'c':        goto yy1821;
-        case 'l':        goto yy1822;
-        case 'm':        goto yy1823;
-        case 'q':        goto yy1819;
-        case 't':        goto yy1825;
-        default:        goto yy771;
+        case 'e':        goto yy1823;
+        default:        goto yy758;
         }
 yy1809:
         yych = *++m_curPos;
         switch (yych) {
-        case 'i':        goto yy1813;
-        default:        goto yy771;
+        case 'e':        goto yy1814;
+        default:        goto yy758;
         }
 yy1810:
-        yych = *++m_curPos;
-        switch (yych) {
-        case 'i':        goto yy1811;
-        default:        goto yy771;
-        }
-yy1811:
         ++m_curPos;
-        { return m_token = EKWRTI; }
-yy1813:
-        yych = *++m_curPos;
-        switch (yych) {
-        case 'm':        goto yy1814;
-        default:        goto yy771;
-        }
+        { m_brigId = Brig::BRIG_OPCODE_REM;        return m_token = EInstruction; }
+yy1812:
+        ++m_curPos;
+        { m_brigId = Brig::BRIG_OPCODE_RET;        return m_token = EInstruction; }
 yy1814:
         yych = *++m_curPos;
         switch (yych) {
         case 'a':        goto yy1815;
-        default:        goto yy771;
+        default:        goto yy758;
         }
 yy1815:
         yych = *++m_curPos;
         switch (yych) {
-        case 'g':        goto yy1816;
-        default:        goto yy771;
+        case 's':        goto yy1816;
+        default:        goto yy758;
         }
 yy1816:
         yych = *++m_curPos;
         switch (yych) {
         case 'e':        goto yy1817;
-        default:        goto yy771;
+        default:        goto yy758;
         }
 yy1817:
-        ++m_curPos;
-        { m_brigId = Brig::BRIG_OPCODE_RDIMAGE;    return m_token = EInstruction; }
+        yych = *++m_curPos;
+        switch (yych) {
+        case 'f':        goto yy1818;
+        default:        goto yy758;
+        }
+yy1818:
+        yych = *++m_curPos;
+        switch (yych) {
+        case 'b':        goto yy1819;
+        default:        goto yy758;
+        }
 yy1819:
         yych = *++m_curPos;
         switch (yych) {
-        case 'u':        goto yy1851;
-        default:        goto yy771;
+        case 'a':        goto yy1820;
+        default:        goto yy758;
         }
 yy1820:
         yych = *++m_curPos;
         switch (yych) {
-        case 'd':        goto yy1845;
-        default:        goto yy771;
+        case 'r':        goto yy1821;
+        default:        goto yy758;
         }
 yy1821:
-        yych = *++m_curPos;
-        switch (yych) {
-        case 'e':        goto yy1836;
-        default:        goto yy771;
-        }
-yy1822:
-        yych = *++m_curPos;
-        switch (yych) {
-        case 'e':        goto yy1827;
-        default:        goto yy771;
-        }
+        ++m_curPos;
+        { m_brigId = Brig::BRIG_OPCODE_RELEASEFBAR; return m_token = EInstruction; }
 yy1823:
-        ++m_curPos;
-        { m_brigId = Brig::BRIG_OPCODE_REM;        return m_token = EInstruction; }
+        yych = *++m_curPos;
+        switch (yych) {
+        case 'i':        goto yy1824;
+        default:        goto yy758;
+        }
+yy1824:
+        yych = *++m_curPos;
+        switch (yych) {
+        case 'v':        goto yy1825;
+        default:        goto yy758;
+        }
 yy1825:
-        ++m_curPos;
-        { m_brigId = Brig::BRIG_OPCODE_RET;        return m_token = EInstruction; }
+        yych = *++m_curPos;
+        switch (yych) {
+        case 'e':        goto yy1826;
+        default:        goto yy758;
+        }
+yy1826:
+        yych = *++m_curPos;
+        switch (yych) {
+        case 'l':        goto yy1827;
+        default:        goto yy758;
+        }
 yy1827:
         yych = *++m_curPos;
         switch (yych) {
         case 'a':        goto yy1828;
-        default:        goto yy771;
+        default:        goto yy758;
         }
 yy1828:
         yych = *++m_curPos;
         switch (yych) {
-        case 's':        goto yy1829;
-        default:        goto yy771;
+        case 'n':        goto yy1829;
+        default:        goto yy758;
         }
 yy1829:
         yych = *++m_curPos;
         switch (yych) {
         case 'e':        goto yy1830;
-        default:        goto yy771;
+        default:        goto yy758;
         }
 yy1830:
-        yych = *++m_curPos;
-        switch (yych) {
-        case 'f':        goto yy1831;
-        default:        goto yy771;
-        }
-yy1831:
-        yych = *++m_curPos;
-        switch (yych) {
-        case 'b':        goto yy1832;
-        default:        goto yy771;
-        }
+        ++m_curPos;
+        { m_brigId = Brig::BRIG_OPCODE_RECEIVELANE; return m_token = EInstruction; }
 yy1832:
         yych = *++m_curPos;
         switch (yych) {
-        case 'a':        goto yy1833;
-        default:        goto yy771;
+        case 'o':        goto yy1833;
+        default:        goto yy758;
         }
 yy1833:
         yych = *++m_curPos;
         switch (yych) {
-        case 'r':        goto yy1834;
-        default:        goto yy771;
+        case 'n':        goto yy1834;
+        default:        goto yy758;
         }
 yy1834:
-        ++m_curPos;
-        { m_brigId = Brig::BRIG_OPCODE_RELEASEFBAR; return m_token = EInstruction; }
+        yych = *++m_curPos;
+        switch (yych) {
+        case 'l':        goto yy1835;
+        default:        goto yy758;
+        }
+yy1835:
+        yych = *++m_curPos;
+        switch (yych) {
+        case 'y':        goto yy1836;
+        default:        goto yy758;
+        }
 yy1836:
-        yych = *++m_curPos;
-        switch (yych) {
-        case 'i':        goto yy1837;
-        default:        goto yy771;
-        }
-yy1837:
-        yych = *++m_curPos;
-        switch (yych) {
-        case 'v':        goto yy1838;
-        default:        goto yy771;
-        }
+        ++m_curPos;
+        { m_brigId = Brig::BRIG_SEGMENT_READONLY;  return m_token = ESegment; }
 yy1838:
         yych = *++m_curPos;
         switch (yych) {
         case 'e':        goto yy1839;
-        default:        goto yy771;
+        case 'i':        goto yy1840;
+        default:        goto yy758;
         }
 yy1839:
         yych = *++m_curPos;
         switch (yych) {
-        case 'l':        goto yy1840;
-        default:        goto yy771;
+        case 's':        goto yy1891;
+        default:        goto yy758;
         }
 yy1840:
         yych = *++m_curPos;
         switch (yych) {
-        case 'a':        goto yy1841;
-        default:        goto yy771;
+        case 'r':        goto yy1841;
+        default:        goto yy758;
         }
 yy1841:
         yych = *++m_curPos;
         switch (yych) {
-        case 'n':        goto yy1842;
-        default:        goto yy771;
+        case 'e':        goto yy1842;
+        default:        goto yy758;
         }
 yy1842:
         yych = *++m_curPos;
         switch (yych) {
-        case 'e':        goto yy1843;
-        default:        goto yy771;
+        case 'd':        goto yy1844;
+        case 'n':        goto yy1843;
+        default:        goto yy758;
         }
 yy1843:
-        ++m_curPos;
-        { m_brigId = Brig::BRIG_OPCODE_RECEIVELANE; return m_token = EInstruction; }
+        yych = *++m_curPos;
+        switch (yych) {
+        case 'o':        goto yy1872;
+        default:        goto yy758;
+        }
+yy1844:
+        yych = *++m_curPos;
+        switch (yych) {
+        case 'd':        goto yy1845;
+        case 'g':        goto yy1846;
+        case 'w':        goto yy1847;
+        default:        goto yy758;
+        }
 yy1845:
         yych = *++m_curPos;
         switch (yych) {
-        case 'o':        goto yy1846;
-        default:        goto yy771;
+        case 'i':        goto yy1869;
+        default:        goto yy758;
         }
 yy1846:
         yych = *++m_curPos;
         switch (yych) {
-        case 'n':        goto yy1847;
-        default:        goto yy771;
+        case 'r':        goto yy1861;
+        default:        goto yy758;
         }
 yy1847:
         yych = *++m_curPos;
         switch (yych) {
-        case 'l':        goto yy1848;
-        default:        goto yy771;
+        case 'o':        goto yy1848;
+        default:        goto yy758;
         }
 yy1848:
         yych = *++m_curPos;
         switch (yych) {
-        case 'y':        goto yy1849;
-        default:        goto yy771;
+        case 'r':        goto yy1849;
+        default:        goto yy758;
         }
 yy1849:
-        ++m_curPos;
-        { m_brigId = Brig::BRIG_SEGMENT_READONLY;  return m_token = ESegment; }
+        yych = *++m_curPos;
+        switch (yych) {
+        case 'k':        goto yy1850;
+        default:        goto yy758;
+        }
+yy1850:
+        yych = *++m_curPos;
+        switch (yych) {
+        case 'g':        goto yy1851;
+        default:        goto yy758;
+        }
 yy1851:
         yych = *++m_curPos;
         switch (yych) {
-        case 'e':        goto yy1852;
-        case 'i':        goto yy1853;
-        default:        goto yy771;
+        case 'r':        goto yy1852;
+        default:        goto yy758;
         }
 yy1852:
         yych = *++m_curPos;
         switch (yych) {
-        case 's':        goto yy1904;
-        default:        goto yy771;
+        case 'o':        goto yy1853;
+        default:        goto yy758;
         }
 yy1853:
         yych = *++m_curPos;
         switch (yych) {
-        case 'r':        goto yy1854;
-        default:        goto yy771;
+        case 'u':        goto yy1854;
+        default:        goto yy758;
         }
 yy1854:
         yych = *++m_curPos;
         switch (yych) {
-        case 'e':        goto yy1855;
-        default:        goto yy771;
+        case 'p':        goto yy1855;
+        default:        goto yy758;
         }
 yy1855:
         yych = *++m_curPos;
         switch (yych) {
-        case 'd':        goto yy1857;
-        case 'n':        goto yy1856;
-        default:        goto yy771;
+        case 's':        goto yy1856;
+        default:        goto yy758;
         }
 yy1856:
         yych = *++m_curPos;
         switch (yych) {
-        case 'o':        goto yy1885;
-        default:        goto yy771;
+        case 'i':        goto yy1857;
+        default:        goto yy758;
         }
 yy1857:
         yych = *++m_curPos;
         switch (yych) {
-        case 'd':        goto yy1858;
-        case 'g':        goto yy1859;
-        case 'w':        goto yy1860;
-        default:        goto yy771;
+        case 'z':        goto yy1858;
+        default:        goto yy758;
         }
 yy1858:
         yych = *++m_curPos;
         switch (yych) {
-        case 'i':        goto yy1882;
-        default:        goto yy771;
+        case 'e':        goto yy1859;
+        default:        goto yy758;
         }
 yy1859:
-        yych = *++m_curPos;
-        switch (yych) {
-        case 'r':        goto yy1874;
-        default:        goto yy771;
-        }
-yy1860:
-        yych = *++m_curPos;
-        switch (yych) {
-        case 'o':        goto yy1861;
-        default:        goto yy771;
-        }
+        ++m_curPos;
+        { m_brigId = Brig::BRIG_CONTROL_REQUIREDWORKGROUPSIZE; return m_token = EControl;     }
 yy1861:
         yych = *++m_curPos;
         switch (yych) {
-        case 'r':        goto yy1862;
-        default:        goto yy771;
+        case 'i':        goto yy1862;
+        default:        goto yy758;
         }
 yy1862:
         yych = *++m_curPos;
         switch (yych) {
-        case 'k':        goto yy1863;
-        default:        goto yy771;
+        case 'd':        goto yy1863;
+        default:        goto yy758;
         }
 yy1863:
         yych = *++m_curPos;
         switch (yych) {
-        case 'g':        goto yy1864;
-        default:        goto yy771;
+        case 's':        goto yy1864;
+        default:        goto yy758;
         }
 yy1864:
         yych = *++m_curPos;
         switch (yych) {
-        case 'r':        goto yy1865;
-        default:        goto yy771;
+        case 'i':        goto yy1865;
+        default:        goto yy758;
         }
 yy1865:
         yych = *++m_curPos;
         switch (yych) {
-        case 'o':        goto yy1866;
-        default:        goto yy771;
+        case 'z':        goto yy1866;
+        default:        goto yy758;
         }
 yy1866:
         yych = *++m_curPos;
         switch (yych) {
-        case 'u':        goto yy1867;
-        default:        goto yy771;
+        case 'e':        goto yy1867;
+        default:        goto yy758;
         }
 yy1867:
-        yych = *++m_curPos;
-        switch (yych) {
-        case 'p':        goto yy1868;
-        default:        goto yy771;
-        }
-yy1868:
-        yych = *++m_curPos;
-        switch (yych) {
-        case 's':        goto yy1869;
-        default:        goto yy771;
-        }
+        ++m_curPos;
+        { m_brigId = Brig::BRIG_CONTROL_REQUIREDGRIDSIZE; return m_token = EControl;     }
 yy1869:
         yych = *++m_curPos;
         switch (yych) {
-        case 'i':        goto yy1870;
-        default:        goto yy771;
+        case 'm':        goto yy1870;
+        default:        goto yy758;
         }
 yy1870:
-        yych = *++m_curPos;
-        switch (yych) {
-        case 'z':        goto yy1871;
-        default:        goto yy771;
-        }
-yy1871:
-        yych = *++m_curPos;
-        switch (yych) {
-        case 'e':        goto yy1872;
-        default:        goto yy771;
-        }
-yy1872:
         ++m_curPos;
-        { m_brigId = Brig::BRIG_CONTROL_REQUIREDWORKGROUPSIZE; return m_token = EControl;     }
+        { m_brigId = Brig::BRIG_CONTROL_REQUIREDDIM; return m_token = EControl;     }
+yy1872:
+        yych = *++m_curPos;
+        switch (yych) {
+        case 'p':        goto yy1873;
+        default:        goto yy758;
+        }
+yy1873:
+        yych = *++m_curPos;
+        switch (yych) {
+        case 'a':        goto yy1874;
+        default:        goto yy758;
+        }
 yy1874:
         yych = *++m_curPos;
         switch (yych) {
-        case 'i':        goto yy1875;
-        default:        goto yy771;
+        case 'r':        goto yy1875;
+        default:        goto yy758;
         }
 yy1875:
         yych = *++m_curPos;
         switch (yych) {
-        case 'd':        goto yy1876;
-        default:        goto yy771;
+        case 't':        goto yy1876;
+        default:        goto yy758;
         }
 yy1876:
         yych = *++m_curPos;
         switch (yych) {
-        case 's':        goto yy1877;
-        default:        goto yy771;
+        case 'i':        goto yy1877;
+        default:        goto yy758;
         }
 yy1877:
         yych = *++m_curPos;
         switch (yych) {
-        case 'i':        goto yy1878;
-        default:        goto yy771;
+        case 'a':        goto yy1878;
+        default:        goto yy758;
         }
 yy1878:
         yych = *++m_curPos;
         switch (yych) {
-        case 'z':        goto yy1879;
-        default:        goto yy771;
+        case 'l':        goto yy1879;
+        default:        goto yy758;
         }
 yy1879:
         yych = *++m_curPos;
         switch (yych) {
-        case 'e':        goto yy1880;
-        default:        goto yy771;
+        case 'w':        goto yy1880;
+        default:        goto yy758;
         }
 yy1880:
-        ++m_curPos;
-        { m_brigId = Brig::BRIG_CONTROL_REQUIREDGRIDSIZE; return m_token = EControl;     }
+        yych = *++m_curPos;
+        switch (yych) {
+        case 'o':        goto yy1881;
+        default:        goto yy758;
+        }
+yy1881:
+        yych = *++m_curPos;
+        switch (yych) {
+        case 'r':        goto yy1882;
+        default:        goto yy758;
+        }
 yy1882:
         yych = *++m_curPos;
         switch (yych) {
-        case 'm':        goto yy1883;
-        default:        goto yy771;
+        case 'k':        goto yy1883;
+        default:        goto yy758;
         }
 yy1883:
-        ++m_curPos;
-        { m_brigId = Brig::BRIG_CONTROL_REQUIREDDIM; return m_token = EControl;     }
+        yych = *++m_curPos;
+        switch (yych) {
+        case 'g':        goto yy1884;
+        default:        goto yy758;
+        }
+yy1884:
+        yych = *++m_curPos;
+        switch (yych) {
+        case 'r':        goto yy1885;
+        default:        goto yy758;
+        }
 yy1885:
         yych = *++m_curPos;
         switch (yych) {
-        case 'p':        goto yy1886;
-        default:        goto yy771;
+        case 'o':        goto yy1886;
+        default:        goto yy758;
         }
 yy1886:
         yych = *++m_curPos;
         switch (yych) {
-        case 'a':        goto yy1887;
-        default:        goto yy771;
+        case 'u':        goto yy1887;
+        default:        goto yy758;
         }
 yy1887:
         yych = *++m_curPos;
         switch (yych) {
-        case 'r':        goto yy1888;
-        default:        goto yy771;
+        case 'p':        goto yy1888;
+        default:        goto yy758;
         }
 yy1888:
         yych = *++m_curPos;
         switch (yych) {
-        case 't':        goto yy1889;
-        default:        goto yy771;
+        case 's':        goto yy1889;
+        default:        goto yy758;
         }
 yy1889:
-        yych = *++m_curPos;
-        switch (yych) {
-        case 'i':        goto yy1890;
-        default:        goto yy771;
-        }
-yy1890:
-        yych = *++m_curPos;
-        switch (yych) {
-        case 'a':        goto yy1891;
-        default:        goto yy771;
-        }
+        ++m_curPos;
+        { m_brigId = Brig::BRIG_CONTROL_REQUIRENOPARTIALWORKGROUPS; return m_token = EControl;     }
 yy1891:
         yych = *++m_curPos;
         switch (yych) {
-        case 'l':        goto yy1892;
-        default:        goto yy771;
+        case 't':        goto yy1892;
+        default:        goto yy758;
         }
 yy1892:
         yych = *++m_curPos;
         switch (yych) {
-        case 'w':        goto yy1893;
-        default:        goto yy771;
+        case 'e':        goto yy1893;
+        default:        goto yy758;
         }
 yy1893:
         yych = *++m_curPos;
         switch (yych) {
-        case 'o':        goto yy1894;
-        default:        goto yy771;
+        case 'd':        goto yy1894;
+        default:        goto yy758;
         }
 yy1894:
         yych = *++m_curPos;
         switch (yych) {
-        case 'r':        goto yy1895;
-        default:        goto yy771;
+        case 'w':        goto yy1895;
+        default:        goto yy758;
         }
 yy1895:
         yych = *++m_curPos;
         switch (yych) {
-        case 'k':        goto yy1896;
-        default:        goto yy771;
+        case 'o':        goto yy1896;
+        default:        goto yy758;
         }
 yy1896:
         yych = *++m_curPos;
         switch (yych) {
-        case 'g':        goto yy1897;
-        default:        goto yy771;
+        case 'r':        goto yy1897;
+        default:        goto yy758;
         }
 yy1897:
         yych = *++m_curPos;
         switch (yych) {
-        case 'r':        goto yy1898;
-        default:        goto yy771;
+        case 'k':        goto yy1898;
+        default:        goto yy758;
         }
 yy1898:
         yych = *++m_curPos;
         switch (yych) {
-        case 'o':        goto yy1899;
-        default:        goto yy771;
+        case 'g':        goto yy1899;
+        default:        goto yy758;
         }
 yy1899:
         yych = *++m_curPos;
         switch (yych) {
-        case 'u':        goto yy1900;
-        default:        goto yy771;
+        case 'r':        goto yy1900;
+        default:        goto yy758;
         }
 yy1900:
         yych = *++m_curPos;
         switch (yych) {
-        case 'p':        goto yy1901;
-        default:        goto yy771;
+        case 'o':        goto yy1901;
+        default:        goto yy758;
         }
 yy1901:
         yych = *++m_curPos;
         switch (yych) {
-        case 's':        goto yy1902;
-        default:        goto yy771;
+        case 'u':        goto yy1902;
+        default:        goto yy758;
         }
 yy1902:
-        ++m_curPos;
-        { m_brigId = Brig::BRIG_CONTROL_REQUIRENOPARTIALWORKGROUPS; return m_token = EControl;     }
+        yych = *++m_curPos;
+        switch (yych) {
+        case 'p':        goto yy1903;
+        default:        goto yy758;
+        }
+yy1903:
+        yych = *++m_curPos;
+        switch (yych) {
+        case 's':        goto yy1904;
+        default:        goto yy758;
+        }
 yy1904:
         yych = *++m_curPos;
         switch (yych) {
-        case 't':        goto yy1905;
-        default:        goto yy771;
+        case 'p':        goto yy1905;
+        default:        goto yy758;
         }
 yy1905:
         yych = *++m_curPos;
         switch (yych) {
         case 'e':        goto yy1906;
-        default:        goto yy771;
+        default:        goto yy758;
         }
 yy1906:
         yych = *++m_curPos;
         switch (yych) {
-        case 'd':        goto yy1907;
-        default:        goto yy771;
+        case 'r':        goto yy1907;
+        default:        goto yy758;
         }
 yy1907:
         yych = *++m_curPos;
         switch (yych) {
-        case 'w':        goto yy1908;
-        default:        goto yy771;
+        case 'c':        goto yy1908;
+        default:        goto yy758;
         }
 yy1908:
         yych = *++m_curPos;
         switch (yych) {
-        case 'o':        goto yy1909;
-        default:        goto yy771;
+        case 'u':        goto yy1909;
+        default:        goto yy758;
         }
 yy1909:
-        yych = *++m_curPos;
-        switch (yych) {
-        case 'r':        goto yy1910;
-        default:        goto yy771;
-        }
-yy1910:
-        yych = *++m_curPos;
-        switch (yych) {
-        case 'k':        goto yy1911;
-        default:        goto yy771;
-        }
+        ++m_curPos;
+        { m_brigId = Brig::BRIG_CONTROL_REQUESTEDWORKGROUPSPERCU; return m_token = EControl;     }
 yy1911:
         yych = *++m_curPos;
         switch (yych) {
-        case 'g':        goto yy1912;
-        default:        goto yy771;
+        case 't':        goto yy1912;
+        default:        goto yy758;
         }
 yy1912:
-        yych = *++m_curPos;
-        switch (yych) {
-        case 'r':        goto yy1913;
-        default:        goto yy771;
-        }
-yy1913:
-        yych = *++m_curPos;
-        switch (yych) {
-        case 'o':        goto yy1914;
-        default:        goto yy771;
-        }
+        ++m_curPos;
+        { m_brigId = Brig::BRIG_OPCODE_RINT;       return m_token = EInstruction; }
 yy1914:
-        yych = *++m_curPos;
+        yyaccept = 19;
+        yych = *(marker = ++m_curPos);
         switch (yych) {
-        case 'u':        goto yy1915;
-        default:        goto yy771;
+        case 'a':        goto yy2001;
+        case 'i':        goto yy1999;
+        case 'o':        goto yy2000;
+        default:        goto yy1915;
         }
 yy1915:
-        yych = *++m_curPos;
-        switch (yych) {
-        case 'p':        goto yy1916;
-        default:        goto yy771;
-        }
+        { m_brigId = Brig::BRIG_OPCODE_ST;         return m_token = EInstruction_Vx; }
 yy1916:
         yych = *++m_curPos;
         switch (yych) {
-        case 's':        goto yy1917;
-        default:        goto yy771;
+        case 'n':        goto yy1990;
+        case 's':        goto yy1991;
+        default:        goto yy758;
         }
 yy1917:
         yych = *++m_curPos;
         switch (yych) {
-        case 'p':        goto yy1918;
-        default:        goto yy771;
+        case 'b':        goto yy1988;
+        default:        goto yy758;
         }
 yy1918:
         yych = *++m_curPos;
         switch (yych) {
-        case 'e':        goto yy1919;
-        default:        goto yy771;
+        case 'r':        goto yy1985;
+        default:        goto yy758;
         }
 yy1919:
         yych = *++m_curPos;
         switch (yych) {
-        case 'r':        goto yy1920;
-        default:        goto yy771;
+        case 'l':        goto yy1975;
+        case 'r':        goto yy1977;
+        case 'u':        goto yy1979;
+        default:        goto yy758;
         }
 yy1920:
         yych = *++m_curPos;
         switch (yych) {
-        case 'c':        goto yy1921;
-        default:        goto yy771;
+        case 'c':        goto yy1941;
+        case 'g':        goto yy1942;
+        case 'n':        goto yy1943;
+        case 't':        goto yy1944;
+        default:        goto yy758;
         }
 yy1921:
         yych = *++m_curPos;
         switch (yych) {
-        case 'u':        goto yy1922;
-        default:        goto yy771;
+        case 'd':        goto yy1936;
+        default:        goto yy758;
         }
 yy1922:
-        ++m_curPos;
-        { m_brigId = Brig::BRIG_CONTROL_REQUESTEDWORKGROUPSPERCU; return m_token = EControl;     }
+        yych = *++m_curPos;
+        switch (yych) {
+        case 'i':        goto yy1932;
+        default:        goto yy758;
+        }
+yy1923:
+        yych = *++m_curPos;
+        switch (yych) {
+        case 'g':        goto yy1924;
+        default:        goto yy758;
+        }
 yy1924:
         yych = *++m_curPos;
         switch (yych) {
-        case 't':        goto yy1925;
-        default:        goto yy771;
+        case 'n':        goto yy1925;
+        default:        goto yy758;
         }
 yy1925:
-        ++m_curPos;
-        { m_brigId = Brig::BRIG_OPCODE_RINT;       return m_token = EInstruction; }
-yy1927:
-        yyaccept = 19;
-        yych = *(marker = ++m_curPos);
+        yych = *++m_curPos;
         switch (yych) {
-        case 'a':        goto yy2014;
-        case 'i':        goto yy2012;
-        case 'o':        goto yy2013;
-        default:        goto yy1928;
+        case 'a':        goto yy1926;
+        default:        goto yy758;
+        }
+yy1926:
+        yych = *++m_curPos;
+        switch (yych) {
+        case 't':        goto yy1927;
+        default:        goto yy758;
+        }
+yy1927:
+        yych = *++m_curPos;
+        switch (yych) {
+        case 'u':        goto yy1928;
+        default:        goto yy758;
         }
 yy1928:
-        { m_brigId = Brig::BRIG_OPCODE_ST;         return m_token = EInstruction; }
+        yych = *++m_curPos;
+        switch (yych) {
+        case 'r':        goto yy1929;
+        default:        goto yy758;
+        }
 yy1929:
         yych = *++m_curPos;
         switch (yych) {
-        case 'n':        goto yy2003;
-        case 's':        goto yy2004;
-        default:        goto yy771;
+        case 'e':        goto yy1930;
+        default:        goto yy758;
         }
 yy1930:
-        yych = *++m_curPos;
-        switch (yych) {
-        case 'b':        goto yy2001;
-        default:        goto yy771;
-        }
-yy1931:
-        yych = *++m_curPos;
-        switch (yych) {
-        case 'r':        goto yy1998;
-        default:        goto yy771;
-        }
+        ++m_curPos;
+        { return m_token = EKWSignature; }
 yy1932:
         yych = *++m_curPos;
         switch (yych) {
-        case 'l':        goto yy1988;
-        case 'r':        goto yy1990;
-        case 'u':        goto yy1992;
-        default:        goto yy771;
+        case 'l':        goto yy1933;
+        default:        goto yy758;
         }
 yy1933:
         yych = *++m_curPos;
         switch (yych) {
-        case 'c':        goto yy1954;
-        case 'g':        goto yy1955;
-        case 'n':        goto yy1956;
-        case 't':        goto yy1957;
-        default:        goto yy771;
+        case 'l':        goto yy1934;
+        default:        goto yy758;
         }
 yy1934:
-        yych = *++m_curPos;
-        switch (yych) {
-        case 'd':        goto yy1949;
-        default:        goto yy771;
-        }
-yy1935:
-        yych = *++m_curPos;
-        switch (yych) {
-        case 'i':        goto yy1945;
-        default:        goto yy771;
-        }
+        ++m_curPos;
+        { m_brigId = Brig::BRIG_SEGMENT_SPILL;     return m_token = ESegment; }
 yy1936:
-        yych = *++m_curPos;
+        yyaccept = 20;
+        yych = *(marker = ++m_curPos);
         switch (yych) {
-        case 'g':        goto yy1937;
-        default:        goto yy771;
+        case 'h':        goto yy1938;
+        default:        goto yy1937;
         }
 yy1937:
-        yych = *++m_curPos;
-        switch (yych) {
-        case 'n':        goto yy1938;
-        default:        goto yy771;
-        }
+        { m_brigId = Brig::BRIG_OPCODE_SAD;        return m_token = EInstruction; }
 yy1938:
         yych = *++m_curPos;
         switch (yych) {
-        case 'a':        goto yy1939;
-        default:        goto yy771;
+        case 'i':        goto yy1939;
+        default:        goto yy758;
         }
 yy1939:
-        yych = *++m_curPos;
-        switch (yych) {
-        case 't':        goto yy1940;
-        default:        goto yy771;
-        }
-yy1940:
-        yych = *++m_curPos;
-        switch (yych) {
-        case 'u':        goto yy1941;
-        default:        goto yy771;
-        }
+        ++m_curPos;
+        { m_brigId = Brig::BRIG_OPCODE_SADHI;      return m_token = EInstruction; }
 yy1941:
         yych = *++m_curPos;
         switch (yych) {
-        case 'r':        goto yy1942;
-        default:        goto yy771;
+        case 't':        goto yy1970;
+        default:        goto yy758;
         }
 yy1942:
         yych = *++m_curPos;
         switch (yych) {
-        case 'e':        goto yy1943;
-        default:        goto yy771;
+        case 'm':        goto yy1964;
+        default:        goto yy758;
         }
 yy1943:
-        ++m_curPos;
-        { return m_token = EKWSignature; }
+        yych = *++m_curPos;
+        switch (yych) {
+        case 'd':        goto yy1958;
+        default:        goto yy758;
+        }
+yy1944:
+        yych = *++m_curPos;
+        switch (yych) {
+        case 'd':        goto yy1945;
+        default:        goto yy758;
+        }
 yy1945:
         yych = *++m_curPos;
         switch (yych) {
-        case 'l':        goto yy1946;
-        default:        goto yy771;
+        case 'e':        goto yy1946;
+        default:        goto yy758;
         }
 yy1946:
         yych = *++m_curPos;
         switch (yych) {
-        case 'l':        goto yy1947;
-        default:        goto yy771;
+        case 't':        goto yy1947;
+        default:        goto yy758;
         }
 yy1947:
-        ++m_curPos;
-        { m_brigId = Brig::BRIG_SEGMENT_SPILL;     return m_token = ESegment; }
-yy1949:
-        yyaccept = 20;
-        yych = *(marker = ++m_curPos);
+        yych = *++m_curPos;
         switch (yych) {
-        case 'h':        goto yy1951;
-        default:        goto yy1950;
+        case 'e':        goto yy1948;
+        default:        goto yy758;
+        }
+yy1948:
+        yych = *++m_curPos;
+        switch (yych) {
+        case 'c':        goto yy1949;
+        default:        goto yy758;
+        }
+yy1949:
+        yych = *++m_curPos;
+        switch (yych) {
+        case 't':        goto yy1950;
+        default:        goto yy758;
         }
 yy1950:
-        { m_brigId = Brig::BRIG_OPCODE_SAD;        return m_token = EInstruction; }
+        yych = *++m_curPos;
+        switch (yych) {
+        case 'e':        goto yy1951;
+        default:        goto yy758;
+        }
 yy1951:
         yych = *++m_curPos;
         switch (yych) {
-        case 'i':        goto yy1952;
-        default:        goto yy771;
+        case 'x':        goto yy1952;
+        default:        goto yy758;
         }
 yy1952:
-        ++m_curPos;
-        { m_brigId = Brig::BRIG_OPCODE_SADHI;      return m_token = EInstruction; }
+        yych = *++m_curPos;
+        switch (yych) {
+        case 'c':        goto yy1953;
+        default:        goto yy758;
+        }
+yy1953:
+        yych = *++m_curPos;
+        switch (yych) {
+        case 'e':        goto yy1954;
+        default:        goto yy758;
+        }
 yy1954:
         yych = *++m_curPos;
         switch (yych) {
-        case 't':        goto yy1983;
-        default:        goto yy771;
+        case 'p':        goto yy1955;
+        default:        goto yy758;
         }
 yy1955:
         yych = *++m_curPos;
         switch (yych) {
-        case 'm':        goto yy1977;
-        default:        goto yy771;
+        case 't':        goto yy1956;
+        default:        goto yy758;
         }
 yy1956:
-        yych = *++m_curPos;
-        switch (yych) {
-        case 'd':        goto yy1971;
-        default:        goto yy771;
-        }
-yy1957:
-        yych = *++m_curPos;
-        switch (yych) {
-        case 'd':        goto yy1958;
-        default:        goto yy771;
-        }
+        ++m_curPos;
+        { m_brigId = Brig::BRIG_OPCODE_SETDETECTEXCEPT; return m_token = EInstruction; }
 yy1958:
         yych = *++m_curPos;
         switch (yych) {
-        case 'e':        goto yy1959;
-        default:        goto yy771;
+        case 'l':        goto yy1959;
+        default:        goto yy758;
         }
 yy1959:
         yych = *++m_curPos;
         switch (yych) {
-        case 't':        goto yy1960;
-        default:        goto yy771;
+        case 'a':        goto yy1960;
+        default:        goto yy758;
         }
 yy1960:
         yych = *++m_curPos;
         switch (yych) {
-        case 'e':        goto yy1961;
-        default:        goto yy771;
+        case 'n':        goto yy1961;
+        default:        goto yy758;
         }
 yy1961:
         yych = *++m_curPos;
         switch (yych) {
-        case 'c':        goto yy1962;
-        default:        goto yy771;
+        case 'e':        goto yy1962;
+        default:        goto yy758;
         }
 yy1962:
-        yych = *++m_curPos;
-        switch (yych) {
-        case 't':        goto yy1963;
-        default:        goto yy771;
-        }
-yy1963:
-        yych = *++m_curPos;
-        switch (yych) {
-        case 'e':        goto yy1964;
-        default:        goto yy771;
-        }
+        ++m_curPos;
+        { m_brigId = Brig::BRIG_OPCODE_SENDLANE;   return m_token = EInstruction; }
 yy1964:
         yych = *++m_curPos;
         switch (yych) {
-        case 'x':        goto yy1965;
-        default:        goto yy771;
+        case 'e':        goto yy1965;
+        default:        goto yy758;
         }
 yy1965:
         yych = *++m_curPos;
         switch (yych) {
-        case 'c':        goto yy1966;
-        default:        goto yy771;
+        case 'n':        goto yy1966;
+        default:        goto yy758;
         }
 yy1966:
         yych = *++m_curPos;
         switch (yych) {
-        case 'e':        goto yy1967;
-        default:        goto yy771;
+        case 't':        goto yy1967;
+        default:        goto yy758;
         }
 yy1967:
         yych = *++m_curPos;
         switch (yych) {
         case 'p':        goto yy1968;
-        default:        goto yy771;
+        default:        goto yy758;
         }
 yy1968:
+        ++m_curPos;
+        { m_brigId = Brig::BRIG_OPCODE_SEGMENTP;   return m_token = EInstruction; }
+yy1970:
         yych = *++m_curPos;
         switch (yych) {
-        case 't':        goto yy1969;
-        default:        goto yy771;
+        case 'i':        goto yy1971;
+        default:        goto yy758;
         }
-yy1969:
-        ++m_curPos;
-        { m_brigId = Brig::BRIG_OPCODE_SETDETECTEXCEPT; return m_token = EInstruction; }
 yy1971:
         yych = *++m_curPos;
         switch (yych) {
-        case 'l':        goto yy1972;
-        default:        goto yy771;
+        case 'o':        goto yy1972;
+        default:        goto yy758;
         }
 yy1972:
         yych = *++m_curPos;
         switch (yych) {
-        case 'a':        goto yy1973;
-        default:        goto yy771;
+        case 'n':        goto yy1973;
+        default:        goto yy758;
         }
 yy1973:
-        yych = *++m_curPos;
-        switch (yych) {
-        case 'n':        goto yy1974;
-        default:        goto yy771;
-        }
-yy1974:
-        yych = *++m_curPos;
-        switch (yych) {
-        case 'e':        goto yy1975;
-        default:        goto yy771;
-        }
+        ++m_curPos;
+        { return m_token = EKWSection; }
 yy1975:
         ++m_curPos;
-        { m_brigId = Brig::BRIG_OPCODE_SENDLANE;   return m_token = EInstruction; }
+        { m_brigId = Brig::BRIG_OPCODE_SHL;        return m_token = EInstruction; }
 yy1977:
-        yych = *++m_curPos;
-        switch (yych) {
-        case 'e':        goto yy1978;
-        default:        goto yy771;
-        }
-yy1978:
-        yych = *++m_curPos;
-        switch (yych) {
-        case 'n':        goto yy1979;
-        default:        goto yy771;
-        }
+        ++m_curPos;
+        { m_brigId = Brig::BRIG_OPCODE_SHR;        return m_token = EInstruction; }
 yy1979:
         yych = *++m_curPos;
         switch (yych) {
-        case 't':        goto yy1980;
-        default:        goto yy771;
+        case 'f':        goto yy1980;
+        default:        goto yy758;
         }
 yy1980:
         yych = *++m_curPos;
         switch (yych) {
-        case 'p':        goto yy1981;
-        default:        goto yy771;
+        case 'f':        goto yy1981;
+        default:        goto yy758;
         }
 yy1981:
-        ++m_curPos;
-        { m_brigId = Brig::BRIG_OPCODE_SEGMENTP;   return m_token = EInstruction; }
+        yych = *++m_curPos;
+        switch (yych) {
+        case 'l':        goto yy1982;
+        default:        goto yy758;
+        }
+yy1982:
+        yych = *++m_curPos;
+        switch (yych) {
+        case 'e':        goto yy1983;
+        default:        goto yy758;
+        }
 yy1983:
-        yych = *++m_curPos;
-        switch (yych) {
-        case 'i':        goto yy1984;
-        default:        goto yy771;
-        }
-yy1984:
-        yych = *++m_curPos;
-        switch (yych) {
-        case 'o':        goto yy1985;
-        default:        goto yy771;
-        }
+        ++m_curPos;
+        { m_brigId = Brig::BRIG_OPCODE_SHUFFLE;    return m_token = EInstruction; }
 yy1985:
         yych = *++m_curPos;
         switch (yych) {
-        case 'n':        goto yy1986;
-        default:        goto yy771;
+        case 't':        goto yy1986;
+        default:        goto yy758;
         }
 yy1986:
         ++m_curPos;
-        { return m_token = EKWSection; }
+        { m_brigId = Brig::BRIG_OPCODE_SQRT;       return m_token = EInstruction; }
 yy1988:
         ++m_curPos;
-        { m_brigId = Brig::BRIG_OPCODE_SHL;        return m_token = EInstruction; }
+        { m_brigId = Brig::BRIG_OPCODE_SUB;        return m_token = EInstruction; }
 yy1990:
-        ++m_curPos;
-        { m_brigId = Brig::BRIG_OPCODE_SHR;        return m_token = EInstruction; }
+        yych = *++m_curPos;
+        switch (yych) {
+        case 'c':        goto yy1997;
+        default:        goto yy758;
+        }
+yy1991:
+        yych = *++m_curPos;
+        switch (yych) {
+        case 'c':        goto yy1992;
+        default:        goto yy758;
+        }
 yy1992:
         yych = *++m_curPos;
         switch (yych) {
-        case 'f':        goto yy1993;
-        default:        goto yy771;
+        case 'a':        goto yy1993;
+        default:        goto yy758;
         }
 yy1993:
         yych = *++m_curPos;
         switch (yych) {
-        case 'f':        goto yy1994;
-        default:        goto yy771;
+        case 'l':        goto yy1994;
+        default:        goto yy758;
         }
 yy1994:
         yych = *++m_curPos;
         switch (yych) {
         case 'l':        goto yy1995;
-        default:        goto yy771;
+        default:        goto yy758;
         }
 yy1995:
-        yych = *++m_curPos;
-        switch (yych) {
-        case 'e':        goto yy1996;
-        default:        goto yy771;
-        }
-yy1996:
         ++m_curPos;
-        { m_brigId = Brig::BRIG_OPCODE_SHUFFLE;    return m_token = EInstruction; }
-yy1998:
-        yych = *++m_curPos;
-        switch (yych) {
-        case 't':        goto yy1999;
-        default:        goto yy771;
-        }
+        { m_brigId = Brig::BRIG_OPCODE_SYSCALL;    return m_token = EInstruction; }
+yy1997:
+        ++m_curPos;
+        { m_brigId = Brig::BRIG_OPCODE_SYNC;       return m_token = EInstruction; }
 yy1999:
-        ++m_curPos;
-        { m_brigId = Brig::BRIG_OPCODE_SQRT;       return m_token = EInstruction; }
+        yych = *++m_curPos;
+        switch (yych) {
+        case 'm':        goto yy2008;
+        default:        goto yy758;
+        }
+yy2000:
+        yych = *++m_curPos;
+        switch (yych) {
+        case 'f':        goto yy2006;
+        default:        goto yy758;
+        }
 yy2001:
-        ++m_curPos;
-        { m_brigId = Brig::BRIG_OPCODE_SUB;        return m_token = EInstruction; }
+        yych = *++m_curPos;
+        switch (yych) {
+        case 't':        goto yy2002;
+        default:        goto yy758;
+        }
+yy2002:
+        yych = *++m_curPos;
+        switch (yych) {
+        case 'i':        goto yy2003;
+        default:        goto yy758;
+        }
 yy2003:
         yych = *++m_curPos;
         switch (yych) {
-        case 'c':        goto yy2010;
-        default:        goto yy771;
+        case 'c':        goto yy2004;
+        default:        goto yy758;
         }
 yy2004:
-        yych = *++m_curPos;
-        switch (yych) {
-        case 'c':        goto yy2005;
-        default:        goto yy771;
-        }
-yy2005:
-        yych = *++m_curPos;
-        switch (yych) {
-        case 'a':        goto yy2006;
-        default:        goto yy771;
-        }
+        ++m_curPos;
+        { m_brigId = Brig::BRIG_LINKAGE_STATIC;    return m_token = EAttribute; }
 yy2006:
-        yych = *++m_curPos;
-        switch (yych) {
-        case 'l':        goto yy2007;
-        default:        goto yy771;
-        }
-yy2007:
-        yych = *++m_curPos;
-        switch (yych) {
-        case 'l':        goto yy2008;
-        default:        goto yy771;
-        }
+        ++m_curPos;
+        { m_brigId = Brig::BRIG_OPCODE_STOF;       return m_token = EInstruction; }
 yy2008:
-        ++m_curPos;
-        { m_brigId = Brig::BRIG_OPCODE_SYSCALL;    return m_token = EInstruction; }
-yy2010:
-        ++m_curPos;
-        { m_brigId = Brig::BRIG_OPCODE_SYNC;       return m_token = EInstruction; }
-yy2012:
         yych = *++m_curPos;
         switch (yych) {
-        case 'm':        goto yy2021;
-        default:        goto yy771;
+        case 'a':        goto yy2009;
+        default:        goto yy758;
         }
+yy2009:
+        yych = *++m_curPos;
+        switch (yych) {
+        case 'g':        goto yy2010;
+        default:        goto yy758;
+        }
+yy2010:
+        yych = *++m_curPos;
+        switch (yych) {
+        case 'e':        goto yy2011;
+        default:        goto yy758;
+        }
+yy2011:
+        ++m_curPos;
+        { m_brigId = Brig::BRIG_OPCODE_STIMAGE;    return m_token = EInstruction; }
 yy2013:
         yych = *++m_curPos;
         switch (yych) {
-        case 'f':        goto yy2019;
-        default:        goto yy771;
+        case 'p':        goto yy2034;
+        default:        goto yy758;
         }
 yy2014:
         yych = *++m_curPos;
         switch (yych) {
-        case 't':        goto yy2015;
-        default:        goto yy771;
+        case 'c':        goto yy2027;
+        default:        goto yy758;
         }
 yy2015:
         yych = *++m_curPos;
         switch (yych) {
-        case 'i':        goto yy2016;
-        default:        goto yy771;
+        case 'a':        goto yy2016;
+        case 'i':        goto yy2017;
+        default:        goto yy758;
         }
 yy2016:
         yych = *++m_curPos;
         switch (yych) {
-        case 'c':        goto yy2017;
-        default:        goto yy771;
+        case 'g':        goto yy2023;
+        default:        goto yy758;
         }
 yy2017:
-        ++m_curPos;
-        { m_brigId = Brig::BRIG_LINKAGE_STATIC;    return m_token = EAttribute; }
+        yych = *++m_curPos;
+        switch (yych) {
+        case 'v':        goto yy2018;
+        default:        goto yy758;
+        }
+yy2018:
+        yych = *++m_curPos;
+        switch (yych) {
+        case 'a':        goto yy2019;
+        default:        goto yy758;
+        }
 yy2019:
-        ++m_curPos;
-        { m_brigId = Brig::BRIG_OPCODE_STOF;       return m_token = EInstruction; }
+        yych = *++m_curPos;
+        switch (yych) {
+        case 't':        goto yy2020;
+        default:        goto yy758;
+        }
+yy2020:
+        yych = *++m_curPos;
+        switch (yych) {
+        case 'e':        goto yy2021;
+        default:        goto yy758;
+        }
 yy2021:
-        yych = *++m_curPos;
-        switch (yych) {
-        case 'a':        goto yy2022;
-        default:        goto yy771;
-        }
-yy2022:
-        yych = *++m_curPos;
-        switch (yych) {
-        case 'g':        goto yy2023;
-        default:        goto yy771;
-        }
+        ++m_curPos;
+        { m_brigId = Brig::BRIG_SEGMENT_PRIVATE;   return m_token = ESegment; }
 yy2023:
         yych = *++m_curPos;
         switch (yych) {
-        case 'e':        goto yy2024;
-        default:        goto yy771;
+        case 'm':        goto yy2024;
+        default:        goto yy758;
         }
 yy2024:
-        ++m_curPos;
-        { m_brigId = Brig::BRIG_OPCODE_STIMAGE;    return m_token = EInstruction; }
-yy2026:
         yych = *++m_curPos;
         switch (yych) {
-        case 'p':        goto yy2047;
-        default:        goto yy771;
+        case 'a':        goto yy2025;
+        default:        goto yy758;
         }
+yy2025:
+        ++m_curPos;
+        { return m_token = EKWPragma; }
 yy2027:
         yych = *++m_curPos;
         switch (yych) {
-        case 'c':        goto yy2040;
-        default:        goto yy771;
+        case 'k':        goto yy2028;
+        default:        goto yy758;
         }
 yy2028:
-        yych = *++m_curPos;
+        yyaccept = 21;
+        yych = *(marker = ++m_curPos);
         switch (yych) {
-        case 'a':        goto yy2029;
-        case 'i':        goto yy2030;
-        default:        goto yy771;
+        case 'c':        goto yy2030;
+        default:        goto yy2029;
         }
 yy2029:
-        yych = *++m_curPos;
-        switch (yych) {
-        case 'g':        goto yy2036;
-        default:        goto yy771;
-        }
+        { m_brigId = Brig::BRIG_OPCODE_PACK;       return m_token = EInstruction; }
 yy2030:
         yych = *++m_curPos;
         switch (yych) {
         case 'v':        goto yy2031;
-        default:        goto yy771;
+        default:        goto yy758;
         }
 yy2031:
         yych = *++m_curPos;
         switch (yych) {
-        case 'a':        goto yy2032;
-        default:        goto yy771;
+        case 't':        goto yy2032;
+        default:        goto yy758;
         }
 yy2032:
-        yych = *++m_curPos;
-        switch (yych) {
-        case 't':        goto yy2033;
-        default:        goto yy771;
-        }
-yy2033:
-        yych = *++m_curPos;
-        switch (yych) {
-        case 'e':        goto yy2034;
-        default:        goto yy771;
-        }
-yy2034:
         ++m_curPos;
-        { m_brigId = Brig::BRIG_SEGMENT_PRIVATE;   return m_token = ESegment; }
+        { m_brigId = Brig::BRIG_OPCODE_PACKCVT;    return m_token = EInstruction; }
+yy2034:
+        yych = *++m_curPos;
+        switch (yych) {
+        case 'c':        goto yy2035;
+        default:        goto yy758;
+        }
+yy2035:
+        yych = *++m_curPos;
+        switch (yych) {
+        case 'o':        goto yy2036;
+        default:        goto yy758;
+        }
 yy2036:
         yych = *++m_curPos;
         switch (yych) {
-        case 'm':        goto yy2037;
-        default:        goto yy771;
+        case 'u':        goto yy2037;
+        default:        goto yy758;
         }
 yy2037:
         yych = *++m_curPos;
         switch (yych) {
-        case 'a':        goto yy2038;
-        default:        goto yy771;
+        case 'n':        goto yy2038;
+        default:        goto yy758;
         }
 yy2038:
-        ++m_curPos;
-        { return m_token = EKWPragma; }
-yy2040:
         yych = *++m_curPos;
         switch (yych) {
-        case 'k':        goto yy2041;
-        default:        goto yy771;
+        case 't':        goto yy2039;
+        default:        goto yy758;
         }
+yy2039:
+        ++m_curPos;
+        { m_brigId = Brig::BRIG_OPCODE_POPCOUNT;   return m_token = EInstruction; }
 yy2041:
-        yyaccept = 21;
-        yych = *(marker = ++m_curPos);
+        yych = *++m_curPos;
         switch (yych) {
-        case 'c':        goto yy2043;
-        default:        goto yy2042;
+        case 'a':        goto yy2091;
+        default:        goto yy758;
         }
 yy2042:
-        { m_brigId = Brig::BRIG_OPCODE_PACK;       return m_token = EInstruction; }
+        yych = *++m_curPos;
+        switch (yych) {
+        case 'o':        goto yy2088;
+        default:        goto yy758;
+        }
 yy2043:
         yych = *++m_curPos;
         switch (yych) {
-        case 'v':        goto yy2044;
-        default:        goto yy771;
+        case 'a':        goto yy2084;
+        default:        goto yy758;
         }
 yy2044:
         yych = *++m_curPos;
         switch (yych) {
-        case 't':        goto yy2045;
-        default:        goto yy771;
+        case 'a':        goto yy2082;
+        default:        goto yy758;
         }
 yy2045:
-        ++m_curPos;
-        { m_brigId = Brig::BRIG_OPCODE_PACKCVT;    return m_token = EInstruction; }
+        yych = *++m_curPos;
+        switch (yych) {
+        case 'a':        goto yy2075;
+        case 'o':        goto yy2076;
+        default:        goto yy758;
+        }
+yy2046:
+        yych = *++m_curPos;
+        switch (yych) {
+        case 'l':        goto yy2061;
+        case 'r':        goto yy2062;
+        default:        goto yy758;
+        }
 yy2047:
         yych = *++m_curPos;
         switch (yych) {
-        case 'c':        goto yy2048;
-        default:        goto yy771;
+        case 'r':        goto yy2056;
+        default:        goto yy758;
         }
 yy2048:
         yych = *++m_curPos;
         switch (yych) {
-        case 'o':        goto yy2049;
-        default:        goto yy771;
+        case 'n':        goto yy2049;
+        default:        goto yy758;
         }
 yy2049:
         yych = *++m_curPos;
         switch (yych) {
-        case 'u':        goto yy2050;
-        default:        goto yy771;
+        case 'c':        goto yy2050;
+        default:        goto yy758;
         }
 yy2050:
         yych = *++m_curPos;
         switch (yych) {
-        case 'n':        goto yy2051;
-        default:        goto yy771;
+        case 't':        goto yy2051;
+        default:        goto yy758;
         }
 yy2051:
         yych = *++m_curPos;
         switch (yych) {
-        case 't':        goto yy2052;
-        default:        goto yy771;
+        case 'i':        goto yy2052;
+        default:        goto yy758;
         }
 yy2052:
-        ++m_curPos;
-        { m_brigId = Brig::BRIG_OPCODE_POPCOUNT;   return m_token = EInstruction; }
+        yych = *++m_curPos;
+        switch (yych) {
+        case 'o':        goto yy2053;
+        default:        goto yy758;
+        }
+yy2053:
+        yych = *++m_curPos;
+        switch (yych) {
+        case 'n':        goto yy2054;
+        default:        goto yy758;
+        }
 yy2054:
-        yych = *++m_curPos;
-        switch (yych) {
-        case 'a':        goto yy2104;
-        default:        goto yy771;
-        }
-yy2055:
-        yych = *++m_curPos;
-        switch (yych) {
-        case 'o':        goto yy2101;
-        default:        goto yy771;
-        }
+        ++m_curPos;
+        { return m_token = EKWFunction; }
 yy2056:
         yych = *++m_curPos;
         switch (yych) {
-        case 'a':        goto yy2097;
-        default:        goto yy771;
+        case 'm':        goto yy2057;
+        default:        goto yy758;
         }
 yy2057:
         yych = *++m_curPos;
         switch (yych) {
-        case 'a':        goto yy2095;
-        default:        goto yy771;
+        case 'a':        goto yy2058;
+        default:        goto yy758;
         }
 yy2058:
         yych = *++m_curPos;
         switch (yych) {
-        case 'a':        goto yy2088;
-        case 'o':        goto yy2089;
-        default:        goto yy771;
+        case 't':        goto yy2059;
+        default:        goto yy758;
         }
 yy2059:
-        yych = *++m_curPos;
-        switch (yych) {
-        case 'l':        goto yy2074;
-        case 'r':        goto yy2075;
-        default:        goto yy771;
-        }
-yy2060:
-        yych = *++m_curPos;
-        switch (yych) {
-        case 'r':        goto yy2069;
-        default:        goto yy771;
-        }
+        ++m_curPos;
+        { return m_token = EKWImageFormat; }
 yy2061:
         yych = *++m_curPos;
         switch (yych) {
-        case 'n':        goto yy2062;
-        default:        goto yy771;
+        case 'e':        goto yy2070;
+        case 't':        goto yy2069;
+        default:        goto yy758;
         }
 yy2062:
         yych = *++m_curPos;
         switch (yych) {
-        case 'c':        goto yy2063;
-        default:        goto yy771;
+        case 's':        goto yy2063;
+        default:        goto yy758;
         }
 yy2063:
         yych = *++m_curPos;
         switch (yych) {
         case 't':        goto yy2064;
-        default:        goto yy771;
+        default:        goto yy758;
         }
 yy2064:
         yych = *++m_curPos;
         switch (yych) {
-        case 'i':        goto yy2065;
-        default:        goto yy771;
+        case 'b':        goto yy2065;
+        default:        goto yy758;
         }
 yy2065:
         yych = *++m_curPos;
         switch (yych) {
-        case 'o':        goto yy2066;
-        default:        goto yy771;
+        case 'i':        goto yy2066;
+        default:        goto yy758;
         }
 yy2066:
         yych = *++m_curPos;
         switch (yych) {
-        case 'n':        goto yy2067;
-        default:        goto yy771;
+        case 't':        goto yy2067;
+        default:        goto yy758;
         }
 yy2067:
         ++m_curPos;
-        { return m_token = EKWFunction; }
+        { m_brigId = Brig::BRIG_OPCODE_FIRSTBIT;   return m_token = EInstruction; }
 yy2069:
         yych = *++m_curPos;
         switch (yych) {
-        case 'm':        goto yy2070;
-        default:        goto yy771;
+        case 'e':        goto yy2072;
+        default:        goto yy758;
         }
 yy2070:
-        yych = *++m_curPos;
-        switch (yych) {
-        case 'a':        goto yy2071;
-        default:        goto yy771;
-        }
-yy2071:
-        yych = *++m_curPos;
-        switch (yych) {
-        case 't':        goto yy2072;
-        default:        goto yy771;
-        }
-yy2072:
         ++m_curPos;
-        { return m_token = EKWImageFormat; }
-yy2074:
+        { return m_token = EKWFile; }
+yy2072:
         yych = *++m_curPos;
         switch (yych) {
-        case 'e':        goto yy2083;
-        case 't':        goto yy2082;
-        default:        goto yy771;
+        case 'r':        goto yy2073;
+        default:        goto yy758;
         }
+yy2073:
+        ++m_curPos;
+        { return m_token = EKWSamplerFilter; }
 yy2075:
         yych = *++m_curPos;
         switch (yych) {
-        case 's':        goto yy2076;
-        default:        goto yy771;
+        case 't':        goto yy2080;
+        default:        goto yy758;
         }
 yy2076:
         yych = *++m_curPos;
         switch (yych) {
-        case 't':        goto yy2077;
-        default:        goto yy771;
+        case 'o':        goto yy2077;
+        default:        goto yy758;
         }
 yy2077:
         yych = *++m_curPos;
         switch (yych) {
-        case 'b':        goto yy2078;
-        default:        goto yy771;
+        case 'r':        goto yy2078;
+        default:        goto yy758;
         }
 yy2078:
-        yych = *++m_curPos;
-        switch (yych) {
-        case 'i':        goto yy2079;
-        default:        goto yy771;
-        }
-yy2079:
-        yych = *++m_curPos;
-        switch (yych) {
-        case 't':        goto yy2080;
-        default:        goto yy771;
-        }
+        ++m_curPos;
+        { m_brigId = Brig::BRIG_OPCODE_FLOOR;      return m_token = EInstruction; }
 yy2080:
         ++m_curPos;
-        { m_brigId = Brig::BRIG_OPCODE_FIRSTBIT;   return m_token = EInstruction; }
+        { m_brigId = Brig::BRIG_SEGMENT_FLAT;      return m_token = ESegment; }
 yy2082:
+        ++m_curPos;
+        { m_brigId = Brig::BRIG_OPCODE_FMA;        return m_token = EInstruction; }
+yy2084:
         yych = *++m_curPos;
         switch (yych) {
-        case 'e':        goto yy2085;
-        default:        goto yy771;
+        case 'c':        goto yy2085;
+        default:        goto yy758;
         }
-yy2083:
-        ++m_curPos;
-        { return m_token = EKWFile; }
 yy2085:
         yych = *++m_curPos;
         switch (yych) {
-        case 'r':        goto yy2086;
-        default:        goto yy771;
+        case 't':        goto yy2086;
+        default:        goto yy758;
         }
 yy2086:
         ++m_curPos;
-        { return m_token = EKWSamplerFilter; }
+        { m_brigId = Brig::BRIG_OPCODE_FRACT;      return m_token = EInstruction; }
 yy2088:
         yych = *++m_curPos;
         switch (yych) {
-        case 't':        goto yy2093;
-        default:        goto yy771;
+        case 's':        goto yy2089;
+        default:        goto yy758;
         }
 yy2089:
-        yych = *++m_curPos;
-        switch (yych) {
-        case 'o':        goto yy2090;
-        default:        goto yy771;
-        }
-yy2090:
-        yych = *++m_curPos;
-        switch (yych) {
-        case 'r':        goto yy2091;
-        default:        goto yy771;
-        }
-yy2091:
-        ++m_curPos;
-        { m_brigId = Brig::BRIG_OPCODE_FLOOR;      return m_token = EInstruction; }
-yy2093:
-        ++m_curPos;
-        { m_brigId = Brig::BRIG_SEGMENT_FLAT;      return m_token = ESegment; }
-yy2095:
-        ++m_curPos;
-        { m_brigId = Brig::BRIG_OPCODE_FMA;        return m_token = EInstruction; }
-yy2097:
-        yych = *++m_curPos;
-        switch (yych) {
-        case 'c':        goto yy2098;
-        default:        goto yy771;
-        }
-yy2098:
-        yych = *++m_curPos;
-        switch (yych) {
-        case 't':        goto yy2099;
-        default:        goto yy771;
-        }
-yy2099:
-        ++m_curPos;
-        { m_brigId = Brig::BRIG_OPCODE_FRACT;      return m_token = EInstruction; }
-yy2101:
-        yych = *++m_curPos;
-        switch (yych) {
-        case 's':        goto yy2102;
-        default:        goto yy771;
-        }
-yy2102:
         ++m_curPos;
         { m_brigId = Brig::BRIG_OPCODE_FTOS;       return m_token = EInstruction; }
-yy2104:
+yy2091:
         yych = *++m_curPos;
         switch (yych) {
-        case 'r':        goto yy2105;
-        default:        goto yy771;
+        case 'r':        goto yy2092;
+        default:        goto yy758;
         }
-yy2105:
+yy2092:
         yyaccept = 22;
         yych = *(marker = ++m_curPos);
         switch (yych) {
-        case 'r':        goto yy2107;
-        default:        goto yy2106;
+        case 'r':        goto yy2094;
+        default:        goto yy2093;
         }
-yy2106:
+yy2093:
         { return m_token = EKWFBar; }
+yy2094:
+        yych = *++m_curPos;
+        switch (yych) {
+        case 'i':        goto yy2095;
+        default:        goto yy758;
+        }
+yy2095:
+        yych = *++m_curPos;
+        switch (yych) {
+        case 'e':        goto yy2096;
+        default:        goto yy758;
+        }
+yy2096:
+        yych = *++m_curPos;
+        switch (yych) {
+        case 'r':        goto yy2097;
+        default:        goto yy758;
+        }
+yy2097:
+        ++m_curPos;
+        { return m_token = EKWFbarrier; }
+yy2099:
+        yych = *++m_curPos;
+        switch (yych) {
+        case 'r':        goto yy2100;
+        default:        goto yy758;
+        }
+yy2100:
+        yych = *++m_curPos;
+        switch (yych) {
+        case 'n':        goto yy2101;
+        default:        goto yy758;
+        }
+yy2101:
+        yych = *++m_curPos;
+        switch (yych) {
+        case 'a':        goto yy2103;
+        case 'e':        goto yy2102;
+        default:        goto yy758;
+        }
+yy2102:
+        yych = *++m_curPos;
+        switch (yych) {
+        case 'l':        goto yy2107;
+        default:        goto yy758;
+        }
+yy2103:
+        yych = *++m_curPos;
+        switch (yych) {
+        case 'r':        goto yy2104;
+        default:        goto yy758;
+        }
+yy2104:
+        yych = *++m_curPos;
+        switch (yych) {
+        case 'g':        goto yy2105;
+        default:        goto yy758;
+        }
+yy2105:
+        ++m_curPos;
+        { m_brigId = Brig::BRIG_SEGMENT_KERNARG;   return m_token = ESegment; }
 yy2107:
-        yych = *++m_curPos;
-        switch (yych) {
-        case 'i':        goto yy2108;
-        default:        goto yy771;
-        }
-yy2108:
-        yych = *++m_curPos;
-        switch (yych) {
-        case 'e':        goto yy2109;
-        default:        goto yy771;
-        }
+        ++m_curPos;
+        { return m_token = EKWKernel; }
 yy2109:
         yych = *++m_curPos;
         switch (yych) {
         case 'r':        goto yy2110;
-        default:        goto yy771;
+        default:        goto yy758;
         }
 yy2110:
-        ++m_curPos;
-        { return m_token = EKWFbarrier; }
+        yych = *++m_curPos;
+        switch (yych) {
+        case 's':        goto yy2111;
+        default:        goto yy758;
+        }
+yy2111:
+        yych = *++m_curPos;
+        switch (yych) {
+        case 'i':        goto yy2112;
+        default:        goto yy758;
+        }
 yy2112:
         yych = *++m_curPos;
         switch (yych) {
-        case 'r':        goto yy2113;
-        default:        goto yy771;
+        case 'o':        goto yy2113;
+        default:        goto yy758;
         }
 yy2113:
         yych = *++m_curPos;
         switch (yych) {
         case 'n':        goto yy2114;
-        default:        goto yy771;
+        default:        goto yy758;
         }
 yy2114:
-        yych = *++m_curPos;
-        switch (yych) {
-        case 'a':        goto yy2116;
-        case 'e':        goto yy2115;
-        default:        goto yy771;
-        }
-yy2115:
-        yych = *++m_curPos;
-        switch (yych) {
-        case 'l':        goto yy2120;
-        default:        goto yy771;
-        }
+        ++m_curPos;
+        { return m_token = EKWVersion; }
 yy2116:
         yych = *++m_curPos;
         switch (yych) {
-        case 'r':        goto yy2117;
-        default:        goto yy771;
-        }
-yy2117:
-        yych = *++m_curPos;
-        switch (yych) {
-        case 'g':        goto yy2118;
-        default:        goto yy771;
-        }
-yy2118:
-        ++m_curPos;
-        { m_brigId = Brig::BRIG_SEGMENT_KERNARG;   return m_token = ESegment; }
-yy2120:
-        ++m_curPos;
-        { return m_token = EKWKernel; }
-yy2122:
-        yych = *++m_curPos;
-        switch (yych) {
-        case 'r':        goto yy2123;
-        default:        goto yy771;
-        }
-yy2123:
-        yych = *++m_curPos;
-        switch (yych) {
-        case 's':        goto yy2124;
-        default:        goto yy771;
-        }
-yy2124:
-        yych = *++m_curPos;
-        switch (yych) {
-        case 'i':        goto yy2125;
-        default:        goto yy771;
-        }
-yy2125:
-        yych = *++m_curPos;
-        switch (yych) {
-        case 'o':        goto yy2126;
-        default:        goto yy771;
-        }
-yy2126:
-        yych = *++m_curPos;
-        switch (yych) {
-        case 'n':        goto yy2127;
-        default:        goto yy771;
-        }
-yy2127:
-        ++m_curPos;
-        { return m_token = EKWVersion; }
-yy2129:
-        yych = *++m_curPos;
-        switch (yych) {
-        case '.':        goto yy809;
+        case '.':        goto yy796;
         case '0':
         case '1':
         case '2':
@@ -19162,19 +18974,19 @@ yy2129:
         case '6':
         case '7':
         case '8':
-        case '9':        goto yy2130;
+        case '9':        goto yy2117;
         case 'E':
-        case 'e':        goto yy812;
+        case 'e':        goto yy799;
         case 'X':
-        case 'x':        goto yy2139;
-        default:        goto yy771;
+        case 'x':        goto yy2126;
+        default:        goto yy758;
         }
-yy2130:
+yy2117:
         ++m_curPos;
         if ((m_end - m_curPos) < 3) YYFILL(3);
         yych = *m_curPos;
         switch (yych) {
-        case '.':        goto yy809;
+        case '.':        goto yy796;
         case '0':
         case '1':
         case '2':
@@ -19184,12 +18996,12 @@ yy2130:
         case '6':
         case '7':
         case '8':
-        case '9':        goto yy2130;
+        case '9':        goto yy2117;
         case 'E':
-        case 'e':        goto yy812;
-        default:        goto yy771;
+        case 'e':        goto yy799;
+        default:        goto yy758;
         }
-yy2132:
+yy2119:
         yych = *++m_curPos;
         switch (yych) {
         case '0':
@@ -19201,10 +19013,10 @@ yy2132:
         case '6':
         case '7':
         case '8':
-        case '9':        goto yy2133;
-        default:        goto yy771;
+        case '9':        goto yy2120;
+        default:        goto yy758;
         }
-yy2133:
+yy2120:
         yyaccept = 4;
         marker = ++m_curPos;
         if ((m_end - m_curPos) < 3) YYFILL(3);
@@ -19219,22 +19031,22 @@ yy2133:
         case '6':
         case '7':
         case '8':
-        case '9':        goto yy2133;
+        case '9':        goto yy2120;
         case 'E':
-        case 'e':        goto yy2135;
+        case 'e':        goto yy2122;
         case 'F':
-        case 'f':        goto yy817;
+        case 'f':        goto yy804;
         case 'H':
-        case 'h':        goto yy819;
+        case 'h':        goto yy806;
         case 'L':
-        case 'l':        goto yy816;
-        default:        goto yy811;
+        case 'l':        goto yy803;
+        default:        goto yy798;
         }
-yy2135:
+yy2122:
         yych = *++m_curPos;
         switch (yych) {
         case '+':
-        case '-':        goto yy2136;
+        case '-':        goto yy2123;
         case '0':
         case '1':
         case '2':
@@ -19244,10 +19056,10 @@ yy2135:
         case '6':
         case '7':
         case '8':
-        case '9':        goto yy2137;
-        default:        goto yy771;
+        case '9':        goto yy2124;
+        default:        goto yy758;
         }
-yy2136:
+yy2123:
         yych = *++m_curPos;
         switch (yych) {
         case '0':
@@ -19259,10 +19071,10 @@ yy2136:
         case '6':
         case '7':
         case '8':
-        case '9':        goto yy2137;
-        default:        goto yy771;
+        case '9':        goto yy2124;
+        default:        goto yy758;
         }
-yy2137:
+yy2124:
         ++m_curPos;
         if (m_end <= m_curPos) YYFILL(1);
         yych = *m_curPos;
@@ -19276,16 +19088,16 @@ yy2137:
         case '6':
         case '7':
         case '8':
-        case '9':        goto yy2137;
+        case '9':        goto yy2124;
         case 'F':
-        case 'f':        goto yy817;
+        case 'f':        goto yy804;
         case 'H':
-        case 'h':        goto yy819;
+        case 'h':        goto yy806;
         case 'L':
-        case 'l':        goto yy816;
-        default:        goto yy811;
+        case 'l':        goto yy803;
+        default:        goto yy798;
         }
-yy2139:
+yy2126:
         yych = *++m_curPos;
         switch (yych) {
         case '0':
@@ -19309,15 +19121,15 @@ yy2139:
         case 'c':
         case 'd':
         case 'e':
-        case 'f':        goto yy2140;
-        default:        goto yy771;
+        case 'f':        goto yy2127;
+        default:        goto yy758;
         }
-yy2140:
+yy2127:
         ++m_curPos;
         if ((m_end - m_curPos) < 3) YYFILL(3);
         yych = *m_curPos;
         switch (yych) {
-        case '.':        goto yy865;
+        case '.':        goto yy852;
         case '0':
         case '1':
         case '2':
@@ -19339,10 +19151,10 @@ yy2140:
         case 'c':
         case 'd':
         case 'e':
-        case 'f':        goto yy2140;
+        case 'f':        goto yy2127;
         case 'P':
-        case 'p':        goto yy867;
-        default:        goto yy771;
+        case 'p':        goto yy854;
+        default:        goto yy758;
         }
 }
 
@@ -19366,45 +19178,45 @@ void Scanner::skipWhitespaces()
         if ((m_end - m_curPos) < 2) YYFILL(2);
         yych = *(marker = m_curPos);
         switch (yych) {
-        case 0x00:        goto yy2152;
+        case 0x00:        goto yy2139;
         case '\t':
-        case ' ':        goto yy2145;
-        case '\n':        goto yy2149;
-        case '\r':        goto yy2147;
-        case '/':        goto yy2151;
-        default:        goto yy2144;
+        case ' ':        goto yy2132;
+        case '\n':        goto yy2136;
+        case '\r':        goto yy2134;
+        case '/':        goto yy2138;
+        default:        goto yy2131;
         }
-yy2144:
+yy2131:
         { break; }
-yy2145:
+yy2132:
         ++m_curPos;
         { continue; }
-yy2147:
+yy2134:
         yych = *++m_curPos;
         switch (yych) {
-        case '\n':        goto yy2149;
-        default:        goto yy2148;
+        case '\n':        goto yy2136;
+        default:        goto yy2135;
         }
-yy2148:
+yy2135:
         m_curPos = marker;
-        goto yy2144;
-yy2149:
+        goto yy2131;
+yy2136:
         ++m_curPos;
         { nextLine(); continue; }
-yy2151:
+yy2138:
         yych = *++m_curPos;
         switch (yych) {
-        case '*':        goto yy2154;
-        case '/':        goto yy2156;
-        default:        goto yy2148;
+        case '*':        goto yy2141;
+        case '/':        goto yy2143;
+        default:        goto yy2135;
         }
-yy2152:
+yy2139:
         ++m_curPos;
         { --m_curPos; break; }
-yy2154:
+yy2141:
         ++m_curPos;
         { skipMultilineComment(); continue; }
-yy2156:
+yy2143:
         ++m_curPos;
         { skipOneLinearComment(); continue; }
 }
@@ -19430,35 +19242,35 @@ void Scanner::skipOneLinearComment()
         if ((m_end - m_curPos) < 2) YYFILL(2);
         yych = *m_curPos;
         switch (yych) {
-        case 0x00:        goto yy2164;
-        case '\n':        goto yy2162;
-        case '\r':        goto yy2160;
-        default:        goto yy2166;
+        case 0x00:        goto yy2151;
+        case '\n':        goto yy2149;
+        case '\r':        goto yy2147;
+        default:        goto yy2153;
         }
-yy2160:
+yy2147:
         ++m_curPos;
         switch ((yych = *m_curPos)) {
-        case '\n':        goto yy2167;
-        default:        goto yy2161;
+        case '\n':        goto yy2154;
+        default:        goto yy2148;
         }
-yy2161:
+yy2148:
         { continue; }
-yy2162:
+yy2149:
         ++m_curPos;
-yy2163:
+yy2150:
         { nextLine();
                    appendComment(m_tokStart,i);
                    break; }
-yy2164:
+yy2151:
         ++m_curPos;
         { --m_curPos; appendComment(m_tokStart,i); break; }
-yy2166:
+yy2153:
         yych = *++m_curPos;
-        goto yy2161;
-yy2167:
+        goto yy2148;
+yy2154:
         ++m_curPos;
         yych = *m_curPos;
-        goto yy2163;
+        goto yy2150;
 }
 
     };
@@ -19477,47 +19289,47 @@ void Scanner::skipMultilineComment()
         if ((m_end - m_curPos) < 2) YYFILL(2);
         yych = *m_curPos;
         switch (yych) {
-        case 0x00:        goto yy2175;
-        case '\n':        goto yy2172;
-        case '\r':        goto yy2170;
-        case '*':        goto yy2174;
-        default:        goto yy2177;
+        case 0x00:        goto yy2162;
+        case '\n':        goto yy2159;
+        case '\r':        goto yy2157;
+        case '*':        goto yy2161;
+        default:        goto yy2164;
         }
-yy2170:
+yy2157:
         ++m_curPos;
         switch ((yych = *m_curPos)) {
-        case '\n':        goto yy2180;
-        default:        goto yy2171;
+        case '\n':        goto yy2167;
+        default:        goto yy2158;
         }
-yy2171:
+yy2158:
         { continue; }
-yy2172:
+yy2159:
         ++m_curPos;
-yy2173:
+yy2160:
         { nextLine();
                    appendComment(m_tokStart,i);
                    newComment("// ");
                    m_tokStart = m_curPos;
                    continue; }
-yy2174:
+yy2161:
         yych = *++m_curPos;
         switch (yych) {
-        case '/':        goto yy2178;
-        default:        goto yy2171;
+        case '/':        goto yy2165;
+        default:        goto yy2158;
         }
-yy2175:
+yy2162:
         ++m_curPos;
         { --m_curPos; syntaxError("Premature end of comment"); }
-yy2177:
+yy2164:
         yych = *++m_curPos;
-        goto yy2171;
-yy2178:
+        goto yy2158;
+yy2165:
         ++m_curPos;
         { appendComment(m_tokStart,i); break; }
-yy2180:
+yy2167:
         ++m_curPos;
         yych = *m_curPos;
-        goto yy2173;
+        goto yy2160;
 }
 
     };

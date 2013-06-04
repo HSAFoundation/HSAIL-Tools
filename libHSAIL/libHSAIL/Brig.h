@@ -50,6 +50,4 @@ namespace Brig {
 namespace HSAIL_ASM { }
 namespace HSAIL = HSAIL_ASM;
 
-#define SUPPORTED_HSAIL_SPEC_VERSION "1.0 (2012 June 19)"
-
 #endif // defined(INCLUDED_BRIG_H)

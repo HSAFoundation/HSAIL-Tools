@@ -50,6 +50,7 @@ void BlockEnd::initBrig() {
 void BlockNumeric::initBrig() {
   brig()->size = sizeof(Brig::BrigBlockNumeric);
   brig()->kind = Brig::BRIG_DIRECTIVE_BLOCK_NUMERIC;
+  brig()->reserved = 0;
   brig()->elementCount = 0;
 };
 
@@ -90,6 +91,9 @@ void DirectiveFunction::initBrig() {
   brig()->nextTopLevelDirective = 0;
   brig()->instCount = 0;
   modifier().initBrig();
+  for (int i=0;i<3;i++) {
+    brig()->reserved[i] = 0;
+  }
 };
 
 void DirectiveKernel::initBrig() {
@@ -104,6 +108,9 @@ void DirectiveKernel::initBrig() {
   brig()->nextTopLevelDirective = 0;
   brig()->instCount = 0;
   modifier().initBrig();
+  for (int i=0;i<3;i++) {
+    brig()->reserved[i] = 0;
+  }
 };
 
 void DirectiveSignature::initBrig() {
@@ -127,6 +134,7 @@ void DirectiveControl::initBrig() {
   brig()->size = sizeof(Brig::BrigDirectiveControl);
   brig()->kind = Brig::BRIG_DIRECTIVE_CONTROL;
   brig()->code = 0;
+  brig()->reserved = 0;
   brig()->valueCount = 0;
   for (int i=0;i<1;i++) {
     brig()->values[i] = 0;
@@ -164,6 +172,7 @@ void DirectiveImageInit::initBrig() {
   brig()->array = 1;
   brig()->order = Brig::BRIG_ORDER_UNKNOWN;
   brig()->format = Brig::BRIG_FORMAT_UNKNOWN;
+  brig()->reserved = 0;
 };
 
 void DirectiveLabel::initBrig() {
@@ -179,6 +188,7 @@ void DirectiveLabelInit::initBrig() {
   brig()->code = 0;
   brig()->label = 0;
   brig()->labelCount = 0;
+  brig()->reserved = 0;
   for (int i=0;i<1;i++) {
     brig()->labels[i] = 0;
   }
@@ -190,6 +200,7 @@ void DirectiveLabelTargets::initBrig() {
   brig()->code = 0;
   brig()->label = 0;
   brig()->labelCount = 0;
+  brig()->reserved = 0;
   for (int i=0;i<1;i++) {
     brig()->labels[i] = 0;
   }
@@ -220,6 +231,9 @@ void DirectiveImage::initBrig() {
   brig()->dimLo = 0;
   brig()->dimHi = 0;
   modifier().initBrig();
+  for (int i=0;i<3;i++) {
+    brig()->reserved[i] = 0;
+  }
 };
 
 void DirectiveSampler::initBrig() {
@@ -234,6 +248,9 @@ void DirectiveSampler::initBrig() {
   brig()->dimLo = 0;
   brig()->dimHi = 0;
   modifier().initBrig();
+  for (int i=0;i<3;i++) {
+    brig()->reserved[i] = 0;
+  }
 };
 
 void DirectiveVariable::initBrig() {
@@ -247,6 +264,9 @@ void DirectiveVariable::initBrig() {
   brig()->dimLo = 0;
   brig()->dimHi = 0;
   modifier().initBrig();
+  for (int i=0;i<3;i++) {
+    brig()->reserved[i] = 0;
+  }
 };
 
 void DirectiveVariableInit::initBrig() {
@@ -254,18 +274,16 @@ void DirectiveVariableInit::initBrig() {
   brig()->kind = Brig::BRIG_DIRECTIVE_VARIABLE_INIT;
   brig()->code = 0;
   brig()->elementCount = 0;
+  brig()->reserved = 0;
 };
 
 void DirectiveVersion::initBrig() {
   brig()->size = sizeof(Brig::BrigDirectiveVersion);
   brig()->kind = Brig::BRIG_DIRECTIVE_VERSION;
   brig()->code = 0;
-  brig()->hsailMajor = Brig::BRIG_VERSION_HSAIL_MAJOR;
-  brig()->hsailMinor = Brig::BRIG_VERSION_HSAIL_MINOR;
-  brig()->brigMajor = Brig::BRIG_VERSION_BRIG_MAJOR;
-  brig()->brigMinor = Brig::BRIG_VERSION_BRIG_MINOR;
   brig()->profile = Brig::BRIG_PROFILE_FULL;
   brig()->machineModel = Brig::BRIG_MACHINE_LARGE;
+  brig()->reserved = 0;
 };
 
 void DirectiveSamplerInit::initBrig() {
@@ -292,6 +310,9 @@ void InstAddr::initBrig() {
     brig()->operands[i] = 0;
   }
   brig()->segment = 0;
+  for (int i=0;i<3;i++) {
+    brig()->reserved[i] = 0;
+  }
 };
 
 void InstAtomic::initBrig() {
@@ -302,6 +323,7 @@ void InstAtomic::initBrig() {
   }
   brig()->segment = 0;
   brig()->memorySemantic = Brig::BRIG_SEMANTIC_REGULAR;
+  brig()->reserved = 0;
 };
 
 void InstAtomicImage::initBrig() {
@@ -310,6 +332,7 @@ void InstAtomicImage::initBrig() {
   for (int i=0;i<5;i++) {
     brig()->operands[i] = 0;
   }
+  brig()->reserved = 0;
 };
 
 void InstBar::initBrig() {
@@ -318,6 +341,7 @@ void InstBar::initBrig() {
   for (int i=0;i<5;i++) {
     brig()->operands[i] = 0;
   }
+  brig()->reserved = 0;
 };
 
 void InstBasic::initBrig() {
@@ -335,6 +359,7 @@ void InstBr::initBrig() {
     brig()->operands[i] = 0;
   }
   modifier().initBrig();
+  brig()->reserved = 0;
 };
 
 void InstCmp::initBrig() {
@@ -345,6 +370,7 @@ void InstCmp::initBrig() {
   }
   modifier().initBrig();
   brig()->pack = Brig::BRIG_PACK_NONE;
+  brig()->reserved = 0;
 };
 
 void InstCvt::initBrig() {
@@ -362,6 +388,7 @@ void InstFbar::initBrig() {
   for (int i=0;i<5;i++) {
     brig()->operands[i] = 0;
   }
+  brig()->reserved = 0;
 };
 
 void InstImage::initBrig() {
@@ -369,6 +396,9 @@ void InstImage::initBrig() {
   brig()->kind = Brig::BRIG_INST_IMAGE;
   for (int i=0;i<5;i++) {
     brig()->operands[i] = 0;
+  }
+  for (int i=0;i<3;i++) {
+    brig()->reserved[i] = 0;
   }
 };
 
@@ -390,6 +420,7 @@ void InstMod::initBrig() {
   }
   modifier().initBrig();
   brig()->pack = Brig::BRIG_PACK_NONE;
+  brig()->reserved = 0;
 };
 
 void InstSeg::initBrig() {
@@ -399,6 +430,7 @@ void InstSeg::initBrig() {
     brig()->operands[i] = 0;
   }
   brig()->segment = 0;
+  brig()->reserved = 0;
 };
 
 void InstSourceType::initBrig() {
@@ -407,6 +439,7 @@ void InstSourceType::initBrig() {
   for (int i=0;i<5;i++) {
     brig()->operands[i] = 0;
   }
+  brig()->reserved = 0;
 };
 
 void InstNone::initBrig() {
@@ -423,6 +456,7 @@ void OperandAddress::initBrig() {
   brig()->kind = Brig::BRIG_OPERAND_ADDRESS;
   brig()->symbol = 0;
   brig()->reg = 0;
+  brig()->reserved = 0;
 };
 
 void OperandImmed::initBrig() {
@@ -434,6 +468,7 @@ void OperandArgumentList::initBrig() {
   brig()->size = sizeof(Brig::BrigOperandArgumentList);
   brig()->kind = Brig::BRIG_OPERAND_ARGUMENT_LIST;
   brig()->elementCount = 0;
+  brig()->reserved = 0;
   for (int i=0;i<1;i++) {
     brig()->elements[i] = 0;
   }
@@ -443,6 +478,7 @@ void OperandFunctionList::initBrig() {
   brig()->size = sizeof(Brig::BrigOperandFunctionList);
   brig()->kind = Brig::BRIG_OPERAND_FUNCTION_LIST;
   brig()->elementCount = 0;
+  brig()->reserved = 0;
   for (int i=0;i<1;i++) {
     brig()->elements[i] = 0;
   }
@@ -482,6 +518,7 @@ void OperandReg::initBrig() {
   brig()->size = sizeof(Brig::BrigOperandReg);
   brig()->kind = Brig::BRIG_OPERAND_REG;
   brig()->reg = 0;
+  brig()->reserved = 0;
 };
 
 void OperandRegVector::initBrig() {
@@ -496,6 +533,7 @@ void OperandRegVector::initBrig() {
 void OperandWavesize::initBrig() {
   brig()->size = sizeof(Brig::BrigOperandWavesize);
   brig()->kind = Brig::BRIG_OPERAND_WAVESIZE;
+  brig()->reserved = 0;
 };
 
 void SamplerModifier::initBrig() {
