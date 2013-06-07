@@ -1,4 +1,4 @@
-			 BUILDING LIBHSAIL
+                          BUILDING LIBHSAIL
 
 1. PREREQUISITES:
 
@@ -50,26 +50,26 @@ obtained from http://tdm-gcc.tdragon.net/download .
 You should define the following variables on make command line or pre-define
 them in the environment:
 
-        LLVM_CONFIG:path to llvm-config binary. If specified, no  further  info
-                    about LLVM is necessary.
-	LLVM_SRC:   pointing to LLVM source files.
-        LLVM_BUILD: pointing to LLVM build directory  matching  your  build
-                    settings. Windows build attempts  to  locate  the  libs  in
-                    Debug or Release subdirectories of this path.
-        LLVM_LIBS:  (optional, deduced from LLVM_BUILD) pointing  the  directory
-                    with LLVM libs.
-	_OPT:       (optional) define for an optimized build
-	_DBG:       (optional) define for a build with debug symbols
-	_M64:       (optional) define for a 64-bit build
-	_M32:       (optional) define for a 32-bit build
-        _GCC:       define to use use MinGW (or other GCC build) instead of  MSVC  on
-                    Windows
+    LLVM_CONFIG:path to llvm-config binary. If specified, no  further  info
+                about LLVM is necessary.
+    LLVM_SRC:   pointing to LLVM source files.
+    LLVM_BUILD: pointing to LLVM build directory  matching  your  build
+                settings. Windows build attempts  to  locate  the  libs  in
+                Debug or Release subdirectories of this path.
+    LLVM_LIBS:  (optional, deduced from LLVM_BUILD) pointing  the  directory
+                with LLVM libs.
+    _OPT:       (optional) define for an optimized build
+    _DBG:       (optional) define for a build with debug symbols
+    _M64:       (optional) define for a 64-bit build
+    _M32:       (optional) define for a 32-bit build
+    _GCC:       define to use use MinGW (or other GCC build) instead of  MSVC  on
+                Windows
 
 
 On Linux (e.g. Ubuntu) a standard LLVM package may be used. It is sufficient to
 specify the path to its llvm-config binary:
 
-	make -j LLVM_CONFIG=llvm-config-3.2
+    make -j LLVM_CONFIG=llvm-config-3.2
 
 Any combination of _OPT and _DBG is allowed. _M64 and _M32 can not be combined.
 
@@ -84,9 +84,9 @@ attempts  to  locate  the 32-bit (if _M64 is unset) or 64-bit (if _M64 is set)
 build  of  the  compiler using the following environment variables, in order of
 decreasing  preference:
 
-	%VCINSTALLDIR%
-	%VS110COMNTOOLS%
-	%VS100COMNTOOLS%
+    %VCINSTALLDIR%
+    %VS110COMNTOOLS%
+    %VS100COMNTOOLS%
 
 Normally  %VS..COMNTOOLS%  variables  are added  to   the   system   environment
 automatically. If there are any issues  with  auto-detection,  you  should  set
@@ -96,10 +96,10 @@ VCINSTALLDIR explicitly or just configure the paths manually.
 
 To regenerate libHSAIL source files, run the following:
 
-	cd libHSAIL
-	perl generate.pl . generated
+    cd libHSAIL
+    perl generate.pl . generated
 
 where "." is the input file path and "generated" is the output file path. If
 necessary, path to re2c build may be explicitly specified:
 
-	perl generate.pl --re2c=my/build/of/re2c . generated
+    perl generate.pl --re2c=my/build/of/re2c . generated
