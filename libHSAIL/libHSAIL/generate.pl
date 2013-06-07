@@ -614,7 +614,6 @@ sub makeDispatchByItem {
 }
 
 sub makeEnumFlds {
-        printf $textLicense;
 	my $pfx = "";
 	for my $s (@sortedStructs) {
 		next if $s->{nowrap} or $s->{generic};
