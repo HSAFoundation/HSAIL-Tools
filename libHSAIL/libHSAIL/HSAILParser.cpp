@@ -1055,6 +1055,8 @@ public:
             }
             m_data.push_back(readValueIncludingPacked<BrigType,ConvertImmediate>(m_scanner));
         } while(m_scanner.tryEatToken(EComma));
+        while (m_data.numElements<CType>() < m_expElements)
+          m_data.push_back(0);
         return static_cast<unsigned>(m_data.numElements<CType>() - numElementsBefore);
     }
 
