@@ -57,8 +57,8 @@
     DCD   = [0-9];
     HXD   = [0-9a-fA-F];
 
-    DECIMAL = DCD+;
-    OCTAL   = "0"[0-7]*;
+    DECIMAL = "0" | [1-9]DCD*;
+    OCTAL   = "0"[0-7]+;
     HEX     = "0"[xX]HXD+;
 
     INTEGER = DECIMAL|OCTAL|HEX;
@@ -254,9 +254,9 @@ ETokens Scanner::scanModifier()
     "_equiv"     { return m_token = EMEquiv; }
 
     "_ftz"       { return m_token = EMFTZ; }
-    
+
     "_region"    { m_brigId = Brig::BRIG_ExtSpace0;      return m_token = EMSegment; }
-    "_aligned"   { m_brigId = Brig::BRIG_MEMORY_ALIGNED; return m_token = EMAligned; } 
+    "_aligned"   { m_brigId = Brig::BRIG_MEMORY_ALIGNED; return m_token = EMAligned; }
 
     "_down"               { m_brigId = Brig::BRIG_ROUND_FLOAT_MINUS_INFINITY; return m_token = EMRound;      }
     "_near"               { m_brigId = Brig::BRIG_ROUND_FLOAT_NEAR_EVEN; return m_token = EMRound;      }
@@ -599,7 +599,7 @@ ETokens Scanner::scan()
     "blocknumeric"       { return m_token = EKWBlockNum; }
     "blockstring"        { return m_token = EKWBlockStr; }
     "endblock"           { return m_token = EKWBlockEnd; }
-    
+
     "fbar"               { return m_token = EKWFBar; }
 
     "@" ID               { return m_token = ELabel; }
@@ -650,7 +650,7 @@ ETokens Scanner::scan()
 
     C99FLT [hH]          { return m_token = EHlfC99Number; }
     C99FLT [fF]          { return m_token = ESglC99Number; }
-    C99FLT [lL]?         { return m_token = EDblC99Number; }   
+    C99FLT [lL]?         { return m_token = EDblC99Number; }
 
     "\000"               { --m_curPos; return m_token = EEndOfSource; }
 
