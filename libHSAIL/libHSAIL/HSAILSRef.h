@@ -42,6 +42,7 @@
 #define _INCLUDED_HSAIL_SREF_H
 
 #include <string>
+#include <cstddef>
 #include <cstring>
 #include <vector>
 #include <iosfwd>
