@@ -809,6 +809,7 @@ void BrigDwarfGenerator_impl::generateDwarfForBrigKernelFunction( HSAIL_ASM::Dir
                               nullError );
     }
     endPC = lastInstr.brigOffset() + lastInstr.brigSize();
+    dwarf_lne_end_sequence( m_pDwarfDebug, endPC, nullError );
 
     Dwarf_P_Die pSubprogramEntry = dwarf_new_die( m_pDwarfDebug,
                                                   DW_TAG_subprogram, m_pCompileUnit,
