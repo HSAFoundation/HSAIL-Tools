@@ -527,7 +527,7 @@ OperandImmed Brigantine::createImmed(uint64_t v, Brig::BrigType16_t type, const 
     return createImmedT(v,type,srcInfo);
 }
 
-OperandImmed Brigantine::createImmed(float v,   Brig::BrigType16_t type, const SourceInfo* srcInfo) {
+OperandImmed Brigantine::createImmed(f32_t v,    Brig::BrigType16_t type, const SourceInfo* srcInfo) {
     return createImmedT(v,type,srcInfo);
 }
 

@@ -48,24 +48,69 @@
 namespace HSAIL_ASM
 {
 
+// The i386 calling convention does not preserve 32-bit SNAN constants on
+// return. The SYSTEM V ABI for i386 says that float values must be returned in
+// %st(0) as 80-bit extended precision doubles. On x86 architectures converting
+// a SNAN from floating point type to another replaces the SNAN with the
+// corresponding QNAN. For example the float 0fff800001 will be transformed into
+// 0fffc00001. To avoid loss of information, we wrap all floats in a
+// structure. The i386 calling convention says that structures will be returned
+// in memory regardless of their contents. The wrapping has no performance
+// impact on x86-64, since the structure will be returned in the xmm0 register
+// exactly as though it were a naked float.
+//
+// Here is a simple hsail program demonstrating the problem:
+//
+// version 0:96:$full:$small;
+// global_f32 &n = 0fff800001;
+// kernel &__OpenCL_Global_Initializer_kernel(
+//         kernarg_u32 %r)
+// {
+// @__OpenCL_Global_Initializer_kernel_entry:
+//         ld_kernarg_u32 $s2, [%r];
+//         ld_global_u32  $s1, [&n];
+//         st_global_u32  $s1, [$s2];
+//         ret;
+// };
+
+class f32_t 
+{
+public:
+    f32_t() {}
+    f32_t(float v) : m_value(v) {}
+    explicit f32_t(int8_t   v) : m_value(v) {}
+    explicit f32_t(uint8_t  v) : m_value(v) {}
+    explicit f32_t(int16_t  v) : m_value(v) {}
+    explicit f32_t(uint16_t v) : m_value(v) {}
+    explicit f32_t(int32_t  v) : m_value(v) {}
+    explicit f32_t(uint32_t v) : m_value(v) {}
+    explicit f32_t(int64_t  v) : m_value(v) {}
+    explicit f32_t(uint64_t v) : m_value(v) {}
+    explicit f32_t(double   v) : m_value(v) {}
+    inline explicit f32_t(const f16_t &v);
+    operator float() const { return m_value; }
+private:
+  float m_value;
+};
+
 class f16_t
 {
 public:
     f16_t() : m_value(0) {}
     explicit f16_t(float v)    : m_value(singles2halfp(v)) {}
-    explicit f16_t(double v)   : m_value(singles2halfp(static_cast<float>(v))) {}
+    explicit f16_t(double v)   : m_value(singles2halfp(static_cast<f32_t>(v))) {}
 
-    explicit f16_t(int8_t v)  : m_value(singles2halfp(static_cast<float>(v))) {}
-    explicit f16_t(int16_t v)  : m_value(singles2halfp(static_cast<float>(v))) {}
-    explicit f16_t(int32_t v)  : m_value(singles2halfp(static_cast<float>(v))) {}
-    explicit f16_t(int64_t v)  : m_value(singles2halfp(static_cast<float>(v))) {}
+    explicit f16_t(int8_t v)  : m_value(singles2halfp(static_cast<f32_t>(v))) {}
+    explicit f16_t(int16_t v)  : m_value(singles2halfp(static_cast<f32_t>(v))) {}
+    explicit f16_t(int32_t v)  : m_value(singles2halfp(static_cast<f32_t>(v))) {}
+    explicit f16_t(int64_t v)  : m_value(singles2halfp(static_cast<f32_t>(v))) {}
 
-    explicit f16_t(uint8_t v) : m_value(singles2halfp(static_cast<float>(v))) {}
-    explicit f16_t(uint16_t v) : m_value(singles2halfp(static_cast<float>(v))) {}
-    explicit f16_t(uint32_t v) : m_value(singles2halfp(static_cast<float>(v))) {}
-    explicit f16_t(uint64_t v) : m_value(singles2halfp(static_cast<float>(v))) {}
+    explicit f16_t(uint8_t v) : m_value(singles2halfp(static_cast<f32_t>(v))) {}
+    explicit f16_t(uint16_t v) : m_value(singles2halfp(static_cast<f32_t>(v))) {}
+    explicit f16_t(uint32_t v) : m_value(singles2halfp(static_cast<f32_t>(v))) {}
+    explicit f16_t(uint64_t v) : m_value(singles2halfp(static_cast<f32_t>(v))) {}
 
-    operator float()  const { return halfp2singles(m_value); }
+    operator f32_t()  const { return halfp2singles(m_value); }
     operator double() const { return halfp2singles(m_value); }
 
     operator int8_t()    const { return static_cast<int8_t>(halfp2singles(m_value)); }
@@ -92,17 +137,18 @@ public:
 private:
 	uint16_t m_value;
 
-    static uint16_t singles2halfp(float src);
-    static float halfp2singles(uint16_t src);
+    static uint16_t singles2halfp(f32_t src);
+    static f32_t halfp2singles(uint16_t src);
 };
 
-
+f32_t::f32_t(const f16_t &v) : m_value(static_cast<f32_t>(v)) {}
 
 template <> struct value_class<f16_t>  : float_class {};
 
 template <typename OS>
 inline OS& operator << (OS& os, f16_t v) {
-    os << static_cast<float>(v);
+    f32_t sf = v;
+    os << static_cast<float>(sf);
     return os;
 }
 
@@ -123,7 +169,7 @@ template <> struct IEEE754BasicTraits<f16_t>
     static const char* suffix;
 };
 
-template <> struct IEEE754BasicTraits<float>
+template <> struct IEEE754BasicTraits<f32_t>
 {
     typedef uint32_t RawBitsType;
     static const int mntsWidth = 23;

@@ -260,7 +260,7 @@ private:
     void printValue(signed char arg) const { *stream << (int)arg; }
 
     void printValue(f16_t val) const { printFloatValue(val); }
-    void printValue(float val) const { printFloatValue(val); }
+    void printValue(f32_t val) const { printFloatValue(val); }
     void printValue(double val) const { printFloatValue(val); }
     void printValue(const b128_t& val) const;
 

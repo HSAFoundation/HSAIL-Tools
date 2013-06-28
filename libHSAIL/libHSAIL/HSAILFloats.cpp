@@ -53,13 +53,13 @@ namespace HSAIL_ASM
 {
 
 const char* IEEE754BasicTraits<f16_t>::suffix = "h";
-const char* IEEE754BasicTraits<float>::suffix = "f";
+const char* IEEE754BasicTraits<f32_t>::suffix = "f";
 const char* IEEE754BasicTraits<double>::suffix = "";
 
-uint16_t f16_t::singles2halfp(float src)
+uint16_t f16_t::singles2halfp(f32_t src)
 {
     typedef IEEE754Traits<f16_t> F16T;
-    typedef IEEE754Traits<float> F32T;
+    typedef IEEE754Traits<f32_t> F32T;
 
     F32T::RawBitsType const srcBits = *reinterpret_cast<const F32T::RawBitsType*>(&src);
     F16T::RawBitsType const f16signBit = (srcBits & F32T::signMask) >> 16;
@@ -92,10 +92,10 @@ uint16_t f16_t::singles2halfp(float src)
     return mntsBits & (1u << (F32T::mntsWidth - F16T::mntsWidth - 1)) ? res + static_cast<F16T::RawBitsType>(1u) : res;
 }
 
-float f16_t::halfp2singles(uint16_t src)
+f32_t f16_t::halfp2singles(uint16_t src)
 {
     typedef IEEE754Traits<f16_t> F16T;
-    typedef IEEE754Traits<float> F32T;
+    typedef IEEE754Traits<f32_t> F32T;
 
     F32T::RawBitsType const f32signBit = (static_cast<F32T::RawBitsType>(src) << 16) & F32T::signMask;
     if( (src & ~F16T::signMask)==0 ) {
@@ -120,7 +120,7 @@ float f16_t::halfp2singles(uint16_t src)
         f32mntsBits &= F32T::mntsMask;
     }
 
-    return makeFloat<float>(f32signBit,exp,f32mntsBits);
+    return makeFloat<f32_t>(f32signBit,exp,f32mntsBits);
 }
 
 template <typename Float>
@@ -283,7 +283,8 @@ Float readC99(const SRef& s)
 using ::ldexp; // to include ldexp from global namespace
 static f16_t ldexp(f16_t v, int exp)
 {
-    return static_cast<f16_t>(::ldexp(static_cast<float>(v),exp));
+    f32_t sf = v;
+    return static_cast<f16_t>(::ldexp(static_cast<float>(sf),exp));
 }
 
 template <typename Float>
@@ -322,13 +323,13 @@ int testc99()
 int testf16vsf32()
 {
     typedef IEEE754Traits<f16_t> F16T;
-    typedef IEEE754Traits<float> F32T;
+    typedef IEEE754Traits<f32_t> F32T;
 
     static float const m[] = {
-        makeFloat<float>(0,             0,0x1555555U),
-        makeFloat<float>(0,             0,0x1AAAAAAU),
-        makeFloat<float>(F32T::signMask,0,0x1555555U),
-        makeFloat<float>(F32T::signMask,0,0x1AAAAAAU),
+        makeFloat<f32_t>(0,             0,0x1555555U),
+        makeFloat<f32_t>(0,             0,0x1AAAAAAU),
+        makeFloat<f32_t>(F32T::signMask,0,0x1555555U),
+        makeFloat<f32_t>(F32T::signMask,0,0x1AAAAAAU),
     };
 
     int errors = 0;
@@ -336,7 +337,7 @@ int testf16vsf32()
         for (unsigned i=0; i<(sizeof m/sizeof m[0]); ++i) {
             float const src = ldexp(m[i],e);
             f16_t const f16 = f16_t(src);
-            float const f32 = f16;
+            f32_t const f32 = f16;
             float const diff = f32-src;
             float const treshould = ldexp(1.0f,std::max(e-F16T::mntsWidth,F16T::minExp - F16T::mntsWidth));
             if ( fabs(diff) > treshould ) {
@@ -349,20 +350,20 @@ int testf16vsf32()
 }
 
 template int testc99<double>();
-template int testc99<float>();
+template int testc99<f32_t>();
 template int testc99<f16_t>();
 
 template std::string toC99str(f16_t v);
-template std::string toC99str(float v);
+template std::string toC99str(f32_t v);
 template std::string toC99str(double v);
 
 template f16_t  readC99(const SRef& s);
-template float  readC99(const SRef& s);
+template f32_t  readC99(const SRef& s);
 template double readC99(const SRef& s);
 
 int testFloatRelatedCode() {
      return testc99<double>()
-     + testc99<float>()
+     + testc99<f32_t>()
      + testc99<f16_t>()
      + testf16vsf32();
 }

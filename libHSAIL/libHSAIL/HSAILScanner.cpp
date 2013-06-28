@@ -236,7 +236,7 @@ Scanner::Variant Scanner::readValueVariant()
         case ESglHexNumber:
             {
                 union {
-                    IEEE754Traits<float>::RawBitsType pad;
+                    IEEE754Traits<f32_t>::RawBitsType pad;
                     float v;
                 };
                 istringstreamalert(SRef(m_tokStart+2,m_curPos)) >> hex >> pad;
@@ -258,7 +258,7 @@ Scanner::Variant Scanner::readValueVariant()
             }
         case ESglC99Number:
             {
-                float const v = readC99<float>(SRef(m_tokStart,m_curPos));
+                float const v = readC99<f32_t>(SRef(m_tokStart,m_curPos));
                 return Variant(v);
             }
         case EDblC99Number:

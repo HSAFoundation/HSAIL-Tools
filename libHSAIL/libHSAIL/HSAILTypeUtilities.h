@@ -49,6 +49,8 @@
 
 namespace HSAIL_ASM {
 
+class f32_t;
+
 struct true_type  { static const bool value = true; };
 struct false_type { static const bool value = false; };
 
@@ -185,7 +187,7 @@ struct float_class { typedef float_class* ptr; };
 
 template <typename T> struct value_class : undef_class {};
 
-template <> struct value_class<float>  : float_class {};
+template <> struct value_class<f32_t>  : float_class {};
 template <> struct value_class<double> : float_class {};
 template <> struct value_class<long double> : float_class {};
 
@@ -323,7 +325,7 @@ template <> struct BrigType<Brig::BRIG_TYPE_F16> : BrigTypeF {
 };
 template <> struct BrigType<Brig::BRIG_TYPE_F32> : BrigTypeF {
     static const Brig::BrigTypeX value = Brig::BRIG_TYPE_F32;
-    typedef float CType;
+    typedef f32_t CType;
     typedef BrigType<Brig::BRIG_TYPE_B32>  asBitType;
 };
 template <> struct BrigType<Brig::BRIG_TYPE_F64> : BrigTypeF {
@@ -488,7 +490,7 @@ template <> struct CType2Brig< uint64_t,1u>  : BrigType<Brig::BRIG_TYPE_U64> {};
 template <> struct CType2Brig< b128_t,1u>    : BrigType<Brig::BRIG_TYPE_B128> {};
 
 template <> struct CType2Brig< f16_t,1u>     : BrigType<Brig::BRIG_TYPE_F16> {};
-template <> struct CType2Brig< float,1u>     : BrigType<Brig::BRIG_TYPE_F32> {};
+template <> struct CType2Brig< f32_t,1u>     : BrigType<Brig::BRIG_TYPE_F32> {};
 template <> struct CType2Brig< double,1u>    : BrigType<Brig::BRIG_TYPE_F64> {};
 
 template <> struct CType2Brig< int8_t,4u >   : BrigType<Brig::BRIG_TYPE_S8X4>  {};
@@ -514,8 +516,8 @@ template <> struct CType2Brig< uint64_t,2u > : BrigType<Brig::BRIG_TYPE_U64X2> {
 template <> struct CType2Brig< f16_t,2u >    : BrigType<Brig::BRIG_TYPE_F16X2> {};
 template <> struct CType2Brig< f16_t,4u >    : BrigType<Brig::BRIG_TYPE_F16X4> {};
 template <> struct CType2Brig< f16_t,8u >    : BrigType<Brig::BRIG_TYPE_F16X8> {};
-template <> struct CType2Brig< float,2u >    : BrigType<Brig::BRIG_TYPE_F32X2> {};
-template <> struct CType2Brig< float,4u >    : BrigType<Brig::BRIG_TYPE_F32X4> {};
+template <> struct CType2Brig< f32_t,2u >    : BrigType<Brig::BRIG_TYPE_F32X2> {};
+template <> struct CType2Brig< f32_t,4u >    : BrigType<Brig::BRIG_TYPE_F32X4> {};
 template <> struct CType2Brig< double,2u >   : BrigType<Brig::BRIG_TYPE_F64X2> {};
 
 
