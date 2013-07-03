@@ -326,7 +326,7 @@ public:
     OperandImmed       createImmed(uint32_t v, Brig::BrigType16_t type, const SourceInfo* srcInfo=NULL);
     OperandImmed       createImmed(uint64_t v, Brig::BrigType16_t type, const SourceInfo* srcInfo=NULL);
     OperandImmed       createImmed(f32_t    v, Brig::BrigType16_t type, const SourceInfo* srcInfo=NULL);
-    OperandImmed       createImmed(double   v, Brig::BrigType16_t type, const SourceInfo* srcInfo=NULL);
+    OperandImmed       createImmed(f64_t    v, Brig::BrigType16_t type, const SourceInfo* srcInfo=NULL);
     OperandImmed       createImmed(const void * v, Brig::BrigType16_t type, const SourceInfo* srcInfo=NULL);
     /// @}
 

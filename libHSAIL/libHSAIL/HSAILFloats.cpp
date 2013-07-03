@@ -54,7 +54,7 @@ namespace HSAIL_ASM
 
 const char* IEEE754BasicTraits<f16_t>::suffix = "h";
 const char* IEEE754BasicTraits<f32_t>::suffix = "f";
-const char* IEEE754BasicTraits<double>::suffix = "";
+const char* IEEE754BasicTraits<f64_t>::suffix = "";
 
 uint16_t f16_t::singles2halfp(f32_t src)
 {
@@ -292,7 +292,7 @@ int testc99()
 {
     typedef IEEE754Traits<Float> Traits;
 
-    static int const shift = IEEE754Traits<double>::mntsWidth-Traits::mntsWidth;
+    static int const shift = IEEE754Traits<f64_t>::mntsWidth-Traits::mntsWidth;
 
     static Float const m[] = {
         makeFloat<Float>(0,               0,(0x15555555555555ULL >> shift)),
@@ -349,20 +349,20 @@ int testf16vsf32()
     return errors;
 }
 
-template int testc99<double>();
+template int testc99<f64_t>();
 template int testc99<f32_t>();
 template int testc99<f16_t>();
 
 template std::string toC99str(f16_t v);
 template std::string toC99str(f32_t v);
-template std::string toC99str(double v);
+template std::string toC99str(f64_t v);
 
 template f16_t  readC99(const SRef& s);
 template f32_t  readC99(const SRef& s);
-template double readC99(const SRef& s);
+template f64_t  readC99(const SRef& s);
 
 int testFloatRelatedCode() {
-     return testc99<double>()
+     return testc99<f64_t>()
      + testc99<f32_t>()
      + testc99<f16_t>()
      + testf16vsf32();

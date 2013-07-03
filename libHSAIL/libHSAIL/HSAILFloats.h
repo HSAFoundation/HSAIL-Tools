@@ -72,6 +72,22 @@ namespace HSAIL_ASM
 //         st_global_u32  $s1, [$s2];
 //         ret;
 // };
+// 
+// 64-bit SNAN constants are not preserved by fld and fstp.
+// So struct f64_t and its union comparable type f64u_t are used
+// to work around this to copy double vars as uint64_t
+// Hsail example for 64-bit SNAN
+// version 0:96:$full:$small;
+// global_f64 &n = 0d7ff7000000000000;
+// kernel &__OpenCL_Global_Initializer_kernel(
+//         kernarg_u32 %r)
+// {
+// @__OpenCL_Global_Initializer_kernel_entry:
+//         ld_kernarg_u32 $s2, [%r];
+//         ld_global_u64  $d1, [&n];
+//         st_global_u64  $d1, [$s2];
+//         ret;
+// };
 
 class f32_t 
 {
@@ -90,7 +106,48 @@ public:
     inline explicit f32_t(const f16_t &v);
     operator float() const { return m_value; }
 private:
-  float m_value;
+    float m_value;
+};
+
+class f64u_t
+{
+public:
+   inline operator f64_t() const;
+private:
+   union {
+     double m_value;
+     uint64_t m_uint64;
+   };
+   friend class f64_t;
+};
+
+class f64_t 
+{
+public:
+    f64_t() {}
+    f64_t(const double &v) : m_uint64(*(uint64_t *) &v) {}
+    explicit f64_t(int8_t   v) : m_value(v) {}
+    explicit f64_t(uint8_t  v) : m_value(v) {}
+    explicit f64_t(int16_t  v) : m_value(v) {}
+    explicit f64_t(uint16_t v) : m_value(v) {}
+    explicit f64_t(int32_t  v) : m_value(v) {}
+    explicit f64_t(uint32_t v) : m_value(v) {}
+    explicit f64_t(int64_t  v) : m_value(v) {}
+    explicit f64_t(uint64_t v) : m_value(v) {}
+    explicit f64_t(float    v) : m_value(v) {}
+    inline explicit f64_t(const f16_t &v);
+    inline explicit f64_t(const f32_t &v);
+    operator double() const { return m_value; }
+    operator f64u_t() const {
+      f64u_t x; 
+      x.m_uint64 = m_uint64; 
+      return x; 
+    }
+private:
+    union {
+      double m_value;
+      uint64_t m_uint64;
+    };
 };
 
 class f16_t
@@ -111,8 +168,7 @@ public:
     explicit f16_t(uint64_t v) : m_value(singles2halfp(static_cast<f32_t>(v))) {}
 
     operator f32_t()  const { return halfp2singles(m_value); }
-    operator double() const { return halfp2singles(m_value); }
-
+    operator f64_t() const  { return static_cast<f64_t>(float(halfp2singles(m_value))); }
     operator int8_t()    const { return static_cast<int8_t>(halfp2singles(m_value)); }
     operator int16_t()   const { return static_cast<int16_t>(halfp2singles(m_value)); }
     operator int32_t()   const { return static_cast<int32_t>(halfp2singles(m_value)); }
@@ -135,13 +191,16 @@ public:
     }
 
 private:
-	uint16_t m_value;
+    uint16_t m_value;
 
     static uint16_t singles2halfp(f32_t src);
     static f32_t halfp2singles(uint16_t src);
 };
 
 f32_t::f32_t(const f16_t &v) : m_value(static_cast<f32_t>(v)) {}
+f64u_t::operator f64_t() const { return m_value; }
+f64_t::f64_t(const f16_t &v) : m_value(static_cast<f64_t>(v)) {}
+f64_t::f64_t(const f32_t &v) : m_value(static_cast<f64_t>(v)) {}
 
 template <> struct value_class<f16_t>  : float_class {};
 
@@ -176,7 +235,7 @@ template <> struct IEEE754BasicTraits<f32_t>
     static const char* suffix;
 };
 
-template <> struct IEEE754BasicTraits<double>
+template <> struct IEEE754BasicTraits<f64_t>
 {
     typedef uint64_t RawBitsType;
     static const int mntsWidth = 52;

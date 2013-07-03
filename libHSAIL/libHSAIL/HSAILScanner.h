@@ -424,7 +424,7 @@ class Scanner::Variant
         uint64_t m_uint64;
         uint16_t m_f16;
         float    m_f32;
-        double   m_f64;
+        f64u_t   m_f64;
     };
     enum EKind {
         EInvalid,
@@ -441,7 +441,7 @@ public:
     explicit Variant(uint64_t u64)  : m_uint64(u64), m_kind(EUInt64) {}
     explicit Variant(f16_t    f16)  : m_f16(f16.rawBits()), m_kind(EF16) {}
     explicit Variant(float    f32)  : m_f32(f32), m_kind(EF32) {}
-    explicit Variant(double   f64)  : m_f64(f64), m_kind(EF64) {}
+    explicit Variant(f64_t    f64)  : m_f64(f64), m_kind(EF64) {}
 
     bool isInteger() const {
         return m_kind == EInt64 || m_kind == EUInt64;

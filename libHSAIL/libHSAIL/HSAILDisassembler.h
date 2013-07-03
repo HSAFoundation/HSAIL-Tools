@@ -261,7 +261,7 @@ private:
 
     void printValue(f16_t val) const { printFloatValue(val); }
     void printValue(f32_t val) const { printFloatValue(val); }
-    void printValue(double val) const { printFloatValue(val); }
+    void printValue(f64_t val) const { printFloatValue(val); }
     void printValue(const b128_t& val) const;
 
     template<typename T, size_t N>

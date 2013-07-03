@@ -225,7 +225,7 @@ Scanner::Variant Scanner::readValueVariant()
             {
                 double v;
                 istringstreamalert(SRef(m_tokStart,m_curPos)) >> v;
-                return Variant(v);
+                return Variant(f64_t(v));
             }
         case EHlfHexNumber:
             {
@@ -245,8 +245,8 @@ Scanner::Variant Scanner::readValueVariant()
         case EDblHexNumber:
             {
                 union {
-                    IEEE754Traits<double>::RawBitsType pad;
-                    double v;
+                    IEEE754Traits<f64_t>::RawBitsType pad;
+                    f64u_t v;
                 };
                 istringstreamalert(SRef(m_tokStart+2,m_curPos)) >> hex >> pad;
                 return Variant(v);
@@ -263,7 +263,7 @@ Scanner::Variant Scanner::readValueVariant()
             }
         case EDblC99Number:
             {
-                double const v = readC99<double>(SRef(m_tokStart,m_curPos));
+                f64_t const v = readC99<f64_t>(SRef(m_tokStart,m_curPos));
                 return Variant(v);
             }
         default:

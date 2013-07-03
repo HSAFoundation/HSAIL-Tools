@@ -50,6 +50,7 @@
 namespace HSAIL_ASM {
 
 class f32_t;
+class f64_t;
 
 struct true_type  { static const bool value = true; };
 struct false_type { static const bool value = false; };
@@ -188,7 +189,7 @@ struct float_class { typedef float_class* ptr; };
 template <typename T> struct value_class : undef_class {};
 
 template <> struct value_class<f32_t>  : float_class {};
-template <> struct value_class<double> : float_class {};
+template <> struct value_class<f64_t> : float_class {};
 template <> struct value_class<long double> : float_class {};
 
 template <> struct value_class<char>             : signed_int_class   {};
@@ -330,7 +331,7 @@ template <> struct BrigType<Brig::BRIG_TYPE_F32> : BrigTypeF {
 };
 template <> struct BrigType<Brig::BRIG_TYPE_F64> : BrigTypeF {
     static const Brig::BrigTypeX value = Brig::BRIG_TYPE_F64;
-    typedef double CType;
+    typedef f64_t CType;
     typedef BrigType<Brig::BRIG_TYPE_B64>  asBitType;
 };
 
@@ -491,7 +492,7 @@ template <> struct CType2Brig< b128_t,1u>    : BrigType<Brig::BRIG_TYPE_B128> {}
 
 template <> struct CType2Brig< f16_t,1u>     : BrigType<Brig::BRIG_TYPE_F16> {};
 template <> struct CType2Brig< f32_t,1u>     : BrigType<Brig::BRIG_TYPE_F32> {};
-template <> struct CType2Brig< double,1u>    : BrigType<Brig::BRIG_TYPE_F64> {};
+template <> struct CType2Brig< f64_t,1u>    : BrigType<Brig::BRIG_TYPE_F64> {};
 
 template <> struct CType2Brig< int8_t,4u >   : BrigType<Brig::BRIG_TYPE_S8X4>  {};
 template <> struct CType2Brig< int8_t,8u >   : BrigType<Brig::BRIG_TYPE_S8X8>  {};
@@ -518,7 +519,7 @@ template <> struct CType2Brig< f16_t,4u >    : BrigType<Brig::BRIG_TYPE_F16X4> {
 template <> struct CType2Brig< f16_t,8u >    : BrigType<Brig::BRIG_TYPE_F16X8> {};
 template <> struct CType2Brig< f32_t,2u >    : BrigType<Brig::BRIG_TYPE_F32X2> {};
 template <> struct CType2Brig< f32_t,4u >    : BrigType<Brig::BRIG_TYPE_F32X4> {};
-template <> struct CType2Brig< double,2u >   : BrigType<Brig::BRIG_TYPE_F64X2> {};
+template <> struct CType2Brig< f64_t,2u >   : BrigType<Brig::BRIG_TYPE_F64X2> {};
 
 
 #include "generated/HSAILTemplateUtilities_gen.hpp"

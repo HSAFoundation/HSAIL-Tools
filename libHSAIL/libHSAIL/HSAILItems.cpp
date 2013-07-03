@@ -84,12 +84,12 @@ template void setImmed(OperandImmed, int32_t);
 template void setImmed(OperandImmed, int64_t);
 template void setImmed(OperandImmed, f16_t);
 template void setImmed(OperandImmed, f32_t);
-template void setImmed(OperandImmed, double);
+template void setImmed(OperandImmed, f64_t);
 template void setImmed(OperandImmed, b128_t);
 
 template void setImmed(OperandImmed, const f32_t    (&)[2]);
 template void setImmed(OperandImmed, const f32_t    (&)[4]);
-template void setImmed(OperandImmed, const double   (&)[2]);
+template void setImmed(OperandImmed, const f64_t   (&)[2]);
 
 template void setImmed(OperandImmed, const uint8_t  (&)[4]);
 template void setImmed(OperandImmed, const uint8_t  (&)[8]);
@@ -179,11 +179,11 @@ template void setImmed(OperandImmed, int32_t,               Brig::BrigType16_t  
 template void setImmed(OperandImmed, int64_t,               Brig::BrigType16_t  reqType);
 template void setImmed(OperandImmed, f16_t,                 Brig::BrigType16_t  reqType);
 template void setImmed(OperandImmed, f32_t,            Brig::BrigType16_t  reqType);
-template void setImmed(OperandImmed, double,                Brig::BrigType16_t  reqType);
+template void setImmed(OperandImmed, f64_t,                Brig::BrigType16_t  reqType);
 
 template void setImmed(OperandImmed, const f32_t (&)[2], Brig::BrigType16_t  reqType);
 template void setImmed(OperandImmed, const f32_t (&)[4], Brig::BrigType16_t  reqType);
-template void setImmed(OperandImmed, const double   (&)[2],   Brig::BrigType16_t  reqType);
+template void setImmed(OperandImmed, const f64_t (&)[2],   Brig::BrigType16_t  reqType);
 
 template void setImmed(OperandImmed, const uint8_t  (&)[4], Brig::BrigType16_t  reqType);
 template void setImmed(OperandImmed, const uint8_t  (&)[8], Brig::BrigType16_t  reqType);
