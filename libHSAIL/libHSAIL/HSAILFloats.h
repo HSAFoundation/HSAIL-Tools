@@ -106,7 +106,17 @@ public:
     inline explicit f32_t(const f16_t &v);
     operator float() const { return m_value; }
 private:
-    float m_value;
+    // Although the m_uin32_t field is never used, it is necessary
+    // prevent the copy constructor from using the fld and fst. The
+    // gcc 4.1 compiler that ships with CentOS 5 tries to use the fld
+    // and fst instructions in the copy constructor on x86-64. These
+    // instructions silently replace SNANs with the corresponding
+    // QNAN. The union forces the compiler to do a bitwise copy,
+    // avoiding the problematic instructions.
+    union {
+      float m_value;
+      uint32_t m_uint32;
+    };
 };
 
 class f64u_t
