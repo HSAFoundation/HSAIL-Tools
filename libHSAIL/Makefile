@@ -30,7 +30,7 @@ endif
 else # !_WINDOWS
 # linux
 MKDIR = mkdir -p $(@D)
-CLEAN_BUILD_DIR = rm -rf build_linux
+CLEAN_BUILD_DIR = rm -rf $(BUILD_DIR)
 WITH_LIBBRIGDWARF=1
 CXXFLAGS += -fPIC -fno-rtti
 LIBS +=  dl pthread
