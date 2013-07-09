@@ -219,7 +219,7 @@ LIBHSAIL_LIB  = $(BUILD_DIR)/$(LIB_PREFIX)hsail$(LIB_SUFFIX)
 LIBHSAIL_SRCS = $(wildcard $(LIBHSAIL_DIR)/*.cpp)
 LIBHSAIL_OBJS = $(LIBHSAIL_SRCS:%.cpp=$(BUILD_DIR)/o_%$(OBJ_SUFFIX))
 
-include $(LIBHSAIL_SRCS:%.cpp=%.d)
+-include $(LIBHSAIL_SRCS:%.cpp=%.d)
 
 $(LIBHSAIL_OBJS) : | $(BUILD_DIR)/o_$(LIBHSAIL_DIR)/.dummy
 
@@ -240,7 +240,7 @@ LIBBRIGDWARF_LIB  = $(BUILD_DIR)/$(LIB_PREFIX)brigdwarf$(LIB_SUFFIX)
 LIBBRIGDWARF_SRCS = $(wildcard $(LIBBRIGDWARF_DIR)/*.cpp)
 LIBBRIGDWARF_OBJS = $(LIBBRIGDWARF_SRCS:%.cpp=$(BUILD_DIR)/o_%$(OBJ_SUFFIX))
 
-include $(LIBBRIGDWARF_SRCS:%.cpp=%.d)
+-include $(LIBBRIGDWARF_SRCS:%.cpp=%.d)
 
 $(LIBBRIGDWARF_OBJS) : | $(BUILD_DIR)/o_$(LIBBRIGDWARF_DIR)/.dummy
 
@@ -260,7 +260,7 @@ HSAILASM_EXE  = $(BUILD_DIR)/hsailasm$(EXE_SUFFIX)
 HSAILASM_SRCS = $(wildcard $(HSAILASM_DIR)/*.cpp)
 HSAILASM_OBJS = $(HSAILASM_SRCS:%.cpp=$(BUILD_DIR)/o_%$(OBJ_SUFFIX))
 
-include $(HSAILASM_SRCS:%.cpp=%.d)
+-include $(HSAILASM_SRCS:%.cpp=%.d)
 
 $(HSAILASM_OBJS) : | $(BUILD_DIR)/o_$(HSAILASM_DIR)/.dummy
 
