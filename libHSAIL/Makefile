@@ -273,20 +273,29 @@ hsailasm: $(HSAILASM_EXE)
 $(LIBHSAIL_DIR)/%.d: $(LIBHSAIL_DIR)/%.cpp
 	@set -e; rm -f $@; \
 	$(CXX) -MM $(INCLUDES) $< > $@.$$$$; \
-	sed 's,\([a-Az-Z0-9]*\)\.o[ :]*, \$$\(BUILD_DIR\)/o_\$$\(LIBHSAIL_DIR\)/\1.o $@ : ,g' < $@.$$$$ > $@; \
-	rm -f $@.$$$$
+	sed -e 's,\([a-Az-Z0-9]*\)\.o[ :]*,\$$\(BUILD_DIR\)/o_\$$\(LIBHSAIL_DIR\)/\1.o $@ : ,g' \
+	    -e 's,$(LLVM_SRC),\$$\(LLVM_SRC\), g' \
+	    -e 's,$(LLVM_BUILD),\$$\(LLVM_BUILD\), g' \
+	    < $@.$$$$ > $@; \
+	rm -f $@.$$$$;
 
 $(LIBBRIGDWARF_DIR)/%.d: $(LIBBRIGDWARF_DIR)/%.cpp
 	@set -e; rm -f $@; \
 	$(CXX) -MM $(INCLUDES) $< > $@.$$$$; \
-	sed 's,\([a-Az-Z0-9]*\)\.o[ :]*, \$$\(BUILD_DIR\)/o_\$$\(LIBBRIGDWARF_DIR\)/\1.o $@ : ,g' < $@.$$$$ > $@; \
-	rm -f $@.$$$$
+	sed -e 's,\([a-Az-Z0-9]*\)\.o[ :]*,\$$\(BUILD_DIR\)/o_\$$\(LIBBRIGDWARF_DIR\)/\1.o $@ :,g' \
+	    -e 's,$(LLVM_SRC),\$$\(LLVM_SRC\), g' \
+	    -e 's,$(LLVM_BUILD),\$$\(LLVM_BUILD\), g' \
+	    < $@.$$$$ > $@; \
+	rm -f $@.$$$$;
 
 $(HSAILASM_DIR)/%.d: $(HSAILASM_DIR)/%.cpp
 	@set -e; rm -f $@; \
 	$(CXX) -MM $(INCLUDES) $< > $@.$$$$; \
-	sed 's,\([a-Az-Z0-9]*\)\.o[ :]*, \$$\(BUILD_DIR\)/o_\$$\(HSAILASM_DIR\)/\1.o $@ : ,g' < $@.$$$$ > $@; \
-	rm -f $@.$$$$
+	sed -e 's,\([a-Az-Z0-9]*\)\.o[ :]*,\$$\(BUILD_DIR\)/o_\$$\(HSAILASM_DIR\)/\1.o $@ : ,g' \
+	    -e 's,$(LLVM_SRC),\$$\(LLVM_SRC\), g' \
+	    -e 's,$(LLVM_BUILD),\$$\(LLVM_BUILD\), g' \
+	    < $@.$$$$ > $@; \
+	rm -f $@.$$$$;
 #############################################
 # universal rule for object files
 $(BUILD_DIR)/o_%$(OBJ_SUFFIX): %.cpp
