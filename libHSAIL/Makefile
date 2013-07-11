@@ -231,6 +231,23 @@ libhsail: $(LIBHSAIL_LIB)
 
 ifdef WITH_LIBBRIGDWARF
 
+# check if elf.h, dwarf.h, libdwarf.h is present
+ifdef _WINDOWS
+# WINDOWS
+else # linux
+ifneq (0,$(shell echo "\#include<elf.h>" | $(CXX) -xc -c -o /dev/null - ; echo $$?;))
+$(error elf.h is missing ..)
+endif
+
+ifneq (0,$(shell echo "\#include<dwarf.h>" | $(CXX) -xc -c -o /dev/null -; echo $$?;))
+$(error dwarf.h is missing ..)
+endif
+
+ifneq (0,$(shell echo "\#include<libdwarf.h>" | $(CXX) -xc -c -o /dev/null -; echo $$?;))
+$(error libdwarf.h is missing ..)
+endif
+endif
+
 CXXFLAGS += -DWITH_LIBBRIGDWARF
 LIBS := brigdwarf dwarf elf $(LIBS)
 INCLUDES += -I$(LIBBRIGDWARF_DIR)
