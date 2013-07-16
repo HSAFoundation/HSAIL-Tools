@@ -503,12 +503,12 @@ public:
     // Append a default-initialized item (i.e. an instruction, operand, directive or debug info) to
     // a corresponding section of this container, and return the appropriate item proxy.
     template<typename Item> Item append() {
-        return section< typename Item::Kind >().append<Item>();
+        return section< typename Item::Kind >().template append<Item>();
     }
 
     // the same with source info
     template<typename Item> Item append(const SourceInfo& si) {
-        return section< typename Item::Kind >().append<Item>(si);
+        return section< typename Item::Kind >().template append<Item>(si);
     }
 
     template<typename Item>
