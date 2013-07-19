@@ -85,7 +85,7 @@ MySmallArray<typename BrigElemType::CType,N> readPackedLiteralInsideParens(Scann
     }
     res[0] = scanner.readValue<BrigElemType,ConvertImmediate >();
     return res;
-};
+}
 
 
 template <typename DstBrigType,
@@ -147,7 +147,7 @@ typename DstBrigType::CType  readValueIncludingPacked(Scanner& scanner)
         return readPackedLiteral<DstBrigType,Convertor>(scanner);
     }
     return scanner.readValue<DstBrigType,Convertor>();
-};
+}
 
 
 // Mnemo parsers
@@ -192,7 +192,7 @@ Brig::BrigWidth toBrigWidth(uint32_t v)
     default: assert(false);
     }
     return Brig::BRIG_WIDTH_NONE;
-};
+}
 
 Optional<Brig::BrigWidth8_t> tryParseWidthModifier(Scanner& scanner) {
     Optional<Brig::BrigWidth8_t> res;
@@ -246,7 +246,7 @@ Inst parseMnemoBasic(Scanner& scanner, Brigantine& bw) {
     scanner.expect(EMNone); // parse done
 
     InstBasic inst = bw.addInst<InstBasic>(opCode);
-    inst.type() = type.isInitialized() ? type.value() : Brig::BRIG_TYPE_NONE;
+    inst.type() = type.isInitialized() ? Brig::BrigTypeX(type.value()) : Brig::BRIG_TYPE_NONE;
     return inst;
 }
 
@@ -265,7 +265,7 @@ Inst parseMnemoBasicOrMod(Scanner& scanner, Brigantine& bw) {
         InstMod inst = bw.addInst<InstMod>(opCode);
         inst.modifier().ftz() = ftz.isInitialized();
         inst.modifier().round() = round.isInitialized() ? round.value() : getDefRounding(opCode,type);
-        inst.pack() = packing.isInitialized() ? packing.value() : Brig::BRIG_PACK_NONE;
+        inst.pack() = packing.isInitialized() ? Brig::BrigPack(packing.value()) : Brig::BRIG_PACK_NONE;
         inst.type() = type;
         return inst;
     } else {
@@ -309,8 +309,8 @@ Inst parseMnemoSeg(Scanner& scanner, Brigantine& bw) {
     scanner.expect(EMNone); // parse done
 
     InstSeg inst = bw.addInst<InstSeg>(opCode);
-    inst.sourceType() = stype.isInitialized() ? stype.value() : Brig::BRIG_TYPE_NONE;
-    inst.segment() = segment.isInitialized()  ? segment.value() : Brig::BRIG_SEGMENT_FLAT;
+    inst.sourceType() = stype.isInitialized() ? Brig::BrigTypeX(stype.value()) : Brig::BRIG_TYPE_NONE;
+    inst.segment() = segment.isInitialized()  ? Brig::BrigSegment(segment.value()) : Brig::BRIG_SEGMENT_FLAT;
     inst.type() = dtype;
     return inst;
 }
@@ -347,12 +347,12 @@ Inst parseMnemoMem(Scanner& scanner, Brigantine& bw, int* outVector/* out */) {
 
     InstMem inst = bw.addInst<InstMem>(opCode);
     inst.type()       = type;
-    inst.segment()    = segment.isInitialized() ?    segment.value()    : Brig::BRIG_SEGMENT_FLAT;
+    inst.segment()    = segment.isInitialized() ?    Brig::BrigSegment(segment.value())    : Brig::BRIG_SEGMENT_FLAT;
     inst.equivClass() = equivClass.isInitialized() ? equivClass.value() : 0;
     //dp inst.width()      = width.isInitialized() ?      width.value()      : Brig::BRIG_WIDTH_NONE;
     inst.width()      = width.isInitialized() ?      width.value()      : getDefWidth(inst);
     inst.modifier().aligned()  = aligned.isInitialized();
-    inst.modifier().semantic() = semantic.isInitialized() ? semantic.value() :
+    inst.modifier().semantic() = semantic.isInitialized() ? Brig::BrigMemorySemantic(semantic.value()) :
                                     (doesSupportMemorySemantic(opCode) ?
                                         Brig::BRIG_SEMANTIC_REGULAR :
                                         Brig::BRIG_SEMANTIC_NONE);
@@ -378,7 +378,7 @@ Inst parseMnemoBr(Scanner& scanner, Brigantine& bw) {
 
     //dp FIXME: could it be improved?
     //dp: should initialize width using getDefWidth, but it is only possible after parsing branch/call args
-    inst.width() = width.isInitialized() ? width.value() : Brig::BRIG_WIDTH_NONE; // dp: will be fixed later, after parsing operands
+    inst.width() = width.isInitialized() ? Brig::BrigWidth(width.value()) : Brig::BRIG_WIDTH_NONE; // dp: will be fixed later, after parsing operands
 
 
     // TBD095 why modifier? its not used
@@ -401,7 +401,7 @@ Inst parseMnemoCmp(Scanner& scanner, Brigantine& bw) {
     inst.compare()        = comparisonOperator;
     inst.sourceType()     = srcType;
     inst.modifier().ftz() = ftz.isInitialized();
-    inst.pack()           = packing.isInitialized() ? packing.value() : Brig::BRIG_PACK_NONE;
+    inst.pack()           = packing.isInitialized() ? Brig::BrigPack(packing.value()) : Brig::BRIG_PACK_NONE;
     return inst;
 }
 
@@ -436,8 +436,8 @@ Inst parseMnemoAtomic(Scanner& scanner, Brigantine& bw) {
 
     InstAtomic inst = bw.addInst<InstAtomic>(opCode,type);
     inst.atomicOperation() = atomicOperation;
-    inst.segment()         = segment.isInitialized() ? segment.value() : Brig::BRIG_SEGMENT_FLAT;
-    inst.memorySemantic()  = memorySemantic.isInitialized() ? memorySemantic.value() : Brig::BRIG_SEMANTIC_REGULAR;
+    inst.segment()         = segment.isInitialized() ? Brig::BrigSegment(segment.value()) : Brig::BRIG_SEGMENT_FLAT;
+    inst.memorySemantic()  = memorySemantic.isInitialized() ? Brig::BrigMemorySemantic(memorySemantic.value()) : Brig::BRIG_SEMANTIC_REGULAR;
     return inst;
 }
 
@@ -480,7 +480,7 @@ Inst parseMnemoFbar(Scanner& scanner, Brigantine& bw) {
     inst.width()       = width.isInitialized() ? width.value() : getDefWidth(inst);
     inst.memoryFence() = fence.isInitialized() ? fence.value() : getDefFence(opCode);
     return inst;
-};
+}
 
 Inst parseMnemoImage(Scanner& scanner, Brigantine& bw) {
     assert(scanner.token()==EInstruction);
@@ -1351,7 +1351,7 @@ DirectiveFbarrier Parser::parseFbarrier(bool isLocal) {
 
     eatToken(ESemi);
     return fbar;
-};
+}
 
 static std::string parseStringLiteral(Scanner&);
 
@@ -2095,4 +2095,3 @@ void Parser::validateImmType(unsigned expected, unsigned actual)
 #include "generated/HSAILParserUtilities_gen.hpp"
 
 } // end namespace
-

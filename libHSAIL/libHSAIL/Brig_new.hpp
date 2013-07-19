@@ -173,7 +173,7 @@ enum BrigPackedTypeBits {
     BRIG_TYPE_PACK_NONE = 0 << BRIG_TYPE_PACK_SHIFT,
     BRIG_TYPE_PACK_32   = 1 << BRIG_TYPE_PACK_SHIFT,
     BRIG_TYPE_PACK_64   = 2 << BRIG_TYPE_PACK_SHIFT,
-    BRIG_TYPE_PACK_128  = 3 << BRIG_TYPE_PACK_SHIFT,
+    BRIG_TYPE_PACK_128  = 3 << BRIG_TYPE_PACK_SHIFT
 };
 
 //BrigType was BrigDataType
@@ -352,7 +352,7 @@ enum BrigInstKinds {
     BRIG_INST_ADDR         = 11,
     BRIG_INST_MOD          = 12,
     BRIG_INST_SEG          = 13,
-    BRIG_INST_SOURCE_TYPE  = 14,
+    BRIG_INST_SOURCE_TYPE  = 14
 
     // TBD Remove
     /*BRIG_INST_BASE,
@@ -545,7 +545,7 @@ enum BrigOpcode { //.tdcaption="Instruction Opcodes"
 	BRIG_OPCODE_WORKITEMABSID          = 130,
 	BRIG_OPCODE_WORKITEMFLATABSID      = 131,
 	BRIG_OPCODE_WORKITEMFLATID         = 132,
-	BRIG_OPCODE_WORKITEMID             = 133,
+	BRIG_OPCODE_WORKITEMID             = 133
 };
 
 enum OldGcnOpcodes {
@@ -595,7 +595,7 @@ enum BrigOperandKinds {
     BRIG_OPERAND_FUNCTION_REF  = 8,
     BRIG_OPERAND_FUNCTION_LIST = 9,
     BRIG_OPERAND_SIGNATURE_REF = 10,
-    BRIG_OPERAND_FBARRIER_REF  = 11,
+    BRIG_OPERAND_FBARRIER_REF  = 11
 
     // TBD remove
     //BRIG_OPERAND_REG_V2,   //.skip
@@ -737,7 +737,7 @@ enum BrigSymbolModifierMask {
     BRIG_SYMBOL_DECLARATION = 4,
     BRIG_SYMBOL_CONST       = 8,
     BRIG_SYMBOL_ARRAY       = 16,
-    BRIG_SYMBOL_FLEX_ARRAY  = 32,
+    BRIG_SYMBOL_FLEX_ARRAY  = 32
 };
 
 //BrigLinkage was BrigAttribute

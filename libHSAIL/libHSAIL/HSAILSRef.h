@@ -108,7 +108,7 @@ inline bool operator!=(const SRef& lhs, const char* rhs) { return SRef::compare(
 
 std::ostream& operator<<(std::ostream& os, const SRef& s);
 
-};
+}
 
 
 #endif

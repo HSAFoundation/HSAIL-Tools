@@ -488,7 +488,7 @@ typename DstBrigType::CType Scanner::readIntValue() {
         syntaxError(e.what()); // translate it to syntax error
     }
     return typename DstBrigType::CType();
-};
+}
 
 // more generic version
 template <typename DstBrigType,
@@ -508,4 +508,3 @@ typename DstBrigType::CType Scanner::readValue() {
 } // end namespace
 
 #endif // INCLUDED_HSAIL_SCANNER_H
-

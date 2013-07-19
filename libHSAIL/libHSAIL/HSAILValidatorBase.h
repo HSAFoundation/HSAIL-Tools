@@ -186,7 +186,7 @@ enum
     VAL_MAXID
 };
 
-};
+}
 
 using namespace HSAIL_PROPS;
 

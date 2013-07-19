@@ -901,7 +901,7 @@ bool Disassembler::isLabelRef(Operand opr) const
 void Disassembler::printOperand(Inst inst, unsigned operandIdx) const
 {
     using namespace Brig;
-    assert(inst && 0 <= operandIdx && operandIdx <= 4);
+    assert(inst && operandIdx <= 4);
 
     Operand opr = inst.operand(operandIdx);
     assert(opr);
@@ -1027,7 +1027,7 @@ void Disassembler::DisassembleOperandImmed::visit< BrigType<Brig::BRIG_TYPE_B1> 
 
 void Disassembler::printOperandImmed(Inst inst, unsigned operandIdx) const
 {
-    assert(inst && 0 <= operandIdx && operandIdx <= 4);
+    assert(inst && operandIdx <= 4);
 
     unsigned requiredType = getImmOperandType(inst, operandIdx, getMachineType());
     printOperandImmed(inst.operand(operandIdx), requiredType);

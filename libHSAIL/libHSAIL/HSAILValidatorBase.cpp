@@ -81,7 +81,7 @@ bool InstValidatorBase::isSampler(Operand opr)
 bool InstValidatorBase::isJumpTab(Inst inst, unsigned operandIdx, bool isAssert)
 {
     assert(inst);
-    assert(0 <= operandIdx && operandIdx <= 4);
+    assert(operandIdx <= 4);
 
     Operand opr = inst.operand(operandIdx);
     // NB: opr might be null!
@@ -178,7 +178,7 @@ bool InstValidatorBase::isJumpTab(Inst inst, unsigned operandIdx, bool isAssert)
 bool InstValidatorBase::isCallTab(Inst inst, unsigned operandIdx, bool isAssert)
 {
     assert(inst);
-    assert(0 <= operandIdx && operandIdx <= 4);
+    assert(operandIdx <= 4);
 
     Operand opr = inst.operand(operandIdx);
     // opr might be null!
@@ -372,7 +372,7 @@ string InstValidatorBase::prop2str(unsigned prop)
         assert(false);
         return "";
     }
-};
+}
 
 void InstValidatorBase::invalidFormat(Inst inst, const char* msg)
 {
@@ -526,7 +526,7 @@ bool InstValidatorBase::validateOperandAttr(Inst inst, unsigned operandIdx, unsi
 bool InstValidatorBase::checkAddrSeg(Inst inst, unsigned operandIdx, bool isAssert)
 {
     assert(inst);
-    assert(0 <= operandIdx && operandIdx <= 4);
+    assert(operandIdx <= 4);
 
     OperandAddress opr = inst.operand(operandIdx);
     assert(opr);
@@ -557,7 +557,7 @@ bool InstValidatorBase::checkAddrSeg(Inst inst, unsigned operandIdx, bool isAsse
 bool InstValidatorBase::checkAddrTSeg(Inst inst, unsigned operandIdx, bool isAssert)
 {
     assert(inst);
-    assert(0 <= operandIdx && operandIdx <= 4);
+    assert(operandIdx <= 4);
 
     OperandAddress opr = inst.operand(operandIdx);
     assert(opr);
@@ -719,5 +719,3 @@ void InstValidatorBase::invalidVariant(Inst inst, unsigned prop1, unsigned prop2
 }
 
 } // namespace HSAIL_ASM
-
-
