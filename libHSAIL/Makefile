@@ -220,7 +220,7 @@ LIBHSAIL_LIB  = $(BUILD_DIR)/$(LIB_PREFIX)hsail$(LIB_SUFFIX)
 LIBHSAIL_SRCS = $(wildcard $(LIBHSAIL_DIR)/*.cpp)
 LIBHSAIL_OBJS = $(LIBHSAIL_SRCS:%.cpp=$(BUILD_DIR)/o_%$(OBJ_SUFFIX))
 
--include $(LIBHSAIL_SRCS:%.cpp=%.d)
+-include $(LIBHSAIL_SRCS:%.cpp=$(BUILD_DIR)/o_%.d)
 
 $(LIBHSAIL_OBJS) : | $(BUILD_DIR)/o_$(LIBHSAIL_DIR)/.dummy
 
@@ -258,7 +258,7 @@ LIBBRIGDWARF_LIB  = $(BUILD_DIR)/$(LIB_PREFIX)brigdwarf$(LIB_SUFFIX)
 LIBBRIGDWARF_SRCS = $(wildcard $(LIBBRIGDWARF_DIR)/*.cpp)
 LIBBRIGDWARF_OBJS = $(LIBBRIGDWARF_SRCS:%.cpp=$(BUILD_DIR)/o_%$(OBJ_SUFFIX))
 
--include $(LIBBRIGDWARF_SRCS:%.cpp=%.d)
+-include $(LIBBRIGDWARF_SRCS:%.cpp=$(BUILD_DIR)/o_%.d)
 
 $(LIBBRIGDWARF_OBJS) : | $(BUILD_DIR)/o_$(LIBBRIGDWARF_DIR)/.dummy
 
@@ -278,7 +278,7 @@ HSAILASM_EXE  = $(BUILD_DIR)/hsailasm$(EXE_SUFFIX)
 HSAILASM_SRCS = $(wildcard $(HSAILASM_DIR)/*.cpp)
 HSAILASM_OBJS = $(HSAILASM_SRCS:%.cpp=$(BUILD_DIR)/o_%$(OBJ_SUFFIX))
 
--include $(HSAILASM_SRCS:%.cpp=%.d)
+-include $(HSAILASM_SRCS:%.cpp=$(BUILD_DIR)/o_%.d)
 
 $(HSAILASM_OBJS) : | $(BUILD_DIR)/o_$(HSAILASM_DIR)/.dummy
 
@@ -288,28 +288,28 @@ $(HSAILASM_EXE): $(HSAILASM_OBJS) $(LLVM_LIB) $(LIBHSAIL_LIB) $(LIBBRIGDWARF_LIB
 hsailasm: $(HSAILASM_EXE)
 #############################################
 # universal rule for dependencies
-$(LIBHSAIL_DIR)/%.d: $(LIBHSAIL_DIR)/%.cpp
+$(LIBHSAIL_DIR)/%.d: $(LIBHSAIL_DIR)/%.cpp | $(BUILD_DIR)/o_$(LIBHSAIL_DIR)/.dummy
 	@set -e; rm -f $@; \
 	$(CXX) -MM $(INCLUDES) $< > $@.$$$$; \
-	sed -e 's,\([a-Az-Z0-9]*\)\.o[ :]*,\$$\(BUILD_DIR\)/o_\$$\(LIBHSAIL_DIR\)/\1.o $@ : ,g' \
+	sed -e 's,\([a-Az-Z0-9]*\)\.o[ :]*,\$$\(BUILD_DIR\)/o_\$$\(LIBHSAIL_DIR\)/\1.o \$$\(BUILD_DIR\)/o_\$$\(LIBHSAIL_DIR\)/\1.d : ,g' \
 	    -e 's,$(LLVM_SRC)/include,\$$\(LLVM_SRC\)/include, g' \
 	    -e 's,$(LLVM_BUILD)/include,\$$\(LLVM_BUILD\)/include, g' \
 	    < $@.$$$$ > $@; \
 	rm -f $@.$$$$;
 
-$(LIBBRIGDWARF_DIR)/%.d: $(LIBBRIGDWARF_DIR)/%.cpp
+$(LIBBRIGDWARF_DIR)/%.d: $(LIBBRIGDWARF_DIR)/%.cpp | $(BUILD_DIR)/o_$(LIBBRIGDWARF_DIR)/.dummy
 	@set -e; rm -f $@; \
 	$(CXX) -MM $(INCLUDES) $< > $@.$$$$; \
-	sed -e 's,\([a-Az-Z0-9]*\)\.o[ :]*,\$$\(BUILD_DIR\)/o_\$$\(LIBBRIGDWARF_DIR\)/\1.o $@ :,g' \
+	sed -e 's,\([a-Az-Z0-9]*\)\.o[ :]*,\$$\(BUILD_DIR\)/o_\$$\(LIBBRIGDWARF_DIR\)/\1.o \$$\(BUILD_DIR\)/o_\$$\(LIBBRIGDWARF_DIR\)/\1.d :,g' \
 	    -e 's,$(LLVM_SRC)/include,\$$\(LLVM_SRC\)/include, g' \
 	    -e 's,$(LLVM_BUILD)/include,\$$\(LLVM_BUILD\)/include, g' \
 	    < $@.$$$$ > $@; \
 	rm -f $@.$$$$;
 
-$(HSAILASM_DIR)/%.d: $(HSAILASM_DIR)/%.cpp
+$(HSAILASM_DIR)/%.d: $(HSAILASM_DIR)/%.cpp | $(BUILD_DIR)/o_$(HSAILASM_DIR)/.dummy
 	@set -e; rm -f $@; \
 	$(CXX) -MM $(INCLUDES) $< > $@.$$$$; \
-	sed -e 's,\([a-Az-Z0-9]*\)\.o[ :]*,\$$\(BUILD_DIR\)/o_\$$\(HSAILASM_DIR\)/\1.o $@ : ,g' \
+	sed -e 's,\([a-Az-Z0-9]*\)\.o[ :]*,\$$\(BUILD_DIR\)/o_\$$\(HSAILASM_DIR\)/\1.o \$$\(BUILD_DIR\)/o_\$$\(HSAILASM_DIR\)/\1.d : ,g' \
 	    -e 's,$(LLVM_SRC)/include,\$$\(LLVM_SRC\)/include, g' \
 	    -e 's,$(LLVM_BUILD)/include,\$$\(LLVM_BUILD\)/include, g' \
 	    < $@.$$$$ > $@; \
