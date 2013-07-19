@@ -32,7 +32,7 @@ else # !_WINDOWS
 MKDIR = mkdir -p $(@D)
 CLEAN_BUILD_DIR = rm -rf $(BUILD_DIR)
 WITH_LIBBRIGDWARF=1
-CXXFLAGS += -fPIC -fno-rtti
+override CXXFLAGS += -fPIC -fno-rtti
 LIBS +=  dl pthread
 CONFIG := linux
 EXE_SUFFIX :=
@@ -52,12 +52,12 @@ OBJ_SUFFIX = .obj
 LIB_SUFFIX = .lib
 LIB_PREFIX =
 
-CXXFLAGS += -nologo -c -EHsc
+override CXXFLAGS += -nologo -c -EHsc
 
-CXXFLAGS += -D_CRT_SECURE_NO_WARNINGS -D_SCL_SECURE_NO_WARNINGS -D_SCL_SECURE_NO_DEPRECATE -D_CRT_NONSTDC_NO_DEPRECATE
+override CXXFLAGS += -D_CRT_SECURE_NO_WARNINGS -D_SCL_SECURE_NO_WARNINGS -D_SCL_SECURE_NO_DEPRECATE -D_CRT_NONSTDC_NO_DEPRECATE
 
 ifdef _OPT
-CXXFLAGS += -DNDEBUG -O2
+override CXXFLAGS += -DNDEBUG -O2
 LLVM_SUBDIR = Release
 CONFIG := $(CONFIG)_opt
 else
@@ -66,9 +66,9 @@ endif
 
 ifdef _DBG
 CONFIG := $(CONFIG)_dbg
-CXXFLAGS += -Z7 -Od -D_DEBUG -MDd
+override CXXFLAGS += -Z7 -Od -D_DEBUG -MDd
 else
-CXXFLAGS += -MD
+override CXXFLAGS += -MD
 endif
 
 ifdef _M64
@@ -115,13 +115,14 @@ LLVM_LIBDIR ?= $(LLVM_BUILD)/lib/$(LLVM_SUBDIR)
 LIBS += shell32 advapi32
 
 CXX = cl.exe
-CXXFLAGS += /Fo$@
+override CXXFLAGS += /Fo$@
 AR = lib.exe
 ARFLAGS += /nologo /out:"$@"
 LD = link.exe
-LDFLAGS += /nologo /out:"$@" /debug /ignore:4098
 
-LDFLAGS += $(LIBPATHS:%=/LIBPATH:%)
+override LDFLAGS += /nologo /out:"$@" /debug /ignore:4098
+
+override LDFLAGS += $(LIBPATHS:%=/LIBPATH:%)
 LDFLAGS_LIBS = $(LIBS:%=%.lib)
 
 else # _GCC
@@ -132,40 +133,40 @@ LIB_SUFFIX = .a
 LIB_PREFIX = lib
 
 ifdef _OPT
-CXXFLAGS += -O3 -DNDEBUG
+override CXXFLAGS += -O3 -DNDEBUG
 CONFIG := $(CONFIG)_opt
 endif
 
 ifdef _DBG
-CXXFLAGS += -g -D_DEBUG
+override CXXFLAGS += -g -D_DEBUG
 CONFIG := $(CONFIG)_dbg
 else
-LDFLAGS += -s
+override LDFLAGS += -s
 endif
 
 ifdef _M64
-CXXFLAGS += -m64
-LDFLAGS += -m64
+override CXXFLAGS += -m64
+override LDFLAGS += -m64
 CONFIG := $(CONFIG)_m64
 endif
 
 ifdef _M32
-CXXFLAGS += -m32
-LDFLAGS += -m32
+override CXXFLAGS += -m32
+override LDFLAGS += -m32
 CONFIG := $(CONFIG)_m32
 endif
 
 LLVM_LIBDIR = $(LLVM_BUILD)/lib
 
 #CXXFLAGS +=  -Wall -Wno-reorder -Wno-unused -Wno-deprecated -Werror -pipe  -fmerge-all-constants -fno-tree-vectorize -fno-strict-aliasing
-CXXFLAGS +=  -Wno-reorder -Wno-unused -Wno-deprecated -fno-strict-aliasing
+override CXXFLAGS +=  -Wno-reorder -Wno-unused -Wno-deprecated -fno-strict-aliasing
 
 CXX ?= g++
-CXXFLAGS += -fno-rtti -c -o $@
+override CXXFLAGS += -fno-rtti -c -o $@
 AR ?= ar
 ARFLAGS += rv $@
 LD = $(CXX)
-LDFLAGS += -o $@ $(LIBPATHS:%=-L%)
+override LDFLAGS += -o $@ $(LIBPATHS:%=-L%)
 LDFLAGS_LIBS = $(LIBS:%=-l%)
 
 endif # _GCC
@@ -248,7 +249,7 @@ $(error libdwarf.h is missing ..)
 endif
 endif
 
-CXXFLAGS += -DWITH_LIBBRIGDWARF
+override CXXFLAGS += -DWITH_LIBBRIGDWARF
 LIBS := brigdwarf dwarf elf $(LIBS)
 INCLUDES += -I$(LIBBRIGDWARF_DIR)
 
