@@ -292,8 +292,8 @@ $(LIBHSAIL_DIR)/%.d: $(LIBHSAIL_DIR)/%.cpp
 	@set -e; rm -f $@; \
 	$(CXX) -MM $(INCLUDES) $< > $@.$$$$; \
 	sed -e 's,\([a-Az-Z0-9]*\)\.o[ :]*,\$$\(BUILD_DIR\)/o_\$$\(LIBHSAIL_DIR\)/\1.o $@ : ,g' \
-	    -e 's,$(LLVM_SRC),\$$\(LLVM_SRC\), g' \
-	    -e 's,$(LLVM_BUILD),\$$\(LLVM_BUILD\), g' \
+	    -e 's,$(LLVM_SRC)/include,\$$\(LLVM_SRC\)/include, g' \
+	    -e 's,$(LLVM_BUILD)/include,\$$\(LLVM_BUILD\)/include, g' \
 	    < $@.$$$$ > $@; \
 	rm -f $@.$$$$;
 
@@ -301,8 +301,8 @@ $(LIBBRIGDWARF_DIR)/%.d: $(LIBBRIGDWARF_DIR)/%.cpp
 	@set -e; rm -f $@; \
 	$(CXX) -MM $(INCLUDES) $< > $@.$$$$; \
 	sed -e 's,\([a-Az-Z0-9]*\)\.o[ :]*,\$$\(BUILD_DIR\)/o_\$$\(LIBBRIGDWARF_DIR\)/\1.o $@ :,g' \
-	    -e 's,$(LLVM_SRC),\$$\(LLVM_SRC\), g' \
-	    -e 's,$(LLVM_BUILD),\$$\(LLVM_BUILD\), g' \
+	    -e 's,$(LLVM_SRC)/include,\$$\(LLVM_SRC\)/include, g' \
+	    -e 's,$(LLVM_BUILD)/include,\$$\(LLVM_BUILD\)/include, g' \
 	    < $@.$$$$ > $@; \
 	rm -f $@.$$$$;
 
@@ -310,8 +310,8 @@ $(HSAILASM_DIR)/%.d: $(HSAILASM_DIR)/%.cpp
 	@set -e; rm -f $@; \
 	$(CXX) -MM $(INCLUDES) $< > $@.$$$$; \
 	sed -e 's,\([a-Az-Z0-9]*\)\.o[ :]*,\$$\(BUILD_DIR\)/o_\$$\(HSAILASM_DIR\)/\1.o $@ : ,g' \
-	    -e 's,$(LLVM_SRC),\$$\(LLVM_SRC\), g' \
-	    -e 's,$(LLVM_BUILD),\$$\(LLVM_BUILD\), g' \
+	    -e 's,$(LLVM_SRC)/include,\$$\(LLVM_SRC\)/include, g' \
+	    -e 's,$(LLVM_BUILD)/include,\$$\(LLVM_BUILD\)/include, g' \
 	    < $@.$$$$ > $@; \
 	rm -f $@.$$$$;
 #############################################
