@@ -382,7 +382,7 @@ sub makeHSAILInitBrig {
 			    }
 			}
 		}
-		printf "};\n\n";
+		printf "}\n\n";
 	};
 };
 
@@ -537,15 +537,15 @@ sub makeWrappers {
            		my $swt = $f->{wspecial};
            		if ($f->{wspecialgeneric}) {
                     printf("\t%-50s %s;\n","template<typename T> $swt<T>","$wn()$constness");
-	           		$wrapperImpls .= "template<typename T> inline $swt<T> ${\$swname}::$wn()$constness { return $swt<T>(*this); };\n";
+	           		$wrapperImpls .= "template<typename T> inline $swt<T> ${\$swname}::$wn()$constness { return $swt<T>(*this); }\n";
            		} else {
                     printf("\t%-50s %s;\n","$swt","$wn()$constness");
-	           		$wrapperImpls .= "inline $swt ${\$swname}::$wn()$constness { return $swt(*this); };\n";
+	           		$wrapperImpls .= "inline $swt ${\$swname}::$wn()$constness { return $swt(*this); }\n";
 	           	}
            	}
 
            	printf("\t%-50s %s;\n", $wt, "$wn$args$constness");
-           	$wrapperImpls .= "inline $wt ${\$swname}::$wn$args$constness { return $acc(&brig()->$fldvalue); };\n";
+           	$wrapperImpls .= "inline $wt ${\$swname}::$wn$args$constness { return $acc(&brig()->$fldvalue); }\n";
 		}
 
 
