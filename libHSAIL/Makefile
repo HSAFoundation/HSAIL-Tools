@@ -22,7 +22,8 @@ EXE_SUFFIX := .exe
 ifdef _GCC # & _WINDOWS
 # windows, mingw
 CONFIG := mingw
-LIBS += dbghelp psapi
+#LIBS += dbghelp psapi
+LIBS += imagehlp psapi
 else # !_GCC & _WINDOWS
 # windows, msvc
 CONFIG := msvc
@@ -109,7 +110,8 @@ endif
 
 CONFIG := $(CONFIG)_$(VSFLAVOR)
 
-LLVM_LIBDIR ?= $(LLVM_BUILD)/lib/$(LLVM_SUBDIR)
+#LLVM_LIBDIR ?= $(LLVM_BUILD)/lib/$(LLVM_SUBDIR)
+LLVM_LIBDIR ?= $(LLVM_BUILD)/lib/
 
 LIBS += shell32 advapi32
 
@@ -244,9 +246,35 @@ $(BUILD_DIR)/%/.dummy :
 	@$(MKDIR)
 	@echo . >$@
 
-clean:
+#############################################
+# test-framework 
+TEST_FRM = $(CURDIR)/test-framework
+TEST_DIR = $(CURDIR)/tests
+COMPARE = $(TEST_FRM)/compare
+#FILENAME = inst.large
+FILENAME = tests/hsail_tests_p
+
+check: all $(TEST_FRM)/compare.c
+	@-$(MAKE) -C $(TEST_FRM)
+	@"$(HSAILASM_EXE)" -assemble $(FILENAME).hsail -o $(FILENAME).bin1
+	@"$(HSAILASM_EXE)" -disassemble $(FILENAME).bin1 -o $(FILENAME).s1
+	@"$(HSAILASM_EXE)" -assemble $(FILENAME).s1 -o $(FILENAME).bin2
+	@"$(HSAILASM_EXE)" -disassemble $(FILENAME).bin2 -o $(FILENAME).s2
+	@echo Begin to check results ...
+	@$(COMPARE) $(FILENAME).s1 $(FILENAME).s2
+	@$(COMPARE) $(FILENAME).bin1 $(FILENAME).bin2
+	@echo !!!! Pass all !!!!
+#############################################
+
+clean: cleancheck
 	@$(CLEAN_BUILD_DIR)
 
-.PHONY: clean all hsailasm libhsail llvm
+cleancheck:
+	@rm -f $(TEST_FRM)/compare
+	@rm -f $(TEST_DIR)/.cmp?
+	@rm -f $(TEST_DIR)/${FILENAME}.s?
+	@rm -f $(TEST_DIR)/${FILENAME}.bin?
+
+.PHONY: clean cleancheck all hsailasm libhsail llvm
 
 .SUFFIXES:

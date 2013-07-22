@@ -1,0 +1,6 @@
+Files in this directory are as follows
+
+- commentOut.sh : an auxiliary script to comment out all the unsupported instruction in objective HSAIL file
+- compare.c : c source code for comparing two result files
+- Makefile : to compile compare.c
+- README : this file

@@ -60,11 +60,16 @@
 #include "BrigDwarfGenerator.h"
 #endif
 
+#if 0
 #ifdef _WIN32
 extern "C" {
     int __setargv(void);
     int _setargv(void) { return __setargv(); }
 }
+#endif
+#endif
+
+#ifdef _WIN32
 #include <direct.h>
 #else
 #include <unistd.h>

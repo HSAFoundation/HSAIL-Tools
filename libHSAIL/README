@@ -88,3 +88,10 @@ where "." is the input file path and "generated" is the output file path. If
 necessary, path to re2c build may be explicitly specified:
 
 	perl generate.pl --re2c=my/build/of/re2c . generated
+
+4. Test results
+
+It will run when typing "make check". If the test framework needs to be compiled, the compilation will happen automatically when running "make check", not "make".
+
+  cd libHSAIL
+  make check 

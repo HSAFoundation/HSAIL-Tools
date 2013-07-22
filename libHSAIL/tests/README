@@ -1,0 +1,6 @@
+Two HSAIL Files are added in this directory
+
+- hsail_tests_p.hsail.original : The original HSAIL file
+- hsail_tests_p.hsail : The HSAIL file after being commented out unsupported instructions
+
+An auxiliary script named commentOut.sh is in directory "hsail-tools/libHSAIL/test-frame". The script is to comment out all the unsupported instructions in an HSAIL file.
