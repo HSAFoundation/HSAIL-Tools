@@ -288,7 +288,7 @@ $(HSAILASM_EXE): $(HSAILASM_OBJS) $(LLVM_LIB) $(LIBHSAIL_LIB) $(LIBBRIGDWARF_LIB
 hsailasm: $(HSAILASM_EXE)
 #############################################
 # universal rule for dependencies
-$(LIBHSAIL_DIR)/%.d: $(LIBHSAIL_DIR)/%.cpp | $(BUILD_DIR)/o_$(LIBHSAIL_DIR)/.dummy
+$(BUILD_DIR)/o_$(LIBHSAIL_DIR)/%.d: $(LIBHSAIL_DIR)/%.cpp | $(BUILD_DIR)/o_$(LIBHSAIL_DIR)/.dummy
 	@set -e; rm -f $@; \
 	$(CXX) -MM $(INCLUDES) $< > $@.$$$$; \
 	sed -e 's,\([a-Az-Z0-9]*\)\.o[ :]*,\$$\(BUILD_DIR\)/o_\$$\(LIBHSAIL_DIR\)/\1.o \$$\(BUILD_DIR\)/o_\$$\(LIBHSAIL_DIR\)/\1.d : ,g' \
@@ -297,7 +297,7 @@ $(LIBHSAIL_DIR)/%.d: $(LIBHSAIL_DIR)/%.cpp | $(BUILD_DIR)/o_$(LIBHSAIL_DIR)/.dum
 	    < $@.$$$$ > $@; \
 	rm -f $@.$$$$;
 
-$(LIBBRIGDWARF_DIR)/%.d: $(LIBBRIGDWARF_DIR)/%.cpp | $(BUILD_DIR)/o_$(LIBBRIGDWARF_DIR)/.dummy
+$(BUILD_DIR)/o_$(LIBBRIGDWARF_DIR)/%.d: $(LIBBRIGDWARF_DIR)/%.cpp | $(BUILD_DIR)/o_$(LIBBRIGDWARF_DIR)/.dummy
 	@set -e; rm -f $@; \
 	$(CXX) -MM $(INCLUDES) $< > $@.$$$$; \
 	sed -e 's,\([a-Az-Z0-9]*\)\.o[ :]*,\$$\(BUILD_DIR\)/o_\$$\(LIBBRIGDWARF_DIR\)/\1.o \$$\(BUILD_DIR\)/o_\$$\(LIBBRIGDWARF_DIR\)/\1.d :,g' \
@@ -306,7 +306,7 @@ $(LIBBRIGDWARF_DIR)/%.d: $(LIBBRIGDWARF_DIR)/%.cpp | $(BUILD_DIR)/o_$(LIBBRIGDWA
 	    < $@.$$$$ > $@; \
 	rm -f $@.$$$$;
 
-$(HSAILASM_DIR)/%.d: $(HSAILASM_DIR)/%.cpp | $(BUILD_DIR)/o_$(HSAILASM_DIR)/.dummy
+$(BUILD_DIR)/o_$(HSAILASM_DIR)/%.d: $(HSAILASM_DIR)/%.cpp | $(BUILD_DIR)/o_$(HSAILASM_DIR)/.dummy
 	@set -e; rm -f $@; \
 	$(CXX) -MM $(INCLUDES) $< > $@.$$$$; \
 	sed -e 's,\([a-Az-Z0-9]*\)\.o[ :]*,\$$\(BUILD_DIR\)/o_\$$\(HSAILASM_DIR\)/\1.o \$$\(BUILD_DIR\)/o_\$$\(HSAILASM_DIR\)/\1.d : ,g' \
