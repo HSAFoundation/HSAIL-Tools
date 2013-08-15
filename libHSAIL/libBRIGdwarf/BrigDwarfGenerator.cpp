@@ -1345,7 +1345,9 @@ void BrigDwarfGenerator_impl::createDwarfElfSections()
         ed->d_size = length;
         ed->d_type =  ELF_T_BYTE;
         ed->d_off = 0;
-        ed->d_align = 1;
+        // Align debug sections to sizeof(Elf32_Sym). d_align is log2 of the
+        // alignment. log2(sizeof(Elf32_Sym)) == 2
+        ed->d_align = 2;
         ed->d_version = EV_CURRENT;
 
         // process relocations, if any
