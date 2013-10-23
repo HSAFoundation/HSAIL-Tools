@@ -527,7 +527,10 @@ Inst parseMnemoAtomicImage(Scanner& scanner, Brigantine& bw) {
 
 Inst parseMnemoNop(Scanner& scanner, Brigantine& bw) {
     assert(scanner.token()==EInstruction);
-    return bw.addNop();
+    scanner.scanModifier();
+    InstBasic inst = bw.addInst<InstBasic>(Brig::BRIG_OPCODE_NOP);
+    inst.type() = Brig::BRIG_TYPE_NONE;
+    return inst;
 }
 
 /*

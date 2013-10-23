@@ -483,11 +483,6 @@ Inst Brigantine::addInst(Inst i)
     return i;
 }
 
-Inst Brigantine::addNop(const SourceInfo* srcInfo) {
-    InstNone n = m_container.insts().append<InstNone>();
-    return Inst(&m_container.insts(),n.brigOffset());
-}
-
 template <typename Value> // this routine converts Value v to the requested brig type and save it into immediate
 inline OperandImmed Brigantine::createImmedT(Value v, Brig::BrigType16_t type, const SourceInfo* srcInfo) {
     OperandImmed imm = createImmed(srcInfo);
