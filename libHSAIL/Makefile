@@ -236,15 +236,15 @@ ifdef WITH_LIBBRIGDWARF
 ifdef _WINDOWS
 # WINDOWS
 else # linux
-ifneq (0,$(shell echo "\#include<elf.h>" | $(CXX) -xc -c -o /dev/null - ; echo $$?;))
+ifneq (0,$(shell echo "\#include<elf.h>" | $(CXX) $(CXXFLAGS) $(INCLUDES) -xc++ -c -o /dev/null - ; echo $$?;))
 $(error elf.h is missing ..)
 endif
 
-ifneq (0,$(shell echo "\#include<dwarf.h>" | $(CXX) -xc -c -o /dev/null -; echo $$?;))
+ifneq (0,$(shell echo "\#include<dwarf.h>" | $(CXX) $(CXXFLAGS) $(INCLUDES) -xc++ -c -o /dev/null -; echo $$?;))
 $(error dwarf.h is missing ..)
 endif
 
-ifneq (0,$(shell echo "\#include<libdwarf.h>" | $(CXX) -xc -c -o /dev/null -; echo $$?;))
+ifneq (0,$(shell echo "\#include<libdwarf.h>" | $(CXX) $(CXXFLAGS) $(INCLUDES) -xc++ -c -o /dev/null -; echo $$?;))
 $(error libdwarf.h is missing ..)
 endif
 endif
@@ -290,7 +290,7 @@ hsailasm: $(HSAILASM_EXE)
 # universal rule for dependencies
 $(BUILD_DIR)/o_$(LIBHSAIL_DIR)/%.d: $(LIBHSAIL_DIR)/%.cpp | $(BUILD_DIR)/o_$(LIBHSAIL_DIR)/.dummy
 	@set -e; rm -f $@; \
-	$(CXX) -MM $(INCLUDES) $< > $@.$$$$; \
+	$(CXX) -MM $(INCLUDES) $(CXXFLAGS) $< > $@.$$$$; \
 	sed -e 's,\([a-Az-Z0-9]*\)\.o[ :]*,\$$\(BUILD_DIR\)/o_\$$\(LIBHSAIL_DIR\)/\1.o \$$\(BUILD_DIR\)/o_\$$\(LIBHSAIL_DIR\)/\1.d : ,g' \
 	    -e 's,$(LLVM_SRC)/include,\$$\(LLVM_SRC\)/include, g' \
 	    -e 's,$(LLVM_BUILD)/include,\$$\(LLVM_BUILD\)/include, g' \
@@ -299,7 +299,7 @@ $(BUILD_DIR)/o_$(LIBHSAIL_DIR)/%.d: $(LIBHSAIL_DIR)/%.cpp | $(BUILD_DIR)/o_$(LIB
 
 $(BUILD_DIR)/o_$(LIBBRIGDWARF_DIR)/%.d: $(LIBBRIGDWARF_DIR)/%.cpp | $(BUILD_DIR)/o_$(LIBBRIGDWARF_DIR)/.dummy
 	@set -e; rm -f $@; \
-	$(CXX) -MM $(INCLUDES) $< > $@.$$$$; \
+	$(CXX) -MM $(INCLUDES) $(CXXFLAGS) $< > $@.$$$$; \
 	sed -e 's,\([a-Az-Z0-9]*\)\.o[ :]*,\$$\(BUILD_DIR\)/o_\$$\(LIBBRIGDWARF_DIR\)/\1.o \$$\(BUILD_DIR\)/o_\$$\(LIBBRIGDWARF_DIR\)/\1.d :,g' \
 	    -e 's,$(LLVM_SRC)/include,\$$\(LLVM_SRC\)/include, g' \
 	    -e 's,$(LLVM_BUILD)/include,\$$\(LLVM_BUILD\)/include, g' \
@@ -308,7 +308,7 @@ $(BUILD_DIR)/o_$(LIBBRIGDWARF_DIR)/%.d: $(LIBBRIGDWARF_DIR)/%.cpp | $(BUILD_DIR)
 
 $(BUILD_DIR)/o_$(HSAILASM_DIR)/%.d: $(HSAILASM_DIR)/%.cpp | $(BUILD_DIR)/o_$(HSAILASM_DIR)/.dummy
 	@set -e; rm -f $@; \
-	$(CXX) -MM $(INCLUDES) $< > $@.$$$$; \
+	$(CXX) -MM $(INCLUDES) $(CXXFLAGS) $< > $@.$$$$; \
 	sed -e 's,\([a-Az-Z0-9]*\)\.o[ :]*,\$$\(BUILD_DIR\)/o_\$$\(HSAILASM_DIR\)/\1.o \$$\(BUILD_DIR\)/o_\$$\(HSAILASM_DIR\)/\1.d : ,g' \
 	    -e 's,$(LLVM_SRC)/include,\$$\(LLVM_SRC\)/include, g' \
 	    -e 's,$(LLVM_BUILD)/include,\$$\(LLVM_BUILD\)/include, g' \
