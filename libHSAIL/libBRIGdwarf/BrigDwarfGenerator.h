@@ -51,7 +51,7 @@ namespace BrigDebug
 {
 
 // BrigDwarfGenerator generates debugging information from an existing
-// BRIG container, and can store that generated information into a BRIG
+// BRIG container, and can store that generated information into a BRIG 
 // container
 //
 
@@ -60,7 +60,7 @@ class BrigDwarfGenerator
 public:
 	virtual ~BrigDwarfGenerator() {}
 
-	static BrigDwarfGenerator * Create( const std::string & producer,
+	static BrigDwarfGenerator * Create( const std::string & producer, 
 		                                    const std::string & compilationDirectory,
 											const std::string & fileName );
 

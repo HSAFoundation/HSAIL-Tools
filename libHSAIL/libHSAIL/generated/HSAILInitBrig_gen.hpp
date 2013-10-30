@@ -186,7 +186,6 @@ void DirectiveLabelInit::initBrig() {
   brig()->size = sizeof(Brig::BrigDirectiveLabelInit);
   brig()->kind = Brig::BRIG_DIRECTIVE_LABEL_INIT;
   brig()->code = 0;
-  brig()->label = 0;
   brig()->labelCount = 0;
   brig()->reserved = 0;
   for (int i=0;i<1;i++) {
@@ -198,7 +197,7 @@ void DirectiveLabelTargets::initBrig() {
   brig()->size = sizeof(Brig::BrigDirectiveLabelTargets);
   brig()->kind = Brig::BRIG_DIRECTIVE_LABEL_TARGETS;
   brig()->code = 0;
-  brig()->label = 0;
+  brig()->name = 0;
   brig()->labelCount = 0;
   brig()->reserved = 0;
   for (int i=0;i<1;i++) {
@@ -218,39 +217,6 @@ void DirectivePragma::initBrig() {
   brig()->kind = Brig::BRIG_DIRECTIVE_PRAGMA;
   brig()->code = 0;
   brig()->name = 0;
-}
-
-void DirectiveImage::initBrig() {
-  brig()->size = sizeof(Brig::BrigDirectiveImage);
-  brig()->kind = Brig::BRIG_DIRECTIVE_IMAGE;
-  brig()->code = 0;
-  brig()->name = Brig::BRIG_TYPE_RWIMG;
-  brig()->init = 0;
-  brig()->segment = 0;
-  brig()->align = 0;
-  brig()->dimLo = 0;
-  brig()->dimHi = 0;
-  modifier().initBrig();
-  for (int i=0;i<3;i++) {
-    brig()->reserved[i] = 0;
-  }
-}
-
-void DirectiveSampler::initBrig() {
-  brig()->size = sizeof(Brig::BrigDirectiveSampler);
-  brig()->kind = Brig::BRIG_DIRECTIVE_SAMPLER;
-  brig()->code = 0;
-  brig()->name = 0;
-  brig()->init = 0;
-  brig()->type = Brig::BRIG_TYPE_SAMP;
-  brig()->segment = 0;
-  brig()->align = 0;
-  brig()->dimLo = 0;
-  brig()->dimHi = 0;
-  modifier().initBrig();
-  for (int i=0;i<3;i++) {
-    brig()->reserved[i] = 0;
-  }
 }
 
 void DirectiveVariable::initBrig() {
@@ -322,7 +288,8 @@ void InstAtomic::initBrig() {
     brig()->operands[i] = 0;
   }
   brig()->segment = 0;
-  brig()->memorySemantic = Brig::BRIG_SEMANTIC_REGULAR;
+  brig()->memoryOrder = Brig::BRIG_MEMORY_ORDER_RELAXED;
+  brig()->memoryScope = Brig::BRIG_MEMORY_SCOPE_SYSTEM;
   brig()->reserved = 0;
 }
 
@@ -338,10 +305,12 @@ void InstAtomicImage::initBrig() {
 void InstBar::initBrig() {
   brig()->size = sizeof(Brig::BrigInstBar);
   brig()->kind = Brig::BRIG_INST_BAR;
+  brig()->type = Brig::BRIG_TYPE_NONE;
   for (int i=0;i<5;i++) {
     brig()->operands[i] = 0;
   }
-  brig()->reserved = 0;
+  brig()->memoryOrder = Brig::BRIG_MEMORY_ORDER_RELAXED;
+  brig()->memoryScope = Brig::BRIG_MEMORY_SCOPE_SYSTEM;
 }
 
 void InstBasic::initBrig() {
@@ -358,7 +327,6 @@ void InstBr::initBrig() {
   for (int i=0;i<5;i++) {
     brig()->operands[i] = 0;
   }
-  modifier().initBrig();
   brig()->reserved = 0;
 }
 
@@ -382,15 +350,6 @@ void InstCvt::initBrig() {
   modifier().initBrig();
 }
 
-void InstFbar::initBrig() {
-  brig()->size = sizeof(Brig::BrigInstFbar);
-  brig()->kind = Brig::BRIG_INST_FBAR;
-  for (int i=0;i<5;i++) {
-    brig()->operands[i] = 0;
-  }
-  brig()->reserved = 0;
-}
-
 void InstImage::initBrig() {
   brig()->size = sizeof(Brig::BrigInstImage);
   brig()->kind = Brig::BRIG_INST_IMAGE;
@@ -400,6 +359,15 @@ void InstImage::initBrig() {
   for (int i=0;i<3;i++) {
     brig()->reserved[i] = 0;
   }
+}
+
+void InstLane::initBrig() {
+  brig()->size = sizeof(Brig::BrigInstLane);
+  brig()->kind = Brig::BRIG_INST_LANE;
+  for (int i=0;i<5;i++) {
+    brig()->operands[i] = 0;
+  }
+  brig()->reserved = 0;
 }
 
 void InstMem::initBrig() {
@@ -484,12 +452,6 @@ void OperandFunctionList::initBrig() {
   }
 }
 
-void OperandArgumentRef::initBrig() {
-  brig()->size = sizeof(Brig::BrigOperandArgumentRef);
-  brig()->kind = Brig::BRIG_OPERAND_ARGUMENT_REF;
-  brig()->ref = 0;
-}
-
 void OperandFbarrierRef::initBrig() {
   brig()->size = sizeof(Brig::BrigOperandFbarrierRef);
   brig()->kind = Brig::BRIG_OPERAND_FBARRIER_REF;
@@ -505,7 +467,19 @@ void OperandFunctionRef::initBrig() {
 void OperandLabelRef::initBrig() {
   brig()->size = sizeof(Brig::BrigOperandLabelRef);
   brig()->kind = Brig::BRIG_OPERAND_LABEL_REF;
-  brig()->ref = 0;
+  brig()->label = 0;
+}
+
+void OperandLabelTargetsRef::initBrig() {
+  brig()->size = sizeof(Brig::BrigOperandLabelTargetsRef);
+  brig()->kind = Brig::BRIG_OPERAND_LABEL_TARGETS_REF;
+  brig()->targets = 0;
+}
+
+void OperandLabelVariableRef::initBrig() {
+  brig()->size = sizeof(Brig::BrigOperandLabelVariableRef);
+  brig()->kind = Brig::BRIG_OPERAND_LABEL_VARIABLE_REF;
+  brig()->symbol = 0;
 }
 
 void OperandSignatureRef::initBrig() {

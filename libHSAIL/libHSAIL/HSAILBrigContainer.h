@@ -519,6 +519,7 @@ public:
     Offset addString(const SRef& s) { return strings().addString(s); }
     SRef getString(Offset offset) const { return m_strings.getString(offset); }
 
+    void patchDecl2Defs();
     void optimizeOperands();
     void ExtractDebugInformationToStream( std::ostream & out );
     void ExtractDebugInformationToVector( std::vector<char> & out );

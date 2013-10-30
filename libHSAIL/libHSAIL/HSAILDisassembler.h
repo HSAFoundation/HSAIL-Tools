@@ -53,14 +53,17 @@
 
 namespace HSAIL_ASM {
 
-class Disassembler {
-public:
-    enum FloatDisassemblyMode {
-        RawBits,
-        C99,
-        Decimal
-    };
+enum EFloatDisassemblyMode {
+    FloatDisassemblyModeRawBits,
+    FloatDisassemblyModeC99,
+    FloatDisassemblyModeDecimal
+};
 
+void printFloatValue(std::ostream& stream, int mode, f64_t val);
+void printFloatValue(std::ostream& stream, int mode, f16_t val);
+void printFloatValue(std::ostream& stream, int mode, f32_t val);
+
+class Disassembler {
 private:
     BrigContainer&        brig;
     std::ostream*         err;
@@ -69,7 +72,7 @@ private:
     mutable int           indent;
     mutable bool          hasErr;
     mutable unsigned      machineModel;
-    FloatDisassemblyMode  m_fmode;
+    unsigned              m_options;
 
     static const int BRIG_OPERANDS_NUM = 5;
 
@@ -81,17 +84,26 @@ private:
     //-------------------------------------------------------------------------
     // Public Disassembler API
 public:
-    Disassembler(BrigContainer& c,FloatDisassemblyMode fmode=RawBits)
+    enum OutputOptions {
+        FloatModeMask = 3,
+        PrintInstOffset = 4
+    };
+
+    Disassembler(BrigContainer& c, EFloatDisassemblyMode fmode=FloatDisassemblyModeRawBits)
         : brig(c), err(0), stream(0), indent(0), hasErr(false), machineModel(Brig::BRIG_MACHINE_LARGE)
-        , m_fmode(fmode)
+        , m_options(fmode)
     {}
 
-    int run(std::ostream &s) const;   // Disassemble all BRIG container to stream
-    int run(const char* path) const; // Disassemble all BRIG container to file
+    void setOutputOptions(unsigned mask) { m_options = mask; }
+
+    int run(std::ostream &s) const;       // Disassemble all BRIG container to stream
+    int run(const char* path) const;      // Disassemble all BRIG container to file
+
     std::string get(Directive d) const;   // Disassemble one directive as string
     std::string get(Inst i) const;        // Disassemble one instruction as string
+    std::string get(Operand i) const;     // Disassemble one operand as string
 
-    void log(std::ostream &s);  // Request errors logging into stream s
+    void log(std::ostream &s);                 // Request errors logging into stream s
     bool hasError() const { return hasErr; }   // Return error flag
     void clrError()       { hasErr = false; }  // Clear error flag
 
@@ -113,7 +125,7 @@ private:
     void printDirective(DirectiveExtension d) const;
     void printDirective(DirectivePragma d) const;
     void printDirective(DirectiveSignature d) const;
-    void printDirective(DirectiveLabelList d) const;
+    void printDirective(DirectiveLabelTargets d) const;
     void printDirective(DirectiveArgScopeStart d) const;
     void printDirective(DirectiveArgScopeEnd d) const;
     void printDirective(BlockStart d) const;
@@ -122,8 +134,6 @@ private:
     void printDirective(BlockString d) const;
 
     void printDirective(DirectiveVariable d) const;
-    void printDirective(DirectiveImage d) const;
-    void printDirective(DirectiveSampler d) const;
     void printDirective(DirectiveVariableInit d) const;
     void printDirective(DirectiveLabelInit d) const;
     void printDirective(DirectiveImageInit d) const;
@@ -132,12 +142,13 @@ private:
 
 
     Directive printArgs(Directive arg, unsigned paramNum, Directive scoped) const;
-    void printLabelList(LabelList list) const;
+    template <typename List>
+    void printLabelList(List list) const;
 
     void printBody(Inst inst, unsigned instNum, Directive start, Directive end, bool isDecl = false) const;
     Directive printContextDir(Offset off, Directive start, Directive end) const;
 
-    void printSymDecl(DirectiveSymbol d) const;
+    void printSymDecl(DirectiveVariable d) const;
     void printArgDecl(Directive d) const;
 
     void printProtoType(DirectiveSignatureArgument type) const;
@@ -152,7 +163,7 @@ private:
     //-------------------------------------------------------------------------
     // Initializers
 
-    template<typename T> void printInitializer(DirectiveSymbol s) const;
+    template<typename T> void printInitializer(DirectiveVariable s) const;
 
     //-------------------------------------------------------------------------
     // Instructions
@@ -164,12 +175,12 @@ private:
     void printInst(InstMod i) const;
     void printInst(InstAddr i) const;
     void printInst(InstBr i) const;
-    void printInst(InstFbar i) const;
     void printInst(InstMem i) const;
     void printInst(InstCmp i) const;
     void printInst(InstCvt i) const;
     void printInst(InstAtomic i) const;
     void printInst(InstImage i) const;
+    void printInst(InstLane i) const;
     void printInst(InstAtomicImage i) const;
     void printInst(InstBar i) const;
     void printInst(InstSeg i) const;
@@ -195,9 +206,10 @@ private:
     void printOperand(OperandWavesize opr) const;
     void printOperand(OperandAddress opr) const;
     void printOperand(OperandLabelRef opr) const;
+    void printOperand(OperandLabelTargetsRef opr) const;
+    void printOperand(OperandLabelVariableRef opr) const;
     void printOperand(OperandFunctionRef opr) const;
     void printOperand(OperandArgumentList opr) const;
-    void printOperand(OperandArgumentRef opr) const;
     void printOperand(OperandFunctionList opr) const;
     void printOperand(OperandSignatureRef opr) const;
     void printOperand(OperandFbarrierRef opr) const;
@@ -214,8 +226,7 @@ private:
     const char* opcode2str(unsigned opcode) const;
     const char* type2str(unsigned t) const;
     const char* pack2str(unsigned t) const;
-    const char* seg2str(Brig::BrigSegment8_t  segment, bool isGcn = false) const;
-    const char* sem2str(unsigned semantic) const;
+    const char* seg2str(Brig::BrigSegment8_t  segment) const;
     const char* cmpOp2str(unsigned opcode) const;
     const char* atomicOperation2str(unsigned op) const;
     const char* imageGeometry2str(unsigned g) const;
@@ -224,7 +235,9 @@ private:
     const char* profile2str(unsigned profile) const;
     const char* ftz2str(unsigned ftz) const;
     const char* round2str(unsigned val) const;
+    const char* memoryOrder2str(unsigned memOrder) const;
     const char* memoryFence2str(unsigned flags) const;
+    const char* memoryScope2str(unsigned flags) const;
     const char* class2str(unsigned val) const;
     const char* v2str(Operand opr) const;
     const char* imageFormat2str(Brig::BrigImageFormat8_t fmt) const;
@@ -245,7 +258,6 @@ private:
     bool isCall(Inst i) const;
     bool isBranch(Inst i) const;
     bool isGcnInst(Inst i) const;
-    bool isLabelRef(Operand opr) const;
 
     unsigned getMachineType() const;
 
@@ -259,27 +271,15 @@ private:
     void printValue(unsigned char arg) const { *stream << (int)arg; }
     void printValue(signed char arg) const { *stream << (int)arg; }
 
-    void printValue(f16_t val) const { printFloatValue(val); }
-    void printValue(f32_t val) const { printFloatValue(val); }
-    void printValue(f64_t val) const { printFloatValue(val); }
+    void printValue(f16_t val) const { printFloatValue(*stream, m_options & FloatModeMask, val); }
+    void printValue(f32_t val) const { printFloatValue(*stream, m_options & FloatModeMask, val); }
+    void printValue(f64_t val) const { printFloatValue(*stream, m_options & FloatModeMask, val); }
+
     void printValue(const b128_t& val) const;
 
     template<typename T, size_t N>
     void printValue(const MySmallArray<T,N>& v) const {
         printPackedValue(v.arrayType());
-    }
-
-    void printRawFloatValue(f16_t val) const;
-    void printRawFloatValue(float val) const;
-    void printRawFloatValue(double val) const;
-
-    template <typename Float>
-    void printFloatValue(Float val) const {
-        switch(m_fmode) {
-        case RawBits: printRawFloatValue(val); break;
-        case C99:     *stream << toC99str(val); break;
-        case Decimal: *stream << val << IEEE754Traits<Float>::suffix; break;
-        }
     }
 
     template<typename T, size_t N>
@@ -322,22 +322,17 @@ private:
     void printSeparator() const { *stream << '\t'; }
     void printEOL()       const { *stream << '\n'; }
 
-    void add2ValList(std::string &res, const char* valName = NULL, const std::string& val = "") const {
-        if (valName) {
-            if (!val.empty()) {
-                if (res.empty()) {
-                    res = " = {";
-                } else {
-                    res += ", ";
-                }
-                res += valName + (" = " + val);
-            }
-        } else {
-            if (!res.empty()) res += "}";
+    void add2ValList(std::string &res, const char* valName, const std::string& val) const 
+    {
+        if (!val.empty()) // to skip unspecified values
+        {
+            if (!res.empty()) res += ", ";
+            res += valName + (" = " + val);
         }
     }
 
-    void add2ValList(std::string &res, const char* valName, unsigned val) const {
+    void add2ValList(std::string &res, const char* valName, unsigned val) const 
+    {
         if (val == 0) return;
         std::ostringstream s;
         s << val;
@@ -349,10 +344,6 @@ private:
 
     template<class T>
     std::string getImpl(T d) const {
-        /*
-        std::string res;
-        raw_string_ostream os(res);
-        */
         std::ostringstream os;
         stream = &os;
         if (d) printBrig(d);
@@ -360,6 +351,7 @@ private:
     }
     void printBrig(Directive d) const { printDirective(d); }
     void printBrig(Inst i)      const { printInst(i); }
+    void printBrig(Operand opr) const { printOperand(opr); }
 
     bool wantsExtraNewLineBefore(Directive d) const {
         return (    (d.brig()->kind == Brig::BRIG_DIRECTIVE_LABEL)

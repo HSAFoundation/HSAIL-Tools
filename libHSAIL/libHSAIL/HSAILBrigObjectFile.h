@@ -45,7 +45,7 @@
 /// This component provides its own simple hierarchy of I/O adapter classes,
 /// adapter implementations for files and memory buffers, and implementation
 /// of binary streaming in BRIG and BIF formats. The adapter implementations
-/// are essentially independent from the rest of this component and may be
+/// are essentially independent from the rest of this component and may be 
 /// factored out when necessary.
 
 #include <iosfwd> // only forward dependencies from stdio
@@ -55,17 +55,20 @@
 
 namespace HSAIL_ASM {
 
-enum BinaryFileFormat {
+enum BinaryFileFormat {     
     FILE_FORMAT_AUTO = 0,
     FILE_FORMAT_BRIG = 1,
-    FILE_FORMAT_BIF  = 2
+    FILE_FORMAT_BIF  = 2,
+    FILE_FORMAT_MASK = 0xf,
+    FILE_FORMAT_ELF32 = 0,
+    FILE_FORMAT_ELF64 = 0x10
 };
 
 /// virtual base for the adapters
 class IOAdapter {
 public:
     std::ostream& errs;
-    ///
+    /// 
 
     IOAdapter(std::ostream& errs_)
         : errs(errs_)
@@ -78,9 +81,9 @@ public:
 /// write-only adapter
 class WriteAdapter : public virtual IOAdapter {
 public:
-    WriteAdapter(std::ostream& errs_)
-        : IOAdapter(errs_)
-    {
+    WriteAdapter(std::ostream& errs_) 
+        : IOAdapter(errs_) 
+    { 
     }
     virtual int write(const char* data, size_t numBytes) const = 0;
 
@@ -90,12 +93,12 @@ public:
 /// read-only adapter
 class ReadAdapter : public virtual IOAdapter {
 public:
-    ReadAdapter(std::ostream& errs_)
-        : IOAdapter(errs_)
+    ReadAdapter(std::ostream& errs_) 
+        : IOAdapter(errs_) 
     {
     }
 
-    virtual int pread(char* data, size_t numBytes, size_t ofs) const = 0;
+    virtual int pread(char* data, size_t numBytes, uint64_t ofs) const = 0;
 
     virtual ~ReadAdapter() = 0;
 };
@@ -126,46 +129,46 @@ struct BrigIO {
                     std::ostream&               errs = defaultErrs());
 
     static std::auto_ptr<ReadAdapter> memoryReadingAdapter(
-                    const char                 *buf,
+                    const char                 *buf, 
                     size_t                      size,
                     std::ostream&               errs = defaultErrs());
 
     static std::auto_ptr<WriteAdapter> memoryWritingAdapter(
-                    char                       *buf,
+                    char                       *buf, 
                     size_t                      size,
                     std::ostream&               errs = defaultErrs());
 
     // normal API using adapter references
 
     static int save(BrigContainer&              src,
-                    BinaryFileFormat            fmt,
+                    int                         fmt,
                     WriteAdapter&               dst);
-
+                                                
     static int load(BrigContainer&              dst,
-                    BinaryFileFormat            fmt,
+                    int                         fmt,
                     ReadAdapter&                src);
 
     // API taking ownership of the adapters, to  be used with the factory
-    // methods above
+    // methods above                            
 
     static int save(BrigContainer&               src,
-                    BinaryFileFormat             fmt,
+                    int                          fmt,
                     std::auto_ptr<WriteAdapter>  dst)
     {
         return !dst.get() || save(src, fmt, *dst);
     }
 
     static int load(BrigContainer&               dst,
-                    BinaryFileFormat             fmt,
+                    int                          fmt,
                     std::auto_ptr<ReadAdapter>   src)
     {
         return !src.get() || load(dst, fmt, *src);
     }
 };
 
-// old style compatibility API
+// old style compatibility API 
 
-template<BinaryFileFormat FORMAT> class BinaryStreamer {
+template<int FORMAT> class BinaryStreamer {
 public: // Elf emitting
 
     static int save(BrigContainer &c, WriteAdapter &s) {
@@ -195,10 +198,14 @@ public: // Elf reading
     }
 };
 
-typedef BinaryStreamer<FILE_FORMAT_BIF>  BifStreamer;
-typedef BinaryStreamer<FILE_FORMAT_BRIG> BrigStreamer;
-typedef BinaryStreamer<FILE_FORMAT_AUTO> AutoBinaryStreamer;
+typedef BinaryStreamer<FILE_FORMAT_BIF |FILE_FORMAT_ELF32>  Bif32Streamer;
+typedef BinaryStreamer<FILE_FORMAT_BRIG|FILE_FORMAT_ELF32>  Brig32Streamer;
+typedef BinaryStreamer<FILE_FORMAT_BIF |FILE_FORMAT_ELF64>  Bif64Streamer;
+typedef BinaryStreamer<FILE_FORMAT_BRIG|FILE_FORMAT_ELF64>  Brig64Streamer;
+typedef BinaryStreamer<FILE_FORMAT_AUTO>                    AutoBinaryStreamer;
 
+typedef  Bif32Streamer BifStreamer;
+typedef Brig32Streamer BrigStreamer;
 
 }
 

@@ -257,7 +257,8 @@ enum ETokens
     // modifiers
     EMType,
     EMPacking,
-    EMSemantics,
+    EMMemoryOrder,
+    EMMemoryScope,
     EMAtomicOp,
     EMSegment,
     EMWidth,
@@ -422,9 +423,9 @@ class Scanner::Variant
     union {
         int64_t  m_int64;
         uint64_t m_uint64;
-        uint16_t m_f16;
-        float    m_f32;
-        f64u_t   m_f64;
+        uint16_t m_f16x;
+        uint32_t m_f32x;
+        uint64_t m_f64x;
     };
     enum EKind {
         EInvalid,
@@ -439,9 +440,9 @@ public:
     Variant() : m_kind(EInvalid) {}
     explicit Variant(int64_t  i64)  : m_int64(i64), m_kind(EInt64) {}
     explicit Variant(uint64_t u64)  : m_uint64(u64), m_kind(EUInt64) {}
-    explicit Variant(f16_t    f16)  : m_f16(f16.rawBits()), m_kind(EF16) {}
-    explicit Variant(float    f32)  : m_f32(f32), m_kind(EF32) {}
-    explicit Variant(f64_t    f64)  : m_f64(f64), m_kind(EF64) {}
+    explicit Variant(f16_t    f16)  : m_f16x(f16.rawBits()), m_kind(EF16) {}
+    explicit Variant(f32_t    f32)  : m_f32x(f32.rawBits()), m_kind(EF32) {}
+    explicit Variant(f64_t    f64)  : m_f64x(f64.rawBits()), m_kind(EF64) {}
 
     bool isInteger() const {
         return m_kind == EInt64 || m_kind == EUInt64;
@@ -464,9 +465,9 @@ public:
         switch(m_kind) {
         case EInt64:
         case EUInt64: return convertInt<DstBrigType,Convertor>();
-        case EF16:    return ::HSAIL_ASM::convert<DstBrigType, BrigType<Brig::BRIG_TYPE_F16>, Convertor>(f16_t::fromRawBits(m_f16));
-        case EF32:    return ::HSAIL_ASM::convert<DstBrigType, BrigType<Brig::BRIG_TYPE_F32>, Convertor>(m_f32);
-        case EF64:    return ::HSAIL_ASM::convert<DstBrigType, BrigType<Brig::BRIG_TYPE_F64>, Convertor>(m_f64);
+        case EF16:    return ::HSAIL_ASM::convert<DstBrigType, BrigType<Brig::BRIG_TYPE_F16>, Convertor>(f16_t::fromRawBits(m_f16x));
+        case EF32:    return ::HSAIL_ASM::convert<DstBrigType, BrigType<Brig::BRIG_TYPE_F32>, Convertor>(f32_t::fromRawBits(m_f32x));
+        case EF64:    return ::HSAIL_ASM::convert<DstBrigType, BrigType<Brig::BRIG_TYPE_F64>, Convertor>(f64_t::fromRawBits(m_f64x));
         default: assert(false);
         }
         return typename DstBrigType::CType();;

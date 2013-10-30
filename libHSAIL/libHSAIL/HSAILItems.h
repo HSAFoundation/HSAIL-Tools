@@ -49,26 +49,34 @@
 namespace HSAIL_ASM {
 
 class DirectiveLabel;
-class DirectiveLabelList;
+class DirectiveLabelTargets;
 typedef TrailingRefs <
-    DirectiveLabelList,
+    DirectiveLabelTargets,
     DirectiveLabel,
-    offsetof(Brig::BrigDirectiveLabelList, labels)
-> LabelList;
+    offsetof(Brig::BrigDirectiveLabelTargets, labels)
+> LabelTargetsList;
+
+class DirectiveLabelInit;
+typedef TrailingRefs <
+    DirectiveLabelInit,
+    DirectiveLabel,
+    offsetof(Brig::BrigDirectiveLabelInit, labels)
+> LabelInitList;
+
 
 
 class OperandList;
 typedef TrailingRefs<
     OperandList,
-    Directive,
+    Directive, 
     offsetof(Brig::BrigOperandList, elements)
 > RefList;
 
 class OperandArgumentList;
-class DirectiveSymbol;
+class DirectiveVariable;
 typedef TrailingRefs<
     OperandArgumentList,
-    DirectiveSymbol,
+    DirectiveVariable, 
     offsetof(Brig::BrigOperandArgumentList, elements)
 > ArgumentRefList;
 
@@ -76,7 +84,7 @@ class OperandFunctionList;
 class DirectiveFunction;
 typedef TrailingRefs<
     OperandFunctionList,
-    DirectiveFunction,
+    DirectiveFunction, 
     offsetof(Brig::BrigOperandFunctionList, elements)
 > FunctionRefList;
 
@@ -181,7 +189,7 @@ inline void dispatchByItemKind(Item item, const Visitor& vis) {
 
 // by default - just call enumerateFields_gen version
 template <typename Visitor,typename Item>
-inline void enumerateFieldsImpl(Item item, Visitor& vis) {
+inline void enumerateFieldsImpl(Item item, Visitor& vis) {   
     enumerateFields_gen(item, vis);
 }
 
@@ -202,7 +210,7 @@ public:
     void visitNone(...) const {}
 };
 
-// OperandImmed: make a virtual "value" field that has ValRef<T> type where T is selected at runtime
+// OperandImmed: make a virtual "value" field that has ValRef<T> type where T is selected at runtime 
 // by OperandImmed::type
 template <typename Visitor>
 void enumerateFieldsImpl(OperandImmed op, Visitor& vis) {
@@ -218,7 +226,7 @@ class PassValuesByType
     DataItem m_data;
     Visitor& m_vis;
 public:
-    PassValuesByType(DataItem data,Visitor& vis)
+    PassValuesByType(DataItem data,Visitor& vis) 
         : m_data(data), m_vis(vis) {}
     template <typename BrigType>
     void visit() const {
@@ -251,7 +259,7 @@ public:
 };
 
 // enumerateFields dispatches visitor to the actual item kind (like a dynamic_cast)
-template <typename Item, typename Visitor>
+template <typename Item, typename Visitor> 
 inline void enumerateFields(Item item, Visitor& vis) {
     FieldEnumerator<Visitor> fieldEnum(vis);
     dispatchByItemKind(item,fieldEnum);
@@ -295,10 +303,10 @@ class GetImmediate
     const void *m_bits;
 public:
     GetImmediate(const void *bits) : m_bits(bits) {}
-
+   
     template <typename SrcBrigType>
     typename ReqBrigType::CType visit() const {
-        return convert< ReqBrigType, SrcBrigType, Convertor >(
+        return convert< ReqBrigType, SrcBrigType, Convertor >( 
 		    *reinterpret_cast<const typename SrcBrigType::CType*>(m_bits) );
     }
     typename ReqBrigType::CType visitNone(unsigned /*type*/) const {
@@ -314,7 +322,7 @@ typename ReqBrigType::CType getImmValue( Inst i, unsigned opndIndex, Brig::BrigM
         assert(false);
         return typename ReqBrigType::CType();
     }
-    unsigned const opndType = getImmOperandType(i, opndIndex, machine);
+    unsigned const opndType = getImmOperandType(i, opndIndex, machine);  
     return dispatchByType<typename ReqBrigType::CType> ( opndType, GetImmediate<ReqBrigType,Convertor>(&imm.brig()->bytes) );
 }
 

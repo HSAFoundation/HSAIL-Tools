@@ -47,9 +47,11 @@ const char* atomicOperation2str(unsigned arg) {
     case BRIG_ATOMIC_DEC                : return "dec";
     case BRIG_ATOMIC_EXCH               : return "exch";
     case BRIG_ATOMIC_INC                : return "inc";
+    case BRIG_ATOMIC_LD                 : return "ld";
     case BRIG_ATOMIC_MAX                : return "max";
     case BRIG_ATOMIC_MIN                : return "min";
     case BRIG_ATOMIC_OR                 : return "or";
+    case BRIG_ATOMIC_ST                 : return "st";
     case BRIG_ATOMIC_SUB                : return "sub";
     case BRIG_ATOMIC_XOR                : return "xor";
     default : return NULL;
@@ -99,7 +101,6 @@ const char* controlDirective2str(unsigned arg) {
     case BRIG_CONTROL_MAXDYNAMICGROUPSIZE : return "maxdynamicgroupsize";
     case BRIG_CONTROL_MAXFLATGRIDSIZE   : return "maxflatgridsize";
     case BRIG_CONTROL_MAXFLATWORKGROUPSIZE : return "maxflatworkgroupsize";
-    case BRIG_CONTROL_NONE              : return "";
     case BRIG_CONTROL_REQUESTEDWORKGROUPSPERCU : return "requestedworkgroupspercu";
     case BRIG_CONTROL_REQUIREDDIM       : return "requireddim";
     case BRIG_CONTROL_REQUIREDGRIDSIZE  : return "requiredgridsize";
@@ -124,7 +125,6 @@ int size_of_directive(unsigned arg) {
     case BRIG_DIRECTIVE_FBARRIER        : return sizeof(BrigDirectiveFbarrier);
     case BRIG_DIRECTIVE_FILE            : return sizeof(BrigDirectiveFile);
     case BRIG_DIRECTIVE_FUNCTION        : return sizeof(BrigDirectiveFunction);
-    case BRIG_DIRECTIVE_IMAGE           : return sizeof(BrigDirectiveImage);
     case BRIG_DIRECTIVE_IMAGE_INIT      : return sizeof(BrigDirectiveImageInit);
     case BRIG_DIRECTIVE_KERNEL          : return sizeof(BrigDirectiveKernel);
     case BRIG_DIRECTIVE_LABEL           : return sizeof(BrigDirectiveLabel);
@@ -132,7 +132,6 @@ int size_of_directive(unsigned arg) {
     case BRIG_DIRECTIVE_LABEL_TARGETS   : return sizeof(BrigDirectiveLabelTargets);
     case BRIG_DIRECTIVE_LOC             : return sizeof(BrigDirectiveLoc);
     case BRIG_DIRECTIVE_PRAGMA          : return sizeof(BrigDirectivePragma);
-    case BRIG_DIRECTIVE_SAMPLER         : return sizeof(BrigDirectiveSampler);
     case BRIG_DIRECTIVE_SAMPLER_INIT    : return sizeof(BrigDirectiveSamplerInit);
     case BRIG_DIRECTIVE_SIGNATURE       : return sizeof(BrigDirectiveSignature);
     case BRIG_DIRECTIVE_VARIABLE        : return sizeof(BrigDirectiveVariable);
@@ -157,7 +156,6 @@ bool isToplevelOnly(Directive d) {
     case BRIG_DIRECTIVE_FBARRIER        : return false;
     case BRIG_DIRECTIVE_FILE            : return true;
     case BRIG_DIRECTIVE_FUNCTION        : return true;
-    case BRIG_DIRECTIVE_IMAGE           : return false;
     case BRIG_DIRECTIVE_IMAGE_INIT      : return true;
     case BRIG_DIRECTIVE_KERNEL          : return true;
     case BRIG_DIRECTIVE_LABEL           : return false;
@@ -165,7 +163,6 @@ bool isToplevelOnly(Directive d) {
     case BRIG_DIRECTIVE_LABEL_TARGETS   : return false;
     case BRIG_DIRECTIVE_LOC             : return false;
     case BRIG_DIRECTIVE_PRAGMA          : return false;
-    case BRIG_DIRECTIVE_SAMPLER         : return false;
     case BRIG_DIRECTIVE_SAMPLER_INIT    : return true;
     case BRIG_DIRECTIVE_SIGNATURE       : return true;
     case BRIG_DIRECTIVE_VARIABLE        : return false;
@@ -190,7 +187,6 @@ bool isBodyOnly(Directive d) {
     case BRIG_DIRECTIVE_FBARRIER        : return false;
     case BRIG_DIRECTIVE_FILE            : return false;
     case BRIG_DIRECTIVE_FUNCTION        : return false;
-    case BRIG_DIRECTIVE_IMAGE           : return false;
     case BRIG_DIRECTIVE_IMAGE_INIT      : return false;
     case BRIG_DIRECTIVE_KERNEL          : return false;
     case BRIG_DIRECTIVE_LABEL           : return true;
@@ -198,7 +194,6 @@ bool isBodyOnly(Directive d) {
     case BRIG_DIRECTIVE_LABEL_TARGETS   : return true;
     case BRIG_DIRECTIVE_LOC             : return true;
     case BRIG_DIRECTIVE_PRAGMA          : return false;
-    case BRIG_DIRECTIVE_SAMPLER         : return false;
     case BRIG_DIRECTIVE_SAMPLER_INIT    : return false;
     case BRIG_DIRECTIVE_SIGNATURE       : return false;
     case BRIG_DIRECTIVE_VARIABLE        : return false;
@@ -281,8 +276,8 @@ int size_of_inst(unsigned arg) {
     case BRIG_INST_BR                   : return sizeof(BrigInstBr);
     case BRIG_INST_CMP                  : return sizeof(BrigInstCmp);
     case BRIG_INST_CVT                  : return sizeof(BrigInstCvt);
-    case BRIG_INST_FBAR                 : return sizeof(BrigInstFbar);
     case BRIG_INST_IMAGE                : return sizeof(BrigInstImage);
+    case BRIG_INST_LANE                 : return sizeof(BrigInstLane);
     case BRIG_INST_MEM                  : return sizeof(BrigInstMem);
     case BRIG_INST_MOD                  : return sizeof(BrigInstMod);
     case BRIG_INST_SEG                  : return sizeof(BrigInstSeg);
@@ -313,27 +308,49 @@ const char* machineModel2str(unsigned arg) {
 const char* memoryFence2str(unsigned arg) {
   using namespace Brig;
   switch( arg ) {
-    case BRIG_FENCE_BOTH                : return "fboth";
-    case BRIG_FENCE_GLOBAL              : return "fglobal";
-    case BRIG_FENCE_GROUP               : return "fgroup";
-    case BRIG_FENCE_NONE                : return "fnone";
-    case BRIG_FENCE_PARTIAL             : return "fpartial";
-    case BRIG_FENCE_PARTIAL_BOTH        : return "fpartialboth";
+    case BRIG_MEMORY_FENCE_BOTH         : return "fboth";
+    case BRIG_MEMORY_FENCE_GLOBAL       : return "fglobal";
+    case BRIG_MEMORY_FENCE_GROUP        : return "fgroup";
+    case BRIG_MEMORY_FENCE_NONE         : return "";
     default : return NULL;
     }
 }
 
-const char* memorySemantic2str(unsigned arg) {
+const char* memoryOrder2str(unsigned arg) {
   using namespace Brig;
   switch( arg ) {
-    case BRIG_SEMANTIC_ACQUIRE          : return "acq";
-    case BRIG_SEMANTIC_ACQUIRE_RELEASE  : return "ar";
-    case BRIG_SEMANTIC_PARTIAL_ACQUIRE  : return "part_acq";
-    case BRIG_SEMANTIC_PARTIAL_ACQUIRE_RELEASE : return "part_ar";
-    case BRIG_SEMANTIC_PARTIAL_RELEASE  : return "part_rel";
-    case BRIG_SEMANTIC_REGULAR          : return "regular";
-    case BRIG_SEMANTIC_RELEASE          : return "rel";
+    case BRIG_MEMORY_ORDER_ACQUIRE      : return "acq";
+    case BRIG_MEMORY_ORDER_ACQUIRE_RELEASE : return "ar";
+    case BRIG_MEMORY_ORDER_NONE         : return "";
+    case BRIG_MEMORY_ORDER_RELAXED      : return "rlx";
+    case BRIG_MEMORY_ORDER_RELEASE      : return "rel";
+    case BRIG_MEMORY_ORDER_SEQUENTIALLY_CONSISTENT : return "sc";
     default : return NULL;
+    }
+}
+
+const char* memoryScope2str(unsigned arg) {
+  using namespace Brig;
+  switch( arg ) {
+    case BRIG_MEMORY_SCOPE_COMPONENT    : return "cmp";
+    case BRIG_MEMORY_SCOPE_NONE         : return "";
+    case BRIG_MEMORY_SCOPE_SYSTEM       : return "sys";
+    case BRIG_MEMORY_SCOPE_WORKGROUP    : return "wg";
+    default : return NULL;
+    }
+}
+
+Brig::BrigMemoryOrder8_t getDefOrder(Brig::BrigOpcode16_t arg) {
+  using namespace Brig;
+  switch( arg ) {
+    case BRIG_OPCODE_ARRIVEFBAR         : return Brig::BRIG_MEMORY_ORDER_NONE;
+    case BRIG_OPCODE_BARRIER            : return Brig::BRIG_MEMORY_ORDER_NONE;
+    case BRIG_OPCODE_INITFBAR           : return Brig::BRIG_MEMORY_ORDER_NONE;
+    case BRIG_OPCODE_JOINFBAR           : return Brig::BRIG_MEMORY_ORDER_NONE;
+    case BRIG_OPCODE_LEAVEFBAR          : return Brig::BRIG_MEMORY_ORDER_NONE;
+    case BRIG_OPCODE_RELEASEFBAR        : return Brig::BRIG_MEMORY_ORDER_NONE;
+    case BRIG_OPCODE_WAITFBAR           : return Brig::BRIG_MEMORY_ORDER_NONE;
+    default : return Brig::BRIG_MEMORY_ORDER_RELAXED;
     }
 }
 
@@ -368,6 +385,7 @@ const char* opcode2str(unsigned arg) {
     case BRIG_OPCODE_CLOCK              : return "clock";
     case BRIG_OPCODE_CMOV               : return "cmov";
     case BRIG_OPCODE_CMP                : return "cmp";
+    case BRIG_OPCODE_CODEBLOCKEND       : return "codeblockend";
     case BRIG_OPCODE_COMBINE            : return "combine";
     case BRIG_OPCODE_COPYSIGN           : return "copysign";
     case BRIG_OPCODE_COUNTLANE          : return "countlane";
@@ -386,6 +404,33 @@ const char* opcode2str(unsigned arg) {
     case BRIG_OPCODE_FMA                : return "fma";
     case BRIG_OPCODE_FRACT              : return "fract";
     case BRIG_OPCODE_FTOS               : return "ftos";
+    case BRIG_OPCODE_GCNAPPEND          : return "gcn_atomic_append";
+    case BRIG_OPCODE_GCNATOMIC          : return "gcn_atomic";
+    case BRIG_OPCODE_GCNATOMICNORET     : return "gcn_atomicNoRet";
+    case BRIG_OPCODE_GCNB32XCHG         : return "gcn_b32xchg";
+    case BRIG_OPCODE_GCNB4XCHG          : return "gcn_b4xchg";
+    case BRIG_OPCODE_GCNBFM             : return "gcn_bfm";
+    case BRIG_OPCODE_GCNCONSUME         : return "gcn_atomic_consume";
+    case BRIG_OPCODE_GCNFLDEXP          : return "gcn_fldexp";
+    case BRIG_OPCODE_GCNFREXP_EXP       : return "gcn_frexp_exp";
+    case BRIG_OPCODE_GCNFREXP_MANT      : return "gcn_frexp_mant";
+    case BRIG_OPCODE_GCNLD              : return "gcn_ld";
+    case BRIG_OPCODE_GCNMADS            : return "gcn_mads";
+    case BRIG_OPCODE_GCNMADU            : return "gcn_madu";
+    case BRIG_OPCODE_GCNMAX3            : return "gcn_max3";
+    case BRIG_OPCODE_GCNMED3            : return "gcn_med3";
+    case BRIG_OPCODE_GCNMIN3            : return "gcn_min3";
+    case BRIG_OPCODE_GCNMQSAD           : return "gcn_mqsad";
+    case BRIG_OPCODE_GCNMQSAD4          : return "gcn_mqsad4";
+    case BRIG_OPCODE_GCNMSAD            : return "gcn_msad";
+    case BRIG_OPCODE_GCNPRIORITY        : return "gcn_priority";
+    case BRIG_OPCODE_GCNQSAD            : return "gcn_qsad";
+    case BRIG_OPCODE_GCNREGIONALLOC     : return "gcn_region_alloc";
+    case BRIG_OPCODE_GCNSADD            : return "gcn_sadd";
+    case BRIG_OPCODE_GCNSADW            : return "gcn_sadw";
+    case BRIG_OPCODE_GCNSLEEP           : return "gcn_sleep";
+    case BRIG_OPCODE_GCNST              : return "gcn_st";
+    case BRIG_OPCODE_GCNTRIG_PREOP      : return "gcn_trig_preop";
     case BRIG_OPCODE_GETDETECTEXCEPT    : return "getdetectexcept";
     case BRIG_OPCODE_GRIDGROUPS         : return "gridgroups";
     case BRIG_OPCODE_GRIDSIZE           : return "gridsize";
@@ -437,6 +482,7 @@ const char* opcode2str(unsigned arg) {
     case BRIG_OPCODE_QUERYIMAGEHEIGHT   : return "queryimageheight";
     case BRIG_OPCODE_QUERYIMAGEORDER    : return "queryimageorder";
     case BRIG_OPCODE_QUERYIMAGEWIDTH    : return "queryimagewidth";
+    case BRIG_OPCODE_QUERYSAMPLERBOUNDARY : return "querysamplerboundary";
     case BRIG_OPCODE_QUERYSAMPLERCOORD  : return "querysamplercoord";
     case BRIG_OPCODE_QUERYSAMPLERFILTER : return "querysamplerfilter";
     case BRIG_OPCODE_RDIMAGE            : return "rdimage";
@@ -478,23 +524,25 @@ const char* opcode2str(unsigned arg) {
     }
 }
 
-bool doesSupportMemorySemantic(Brig::BrigOpcode16_t arg) {
-  using namespace Brig;
-  switch( arg ) {
-    case BRIG_OPCODE_LD                 : return true;
-    case BRIG_OPCODE_ST                 : return true;
-    default : return false;
-    }
-}
-
 Brig::BrigMemoryFence8_t getDefFence(Brig::BrigOpcode16_t arg) {
   using namespace Brig;
   switch( arg ) {
-    case BRIG_OPCODE_ARRIVEFBAR         : return Brig::BRIG_FENCE_BOTH;
-    case BRIG_OPCODE_BARRIER            : return Brig::BRIG_FENCE_BOTH;
-    case BRIG_OPCODE_SYNC               : return Brig::BRIG_FENCE_BOTH;
-    case BRIG_OPCODE_WAITFBAR           : return Brig::BRIG_FENCE_BOTH;
-    default : return Brig::BRIG_FENCE_NONE;
+    case BRIG_OPCODE_ARRIVEFBAR         : return Brig::BRIG_MEMORY_FENCE_BOTH;
+    case BRIG_OPCODE_BARRIER            : return Brig::BRIG_MEMORY_FENCE_BOTH;
+    case BRIG_OPCODE_SYNC               : return Brig::BRIG_MEMORY_FENCE_BOTH;
+    case BRIG_OPCODE_WAITFBAR           : return Brig::BRIG_MEMORY_FENCE_BOTH;
+    default : return Brig::BRIG_MEMORY_FENCE_NONE;
+    }
+}
+
+Brig::BrigMemoryFence8_t getDefScope(Brig::BrigOpcode16_t arg) {
+  using namespace Brig;
+  switch( arg ) {
+    case BRIG_OPCODE_INITFBAR           : return Brig::BRIG_MEMORY_SCOPE_NONE;
+    case BRIG_OPCODE_JOINFBAR           : return Brig::BRIG_MEMORY_SCOPE_NONE;
+    case BRIG_OPCODE_LEAVEFBAR          : return Brig::BRIG_MEMORY_SCOPE_NONE;
+    case BRIG_OPCODE_RELEASEFBAR        : return Brig::BRIG_MEMORY_SCOPE_NONE;
+    default : return Brig::BRIG_MEMORY_SCOPE_SYSTEM;
     }
 }
 
@@ -503,12 +551,13 @@ int size_of_operand(unsigned arg) {
   switch( arg ) {
     case BRIG_OPERAND_ADDRESS           : return sizeof(BrigOperandAddress);
     case BRIG_OPERAND_ARGUMENT_LIST     : return sizeof(BrigOperandArgumentList);
-    case BRIG_OPERAND_ARGUMENT_REF      : return sizeof(BrigOperandArgumentRef);
     case BRIG_OPERAND_FBARRIER_REF      : return sizeof(BrigOperandFbarrierRef);
     case BRIG_OPERAND_FUNCTION_LIST     : return sizeof(BrigOperandFunctionList);
     case BRIG_OPERAND_FUNCTION_REF      : return sizeof(BrigOperandFunctionRef);
     case BRIG_OPERAND_IMMED             : return sizeof(BrigOperandImmed);
     case BRIG_OPERAND_LABEL_REF         : return sizeof(BrigOperandLabelRef);
+    case BRIG_OPERAND_LABEL_TARGETS_REF : return sizeof(BrigOperandLabelTargetsRef);
+    case BRIG_OPERAND_LABEL_VARIABLE_REF : return sizeof(BrigOperandLabelVariableRef);
     case BRIG_OPERAND_REG               : return sizeof(BrigOperandReg);
     case BRIG_OPERAND_REG_VECTOR        : return sizeof(BrigOperandRegVector);
     case BRIG_OPERAND_SIGNATURE_REF     : return sizeof(BrigOperandSignatureRef);
@@ -572,6 +621,7 @@ const char* samplerBoundaryMode2str(unsigned arg) {
     case BRIG_BOUNDARY_CLAMP            : return "clamp";
     case BRIG_BOUNDARY_MIRROR           : return "mirror";
     case BRIG_BOUNDARY_MIRRORONCE       : return "mirroronce";
+    case BRIG_BOUNDARY_UNDEFINED        : return "undefined";
     case BRIG_BOUNDARY_WRAP             : return "wrap";
     default : return NULL;
     }
@@ -590,7 +640,7 @@ const char* segment2str(unsigned arg) {
   using namespace Brig;
   switch( arg ) {
     case BRIG_SEGMENT_ARG               : return "arg";
-    case BRIG_SEGMENT_EXTSPACE0         : return "extspace0";
+    case BRIG_SEGMENT_EXTSPACE0         : return "region";
     case BRIG_SEGMENT_FLAT              : return "";
     case BRIG_SEGMENT_GLOBAL            : return "global";
     case BRIG_SEGMENT_GROUP             : return "group";
@@ -669,7 +719,6 @@ const char* typeX2str(unsigned arg) {
     case BRIG_TYPE_F32X4                : return "f32x4";
     case BRIG_TYPE_F64                  : return "f64";
     case BRIG_TYPE_F64X2                : return "f64x2";
-    case BRIG_TYPE_FBAR                 : return "fbar";
     case BRIG_TYPE_NONE                 : return "";
     case BRIG_TYPE_ROIMG                : return "roimg";
     case BRIG_TYPE_RWIMG                : return "rwimg";
@@ -722,9 +771,11 @@ const char* anyEnum2str( Brig::BrigAtomicOperation arg ) {
     case BRIG_ATOMIC_DEC                : return "BRIG_ATOMIC_DEC";
     case BRIG_ATOMIC_EXCH               : return "BRIG_ATOMIC_EXCH";
     case BRIG_ATOMIC_INC                : return "BRIG_ATOMIC_INC";
+    case BRIG_ATOMIC_LD                 : return "BRIG_ATOMIC_LD";
     case BRIG_ATOMIC_MAX                : return "BRIG_ATOMIC_MAX";
     case BRIG_ATOMIC_MIN                : return "BRIG_ATOMIC_MIN";
     case BRIG_ATOMIC_OR                 : return "BRIG_ATOMIC_OR";
+    case BRIG_ATOMIC_ST                 : return "BRIG_ATOMIC_ST";
     case BRIG_ATOMIC_SUB                : return "BRIG_ATOMIC_SUB";
     case BRIG_ATOMIC_XOR                : return "BRIG_ATOMIC_XOR";
     default : return "??";
@@ -774,7 +825,6 @@ const char* anyEnum2str( Brig::BrigControlDirective arg ) {
     case BRIG_CONTROL_MAXDYNAMICGROUPSIZE : return "BRIG_CONTROL_MAXDYNAMICGROUPSIZE";
     case BRIG_CONTROL_MAXFLATGRIDSIZE   : return "BRIG_CONTROL_MAXFLATGRIDSIZE";
     case BRIG_CONTROL_MAXFLATWORKGROUPSIZE : return "BRIG_CONTROL_MAXFLATWORKGROUPSIZE";
-    case BRIG_CONTROL_NONE              : return "BRIG_CONTROL_NONE";
     case BRIG_CONTROL_REQUESTEDWORKGROUPSPERCU : return "BRIG_CONTROL_REQUESTEDWORKGROUPSPERCU";
     case BRIG_CONTROL_REQUIREDDIM       : return "BRIG_CONTROL_REQUIREDDIM";
     case BRIG_CONTROL_REQUIREDGRIDSIZE  : return "BRIG_CONTROL_REQUIREDGRIDSIZE";
@@ -799,7 +849,6 @@ const char* anyEnum2str( Brig::BrigDirectiveKinds arg ) {
     case BRIG_DIRECTIVE_FBARRIER        : return "BRIG_DIRECTIVE_FBARRIER";
     case BRIG_DIRECTIVE_FILE            : return "BRIG_DIRECTIVE_FILE";
     case BRIG_DIRECTIVE_FUNCTION        : return "BRIG_DIRECTIVE_FUNCTION";
-    case BRIG_DIRECTIVE_IMAGE           : return "BRIG_DIRECTIVE_IMAGE";
     case BRIG_DIRECTIVE_IMAGE_INIT      : return "BRIG_DIRECTIVE_IMAGE_INIT";
     case BRIG_DIRECTIVE_KERNEL          : return "BRIG_DIRECTIVE_KERNEL";
     case BRIG_DIRECTIVE_LABEL           : return "BRIG_DIRECTIVE_LABEL";
@@ -807,7 +856,6 @@ const char* anyEnum2str( Brig::BrigDirectiveKinds arg ) {
     case BRIG_DIRECTIVE_LABEL_TARGETS   : return "BRIG_DIRECTIVE_LABEL_TARGETS";
     case BRIG_DIRECTIVE_LOC             : return "BRIG_DIRECTIVE_LOC";
     case BRIG_DIRECTIVE_PRAGMA          : return "BRIG_DIRECTIVE_PRAGMA";
-    case BRIG_DIRECTIVE_SAMPLER         : return "BRIG_DIRECTIVE_SAMPLER";
     case BRIG_DIRECTIVE_SAMPLER_INIT    : return "BRIG_DIRECTIVE_SAMPLER_INIT";
     case BRIG_DIRECTIVE_SIGNATURE       : return "BRIG_DIRECTIVE_SIGNATURE";
     case BRIG_DIRECTIVE_VARIABLE        : return "BRIG_DIRECTIVE_VARIABLE";
@@ -890,8 +938,8 @@ const char* anyEnum2str( Brig::BrigInstKinds arg ) {
     case BRIG_INST_BR                   : return "BRIG_INST_BR";
     case BRIG_INST_CMP                  : return "BRIG_INST_CMP";
     case BRIG_INST_CVT                  : return "BRIG_INST_CVT";
-    case BRIG_INST_FBAR                 : return "BRIG_INST_FBAR";
     case BRIG_INST_IMAGE                : return "BRIG_INST_IMAGE";
+    case BRIG_INST_LANE                 : return "BRIG_INST_LANE";
     case BRIG_INST_MEM                  : return "BRIG_INST_MEM";
     case BRIG_INST_MOD                  : return "BRIG_INST_MOD";
     case BRIG_INST_SEG                  : return "BRIG_INST_SEG";
@@ -922,12 +970,10 @@ const char* anyEnum2str( Brig::BrigMachineModel arg ) {
 const char* anyEnum2str( Brig::BrigMemoryFence arg ) {
   using namespace Brig;
   switch( arg ) {
-    case BRIG_FENCE_BOTH                : return "BRIG_FENCE_BOTH";
-    case BRIG_FENCE_GLOBAL              : return "BRIG_FENCE_GLOBAL";
-    case BRIG_FENCE_GROUP               : return "BRIG_FENCE_GROUP";
-    case BRIG_FENCE_NONE                : return "BRIG_FENCE_NONE";
-    case BRIG_FENCE_PARTIAL             : return "BRIG_FENCE_PARTIAL";
-    case BRIG_FENCE_PARTIAL_BOTH        : return "BRIG_FENCE_PARTIAL_BOTH";
+    case BRIG_MEMORY_FENCE_BOTH         : return "BRIG_MEMORY_FENCE_BOTH";
+    case BRIG_MEMORY_FENCE_GLOBAL       : return "BRIG_MEMORY_FENCE_GLOBAL";
+    case BRIG_MEMORY_FENCE_GROUP        : return "BRIG_MEMORY_FENCE_GROUP";
+    case BRIG_MEMORY_FENCE_NONE         : return "BRIG_MEMORY_FENCE_NONE";
     default : return "??";
     }
 }
@@ -936,22 +982,30 @@ const char* anyEnum2str( Brig::BrigMemoryModifierMask arg ) {
   using namespace Brig;
   switch( arg ) {
     case BRIG_MEMORY_ALIGNED            : return "BRIG_MEMORY_ALIGNED";
-    case BRIG_MEMORY_SEMANTIC           : return "BRIG_MEMORY_SEMANTIC";
     default : return "??";
     }
 }
 
-const char* anyEnum2str( Brig::BrigMemorySemantic arg ) {
+const char* anyEnum2str( Brig::BrigMemoryOrder arg ) {
   using namespace Brig;
   switch( arg ) {
-    case BRIG_SEMANTIC_ACQUIRE          : return "BRIG_SEMANTIC_ACQUIRE";
-    case BRIG_SEMANTIC_ACQUIRE_RELEASE  : return "BRIG_SEMANTIC_ACQUIRE_RELEASE";
-    case BRIG_SEMANTIC_NONE             : return "BRIG_SEMANTIC_NONE";
-    case BRIG_SEMANTIC_PARTIAL_ACQUIRE  : return "BRIG_SEMANTIC_PARTIAL_ACQUIRE";
-    case BRIG_SEMANTIC_PARTIAL_ACQUIRE_RELEASE : return "BRIG_SEMANTIC_PARTIAL_ACQUIRE_RELEASE";
-    case BRIG_SEMANTIC_PARTIAL_RELEASE  : return "BRIG_SEMANTIC_PARTIAL_RELEASE";
-    case BRIG_SEMANTIC_REGULAR          : return "BRIG_SEMANTIC_REGULAR";
-    case BRIG_SEMANTIC_RELEASE          : return "BRIG_SEMANTIC_RELEASE";
+    case BRIG_MEMORY_ORDER_ACQUIRE      : return "BRIG_MEMORY_ORDER_ACQUIRE";
+    case BRIG_MEMORY_ORDER_ACQUIRE_RELEASE : return "BRIG_MEMORY_ORDER_ACQUIRE_RELEASE";
+    case BRIG_MEMORY_ORDER_NONE         : return "BRIG_MEMORY_ORDER_NONE";
+    case BRIG_MEMORY_ORDER_RELAXED      : return "BRIG_MEMORY_ORDER_RELAXED";
+    case BRIG_MEMORY_ORDER_RELEASE      : return "BRIG_MEMORY_ORDER_RELEASE";
+    case BRIG_MEMORY_ORDER_SEQUENTIALLY_CONSISTENT : return "BRIG_MEMORY_ORDER_SEQUENTIALLY_CONSISTENT";
+    default : return "??";
+    }
+}
+
+const char* anyEnum2str( Brig::BrigMemoryScope arg ) {
+  using namespace Brig;
+  switch( arg ) {
+    case BRIG_MEMORY_SCOPE_COMPONENT    : return "BRIG_MEMORY_SCOPE_COMPONENT";
+    case BRIG_MEMORY_SCOPE_NONE         : return "BRIG_MEMORY_SCOPE_NONE";
+    case BRIG_MEMORY_SCOPE_SYSTEM       : return "BRIG_MEMORY_SCOPE_SYSTEM";
+    case BRIG_MEMORY_SCOPE_WORKGROUP    : return "BRIG_MEMORY_SCOPE_WORKGROUP";
     default : return "??";
     }
 }
@@ -987,6 +1041,7 @@ const char* anyEnum2str( Brig::BrigOpcode arg ) {
     case BRIG_OPCODE_CLOCK              : return "BRIG_OPCODE_CLOCK";
     case BRIG_OPCODE_CMOV               : return "BRIG_OPCODE_CMOV";
     case BRIG_OPCODE_CMP                : return "BRIG_OPCODE_CMP";
+    case BRIG_OPCODE_CODEBLOCKEND       : return "BRIG_OPCODE_CODEBLOCKEND";
     case BRIG_OPCODE_COMBINE            : return "BRIG_OPCODE_COMBINE";
     case BRIG_OPCODE_COPYSIGN           : return "BRIG_OPCODE_COPYSIGN";
     case BRIG_OPCODE_COUNTLANE          : return "BRIG_OPCODE_COUNTLANE";
@@ -1005,6 +1060,33 @@ const char* anyEnum2str( Brig::BrigOpcode arg ) {
     case BRIG_OPCODE_FMA                : return "BRIG_OPCODE_FMA";
     case BRIG_OPCODE_FRACT              : return "BRIG_OPCODE_FRACT";
     case BRIG_OPCODE_FTOS               : return "BRIG_OPCODE_FTOS";
+    case BRIG_OPCODE_GCNAPPEND          : return "BRIG_OPCODE_GCNAPPEND";
+    case BRIG_OPCODE_GCNATOMIC          : return "BRIG_OPCODE_GCNATOMIC";
+    case BRIG_OPCODE_GCNATOMICNORET     : return "BRIG_OPCODE_GCNATOMICNORET";
+    case BRIG_OPCODE_GCNB32XCHG         : return "BRIG_OPCODE_GCNB32XCHG";
+    case BRIG_OPCODE_GCNB4XCHG          : return "BRIG_OPCODE_GCNB4XCHG";
+    case BRIG_OPCODE_GCNBFM             : return "BRIG_OPCODE_GCNBFM";
+    case BRIG_OPCODE_GCNCONSUME         : return "BRIG_OPCODE_GCNCONSUME";
+    case BRIG_OPCODE_GCNFLDEXP          : return "BRIG_OPCODE_GCNFLDEXP";
+    case BRIG_OPCODE_GCNFREXP_EXP       : return "BRIG_OPCODE_GCNFREXP_EXP";
+    case BRIG_OPCODE_GCNFREXP_MANT      : return "BRIG_OPCODE_GCNFREXP_MANT";
+    case BRIG_OPCODE_GCNLD              : return "BRIG_OPCODE_GCNLD";
+    case BRIG_OPCODE_GCNMADS            : return "BRIG_OPCODE_GCNMADS";
+    case BRIG_OPCODE_GCNMADU            : return "BRIG_OPCODE_GCNMADU";
+    case BRIG_OPCODE_GCNMAX3            : return "BRIG_OPCODE_GCNMAX3";
+    case BRIG_OPCODE_GCNMED3            : return "BRIG_OPCODE_GCNMED3";
+    case BRIG_OPCODE_GCNMIN3            : return "BRIG_OPCODE_GCNMIN3";
+    case BRIG_OPCODE_GCNMQSAD           : return "BRIG_OPCODE_GCNMQSAD";
+    case BRIG_OPCODE_GCNMQSAD4          : return "BRIG_OPCODE_GCNMQSAD4";
+    case BRIG_OPCODE_GCNMSAD            : return "BRIG_OPCODE_GCNMSAD";
+    case BRIG_OPCODE_GCNPRIORITY        : return "BRIG_OPCODE_GCNPRIORITY";
+    case BRIG_OPCODE_GCNQSAD            : return "BRIG_OPCODE_GCNQSAD";
+    case BRIG_OPCODE_GCNREGIONALLOC     : return "BRIG_OPCODE_GCNREGIONALLOC";
+    case BRIG_OPCODE_GCNSADD            : return "BRIG_OPCODE_GCNSADD";
+    case BRIG_OPCODE_GCNSADW            : return "BRIG_OPCODE_GCNSADW";
+    case BRIG_OPCODE_GCNSLEEP           : return "BRIG_OPCODE_GCNSLEEP";
+    case BRIG_OPCODE_GCNST              : return "BRIG_OPCODE_GCNST";
+    case BRIG_OPCODE_GCNTRIG_PREOP      : return "BRIG_OPCODE_GCNTRIG_PREOP";
     case BRIG_OPCODE_GETDETECTEXCEPT    : return "BRIG_OPCODE_GETDETECTEXCEPT";
     case BRIG_OPCODE_GRIDGROUPS         : return "BRIG_OPCODE_GRIDGROUPS";
     case BRIG_OPCODE_GRIDSIZE           : return "BRIG_OPCODE_GRIDSIZE";
@@ -1056,6 +1138,7 @@ const char* anyEnum2str( Brig::BrigOpcode arg ) {
     case BRIG_OPCODE_QUERYIMAGEHEIGHT   : return "BRIG_OPCODE_QUERYIMAGEHEIGHT";
     case BRIG_OPCODE_QUERYIMAGEORDER    : return "BRIG_OPCODE_QUERYIMAGEORDER";
     case BRIG_OPCODE_QUERYIMAGEWIDTH    : return "BRIG_OPCODE_QUERYIMAGEWIDTH";
+    case BRIG_OPCODE_QUERYSAMPLERBOUNDARY : return "BRIG_OPCODE_QUERYSAMPLERBOUNDARY";
     case BRIG_OPCODE_QUERYSAMPLERCOORD  : return "BRIG_OPCODE_QUERYSAMPLERCOORD";
     case BRIG_OPCODE_QUERYSAMPLERFILTER : return "BRIG_OPCODE_QUERYSAMPLERFILTER";
     case BRIG_OPCODE_RDIMAGE            : return "BRIG_OPCODE_RDIMAGE";
@@ -1102,12 +1185,13 @@ const char* anyEnum2str( Brig::BrigOperandKinds arg ) {
   switch( arg ) {
     case BRIG_OPERAND_ADDRESS           : return "BRIG_OPERAND_ADDRESS";
     case BRIG_OPERAND_ARGUMENT_LIST     : return "BRIG_OPERAND_ARGUMENT_LIST";
-    case BRIG_OPERAND_ARGUMENT_REF      : return "BRIG_OPERAND_ARGUMENT_REF";
     case BRIG_OPERAND_FBARRIER_REF      : return "BRIG_OPERAND_FBARRIER_REF";
     case BRIG_OPERAND_FUNCTION_LIST     : return "BRIG_OPERAND_FUNCTION_LIST";
     case BRIG_OPERAND_FUNCTION_REF      : return "BRIG_OPERAND_FUNCTION_REF";
     case BRIG_OPERAND_IMMED             : return "BRIG_OPERAND_IMMED";
     case BRIG_OPERAND_LABEL_REF         : return "BRIG_OPERAND_LABEL_REF";
+    case BRIG_OPERAND_LABEL_TARGETS_REF : return "BRIG_OPERAND_LABEL_TARGETS_REF";
+    case BRIG_OPERAND_LABEL_VARIABLE_REF : return "BRIG_OPERAND_LABEL_VARIABLE_REF";
     case BRIG_OPERAND_REG               : return "BRIG_OPERAND_REG";
     case BRIG_OPERAND_REG_VECTOR        : return "BRIG_OPERAND_REG_VECTOR";
     case BRIG_OPERAND_SIGNATURE_REF     : return "BRIG_OPERAND_SIGNATURE_REF";
@@ -1172,6 +1256,7 @@ const char* anyEnum2str( Brig::BrigSamplerBoundaryMode arg ) {
     case BRIG_BOUNDARY_CLAMP            : return "BRIG_BOUNDARY_CLAMP";
     case BRIG_BOUNDARY_MIRROR           : return "BRIG_BOUNDARY_MIRROR";
     case BRIG_BOUNDARY_MIRRORONCE       : return "BRIG_BOUNDARY_MIRRORONCE";
+    case BRIG_BOUNDARY_UNDEFINED        : return "BRIG_BOUNDARY_UNDEFINED";
     case BRIG_BOUNDARY_WRAP             : return "BRIG_BOUNDARY_WRAP";
     default : return "??";
     }
@@ -1221,7 +1306,6 @@ const char* anyEnum2str( Brig::BrigTypeX arg ) {
     case BRIG_TYPE_F32X4                : return "BRIG_TYPE_F32X4";
     case BRIG_TYPE_F64                  : return "BRIG_TYPE_F64";
     case BRIG_TYPE_F64X2                : return "BRIG_TYPE_F64X2";
-    case BRIG_TYPE_FBAR                 : return "BRIG_TYPE_FBAR";
     case BRIG_TYPE_NONE                 : return "BRIG_TYPE_NONE";
     case BRIG_TYPE_ROIMG                : return "BRIG_TYPE_ROIMG";
     case BRIG_TYPE_RWIMG                : return "BRIG_TYPE_RWIMG";
@@ -1294,40 +1378,6 @@ const char* anyEnum2str( Brig::BrigWidth arg ) {
     case BRIG_WIDTH_ALL                 : return "BRIG_WIDTH_ALL";
     case BRIG_WIDTH_NONE                : return "BRIG_WIDTH_NONE";
     case BRIG_WIDTH_WAVESIZE            : return "BRIG_WIDTH_WAVESIZE";
-    default : return "??";
-    }
-}
-
-const char* anyEnum2str( Brig::OldGcnOpcodes arg ) {
-  using namespace Brig;
-  switch( arg ) {
-    case BRIG_OPCODE_GCNAPPEND          : return "BRIG_OPCODE_GCNAPPEND";
-    case BRIG_OPCODE_GCNATOMIC          : return "BRIG_OPCODE_GCNATOMIC";
-    case BRIG_OPCODE_GCNATOMICNORET     : return "BRIG_OPCODE_GCNATOMICNORET";
-    case BRIG_OPCODE_GCNB32XCHG         : return "BRIG_OPCODE_GCNB32XCHG";
-    case BRIG_OPCODE_GCNB4XCHG          : return "BRIG_OPCODE_GCNB4XCHG";
-    case BRIG_OPCODE_GCNBFM             : return "BRIG_OPCODE_GCNBFM";
-    case BRIG_OPCODE_GCNCONSUME         : return "BRIG_OPCODE_GCNCONSUME";
-    case BRIG_OPCODE_GCNFLDEXP          : return "BRIG_OPCODE_GCNFLDEXP";
-    case BRIG_OPCODE_GCNFREXP_EXP       : return "BRIG_OPCODE_GCNFREXP_EXP";
-    case BRIG_OPCODE_GCNFREXP_MANT      : return "BRIG_OPCODE_GCNFREXP_MANT";
-    case BRIG_OPCODE_GCNLD              : return "BRIG_OPCODE_GCNLD";
-    case BRIG_OPCODE_GCNMADS            : return "BRIG_OPCODE_GCNMADS";
-    case BRIG_OPCODE_GCNMADU            : return "BRIG_OPCODE_GCNMADU";
-    case BRIG_OPCODE_GCNMAX3            : return "BRIG_OPCODE_GCNMAX3";
-    case BRIG_OPCODE_GCNMED3            : return "BRIG_OPCODE_GCNMED3";
-    case BRIG_OPCODE_GCNMIN3            : return "BRIG_OPCODE_GCNMIN3";
-    case BRIG_OPCODE_GCNMQSAD           : return "BRIG_OPCODE_GCNMQSAD";
-    case BRIG_OPCODE_GCNMQSAD4          : return "BRIG_OPCODE_GCNMQSAD4";
-    case BRIG_OPCODE_GCNMSAD            : return "BRIG_OPCODE_GCNMSAD";
-    case BRIG_OPCODE_GCNPRIORITY        : return "BRIG_OPCODE_GCNPRIORITY";
-    case BRIG_OPCODE_GCNQSAD            : return "BRIG_OPCODE_GCNQSAD";
-    case BRIG_OPCODE_GCNREGIONALLOC     : return "BRIG_OPCODE_GCNREGIONALLOC";
-    case BRIG_OPCODE_GCNSADD            : return "BRIG_OPCODE_GCNSADD";
-    case BRIG_OPCODE_GCNSADW            : return "BRIG_OPCODE_GCNSADW";
-    case BRIG_OPCODE_GCNSLEEP           : return "BRIG_OPCODE_GCNSLEEP";
-    case BRIG_OPCODE_GCNST              : return "BRIG_OPCODE_GCNST";
-    case BRIG_OPCODE_GCNTRIG_PREOP      : return "BRIG_OPCODE_GCNTRIG_PREOP";
     default : return "??";
     }
 }

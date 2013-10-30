@@ -89,22 +89,25 @@ namespace HSAIL_ASM
 //         ret;
 // };
 
+
+template<typename T> struct FloatBits;
+
 class f32_t 
 {
 public:
     f32_t() {}
-    f32_t(float v) : m_value(v) {}
-    explicit f32_t(int8_t   v) : m_value(v) {}
-    explicit f32_t(uint8_t  v) : m_value(v) {}
-    explicit f32_t(int16_t  v) : m_value(v) {}
-    explicit f32_t(uint16_t v) : m_value(v) {}
-    explicit f32_t(int32_t  v) : m_value(v) {}
-    explicit f32_t(uint32_t v) : m_value(v) {}
-    explicit f32_t(int64_t  v) : m_value(v) {}
-    explicit f32_t(uint64_t v) : m_value(v) {}
-    explicit f32_t(double   v) : m_value(v) {}
-    inline explicit f32_t(const f16_t &v);
-    operator float() const { return m_value; }
+    f32_t(const float* rhs) : m_uint32(*reinterpret_cast<const uint32_t*>(rhs)) {}
+    bool operator==(const f32_t& rv) const { return m_uint32 == rv.m_uint32; }
+    bool operator!=(const f32_t& rv) const { return !(*this==rv); }
+    uint32_t rawBits() { return m_uint32; }
+    static f32_t fromRawBits(uint32_t bits) { 
+      f32_t res;
+      res.m_uint32 = bits;
+      return res;
+    }
+
+    float floatValue() const { return m_value; }
+
 private:
     // Although the m_uin32_t field is never used, it is necessary
     // prevent the copy constructor from using the fld and fst. The
@@ -119,40 +122,22 @@ private:
     };
 };
 
-class f64u_t
-{
-public:
-   inline operator f64_t() const;
-private:
-   union {
-     double m_value;
-     uint64_t m_uint64;
-   };
-   friend class f64_t;
-};
-
 class f64_t 
 {
 public:
     f64_t() {}
-    f64_t(const double &v) : m_uint64(*(uint64_t *) &v) {}
-    explicit f64_t(int8_t   v) : m_value(v) {}
-    explicit f64_t(uint8_t  v) : m_value(v) {}
-    explicit f64_t(int16_t  v) : m_value(v) {}
-    explicit f64_t(uint16_t v) : m_value(v) {}
-    explicit f64_t(int32_t  v) : m_value(v) {}
-    explicit f64_t(uint32_t v) : m_value(v) {}
-    explicit f64_t(int64_t  v) : m_value(v) {}
-    explicit f64_t(uint64_t v) : m_value(v) {}
-    explicit f64_t(float    v) : m_value(v) {}
-    inline explicit f64_t(const f16_t &v);
-    inline explicit f64_t(const f32_t &v);
-    operator double() const { return m_value; }
-    operator f64u_t() const {
-      f64u_t x; 
-      x.m_uint64 = m_uint64; 
-      return x; 
+    f64_t(const double* rhs) : m_uint64(*reinterpret_cast<const uint64_t*>(rhs)) { }
+    bool operator==(const f64_t& rv) const { return m_uint64==rv.m_uint64; }
+    bool operator!=(const f64_t& rv) const { return !(*this==rv); }
+    uint64_t rawBits() { return m_uint64; }
+    static f64_t fromRawBits(uint64_t bits) { 
+      f64_t res;
+      res.m_uint64 = bits;
+      return res;
     }
+
+    double floatValue() const { return m_value; }
+
 private:
     union {
       double m_value;
@@ -164,30 +149,9 @@ class f16_t
 {
 public:
     f16_t() : m_value(0) {}
-    explicit f16_t(float v)    : m_value(singles2halfp(v)) {}
-    explicit f16_t(double v)   : m_value(singles2halfp(static_cast<f32_t>(v))) {}
-
-    explicit f16_t(int8_t v)  : m_value(singles2halfp(static_cast<f32_t>(v))) {}
-    explicit f16_t(int16_t v)  : m_value(singles2halfp(static_cast<f32_t>(v))) {}
-    explicit f16_t(int32_t v)  : m_value(singles2halfp(static_cast<f32_t>(v))) {}
-    explicit f16_t(int64_t v)  : m_value(singles2halfp(static_cast<f32_t>(v))) {}
-
-    explicit f16_t(uint8_t v) : m_value(singles2halfp(static_cast<f32_t>(v))) {}
-    explicit f16_t(uint16_t v) : m_value(singles2halfp(static_cast<f32_t>(v))) {}
-    explicit f16_t(uint32_t v) : m_value(singles2halfp(static_cast<f32_t>(v))) {}
-    explicit f16_t(uint64_t v) : m_value(singles2halfp(static_cast<f32_t>(v))) {}
-
-    operator f32_t()  const { return halfp2singles(m_value); }
-    operator f64_t() const  { return static_cast<f64_t>(float(halfp2singles(m_value))); }
-    operator int8_t()    const { return static_cast<int8_t>(halfp2singles(m_value)); }
-    operator int16_t()   const { return static_cast<int16_t>(halfp2singles(m_value)); }
-    operator int32_t()   const { return static_cast<int32_t>(halfp2singles(m_value)); }
-    operator int64_t()   const { return static_cast<int64_t>(halfp2singles(m_value)); }
-
-    operator uint8_t()    const { return static_cast<uint8_t>(halfp2singles(m_value)); }
-    operator uint16_t()   const { return static_cast<uint16_t>(halfp2singles(m_value)); }
-    operator uint32_t()   const { return static_cast<uint32_t>(halfp2singles(m_value)); }
-    operator uint64_t()   const { return static_cast<uint64_t>(halfp2singles(m_value)); }
+    explicit f16_t(f32_t v)    : m_value(singles2halfp(v)) {}
+    explicit f16_t(const float *v)    : m_value(singles2halfp(f32_t(v))) {}
+    f32_t f32() const { return halfp2singles(m_value); }
 
     bool operator==(const f16_t& rv) const { return m_value==rv.m_value; }
     bool operator!=(const f16_t& rv) const { return !(*this==rv); }
@@ -200,6 +164,8 @@ public:
         return res;
     }
 
+    float floatValue() const { return f32().floatValue(); }
+
 private:
     uint16_t m_value;
 
@@ -207,19 +173,7 @@ private:
     static f32_t halfp2singles(uint16_t src);
 };
 
-f32_t::f32_t(const f16_t &v) : m_value(static_cast<f32_t>(v)) {}
-f64u_t::operator f64_t() const { return m_value; }
-f64_t::f64_t(const f16_t &v) : m_value(static_cast<f64_t>(v)) {}
-f64_t::f64_t(const f32_t &v) : m_value(static_cast<f64_t>(v)) {}
-
 template <> struct value_class<f16_t>  : float_class {};
-
-template <typename OS>
-inline OS& operator << (OS& os, f16_t v) {
-    f32_t sf = v;
-    os << static_cast<float>(sf);
-    return os;
-}
 
 template <typename Float>
 std::string toC99str(Float v);
@@ -234,22 +188,28 @@ template <typename Float> struct IEEE754BasicTraits;
 template <> struct IEEE754BasicTraits<f16_t>
 {
     typedef uint16_t RawBitsType;
+    typedef float NativeType;
     static const int mntsWidth = 10;
     static const char* suffix;
+    static const char* hexPrefix;
 };
 
 template <> struct IEEE754BasicTraits<f32_t>
 {
     typedef uint32_t RawBitsType;
+    typedef float NativeType;
     static const int mntsWidth = 23;
     static const char* suffix;
+    static const char* hexPrefix;
 };
 
 template <> struct IEEE754BasicTraits<f64_t>
 {
     typedef uint64_t RawBitsType;
+    typedef double NativeType;
     static const int mntsWidth = 52;
     static const char* suffix;
+    static const char* hexPrefix;
 };
 
 template <typename Float> struct IEEE754Traits : IEEE754BasicTraits<Float>
@@ -272,12 +232,10 @@ template <typename Float>
 Float makeFloat(typename IEEE754Traits<Float>::RawBitsType sign, int exp, typename IEEE754Traits<Float>::RawBitsType mnts) {
     typedef IEEE754Traits<Float> Traits;
 
-    typename Traits::RawBitsType const res =
+    return Float::fromRawBits(
         (sign
         | ((static_cast<typename Traits::RawBitsType>(exp+Traits::expBias)) << Traits::mntsWidth) // bias the exponent
-        | (mnts & Traits::mntsMask));
-
-    return *reinterpret_cast<const Float*>(&res);
+        | (mnts & Traits::mntsMask)));
 }
 
 } // end namespace

@@ -42,32 +42,30 @@ template <typename RetType, typename Visitor>
 RetType dispatchByItemKind_gen(Directive item,Visitor& vis) {
 	using namespace Brig;
 	switch(item.brig()->kind) {
-	case BRIG_DIRECTIVE_LABEL: return vis(DirectiveLabel(item));
-	case BRIG_DIRECTIVE_BLOCK_END: return vis(BlockEnd(item));
-	case BRIG_DIRECTIVE_EXTENSION: return vis(DirectiveExtension(item));
-	case BRIG_DIRECTIVE_VARIABLE: return vis(DirectiveVariable(item));
 	case BRIG_DIRECTIVE_ARG_SCOPE_END: return vis(DirectiveArgScopeEnd(item));
-	case BRIG_DIRECTIVE_CONTROL: return vis(DirectiveControl(item));
-	case BRIG_DIRECTIVE_SAMPLER: return vis(DirectiveSampler(item));
-	case BRIG_DIRECTIVE_VARIABLE_INIT: return vis(DirectiveVariableInit(item));
-	case BRIG_DIRECTIVE_SIGNATURE: return vis(DirectiveSignature(item));
+	case BRIG_DIRECTIVE_ARG_SCOPE_START: return vis(DirectiveArgScopeStart(item));
+	case BRIG_DIRECTIVE_BLOCK_END: return vis(BlockEnd(item));
+	case BRIG_DIRECTIVE_BLOCK_NUMERIC: return vis(BlockNumeric(item));
+	case BRIG_DIRECTIVE_BLOCK_START: return vis(BlockStart(item));
 	case BRIG_DIRECTIVE_BLOCK_STRING: return vis(BlockString(item));
+	case BRIG_DIRECTIVE_COMMENT: return vis(DirectiveComment(item));
+	case BRIG_DIRECTIVE_CONTROL: return vis(DirectiveControl(item));
+	case BRIG_DIRECTIVE_EXTENSION: return vis(DirectiveExtension(item));
+	case BRIG_DIRECTIVE_FBARRIER: return vis(DirectiveFbarrier(item));
 	case BRIG_DIRECTIVE_FILE: return vis(DirectiveFile(item));
-	case BRIG_DIRECTIVE_VERSION: return vis(DirectiveVersion(item));
+	case BRIG_DIRECTIVE_FUNCTION: return vis(DirectiveFunction(item));
+	case BRIG_DIRECTIVE_IMAGE_INIT: return vis(DirectiveImageInit(item));
 	case BRIG_DIRECTIVE_KERNEL: return vis(DirectiveKernel(item));
-	case BRIG_DIRECTIVE_IMAGE: return vis(DirectiveImage(item));
+	case BRIG_DIRECTIVE_LABEL: return vis(DirectiveLabel(item));
 	case BRIG_DIRECTIVE_LABEL_INIT: return vis(DirectiveLabelInit(item));
 	case BRIG_DIRECTIVE_LABEL_TARGETS: return vis(DirectiveLabelTargets(item));
-	case BRIG_DIRECTIVE_ARG_SCOPE_START: return vis(DirectiveArgScopeStart(item));
-	case BRIG_DIRECTIVE_BLOCK_START: return vis(BlockStart(item));
-	case BRIG_DIRECTIVE_IMAGE_INIT: return vis(DirectiveImageInit(item));
-	case BRIG_DIRECTIVE_SAMPLER_INIT: return vis(DirectiveSamplerInit(item));
-	case BRIG_DIRECTIVE_FUNCTION: return vis(DirectiveFunction(item));
-	case BRIG_DIRECTIVE_BLOCK_NUMERIC: return vis(BlockNumeric(item));
 	case BRIG_DIRECTIVE_LOC: return vis(DirectiveLoc(item));
-	case BRIG_DIRECTIVE_COMMENT: return vis(DirectiveComment(item));
 	case BRIG_DIRECTIVE_PRAGMA: return vis(DirectivePragma(item));
-	case BRIG_DIRECTIVE_FBARRIER: return vis(DirectiveFbarrier(item));
+	case BRIG_DIRECTIVE_SAMPLER_INIT: return vis(DirectiveSamplerInit(item));
+	case BRIG_DIRECTIVE_SIGNATURE: return vis(DirectiveSignature(item));
+	case BRIG_DIRECTIVE_VARIABLE: return vis(DirectiveVariable(item));
+	case BRIG_DIRECTIVE_VARIABLE_INIT: return vis(DirectiveVariableInit(item));
+	case BRIG_DIRECTIVE_VERSION: return vis(DirectiveVersion(item));
 	default: assert(false); break;
 	}
 	return RetType();
@@ -77,39 +75,26 @@ template <typename RetType, typename Visitor>
 RetType dispatchByItemKind_gen(DirectiveCode item,Visitor& vis) {
 	using namespace Brig;
 	switch(item.brig()->kind) {
-	case BRIG_DIRECTIVE_LABEL: return vis(DirectiveLabel(item));
-	case BRIG_DIRECTIVE_LABEL_TARGETS: return vis(DirectiveLabelTargets(item));
+	case BRIG_DIRECTIVE_ARG_SCOPE_END: return vis(DirectiveArgScopeEnd(item));
 	case BRIG_DIRECTIVE_ARG_SCOPE_START: return vis(DirectiveArgScopeStart(item));
-	case BRIG_DIRECTIVE_IMAGE_INIT: return vis(DirectiveImageInit(item));
 	case BRIG_DIRECTIVE_BLOCK_START: return vis(BlockStart(item));
-	case BRIG_DIRECTIVE_EXTENSION: return vis(DirectiveExtension(item));
-	case BRIG_DIRECTIVE_VARIABLE: return vis(DirectiveVariable(item));
-	case BRIG_DIRECTIVE_ARG_SCOPE_END: return vis(DirectiveArgScopeEnd(item));
-	case BRIG_DIRECTIVE_CONTROL: return vis(DirectiveControl(item));
-	case BRIG_DIRECTIVE_SAMPLER: return vis(DirectiveSampler(item));
-	case BRIG_DIRECTIVE_FUNCTION: return vis(DirectiveFunction(item));
-	case BRIG_DIRECTIVE_VARIABLE_INIT: return vis(DirectiveVariableInit(item));
-	case BRIG_DIRECTIVE_SIGNATURE: return vis(DirectiveSignature(item));
-	case BRIG_DIRECTIVE_LOC: return vis(DirectiveLoc(item));
-	case BRIG_DIRECTIVE_FILE: return vis(DirectiveFile(item));
-	case BRIG_DIRECTIVE_VERSION: return vis(DirectiveVersion(item));
 	case BRIG_DIRECTIVE_COMMENT: return vis(DirectiveComment(item));
-	case BRIG_DIRECTIVE_PRAGMA: return vis(DirectivePragma(item));
-	case BRIG_DIRECTIVE_KERNEL: return vis(DirectiveKernel(item));
-	case BRIG_DIRECTIVE_IMAGE: return vis(DirectiveImage(item));
+	case BRIG_DIRECTIVE_CONTROL: return vis(DirectiveControl(item));
+	case BRIG_DIRECTIVE_EXTENSION: return vis(DirectiveExtension(item));
 	case BRIG_DIRECTIVE_FBARRIER: return vis(DirectiveFbarrier(item));
+	case BRIG_DIRECTIVE_FILE: return vis(DirectiveFile(item));
+	case BRIG_DIRECTIVE_FUNCTION: return vis(DirectiveFunction(item));
+	case BRIG_DIRECTIVE_IMAGE_INIT: return vis(DirectiveImageInit(item));
+	case BRIG_DIRECTIVE_KERNEL: return vis(DirectiveKernel(item));
+	case BRIG_DIRECTIVE_LABEL: return vis(DirectiveLabel(item));
 	case BRIG_DIRECTIVE_LABEL_INIT: return vis(DirectiveLabelInit(item));
-	default: assert(false); break;
-	}
-	return RetType();
-}
-
-template <typename RetType, typename Visitor>
-RetType dispatchByItemKind_gen(DirectiveArgScope item,Visitor& vis) {
-	using namespace Brig;
-	switch(item.brig()->kind) {
-	case BRIG_DIRECTIVE_ARG_SCOPE_START: return vis(DirectiveArgScopeStart(item));
-	case BRIG_DIRECTIVE_ARG_SCOPE_END: return vis(DirectiveArgScopeEnd(item));
+	case BRIG_DIRECTIVE_LABEL_TARGETS: return vis(DirectiveLabelTargets(item));
+	case BRIG_DIRECTIVE_LOC: return vis(DirectiveLoc(item));
+	case BRIG_DIRECTIVE_PRAGMA: return vis(DirectivePragma(item));
+	case BRIG_DIRECTIVE_SIGNATURE: return vis(DirectiveSignature(item));
+	case BRIG_DIRECTIVE_VARIABLE: return vis(DirectiveVariable(item));
+	case BRIG_DIRECTIVE_VARIABLE_INIT: return vis(DirectiveVariableInit(item));
+	case BRIG_DIRECTIVE_VERSION: return vis(DirectiveVersion(item));
 	default: assert(false); break;
 	}
 	return RetType();
@@ -119,9 +104,9 @@ template <typename RetType, typename Visitor>
 RetType dispatchByItemKind_gen(DirectiveCallableBase item,Visitor& vis) {
 	using namespace Brig;
 	switch(item.brig()->kind) {
+	case BRIG_DIRECTIVE_FUNCTION: return vis(DirectiveFunction(item));
 	case BRIG_DIRECTIVE_KERNEL: return vis(DirectiveKernel(item));
 	case BRIG_DIRECTIVE_SIGNATURE: return vis(DirectiveSignature(item));
-	case BRIG_DIRECTIVE_FUNCTION: return vis(DirectiveFunction(item));
 	default: assert(false); break;
 	}
 	return RetType();
@@ -131,31 +116,8 @@ template <typename RetType, typename Visitor>
 RetType dispatchByItemKind_gen(DirectiveExecutable item,Visitor& vis) {
 	using namespace Brig;
 	switch(item.brig()->kind) {
-	case BRIG_DIRECTIVE_KERNEL: return vis(DirectiveKernel(item));
 	case BRIG_DIRECTIVE_FUNCTION: return vis(DirectiveFunction(item));
-	default: assert(false); break;
-	}
-	return RetType();
-}
-
-template <typename RetType, typename Visitor>
-RetType dispatchByItemKind_gen(DirectiveLabelList item,Visitor& vis) {
-	using namespace Brig;
-	switch(item.brig()->kind) {
-	case BRIG_DIRECTIVE_LABEL_TARGETS: return vis(DirectiveLabelTargets(item));
-	case BRIG_DIRECTIVE_LABEL_INIT: return vis(DirectiveLabelInit(item));
-	default: assert(false); break;
-	}
-	return RetType();
-}
-
-template <typename RetType, typename Visitor>
-RetType dispatchByItemKind_gen(DirectiveSymbol item,Visitor& vis) {
-	using namespace Brig;
-	switch(item.brig()->kind) {
-	case BRIG_DIRECTIVE_IMAGE: return vis(DirectiveImage(item));
-	case BRIG_DIRECTIVE_SAMPLER: return vis(DirectiveSampler(item));
-	case BRIG_DIRECTIVE_VARIABLE: return vis(DirectiveVariable(item));
+	case BRIG_DIRECTIVE_KERNEL: return vis(DirectiveKernel(item));
 	default: assert(false); break;
 	}
 	return RetType();
@@ -165,20 +127,20 @@ template <typename RetType, typename Visitor>
 RetType dispatchByItemKind_gen(Inst item,Visitor& vis) {
 	using namespace Brig;
 	switch(item.brig()->kind) {
-	case BRIG_INST_CVT: return vis(InstCvt(item));
-	case BRIG_INST_MOD: return vis(InstMod(item));
-	case BRIG_INST_BASIC: return vis(InstBasic(item));
-	case BRIG_INST_ATOMIC: return vis(InstAtomic(item));
-	case BRIG_INST_SOURCE_TYPE: return vis(InstSourceType(item));
-	case BRIG_INST_IMAGE: return vis(InstImage(item));
-	case BRIG_INST_BR: return vis(InstBr(item));
-	case BRIG_INST_FBAR: return vis(InstFbar(item));
-	case BRIG_INST_SEG: return vis(InstSeg(item));
-	case BRIG_INST_MEM: return vis(InstMem(item));
-	case BRIG_INST_BAR: return vis(InstBar(item));
-	case BRIG_INST_CMP: return vis(InstCmp(item));
-	case BRIG_INST_ATOMIC_IMAGE: return vis(InstAtomicImage(item));
 	case BRIG_INST_ADDR: return vis(InstAddr(item));
+	case BRIG_INST_ATOMIC: return vis(InstAtomic(item));
+	case BRIG_INST_ATOMIC_IMAGE: return vis(InstAtomicImage(item));
+	case BRIG_INST_BAR: return vis(InstBar(item));
+	case BRIG_INST_BASIC: return vis(InstBasic(item));
+	case BRIG_INST_BR: return vis(InstBr(item));
+	case BRIG_INST_CMP: return vis(InstCmp(item));
+	case BRIG_INST_CVT: return vis(InstCvt(item));
+	case BRIG_INST_IMAGE: return vis(InstImage(item));
+	case BRIG_INST_LANE: return vis(InstLane(item));
+	case BRIG_INST_MEM: return vis(InstMem(item));
+	case BRIG_INST_MOD: return vis(InstMod(item));
+	case BRIG_INST_SEG: return vis(InstSeg(item));
+	case BRIG_INST_SOURCE_TYPE: return vis(InstSourceType(item));
 	default: assert(false); break;
 	}
 	return RetType();
@@ -189,16 +151,17 @@ RetType dispatchByItemKind_gen(Operand item,Visitor& vis) {
 	using namespace Brig;
 	switch(item.brig()->kind) {
 	case BRIG_OPERAND_ADDRESS: return vis(OperandAddress(item));
-	case BRIG_OPERAND_SIGNATURE_REF: return vis(OperandSignatureRef(item));
-	case BRIG_OPERAND_FBARRIER_REF: return vis(OperandFbarrierRef(item));
-	case BRIG_OPERAND_LABEL_REF: return vis(OperandLabelRef(item));
-	case BRIG_OPERAND_IMMED: return vis(OperandImmed(item));
 	case BRIG_OPERAND_ARGUMENT_LIST: return vis(OperandArgumentList(item));
-	case BRIG_OPERAND_ARGUMENT_REF: return vis(OperandArgumentRef(item));
-	case BRIG_OPERAND_REG: return vis(OperandReg(item));
+	case BRIG_OPERAND_FBARRIER_REF: return vis(OperandFbarrierRef(item));
 	case BRIG_OPERAND_FUNCTION_LIST: return vis(OperandFunctionList(item));
 	case BRIG_OPERAND_FUNCTION_REF: return vis(OperandFunctionRef(item));
+	case BRIG_OPERAND_IMMED: return vis(OperandImmed(item));
+	case BRIG_OPERAND_LABEL_REF: return vis(OperandLabelRef(item));
+	case BRIG_OPERAND_LABEL_TARGETS_REF: return vis(OperandLabelTargetsRef(item));
+	case BRIG_OPERAND_LABEL_VARIABLE_REF: return vis(OperandLabelVariableRef(item));
+	case BRIG_OPERAND_REG: return vis(OperandReg(item));
 	case BRIG_OPERAND_REG_VECTOR: return vis(OperandRegVector(item));
+	case BRIG_OPERAND_SIGNATURE_REF: return vis(OperandSignatureRef(item));
 	case BRIG_OPERAND_WAVESIZE: return vis(OperandWavesize(item));
 	default: assert(false); break;
 	}
@@ -209,8 +172,8 @@ template <typename RetType, typename Visitor>
 RetType dispatchByItemKind_gen(OperandList item,Visitor& vis) {
 	using namespace Brig;
 	switch(item.brig()->kind) {
-	case BRIG_OPERAND_FUNCTION_LIST: return vis(OperandFunctionList(item));
 	case BRIG_OPERAND_ARGUMENT_LIST: return vis(OperandArgumentList(item));
+	case BRIG_OPERAND_FUNCTION_LIST: return vis(OperandFunctionList(item));
 	default: assert(false); break;
 	}
 	return RetType();
@@ -220,11 +183,12 @@ template <typename RetType, typename Visitor>
 RetType dispatchByItemKind_gen(OperandRef item,Visitor& vis) {
 	using namespace Brig;
 	switch(item.brig()->kind) {
-	case BRIG_OPERAND_ARGUMENT_REF: return vis(OperandArgumentRef(item));
-	case BRIG_OPERAND_SIGNATURE_REF: return vis(OperandSignatureRef(item));
 	case BRIG_OPERAND_FBARRIER_REF: return vis(OperandFbarrierRef(item));
 	case BRIG_OPERAND_FUNCTION_REF: return vis(OperandFunctionRef(item));
 	case BRIG_OPERAND_LABEL_REF: return vis(OperandLabelRef(item));
+	case BRIG_OPERAND_LABEL_TARGETS_REF: return vis(OperandLabelTargetsRef(item));
+	case BRIG_OPERAND_LABEL_VARIABLE_REF: return vis(OperandLabelVariableRef(item));
+	case BRIG_OPERAND_SIGNATURE_REF: return vis(OperandSignatureRef(item));
 	default: assert(false); break;
 	}
 	return RetType();
@@ -339,14 +303,13 @@ template <typename Visitor> void enumerateFields_gen(DirectiveLabel obj,  Visito
 
 template <typename Visitor> void enumerateFields_gen(DirectiveLabelInit obj,  Visitor & vis) {
   vis(obj.code(),"code");
-  vis(obj.label(),"label");
   vis(obj.elementCount(),"labelCount");
   vis(obj.labels(),"labels");
 }
 
 template <typename Visitor> void enumerateFields_gen(DirectiveLabelTargets obj,  Visitor & vis) {
   vis(obj.code(),"code");
-  vis(obj.label(),"label");
+  vis(obj.name(),"name");
   vis(obj.elementCount(),"labelCount");
   vis(obj.labels(),"labels");
 }
@@ -361,32 +324,6 @@ template <typename Visitor> void enumerateFields_gen(DirectiveLoc obj,  Visitor 
 template <typename Visitor> void enumerateFields_gen(DirectivePragma obj,  Visitor & vis) {
   vis(obj.code(),"code");
   vis(obj.name(),"name");
-}
-
-template <typename Visitor> void enumerateFields_gen(DirectiveImage obj,  Visitor & vis) {
-  vis(obj.code(),"code");
-  vis(obj.name(),"name");
-  vis(obj.init(),"init");
-  vis(obj.type(),"type");
-  vis(obj.segment(),"segment");
-  vis(obj.align(),"align");
-  vis(obj.dimLo(),"dimLo");
-  vis(obj.dim(),"dim");
-  vis(obj.dimHi(),"dimHi");
-  enumerateFields(obj.modifier(), vis);
-}
-
-template <typename Visitor> void enumerateFields_gen(DirectiveSampler obj,  Visitor & vis) {
-  vis(obj.code(),"code");
-  vis(obj.name(),"name");
-  vis(obj.init(),"init");
-  vis(obj.type(),"type");
-  vis(obj.segment(),"segment");
-  vis(obj.align(),"align");
-  vis(obj.dimLo(),"dimLo");
-  vis(obj.dim(),"dim");
-  vis(obj.dimHi(),"dimHi");
-  enumerateFields(obj.modifier(), vis);
 }
 
 template <typename Visitor> void enumerateFields_gen(DirectiveVariable obj,  Visitor & vis) {
@@ -452,7 +389,8 @@ template <typename Visitor> void enumerateFields_gen(InstAtomic obj,  Visitor & 
     vis(obj.operand(i),"operands", i);
   }
   vis(obj.segment(),"segment");
-  vis(obj.memorySemantic(),"memorySemantic");
+  vis(obj.memoryOrder(),"memoryOrder");
+  vis(obj.memoryScope(),"memoryScope");
   vis(obj.atomicOperation(),"atomicOperation");
 }
 
@@ -474,8 +412,10 @@ template <typename Visitor> void enumerateFields_gen(InstBar obj,  Visitor & vis
   for (unsigned i=0;i<5;i++) {
     vis(obj.operand(i),"operands", i);
   }
-  vis(obj.memoryFence(),"memoryFence");
   vis(obj.width(),"width");
+  vis(obj.memoryOrder(),"memoryOrder");
+  vis(obj.memoryScope(),"memoryScope");
+  vis(obj.memoryFence(),"memoryFence");
 }
 
 template <typename Visitor> void enumerateFields_gen(InstBasic obj,  Visitor & vis) {
@@ -492,7 +432,6 @@ template <typename Visitor> void enumerateFields_gen(InstBr obj,  Visitor & vis)
   for (unsigned i=0;i<5;i++) {
     vis(obj.operand(i),"operands", i);
   }
-  enumerateFields(obj.modifier(), vis);
   vis(obj.width(),"width");
 }
 
@@ -518,16 +457,6 @@ template <typename Visitor> void enumerateFields_gen(InstCvt obj,  Visitor & vis
   enumerateFields(obj.modifier(), vis);
 }
 
-template <typename Visitor> void enumerateFields_gen(InstFbar obj,  Visitor & vis) {
-  vis(obj.opcode(),"opcode");
-  vis(obj.type(),"type");
-  for (unsigned i=0;i<5;i++) {
-    vis(obj.operand(i),"operands", i);
-  }
-  vis(obj.memoryFence(),"memoryFence");
-  vis(obj.width(),"width");
-}
-
 template <typename Visitor> void enumerateFields_gen(InstImage obj,  Visitor & vis) {
   vis(obj.opcode(),"opcode");
   vis(obj.type(),"type");
@@ -539,16 +468,26 @@ template <typename Visitor> void enumerateFields_gen(InstImage obj,  Visitor & v
   vis(obj.geometry(),"geometry");
 }
 
+template <typename Visitor> void enumerateFields_gen(InstLane obj,  Visitor & vis) {
+  vis(obj.opcode(),"opcode");
+  vis(obj.type(),"type");
+  for (unsigned i=0;i<5;i++) {
+    vis(obj.operand(i),"operands", i);
+  }
+  vis(obj.sourceType(),"sourceType");
+  vis(obj.width(),"width");
+}
+
 template <typename Visitor> void enumerateFields_gen(InstMem obj,  Visitor & vis) {
   vis(obj.opcode(),"opcode");
   vis(obj.type(),"type");
   for (unsigned i=0;i<5;i++) {
     vis(obj.operand(i),"operands", i);
   }
+  vis(obj.width(),"width");
   vis(obj.segment(),"segment");
   enumerateFields(obj.modifier(), vis);
   vis(obj.equivClass(),"equivClass");
-  vis(obj.width(),"width");
 }
 
 template <typename Visitor> void enumerateFields_gen(InstMod obj,  Visitor & vis) {
@@ -585,7 +524,6 @@ template <typename Visitor> void enumerateFields_gen(InstNone obj,  Visitor & vi
 
 template <typename Visitor> void enumerateFields_gen(MemoryModifier obj,  Visitor & vis) {
   vis(obj.allBits(),"allBits");
-  vis(obj.semantic(),"semantic");
   vis(obj.aligned(),"aligned");
 }
 
@@ -613,10 +551,6 @@ template <typename Visitor> void enumerateFields_gen(OperandFunctionList obj,  V
   vis(obj.elements(),"elements");
 }
 
-template <typename Visitor> void enumerateFields_gen(OperandArgumentRef obj,  Visitor & vis) {
-  vis(obj.arg(),"ref");
-}
-
 template <typename Visitor> void enumerateFields_gen(OperandFbarrierRef obj,  Visitor & vis) {
   vis(obj.fbar(),"ref");
 }
@@ -626,8 +560,15 @@ template <typename Visitor> void enumerateFields_gen(OperandFunctionRef obj,  Vi
 }
 
 template <typename Visitor> void enumerateFields_gen(OperandLabelRef obj,  Visitor & vis) {
-  vis(obj.ref(),"ref");
-  vis(obj.asLabel(),"asLabel");
+  vis(obj.label(),"label");
+}
+
+template <typename Visitor> void enumerateFields_gen(OperandLabelTargetsRef obj,  Visitor & vis) {
+  vis(obj.targets(),"targets");
+}
+
+template <typename Visitor> void enumerateFields_gen(OperandLabelVariableRef obj,  Visitor & vis) {
+  vis(obj.symbol(),"symbol");
 }
 
 template <typename Visitor> void enumerateFields_gen(OperandSignatureRef obj,  Visitor & vis) {

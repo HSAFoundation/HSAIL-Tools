@@ -46,12 +46,12 @@
 #include <string>
 
 namespace HSAIL_ASM {
-
+    
 std::ostream& operator<<(std::ostream& os, const SRef& s) {
     os.write(s.begin,s.length());
     return os;
 }
-size_t align(size_t s, size_t pow2)
+size_t align(size_t s, size_t pow2) 
 {
     assert( (pow2 & (pow2-1))==0 );
     size_t const m = pow2-1;
@@ -72,10 +72,16 @@ size_t zeroPaddedCopy(void *dst, const void* src, size_t len, size_t room)
 unsigned getDefWidth(Inst inst)
 {
     using namespace Brig;
-    switch(inst.opcode())
+    switch(inst.opcode()) 
     {
     case BRIG_OPCODE_LD:
+    case BRIG_OPCODE_GCNLD:
     case BRIG_OPCODE_CBR:
+    case BRIG_OPCODE_COUNTLANE:  
+    case BRIG_OPCODE_COUNTUPLANE:
+    case BRIG_OPCODE_MASKLANE:   
+    case BRIG_OPCODE_SENDLANE:   
+    case BRIG_OPCODE_RECEIVELANE:
         return BRIG_WIDTH_1;
 
     case BRIG_OPCODE_BARRIER:
@@ -88,6 +94,7 @@ unsigned getDefWidth(Inst inst)
         return BRIG_WIDTH_WAVESIZE;
 
     case BRIG_OPCODE_ST:
+    case BRIG_OPCODE_GCNST:
     case BRIG_OPCODE_INITFBAR:
     case BRIG_OPCODE_RELEASEFBAR:
     case BRIG_OPCODE_SYNC:
@@ -98,7 +105,6 @@ unsigned getDefWidth(Inst inst)
         return (inst.operand(0) && inst.operand(0).kind() == BRIG_OPERAND_REG)? BRIG_WIDTH_1 : BRIG_WIDTH_ALL;
 
     default:
-        //FIXME DP assert(false);
         return BRIG_WIDTH_NONE;
     }
 }
@@ -106,9 +112,9 @@ unsigned getDefWidth(Inst inst)
 unsigned getDefRounding(unsigned opCode, unsigned type)
 {
     using namespace Brig;
-    if (isFloatType(type) || isFloatPackedType(type))
+    if (isFloatType(type) || isFloatPackedType(type)) 
     {
-        switch(opCode)
+        switch(opCode) 
         {
         case BRIG_OPCODE_ADD:
         case BRIG_OPCODE_DIV:
@@ -117,7 +123,7 @@ unsigned getDefRounding(unsigned opCode, unsigned type)
         case BRIG_OPCODE_SQRT:
         case BRIG_OPCODE_SUB:
             return BRIG_ROUND_FLOAT_NEAR_EVEN;
-
+        
         default:
             break;
         }
@@ -128,66 +134,100 @@ unsigned getDefRounding(unsigned opCode, unsigned type)
 unsigned getDefRoundingForCvt(unsigned srcType, unsigned dstType)
 {
     using namespace Brig;
-    if (isFloatType(srcType) && isFloatType(dstType) && getBitSize(srcType) > getBitSize(dstType))
+    if (isFloatType(srcType) && isFloatType(dstType) && getBitSize(srcType) > getBitSize(dstType)) 
     {
         return BRIG_ROUND_FLOAT_NEAR_EVEN;
-    }
-    else if (isIntType(srcType) && !isBitType(srcType) && isFloatType(dstType))
+    } 
+    else if (isIntType(srcType) && !isBitType(srcType) && isFloatType(dstType)) 
     {
         return BRIG_ROUND_FLOAT_NEAR_EVEN;
-    }
-    else if (isFloatType(srcType) && isIntType(dstType) && !isBitType(dstType))
+    } 
+    else if (isFloatType(srcType) && isIntType(dstType) && !isBitType(dstType)) 
     {
         return BRIG_ROUND_INTEGER_ZERO;
-    }
-    else
+    } 
+    else 
     {
         return BRIG_ROUND_NONE;
     }
 }
 
-bool isIntType(unsigned type)
+bool isIntType(unsigned type) 
 {
     using namespace Brig;
-    switch((Brig::BrigTypeX)type)
+    switch(type) 
     {
-    case BRIG_TYPE_B1:
-    case BRIG_TYPE_B8:
-    case BRIG_TYPE_B16:
-    case BRIG_TYPE_B32:
-    case BRIG_TYPE_B64:
-    case BRIG_TYPE_B128:
+    case BRIG_TYPE_B1:  
+    case BRIG_TYPE_B8:  
+    case BRIG_TYPE_B16: 
+    case BRIG_TYPE_B32: 
+    case BRIG_TYPE_B64: 
+    case BRIG_TYPE_B128: 
 
-    case BRIG_TYPE_S8:
-    case BRIG_TYPE_S16:
-    case BRIG_TYPE_S32:
-    case BRIG_TYPE_S64:
+    case BRIG_TYPE_S8:  
+    case BRIG_TYPE_S16: 
+    case BRIG_TYPE_S32: 
+    case BRIG_TYPE_S64: 
 
-    case BRIG_TYPE_U8:
-    case BRIG_TYPE_U16:
-    case BRIG_TYPE_U32:
-    case BRIG_TYPE_U64:
+    case BRIG_TYPE_U8:  
+    case BRIG_TYPE_U16: 
+    case BRIG_TYPE_U32: 
+    case BRIG_TYPE_U64: 
         return true;
 
-    default:
+    default:  
         return false;
     }
 }
 
-bool isBitType(unsigned type)
+bool isSignedType(unsigned type) 
 {
     using namespace Brig;
-    switch((Brig::BrigTypeX)type)
+
+    switch(type) 
     {
-    case BRIG_TYPE_B1:
-    case BRIG_TYPE_B8:
-    case BRIG_TYPE_B16:
-    case BRIG_TYPE_B32:
-    case BRIG_TYPE_B64:
-    case BRIG_TYPE_B128:
+    case BRIG_TYPE_S8:  
+    case BRIG_TYPE_S16: 
+    case BRIG_TYPE_S32: 
+    case BRIG_TYPE_S64: 
         return true;
 
-    default:
+    default:  
+        return false;
+    }
+}
+
+bool isUnsignedType(unsigned type) 
+{
+    using namespace Brig;
+
+    switch(type) 
+    {
+    case BRIG_TYPE_U8:  
+    case BRIG_TYPE_U16: 
+    case BRIG_TYPE_U32: 
+    case BRIG_TYPE_U64: 
+        return true;
+
+    default:  
+        return false;
+    }
+}
+
+bool isBitType(unsigned type) 
+{
+    using namespace Brig;
+    switch(type) 
+    {
+    case BRIG_TYPE_B1:  
+    case BRIG_TYPE_B8:  
+    case BRIG_TYPE_B16: 
+    case BRIG_TYPE_B32: 
+    case BRIG_TYPE_B64: 
+    case BRIG_TYPE_B128: 
+        return true;
+
+    default:  
         return false;
     }
 }
@@ -206,7 +246,7 @@ bool isPackedType(unsigned type)
 bool isIntPackedType(unsigned type)
 {
     using namespace Brig;
-    switch(type)
+    switch(type) 
     {
     case BRIG_TYPE_U8X4:
     case BRIG_TYPE_S8X4:
@@ -228,7 +268,7 @@ bool isIntPackedType(unsigned type)
     case BRIG_TYPE_S64X2:
         return true;
 
-    default:
+    default:  
         return false;
     }
 }
@@ -236,7 +276,7 @@ bool isIntPackedType(unsigned type)
 bool isFloatPackedType(unsigned type)
 {
     using namespace Brig;
-    switch(type)
+    switch(type) 
     {
     case BRIG_TYPE_F16X2:
     case BRIG_TYPE_F16X4:
@@ -245,7 +285,7 @@ bool isFloatPackedType(unsigned type)
     case BRIG_TYPE_F32X4:
     case BRIG_TYPE_F64X2:
         return true;
-    default:
+    default:  
         return false;
     }
 }
@@ -253,7 +293,7 @@ bool isFloatPackedType(unsigned type)
 unsigned convType2BitType(unsigned type)
 {
     using namespace Brig;
-    switch((Brig::BrigTypeX)type)
+    switch(type) 
     {
     case BRIG_TYPE_B1:     return BRIG_TYPE_B1;
     case BRIG_TYPE_B8:     return BRIG_TYPE_B8;
@@ -261,21 +301,21 @@ unsigned convType2BitType(unsigned type)
     case BRIG_TYPE_B32:    return BRIG_TYPE_B32;
     case BRIG_TYPE_B64:    return BRIG_TYPE_B64;
     case BRIG_TYPE_B128:   return BRIG_TYPE_B128;
-
+                    
     case BRIG_TYPE_S8:     return BRIG_TYPE_B8;
     case BRIG_TYPE_S16:    return BRIG_TYPE_B16;
     case BRIG_TYPE_S32:    return BRIG_TYPE_B32;
     case BRIG_TYPE_S64:    return BRIG_TYPE_B64;
-
+                            
     case BRIG_TYPE_U8:     return BRIG_TYPE_B8;
     case BRIG_TYPE_U16:    return BRIG_TYPE_B16;
     case BRIG_TYPE_U32:    return BRIG_TYPE_B32;
     case BRIG_TYPE_U64:    return BRIG_TYPE_B64;
-
+                            
     case BRIG_TYPE_F16:    return BRIG_TYPE_B16;
     case BRIG_TYPE_F32:    return BRIG_TYPE_B32;
     case BRIG_TYPE_F64:    return BRIG_TYPE_B64;
-
+                            
     case BRIG_TYPE_U8X4:   return BRIG_TYPE_B32;
     case BRIG_TYPE_S8X4:   return BRIG_TYPE_B32;
     case BRIG_TYPE_U16X2:  return BRIG_TYPE_B32;
@@ -301,16 +341,50 @@ unsigned convType2BitType(unsigned type)
     case BRIG_TYPE_S64X2:  return BRIG_TYPE_B128;
     case BRIG_TYPE_F64X2:  return BRIG_TYPE_B128;
 
-    default:
-        assert(false);
-        return BRIG_TYPE_SAMP;
+    default:  
+        return BRIG_TYPE_NONE;
+    }
+}
+
+unsigned convPackedType2U(unsigned type)
+{
+    using namespace Brig;
+    switch(type) 
+    {
+    case BRIG_TYPE_U8X4:   return BRIG_TYPE_U8X4; 
+    case BRIG_TYPE_S8X4:   return BRIG_TYPE_U8X4; 
+    case BRIG_TYPE_U16X2:  return BRIG_TYPE_U16X2;
+    case BRIG_TYPE_S16X2:  return BRIG_TYPE_U16X2;
+    case BRIG_TYPE_F16X2:  return BRIG_TYPE_U16X2;
+    case BRIG_TYPE_U8X8:   return BRIG_TYPE_U8X8; 
+    case BRIG_TYPE_S8X8:   return BRIG_TYPE_U8X8; 
+    case BRIG_TYPE_U16X4:  return BRIG_TYPE_U16X4;
+    case BRIG_TYPE_S16X4:  return BRIG_TYPE_U16X4;
+    case BRIG_TYPE_F16X4:  return BRIG_TYPE_U16X4;
+    case BRIG_TYPE_U32X2:  return BRIG_TYPE_U32X2;
+    case BRIG_TYPE_S32X2:  return BRIG_TYPE_U32X2;
+    case BRIG_TYPE_F32X2:  return BRIG_TYPE_U32X2;
+    case BRIG_TYPE_U8X16:  return BRIG_TYPE_U8X16;
+    case BRIG_TYPE_S8X16:  return BRIG_TYPE_U8X16;
+    case BRIG_TYPE_U16X8:  return BRIG_TYPE_U16X8;
+    case BRIG_TYPE_S16X8:  return BRIG_TYPE_U16X8;
+    case BRIG_TYPE_F16X8:  return BRIG_TYPE_U16X8;
+    case BRIG_TYPE_U32X4:  return BRIG_TYPE_U32X4;
+    case BRIG_TYPE_S32X4:  return BRIG_TYPE_U32X4;
+    case BRIG_TYPE_F32X4:  return BRIG_TYPE_U32X4;
+    case BRIG_TYPE_U64X2:  return BRIG_TYPE_U64X2;
+    case BRIG_TYPE_S64X2:  return BRIG_TYPE_U64X2;
+    case BRIG_TYPE_F64X2:  return BRIG_TYPE_U64X2;
+
+    default:  
+        return BRIG_TYPE_NONE;
     }
 }
 
 int getBitSize(unsigned type)
 {
     unsigned const bType = convType2BitType(type);
-    switch((Brig::BrigTypeX)bType) {
+    switch(bType) {
     case Brig::BRIG_TYPE_B1:
     case Brig::BRIG_TYPE_B8:   return 8;
     case Brig::BRIG_TYPE_B16:  return 16;
@@ -329,10 +403,10 @@ unsigned getTypeSize(unsigned t)
     if (result)
     {
         return result;
-    }
-    else
+    } 
+    else 
     {
-        switch(t)
+        switch(t) 
         {
         case Brig::BRIG_TYPE_ROIMG:
         case Brig::BRIG_TYPE_RWIMG:
@@ -361,23 +435,13 @@ unsigned getSegAddrSize(unsigned segment, bool isLargeModel)
     }
 }
 
-unsigned getSegment(Inst inst)
+unsigned getImmOperandType(Inst inst, unsigned operandIdx, unsigned machineType) //deprecated
 {
-    assert(inst);
-    if      (InstAddr   i = inst) return i.segment();
-    else if (InstMem    i = inst) return i.segment();
-    else if (InstSeg    i = inst) return i.segment();
-    else if (InstAtomic i = inst) return i.segment();
-    else                          return Brig::BRIG_SEGMENT_NONE;
+    return getOperandType(inst, operandIdx, machineType);
 }
 
-// This function provides no information if operandIdx may be an immediate.
-// It only specifies the type of immediate assuming that it is a valid operand.
-// No information about hidden 'width' operands are provided as well.
-// No information is provided for "width" operand as it has special encoding/decoding rules
-unsigned getImmOperandType(Inst inst, unsigned operandIdx, unsigned machineType)
+unsigned getOperandType(Inst inst, unsigned operandIdx, unsigned machineType)
 {
-
     using namespace Brig;
 
     switch (inst.opcode()) {
@@ -393,7 +457,12 @@ unsigned getImmOperandType(Inst inst, unsigned operandIdx, unsigned machineType)
     case BRIG_OPCODE_FIRSTBIT:
     case BRIG_OPCODE_LASTBIT:
     case BRIG_OPCODE_EXPAND:
+    case BRIG_OPCODE_COMBINE:
         if (operandIdx == 1) return InstSourceType(inst).sourceType();
+        break;
+
+    case BRIG_OPCODE_SHUFFLE:
+        if (operandIdx == 3) return (HSAIL_ASM::brigtype_get_length(inst.type()) == 32)? BRIG_TYPE_B32 : BRIG_TYPE_B64;
         break;
 
     case BRIG_OPCODE_CLASS:
@@ -401,22 +470,21 @@ unsigned getImmOperandType(Inst inst, unsigned operandIdx, unsigned machineType)
         if (operandIdx == 2) return BRIG_TYPE_U32;
         break;
 
-        break;
-
     case BRIG_OPCODE_PACK:
+        if (operandIdx == 1) return inst.type();
         if (operandIdx == 2) return InstSourceType(inst).sourceType();
-        if (operandIdx == 3) return Brig::BRIG_TYPE_B32;
+        if (operandIdx == 3) return BRIG_TYPE_U32;
         break;
 
     case BRIG_OPCODE_UNPACK:
         if (operandIdx == 1) return InstSourceType(inst).sourceType();
-        if (operandIdx == 2) return Brig::BRIG_TYPE_U32;
+        if (operandIdx == 2) return BRIG_TYPE_U32;
         break;
 
     case BRIG_OPCODE_SAD:
     case BRIG_OPCODE_SADHI:
         if (operandIdx == 1 || operandIdx == 2) return InstSourceType(inst).sourceType();
-        if (operandIdx == 3) return Brig::BRIG_TYPE_U32;
+        if (operandIdx == 3) return BRIG_TYPE_U32;
         break;
 
     case BRIG_OPCODE_PACKCVT:
@@ -425,7 +493,7 @@ unsigned getImmOperandType(Inst inst, unsigned operandIdx, unsigned machineType)
 
     case BRIG_OPCODE_UNPACKCVT:
         if (operandIdx == 1) return InstSourceType(inst).sourceType();
-        if (operandIdx == 2) return Brig::BRIG_TYPE_U32;
+        if (operandIdx == 2) return BRIG_TYPE_U32;
         break;
 
     case BRIG_OPCODE_BITMASK:
@@ -447,6 +515,7 @@ unsigned getImmOperandType(Inst inst, unsigned operandIdx, unsigned machineType)
 
     case BRIG_OPCODE_CMOV:
         if (operandIdx == 1 && !isPackedType(inst.type())) return BRIG_TYPE_B1;
+        if (operandIdx == 1 && isPackedType(inst.type()))  return convPackedType2U(inst.type());
         break;
 
     case BRIG_OPCODE_SEGMENTP:
@@ -455,9 +524,9 @@ unsigned getImmOperandType(Inst inst, unsigned operandIdx, unsigned machineType)
         if (operandIdx == 1) return InstSeg(inst).sourceType();
         break;
 
-    case BRIG_OPCODE_MASKLANE:
+    case BRIG_OPCODE_MASKLANE:  
     case BRIG_OPCODE_COUNTLANE:
-        if (operandIdx == 1) return BRIG_TYPE_B32;
+        if (operandIdx == 1) return InstLane(inst).sourceType();
         break;
 
     case BRIG_OPCODE_SENDLANE:
@@ -465,33 +534,77 @@ unsigned getImmOperandType(Inst inst, unsigned operandIdx, unsigned machineType)
         if (operandIdx == 1 || operandIdx == 2) return BRIG_TYPE_B32;
         break;
 
-    case BRIG_OPCODE_ALLOCA:
-        if (operandIdx == 1) return BRIG_TYPE_B32;
+    case BRIG_OPCODE_RDIMAGE:
+        if (operandIdx == 1) return InstImage(inst).imageType();
+        if (operandIdx == 2) return BRIG_TYPE_SAMP;
+        if (operandIdx == 3) return InstImage(inst).coordType();
         break;
 
-    case BRIG_OPCODE_CURRENTWORKGROUPSIZE:
-    case BRIG_OPCODE_GRIDGROUPS:
-    case BRIG_OPCODE_GRIDSIZE:
-    case BRIG_OPCODE_WORKITEMID:
-    case BRIG_OPCODE_WORKITEMABSID:
-    case BRIG_OPCODE_WORKGROUPID:
-    case BRIG_OPCODE_WORKGROUPSIZE:
-        if (operandIdx == 1) return BRIG_TYPE_U32;
+    case BRIG_OPCODE_LDIMAGE:
+    case BRIG_OPCODE_STIMAGE:
+        if (operandIdx == 1) return InstImage(inst).imageType();
+        if (operandIdx == 2) return InstImage(inst).coordType();
         break;
 
-    case BRIG_OPCODE_DEBUGTRAP:
+    case BRIG_OPCODE_ATOMICIMAGE:
+        if (operandIdx == 1) return InstAtomicImage(inst).imageType();
+        if (operandIdx == 2) return InstAtomicImage(inst).coordType();
+        break;
+
+    case BRIG_OPCODE_ATOMICIMAGENORET:
+        if (operandIdx == 0) return InstAtomicImage(inst).imageType();
+        if (operandIdx == 1) return InstAtomicImage(inst).coordType();
+        break;
+
+    case BRIG_OPCODE_CBR: 
+        if (operandIdx == 0) return BRIG_TYPE_B1;
+        if (operandIdx == 1) return (machineType == BRIG_TYPE_B64)? BRIG_TYPE_U64 : BRIG_TYPE_U32;
+        break;
+
+    case BRIG_OPCODE_BRN: 
+        if (operandIdx == 0) return (machineType == BRIG_TYPE_B64)? BRIG_TYPE_U64 : BRIG_TYPE_U32;
+        break;
+
+    case BRIG_OPCODE_CALL:
+        if (operandIdx == 1) return (machineType == BRIG_TYPE_B64)? BRIG_TYPE_U64 : BRIG_TYPE_U32;
+        break;
+
+    case BRIG_OPCODE_ARRIVEFBAR:
+    case BRIG_OPCODE_INITFBAR:   
+    case BRIG_OPCODE_JOINFBAR:   
+    case BRIG_OPCODE_LEAVEFBAR:  
+    case BRIG_OPCODE_RELEASEFBAR:
+    case BRIG_OPCODE_WAITFBAR:
         if (operandIdx == 0) return BRIG_TYPE_U32;
         break;
+        
+
+    case BRIG_OPCODE_ATOMICNORET:
+        if (operandIdx == 0) return (getSegAddrSize(getSegment(inst), machineType == BRIG_TYPE_B64) == 64)? BRIG_TYPE_U64 : BRIG_TYPE_U32; // Address type
+        break;
+
+    case BRIG_OPCODE_LD:
+    case BRIG_OPCODE_ST:
+    case BRIG_OPCODE_ATOMIC:
+        if (operandIdx == 1) return (getSegAddrSize(getSegment(inst), machineType == BRIG_TYPE_B64) == 64)? BRIG_TYPE_U64 : BRIG_TYPE_U32; // Address type
+        break;
+
+    case BRIG_OPCODE_QUERYSAMPLERBOUNDARY:
+        if (operandIdx == 2) return BRIG_TYPE_U32;
+        break;
+        
 
     // ==================
     // GCN INSTRUCTIONS
     // ==================
 
     case BRIG_OPCODE_GCNMADU:
+        if (operandIdx == 0) return BRIG_TYPE_U64;
         if (operandIdx == 3) return BRIG_TYPE_U64;
         break;
 
     case BRIG_OPCODE_GCNMADS:
+        if (operandIdx == 0) return BRIG_TYPE_S64;
         if (operandIdx == 3) return BRIG_TYPE_S64;
         break;
 
@@ -499,8 +612,16 @@ unsigned getImmOperandType(Inst inst, unsigned operandIdx, unsigned machineType)
         if (operandIdx == 2) return BRIG_TYPE_S32;
         break;
 
+    case BRIG_OPCODE_GCNFREXP_EXP:
+        if (operandIdx == 0) return BRIG_TYPE_S32;
+        break;
+
     case BRIG_OPCODE_GCNTRIG_PREOP:
         if (operandIdx == 2) return BRIG_TYPE_U32;
+        break;
+
+    case BRIG_OPCODE_GCNREGIONALLOC:
+        if (operandIdx == 0) return BRIG_TYPE_U32;
         break;
 
     case BRIG_OPCODE_GCNMQSAD:
@@ -511,14 +632,28 @@ unsigned getImmOperandType(Inst inst, unsigned operandIdx, unsigned machineType)
         if (operandIdx == 1) return BRIG_TYPE_B64;
         break;
 
+    case BRIG_OPCODE_GCNATOMICNORET:
+        if (operandIdx == 0) return BRIG_TYPE_U32; // Address type
+        break;
+
+    case BRIG_OPCODE_GCNLD:
+    case BRIG_OPCODE_GCNST:
+    case BRIG_OPCODE_GCNATOMIC:
+        if (operandIdx == 1) return BRIG_TYPE_U32; // Address type
+        break;
+
+    case BRIG_OPCODE_GCNB4XCHG: 
+    case BRIG_OPCODE_GCNB32XCHG:
+        return BRIG_TYPE_B32; // FIXME: this is not specified explicitly
+        break;
+
     default:
+        if (isa<InstSourceType>(inst) && operandIdx > 0) {
+            return InstSourceType(inst).sourceType();
+        }
         break;
     }
-
-    if (isa<InstSourceType>(inst) && operandIdx>0) {
-        return InstSourceType(inst).sourceType();
-    }
-
+    
     return inst.type();
 }
 
@@ -534,7 +669,7 @@ unsigned getOperandType(Operand opr)
     case Brig::BRIG_OPERAND_IMMED:        return OperandImmed(opr).type();
     case Brig::BRIG_OPERAND_WAVESIZE:     return OperandWavesize(opr).type();
     default:
-        return (unsigned)-1;
+        return Brig::BRIG_TYPE_NONE;
     }
 }
 
@@ -544,8 +679,8 @@ unsigned getOperandType(Operand opr, bool isLargeModel)
 
     switch (opr.brig()->kind)
     {
-    case Brig::BRIG_OPERAND_LABEL_REF:
-    case Brig::BRIG_OPERAND_FUNCTION_REF:
+    case Brig::BRIG_OPERAND_LABEL_REF:    
+    case Brig::BRIG_OPERAND_FUNCTION_REF: 
         return isLargeModel? Brig::BRIG_TYPE_B64 : Brig::BRIG_TYPE_B32;
 
     default:
@@ -564,7 +699,7 @@ bool validateSrcOperand(Inst inst, int oprIdx, bool enableIntExp, bool enableFlo
 {
     Operand opr = inst.operand(oprIdx);
 
-    if (!opr)
+    if (!opr) 
     {
         if (isAssert) operandError(inst, oprIdx, "is missing");
         return false;
@@ -574,7 +709,7 @@ bool validateSrcOperand(Inst inst, int oprIdx, bool enableIntExp, bool enableFlo
     const char* sizeName = instType? "operation size" : "source type size";
     if (InstImage(inst) || InstAtomicImage(inst)) sizeName = "coord type size";
 
-    if (OperandWavesize(opr) && !isIntType(type))
+    if (OperandWavesize(opr) && !isIntType(type)) 
     {
         if (isAssert) operandError(inst, oprIdx, "cannot be wavesize: incompatible with ", instType? "operation type" : "source type");
         return false;
@@ -584,9 +719,9 @@ bool validateSrcOperand(Inst inst, int oprIdx, bool enableIntExp, bool enableFlo
     bool isSubWord = (iSize == 8) || (iSize == 16);
     bool isInteger = isIntType(type) && (!isBitType(type) || type == Brig::BRIG_TYPE_B1);
     bool isFloat   = isFloatType(type);
-
+    
     unsigned oType = getOperandType(opr);
-    if (oType == (unsigned)-1) return true; // nothing to check
+    if (oType == Brig::BRIG_TYPE_NONE) return true; // nothing to check
 
     int oSize = getTypeSize(oType);
 
@@ -595,26 +730,26 @@ bool validateSrcOperand(Inst inst, int oprIdx, bool enableIntExp, bool enableFlo
     case Brig::BRIG_OPERAND_REG:
     case Brig::BRIG_OPERAND_REG_VECTOR:
 
-        if (oSize == iSize || (isSubWord && oSize == 32))
+        if (oSize == iSize || (isSubWord && oSize == 32)) 
         {
             return true;
-        }
-        else if ((isInteger && enableIntExp) || (isFloat && enableFloatExp))
+        } 
+        else if ((isInteger && enableIntExp) || (isFloat && enableFloatExp)) 
         {
-            if (oSize <= iSize)
+            if (oSize <= iSize) 
             {
                 if (isAssert) operandError(inst, oprIdx, "size does not match ", sizeName);
                 return false;
             }
 
-            if (oSize >= 128)
+            if (oSize >= 128) 
             {
                 if (isAssert) operandError(inst, oprIdx, "size does not match ", sizeName);
                 return false;
             }
             return true;
-        }
-        else
+        } 
+        else 
         {
             if (isAssert) operandError(inst, oprIdx, "size does not match ", sizeName);
             return false;
@@ -623,7 +758,15 @@ bool validateSrcOperand(Inst inst, int oprIdx, bool enableIntExp, bool enableFlo
     case Brig::BRIG_OPERAND_WAVESIZE:
     case Brig::BRIG_OPERAND_IMMED:
 
-        if (oSize != iSize)
+        if (type == Brig::BRIG_TYPE_ROIMG ||
+            type == Brig::BRIG_TYPE_RWIMG ||
+            type == Brig::BRIG_TYPE_SAMP)
+        {
+            if (isAssert) operandError(inst, oprIdx, "cannot be immediate or wavesize; incompatible with ", instType? "operation type" : "source type");
+            return false;
+        }
+
+        if (oSize != iSize) 
         {
             if (isAssert) operandError(inst, oprIdx, "size does not match ", sizeName);
             return false;
@@ -635,6 +778,19 @@ bool validateSrcOperand(Inst inst, int oprIdx, bool enableIntExp, bool enableFlo
     }
 }
 
+DirectiveVariable getInputArg(DirectiveExecutable sbr, unsigned idx)
+{
+    assert(idx < sbr.inArgCount());
+
+    Directive arg;
+    for (arg = sbr.firstInArg(); idx-- > 0; arg = arg.next());
+
+    assert(arg);
+    assert(DirectiveVariable(arg));
+
+    return arg;
+}
+
 bool validateDstVector(OperandRegVector vector)
 {
     if (!vector) return true;
@@ -642,14 +798,14 @@ bool validateDstVector(OperandRegVector vector)
     assert(2 <= vector.regCount() && vector.regCount() <= 4);
 
     // Check that all registers in destination vector are unique
-    for (int i = 0, c = vector.regCount(); i < c; ++i)
+    for (int i = 0, c = vector.regCount(); i < c; ++i) 
     {
         SRef name1 = vector.regs(i);
-        for (int j = i + 1; j < c; ++j)
+        for (int j = i + 1; j < c; ++j) 
         {
             SRef name2 = vector.regs(j);
             if (name1 == name2) return false; // TODO: replace with offset check
-        }
+        }        
     }
     return true;
 }
@@ -658,7 +814,7 @@ bool validateDstOperand(Inst inst, int oprIdx, bool enableIntExp, bool enableFlo
 {
     Operand opr = inst.operand(oprIdx);
 
-    if (!opr)
+    if (!opr) 
     {
         if (isAssert) operandError(inst, oprIdx, "is missing");
         return false;
@@ -669,9 +825,9 @@ bool validateDstOperand(Inst inst, int oprIdx, bool enableIntExp, bool enableFlo
     bool isSubWord = (iSize == 8) || (iSize == 16);
     bool isInteger = isIntType(type) && (!isBitType(type) || type == Brig::BRIG_TYPE_B1);
     bool isFloat   = isFloatType(type);
-
+    
     unsigned oType = getOperandType(opr);
-    if (oType == (unsigned)-1) return true; // nothing to check
+    if (oType == Brig::BRIG_TYPE_NONE) return true; // nothing to check
 
     int oSize = getTypeSize(oType);
 
@@ -688,17 +844,17 @@ bool validateDstOperand(Inst inst, int oprIdx, bool enableIntExp, bool enableFlo
 
     if (oSize == iSize || (isSubWord && oSize == 32)) return true;
 
-    if (oSize <= iSize)
+    if (oSize <= iSize) 
     {
         if (isAssert) operandError(inst, oprIdx, "size does not match operation size");
         return false;
     }
-    if (oSize >= 128)
+    if (oSize >= 128) 
     {
         if (isAssert) operandError(inst, oprIdx, "size does not match operation size");
         return false;
     }
-    if (!(isInteger && enableIntExp) && !(isFloat && enableFloatExp))
+    if (!(isInteger && enableIntExp) && !(isFloat && enableFloatExp)) 
     {
         if (isAssert) operandError(inst, oprIdx, "size does not match operation size");
         return false;
@@ -707,92 +863,60 @@ bool validateDstOperand(Inst inst, int oprIdx, bool enableIntExp, bool enableFlo
     return true;
 }
 
-bool validateMachineType(Inst inst, int oprIdx, unsigned machineType, bool isSrcType, bool isUnsigned, bool isAssert)
+bool validateAtomicTypeSize(Inst inst, unsigned machineType, bool isAssert)
 {
-    const char* errInfo;
-    const char* reason;
-
-    unsigned type = machineType;
-    if (machineType == Brig::BRIG_TYPE_B32)  // FIXME: optimize for TestGen
+    if (getTypeSize(inst.type()) == 64 && machineType == Brig::BRIG_TYPE_B32)
     {
-        reason = " when used with small model";
-        errInfo = isUnsigned? "must have u32 type" : "must have b32 type";
-        if (isUnsigned) type = Brig::BRIG_TYPE_U32;
-    }
-    else
-    {
-        reason = " when used with large model";
-        errInfo = isUnsigned? "must have u64 type" : "must have b64 type";
-        if (isUnsigned) type = Brig::BRIG_TYPE_U64;
-    }
-
-    if (oprIdx == -1)
-    {
-        if ((!isSrcType && inst.type() != type) || (isSrcType && getSrcType(inst) != type))
+        if (isAssert) 
         {
-            if (isAssert)
-            {
-                Validator::validate(inst, -1, std::string(isSrcType? "Src" : "Instruction") + " type must be " + typeX2str(type) + reason, false);
-            }
-            return false;
+            Validator::validate(inst, -1, "Instruction type size 64 is not allowed with small machine model", false);
         }
+        return false;
     }
-    else
-    {
-        Operand opr = inst.operand(oprIdx);
-        if (!opr)
-        {
-            if (isAssert) operandError(inst, oprIdx, " is missing");
-            return false;
-        }
-
-        if (getOperandType(opr, machineType == Brig::BRIG_TYPE_B64) != type)
-        {
-            if (isAssert) operandError(inst, oprIdx, errInfo, reason);
-            return false;
-        }
-    }
-
     return true;
 }
 
-unsigned getType(Inst i)
+bool validateInstTypeSize(Inst inst, unsigned machineType, bool isSrcType, bool isAssert)
 {
-    return i.brig()->type;
+    unsigned typeSize = getTypeSize(machineType);
+
+    if ((!isSrcType && getTypeSize(inst.type())      != typeSize) || 
+        (isSrcType  && getTypeSize(getSrcType(inst)) != typeSize))
+    {
+        if (isAssert) 
+        {
+            Validator::validate(inst, -1, std::string(isSrcType? "Source" : "Instruction") + " type size must match machine model", false);
+        }
+        return false;
+    }
+    return true;
 }
 
-unsigned getSrcType(Inst i)
+bool validateOperandTypeSize(Inst inst, int oprIdx, unsigned machineType, bool isAssert)
 {
-    switch(i.brig()->kind)
+    assert(0 <= oprIdx && oprIdx <= 4);
+
+    Operand opr = inst.operand(oprIdx);
+    if (!opr) 
     {
-    case Brig::BRIG_INST_CVT:
-        return InstCvt(i).sourceType();
-
-    case Brig::BRIG_INST_CMP:
-        return InstCmp(i).sourceType();
-
-    case Brig::BRIG_INST_SEG:
-        return InstSeg(i).sourceType();
-
-    case Brig::BRIG_INST_SOURCE_TYPE:
-        return InstSourceType(i).sourceType();
-
-    case Brig::BRIG_INST_IMAGE:
-        return InstImage(i).coordType();
-
-    case Brig::BRIG_INST_ATOMIC_IMAGE:
-        return InstAtomicImage(i).coordType();
-
-    default:
-        return (unsigned)-1;
+        if (isAssert) operandError(inst, oprIdx, " is missing");
+        return false;
     }
+
+    if (getOperandType(opr, machineType == Brig::BRIG_TYPE_B64) != machineType) // Operands always have 'b' type
+    {
+        if (isAssert) operandError(inst, oprIdx, "size must match machine model");
+        return false;
+    }
+
+    return true;
 }
 
 const char* width2str(unsigned val)
 {
     using namespace Brig;
 
-    switch(val)
+    switch(val) 
     {
     case BRIG_WIDTH_1                   : return "width(1)";
     case BRIG_WIDTH_1024                : return "width(1024)";
@@ -829,9 +953,87 @@ const char* width2str(unsigned val)
     case BRIG_WIDTH_ALL                 : return "width(all)";
     case BRIG_WIDTH_WAVESIZE            : return "width(WAVESIZE)";
     case BRIG_WIDTH_NONE                : return "";
-    default:
+    default: 
         return NULL;
     }
+}
+
+bool isImageInst(unsigned opcode)
+{
+    switch(opcode)
+    {
+    case Brig::BRIG_OPCODE_RDIMAGE:
+    case Brig::BRIG_OPCODE_LDIMAGE:
+    case Brig::BRIG_OPCODE_STIMAGE:
+    case Brig::BRIG_OPCODE_ATOMICIMAGE:
+    case Brig::BRIG_OPCODE_ATOMICIMAGENORET:
+    case Brig::BRIG_OPCODE_QUERYIMAGEARRAY:
+    case Brig::BRIG_OPCODE_QUERYIMAGEDEPTH:
+    case Brig::BRIG_OPCODE_QUERYIMAGEFORMAT:
+    case Brig::BRIG_OPCODE_QUERYIMAGEHEIGHT:
+    case Brig::BRIG_OPCODE_QUERYIMAGEORDER:
+    case Brig::BRIG_OPCODE_QUERYIMAGEWIDTH:
+    case Brig::BRIG_OPCODE_QUERYSAMPLERBOUNDARY:
+    case Brig::BRIG_OPCODE_QUERYSAMPLERCOORD:
+    case Brig::BRIG_OPCODE_QUERYSAMPLERFILTER:
+        return true;
+    default: 
+        return false;
+    }
+}
+
+unsigned getType(Inst i)
+{
+    return i.brig()->type;
+}
+
+unsigned getSrcType(Inst i)
+{
+    switch(i.brig()->kind) 
+    {
+    case Brig::BRIG_INST_CVT:
+        return InstCvt(i).sourceType();
+
+    case Brig::BRIG_INST_CMP:
+        return InstCmp(i).sourceType();
+
+    case Brig::BRIG_INST_SEG:
+        return InstSeg(i).sourceType();
+
+    case Brig::BRIG_INST_SOURCE_TYPE:
+        return InstSourceType(i).sourceType();
+
+    case Brig::BRIG_INST_IMAGE:
+        return InstImage(i).coordType();
+
+    case Brig::BRIG_INST_LANE:
+        return InstLane(i).sourceType();
+
+    case Brig::BRIG_INST_ATOMIC_IMAGE:
+        return InstAtomicImage(i).coordType();
+
+    default:
+        return (unsigned)-1;
+    }
+}
+
+unsigned getSegment(Inst inst)
+{
+    assert(inst);
+    if      (InstAddr   i = inst) return i.segment();
+    else if (InstMem    i = inst) return i.segment();
+    else if (InstSeg    i = inst) return i.segment();
+    else if (InstAtomic i = inst) return i.segment();
+    else                          return Brig::BRIG_SEGMENT_NONE;
+}
+
+unsigned getPacking(Inst inst)
+{
+    assert(inst);
+
+    if      (InstCmp i = inst) return i.pack();
+    else if (InstMod i = inst) return i.pack();
+    else                       return Brig::BRIG_PACK_NONE;
 }
 
 } // end namespace

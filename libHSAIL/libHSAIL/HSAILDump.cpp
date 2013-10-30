@@ -40,6 +40,7 @@
 // SOFTWARE.
 #include "HSAILDump.h"
 #include "HSAILBrigContainer.h"
+#include "HSAILDisassembler.h"
 #include "HSAILItems.h"
 #include "HSAILSRef.h"
 
@@ -113,6 +114,9 @@ private:
     template<typename T>
     void pValue(const T& arg)      { s << arg; }
 
+    void pValue(f16_t arg)         { printFloatValue(s, FloatDisassemblyModeDecimal, arg); }
+    void pValue(f32_t arg)         { printFloatValue(s, FloatDisassemblyModeDecimal, arg); }
+    void pValue(f64_t arg)         { printFloatValue(s, FloatDisassemblyModeDecimal, arg); }
     void pValue(char arg)          { s << (int)arg; }
     void pValue(signed char arg)   { s << (int)arg; }
     void pValue(unsigned char arg) { s << (int)arg; }

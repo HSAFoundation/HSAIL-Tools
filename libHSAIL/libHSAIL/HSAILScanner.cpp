@@ -213,19 +213,19 @@ Scanner::Variant Scanner::readValueVariant()
             {
                 float v;
                 istringstreamalert(SRef(m_tokStart,m_curPos)) >> v;
-                return Variant(f16_t(v));
+                return Variant(f16_t(f32_t(&v)));
             }
         case ESglNumber:
             {
                 float v;
                 istringstreamalert(SRef(m_tokStart,m_curPos)) >> v;
-                return Variant(v);
+                return Variant(&v);
             }
         case EDblNumber:
             {
                 double v;
                 istringstreamalert(SRef(m_tokStart,m_curPos)) >> v;
-                return Variant(f64_t(v));
+                return Variant(f64_t(&v));
             }
         case EHlfHexNumber:
             {
@@ -235,21 +235,15 @@ Scanner::Variant Scanner::readValueVariant()
             }
         case ESglHexNumber:
             {
-                union {
-                    IEEE754Traits<f32_t>::RawBitsType pad;
-                    float v;
-                };
+                IEEE754Traits<f32_t>::RawBitsType pad;
                 istringstreamalert(SRef(m_tokStart+2,m_curPos)) >> hex >> pad;
-                return Variant(v);
+                return Variant(f32_t::fromRawBits(pad));
             }
         case EDblHexNumber:
             {
-                union {
-                    IEEE754Traits<f64_t>::RawBitsType pad;
-                    f64u_t v;
-                };
+                IEEE754Traits<f64_t>::RawBitsType pad;
                 istringstreamalert(SRef(m_tokStart+2,m_curPos)) >> hex >> pad;
-                return Variant(v);
+                return Variant(f64_t::fromRawBits(pad));
             }
         case EHlfC99Number:
             {
@@ -258,7 +252,7 @@ Scanner::Variant Scanner::readValueVariant()
             }
         case ESglC99Number:
             {
-                float const v = readC99<f32_t>(SRef(m_tokStart,m_curPos));
+                f32_t v = readC99<f32_t>(SRef(m_tokStart,m_curPos));
                 return Variant(v);
             }
         case EDblC99Number:
@@ -270,9 +264,10 @@ Scanner::Variant Scanner::readValueVariant()
             syntaxError("constant value literal expected");
         }
     } catch (const istringstream::failure& ) {
-        std::ostringstream ss;
-        ss << "iss failure, token = " << m_token;
-        syntaxError(ss.str());
+        //std::ostringstream ss;
+        //ss << "iss failure, token = " << m_token;
+        //syntaxError(ss.str());
+        syntaxError("invalid literal");
     }
     return Variant();
 }

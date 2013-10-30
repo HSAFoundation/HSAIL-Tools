@@ -41,6 +41,8 @@
 #include "HSAILBrigContainer.h"
 #include "Brig.h"
 #include "HSAILItems.h"
+#include "HSAILScope.h"
+#include "HSAILBrigantine.h"
 
 #include <algorithm>
 #include <iostream>
@@ -88,7 +90,7 @@ void StringSection::initStringSet()
     const char * const s_begin = getData(NUM_BYTES_RESERVED);
     const char * const s_end   = getData(size());
     size_t const hdrSize = offsetof(Brig::BrigString,bytes);
-    for (const char *p = s_begin; p < s_end;
+    for (const char *p = s_begin; p < s_end; 
          p += hdrSize + align(reinterpret_cast<const Brig::BrigString*>(p)->byteCount,ITEM_ALIGNMENT)) { // TBD095 make this cleaner
          m_stringSet.push_back( getOffset(p) );
     }
@@ -101,19 +103,19 @@ Offset StringSection::addString(const SRef& newStr)
         initStringSet();
     }
     std::vector<Offset>::iterator const i = std::lower_bound(
-        m_stringSet.begin(),m_stringSet.end(),
+        m_stringSet.begin(),m_stringSet.end(), 
         newStr,StringRefComparer(this));
 
     if (i!=m_stringSet.end() && getString(*i)==newStr) {
         return *i;
     }
-
+    
     size_t const allocSize = align(newStr.length(),ITEM_ALIGNMENT);
     size_t const hdrSize = offsetof(Brig::BrigString,bytes);
 
     Offset const secEndOffset = (Offset)size();
     Brig::BrigString* s = reinterpret_cast<Brig::BrigString*>(insertData(secEndOffset,static_cast<unsigned>(hdrSize + allocSize)));
-
+    
     zeroPaddedCopy(s->bytes,newStr.begin,newStr.length(),allocSize);
     s->byteCount = static_cast<uint32_t>(newStr.length());
 
@@ -143,7 +145,7 @@ class RefPatcher
     void visit(T,...) const {}
 
 public:
-    RefPatcher(const std::map<Offset,Offset>& map)
+    RefPatcher(const std::map<Offset,Offset>& map) 
         : m_old2new(map) {}
 
     template <typename I>
@@ -277,6 +279,121 @@ void BrigContainer::optimizeOperands()
     operands().swapData(newSection);
 }
 
+class CollectExternDefs
+{
+    Scope& m_scope;
+    template <typename Dir>
+    void record(Dir d) {
+        assert(isGlobalName(d.name()));
+        if (d.modifier().linkage()!=Brig::BRIG_LINKAGE_STATIC) {
+            if (d.modifier().isDeclaration()) {
+                m_scope.add(d.name(),d);
+            } else {
+                m_scope.replaceOtherwiseAdd(d.name(),d);
+            }
+        }
+    }
+public:
+    CollectExternDefs(Scope& scope) 
+        : m_scope(scope) 
+    {}
+    Directive operator()(DirectiveVariable v) {
+        record(v);
+        return v.next();
+    }
+    Directive operator()(DirectiveFunction fx) {
+        record(fx);
+        return fx.nextTopLevelDirective();
+    }
+    Directive operator()(DirectiveKernel k) {
+        return k.nextTopLevelDirective();
+    }
+    Directive operator()(Directive d) {
+        return d.next();
+    }
+};
+
+class MakeDecl2DefMap
+{
+    std::map<Offset,Offset>& m_decl2def;
+    Scope&                   m_overallScope;
+
+    std::auto_ptr<Scope>     m_moduleScope;
+
+    template <typename Dir>
+    void record(Dir d) {
+        assert(m_moduleScope.get()!=NULL);
+        assert(isGlobalName(d.name()));
+        if (d.modifier().isDeclaration()) {
+            Dir decl = d;
+            bool const isFirstInModule = m_moduleScope->add(decl.name(),decl);
+            if (isFirstInModule && decl.modifier().linkage() != Brig::BRIG_LINKAGE_STATIC) {
+                Directive def = m_overallScope.get<Directive>(decl.name());
+                if (def) {
+                    m_decl2def[ decl.brigOffset() ] = def.brigOffset();
+                } // else // TBD report symbol not defined
+            }
+        } else {
+            Dir def = d;
+            Directive decl = m_moduleScope->get<Directive>(def.name());
+            if (decl) {
+                m_decl2def[ decl.brigOffset() ] = def.brigOffset();
+            } else {
+                m_moduleScope->add(def.name(),def);
+            }
+        }
+    }
+    void resetModuleScope() {
+        m_moduleScope.reset(new Scope(m_overallScope.container()));
+    }
+
+public:
+    MakeDecl2DefMap(std::map<Offset,Offset>& decl2def, Scope& overallScope) 
+        : m_decl2def(decl2def) 
+        , m_overallScope(overallScope) {
+        resetModuleScope();
+    }
+    Directive operator()(DirectiveVersion v) {
+        resetModuleScope();
+        return v.next();
+    }
+    Directive operator()(DirectiveVariable v) {
+        record(v);
+        return v.next();
+    }
+    Directive operator()(DirectiveFunction fx) {
+        record(fx);
+        return fx.nextTopLevelDirective();
+    }
+    Directive operator()(DirectiveKernel k) {
+        return k.nextTopLevelDirective();
+    }
+    Directive operator()(Directive d) {
+        return d.next();
+    }
+};
+
+void BrigContainer::patchDecl2Defs() {
+    std::map<Offset,Offset> decl2defMap;
+    {
+        Scope overallScope(this);
+        {
+            CollectExternDefs collectDefs(overallScope);
+            for ( Directive d = directives().begin(), e = directives().end(); d != e; ) {
+                d = dispatchByItemKind<Directive,Directive>(d,collectDefs);
+            }
+        }    
+        MakeDecl2DefMap makeDecl2DefMap(decl2defMap,overallScope);
+        for ( Directive d = directives().begin(), e = directives().end(); d != e; ) {
+            d = dispatchByItemKind<Directive,Directive>(d,makeDecl2DefMap);
+        }
+    }
+    RefPatcher<Directive> refPatcher(decl2defMap);
+    for (Operand o = operands().begin(), e = operands().end(); o != e; o = o.next()) {
+        enumerateFields(o,refPatcher);
+    }
+}
+
 // search for a BlockString with a name of "hsa_dwarf_debug", this marks
 // the beginning of a group of BlockNumerics which make up the elf container
 //
@@ -347,7 +464,7 @@ static Directive extractDataFromHsaDwarfDebugBlock( Directive d,
 // BlockStart, BlockString ("hsa_dwarf_debug"), BlockNumeric, ..., BlockEnd
 //
 // Any other formats/arrangements of blocks are skipped.
-//
+// 
 void BrigContainer::ExtractDebugInformationToStream( std::ostream & out )
 {
     for ( Directive d = this->debugChunks().begin(), d_end = this->debugChunks().end(); d != d_end; )

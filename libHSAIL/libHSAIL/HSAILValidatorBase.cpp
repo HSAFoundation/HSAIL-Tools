@@ -57,28 +57,32 @@ namespace HSAIL_ASM {
 
 //============================================================================
 
-unsigned InstValidatorBase::machineType; // FIXME: changed to static for TestGen
+unsigned PropValidator::machineType;
+bool     PropValidator::expandOperands;
 
 //============================================================================
 
-bool InstValidatorBase::isImage(Operand opr, bool isRW /*=false*/)
+bool PropValidator::isImage(Operand opr, bool isRW /*=false*/)
 {
     OperandAddress addr = opr;
-    return addr &&
-           addr.symbol() &&
-           DirectiveImage(addr.symbol()) &&
-           (DirectiveImage(addr.symbol()).type() == (isRW? Brig::BRIG_TYPE_RWIMG : Brig::BRIG_TYPE_ROIMG));
+    if (addr) {
+        DirectiveVariable var = addr.symbol();
+        return var && var.type()==(isRW? Brig::BRIG_TYPE_RWIMG : Brig::BRIG_TYPE_ROIMG);
+    }
+    return false;
 }
 
-bool InstValidatorBase::isSampler(Operand opr)
+bool PropValidator::isSampler(Operand opr)
 {
     OperandAddress addr = opr;
-    return addr &&
-           addr.symbol() &&
-           DirectiveSampler(addr.symbol());
+    if (addr) {
+        DirectiveVariable var = addr.symbol();
+        return var && var.type()==Brig::BRIG_TYPE_SAMP;
+    }
+    return false;
 }
 
-bool InstValidatorBase::isJumpTab(Inst inst, unsigned operandIdx, bool isAssert)
+bool PropValidator::isJumpTab(Inst inst, unsigned operandIdx, bool isAssert)
 {
     assert(inst);
     assert(operandIdx <= 4);
@@ -93,12 +97,12 @@ bool InstValidatorBase::isJumpTab(Inst inst, unsigned operandIdx, bool isAssert)
 
     using namespace Brig;
 
-    if (OperandAddress addr = opr)
+    if (OperandLabelVariableRef ref = opr)
     {
         unsigned btype = isLargeModel()? BRIG_TYPE_B64 : BRIG_TYPE_B32;
         unsigned utype = isLargeModel()? BRIG_TYPE_U64 : BRIG_TYPE_U32;
 
-        if (DirectiveSymbol sym = addr.symbol())
+        if (DirectiveVariable sym = ref.ref())
         {
             if (!sym.modifier().isArray())
             {
@@ -126,7 +130,7 @@ bool InstValidatorBase::isJumpTab(Inst inst, unsigned operandIdx, bool isAssert)
                 return false;
             }
 
-            DirectiveLabelList list = sym.init();
+            DirectiveLabelInit list = sym.init();
             if (!list)
             {
                 if (isAssert) validate(inst, operandIdx, false, "Invalid descriprion of jump targets; expected a reference to an array initialized with labels");
@@ -144,15 +148,8 @@ bool InstValidatorBase::isJumpTab(Inst inst, unsigned operandIdx, bool isAssert)
             if (isAssert) validate(inst, operandIdx, false, "Invalid descriprion of jump targets; expected a reference to an array initialized with labels");
             return false;
         }
-
-        if (addr.type() != btype)
-        {
-            if (isAssert) validate(inst, operandIdx, false, "Address type does not match machine model");
-            return false;
-        }
-
     }
-    else if (OperandLabelRef labref = opr)
+    else if (OperandLabelTargetsRef labref = opr)
     {
         DirectiveLabelTargets list = labref.ref();
 
@@ -175,7 +172,7 @@ bool InstValidatorBase::isJumpTab(Inst inst, unsigned operandIdx, bool isAssert)
     return true;
 }
 
-bool InstValidatorBase::isCallTab(Inst inst, unsigned operandIdx, bool isAssert)
+bool PropValidator::isCallTab(Inst inst, unsigned operandIdx, bool isAssert)
 {
     assert(inst);
     assert(operandIdx <= 4);
@@ -193,13 +190,11 @@ bool InstValidatorBase::isCallTab(Inst inst, unsigned operandIdx, bool isAssert)
     if (OperandFunctionList list = opr)
     {
         if (list.elementCount() == 0) return false;
-        //F
     }
     else if (OperandSignatureRef ref = opr)
     {
         DirectiveSignature signature = ref.ref();
         if (!signature) return false;
-        //F
     }
     else
     {
@@ -208,7 +203,7 @@ bool InstValidatorBase::isCallTab(Inst inst, unsigned operandIdx, bool isAssert)
     return true;
 }
 
-const char* InstValidatorBase::operand2str(unsigned valId)
+const char* PropValidator::operand2str(unsigned valId)
 {
     switch(valId)
     {
@@ -269,7 +264,27 @@ const char* InstValidatorBase::operand2str(unsigned valId)
     }
 }
 
-const char* InstValidatorBase::val2str(unsigned prop, unsigned val)
+const char* PropValidator::operandKind2str(unsigned kind) {
+    using namespace Brig;
+    switch(kind) {
+    case BRIG_OPERAND_ADDRESS:            return "Address";         
+    case BRIG_OPERAND_ARGUMENT_LIST:      return "ArgumentList";    
+    case BRIG_OPERAND_FBARRIER_REF:       return "FbarrierRef";     
+    case BRIG_OPERAND_FUNCTION_LIST:      return "FunctionList";    
+    case BRIG_OPERAND_FUNCTION_REF:       return "FunctionRef";     
+    case BRIG_OPERAND_IMMED:              return "Immed";           
+    case BRIG_OPERAND_LABEL_REF:          return "LabelRef";        
+    case BRIG_OPERAND_REG:                return "Reg";             
+    case BRIG_OPERAND_REG_VECTOR:         return "RegVector";       
+    case BRIG_OPERAND_SIGNATURE_REF:      return "SignatureRef";    
+    case BRIG_OPERAND_LABEL_TARGETS_REF:  return "LabelTargetsRef"; 
+    case BRIG_OPERAND_LABEL_VARIABLE_REF: return "LabelVariableRef";
+    case BRIG_OPERAND_WAVESIZE:           return "Wavesize";        
+    default: assert(false);               return "?";
+    }
+}
+
+const char* PropValidator::val2str(unsigned prop, unsigned val)
 {
     const char* res = 0;
 
@@ -279,22 +294,24 @@ const char* InstValidatorBase::val2str(unsigned prop, unsigned val)
     case PROP_TYPE:
     case PROP_STYPE:
     case PROP_ITYPE:
-    case PROP_CTYPE:
-                            res = (val == BRIG_TYPE_NONE)? "none" : typeX2str(val); break;
+    case PROP_CTYPE:        res = (val == BRIG_TYPE_NONE)?         "none" : typeX2str(val);          break;
+    case PROP_PACKING:      res = (val == BRIG_PACK_NONE)?         "none" : pack2str(val);           break;
+    case PROP_ROUNDING:     res = (val == BRIG_ROUND_NONE)?        "none" : round2str(val);          break;
+    case PROP_WIDTH:        res = (val == BRIG_WIDTH_NONE)?        "none" : width2str(val);          break;
+    case PROP_MEMFNC:       res = (val == BRIG_MEMORY_FENCE_NONE)? "none" : memoryFence2str(val);    break; 
+    case PROP_MEMORD:       res = (val == BRIG_MEMORY_ORDER_NONE)? "none" : (val == BRIG_MEMORY_ORDER_RELAXED)? "relaxed" : memoryOrder2str(val); break;
+    case PROP_MEMSCP:       res = (val == BRIG_MEMORY_SCOPE_NONE)? "none" : (val == BRIG_MEMORY_SCOPE_SYSTEM)?  "system"  : memoryScope2str(val); break;
+    case PROP_SEGMENT:      res = (val == BRIG_SEGMENT_NONE)?      "none" : (val == BRIG_SEGMENT_FLAT)?         "flat"    : segment2str(val);     break;
+    case PROP_FTZ:          res = val? "ftz" : "none";       break;
+    case PROP_ALIGN:        res = val? "1" : "0";            break;
 
     case PROP_OPERATOR:     res = compareOperation2str(val); break;
-    case PROP_FTZ:          res = val? "ftz" : "none";           break;
-    case PROP_ALIGN:        res = val? "ftz" : "none";           break;
-    case PROP_ATMOP:        res = atomicOperation2str(val); break;
-    case PROP_MSEM:         res = memorySemantic2str(val);  break;
-    case PROP_GEOM:         res = imageGeometry2str(val);   break;
-    case PROP_PACKING:      res = (val == BRIG_PACK_NONE)?    "no packing" : pack2str(val);   break;
-    case PROP_ROUNDING:     res = (val == BRIG_ROUND_NONE)?   "none" : round2str(val);        break;
-    case PROP_SYNC:         res = memoryFence2str(val);  break;
-    case PROP_SEGMENT:      res = (val == BRIG_SEGMENT_NONE)? "none" : (val == BRIG_SEGMENT_FLAT)? "flat" : segment2str(val); break;
-    case PROP_WIDTH:        res = (val == BRIG_WIDTH_NONE)?   "none" : width2str(val);        break;
+    case PROP_ATMOP:        res = atomicOperation2str(val);  break;
+    case PROP_GEOM:         res = imageGeometry2str(val);    break;
     case PROP_EQCLASS:      res = "";  break; // no sense printing as any value would be valid
 
+    case PROP_OPCODE:       res = opcode2str(val); break;
+                           
     case PROP_D0:
     case PROP_D1:
 
@@ -316,7 +333,7 @@ const char* InstValidatorBase::val2str(unsigned prop, unsigned val)
     return res;
 }
 
-unsigned InstValidatorBase::getOperandIdx(unsigned prop)
+unsigned PropValidator::getOperandIdx(unsigned prop)
 {
     switch(prop)
     {
@@ -334,10 +351,11 @@ unsigned InstValidatorBase::getOperandIdx(unsigned prop)
     }
 }
 
-string InstValidatorBase::prop2str(unsigned prop)
+string PropValidator::prop2str(unsigned prop)
 {
     switch(prop)
     {
+    case PROP_OPCODE:      return "opcode";
     case PROP_TYPE:        return "type";
     case PROP_STYPE:       return "src type";
     case PROP_ITYPE:       return "image type";
@@ -349,9 +367,10 @@ string InstValidatorBase::prop2str(unsigned prop)
     case PROP_FTZ:         return "modifier";
     case PROP_ALIGN:       return "aligned";
     case PROP_ATMOP:       return "atomic operation";
-    case PROP_MSEM:        return "memory semantic";
+    case PROP_MEMORD:      return "memory order";
+    case PROP_MEMSCP:      return "memory scope";
+    case PROP_MEMFNC:      return "memory fence";
     case PROP_GEOM:        return "geom";
-    case PROP_SYNC:        return "fence";
     case PROP_SEGMENT:     return "storage class";
     case PROP_WIDTH:       return "width";
     case PROP_EQCLASS:     return "equivalence class";
@@ -374,17 +393,59 @@ string InstValidatorBase::prop2str(unsigned prop)
     }
 }
 
-void InstValidatorBase::invalidFormat(Inst inst, const char* msg)
+const char* PropValidator::prop2key(unsigned prop)
+{
+    switch(prop)
+    {
+    case PROP_OPCODE:      return "opcode";
+    case PROP_TYPE:        return "type";
+    case PROP_STYPE:       return "sourceType";
+    case PROP_ITYPE:       return "imageType";
+    case PROP_CTYPE:       return "coordType";
+
+    case PROP_PACKING:     return "pack";
+    case PROP_OPERATOR:    return "compare";
+    case PROP_ROUNDING:    return "round";
+    case PROP_FTZ:         return "modifier";
+    case PROP_ALIGN:       return "aligned";
+    case PROP_ATMOP:       return "atomicOperation";
+    case PROP_MEMORD:      return "memoryOrder";
+    case PROP_MEMSCP:      return "memoryScope";
+    case PROP_MEMFNC:      return "memoryFence";
+    case PROP_GEOM:        return "geometry";
+    case PROP_SEGMENT:     return "segment";
+    case PROP_WIDTH:       return "width"; 
+    case PROP_EQCLASS:     return "equivClass";
+                           
+    case PROP_D0:          return "operand 0";
+    case PROP_D1:          return "operand 1";
+                           
+    case PROP_S0:          return "operand 0";
+    case PROP_S1:          return "operand 1";
+    case PROP_S2:          return "operand 2";
+    case PROP_S3:          return "operand 3";
+    case PROP_S4:          return "operand 4";
+
+    case PROP_TYPESIZE:  // A special case
+    case PROP_STYPESIZE: // A special case
+    case PROP_OPERAND:
+    default: 
+        assert(false); 
+        return "";
+    }
+};
+
+void PropValidator::invalidFormat(Inst inst, const char* msg)
 {
     validate(inst, false, "Invalid instruction format, expected " + string(msg));
 }
 
-void InstValidatorBase::brigPropError(Inst inst, unsigned prop, unsigned value, unsigned* vals, unsigned length)
+void PropValidator::brigPropError(Inst inst, unsigned prop, unsigned value, unsigned* vals, unsigned length)
 {
     propError(inst, prop, val2str(prop, value), vals, length);
 }
 
-void InstValidatorBase::propError(Inst inst, unsigned prop, string value, unsigned* vals, unsigned length)
+void PropValidator::propError(Inst inst, unsigned prop, string value, unsigned* vals, unsigned length)
 {
     assert(inst);
     assert(vals && length > 0);
@@ -414,7 +475,7 @@ void InstValidatorBase::propError(Inst inst, unsigned prop, string value, unsign
     }
 }
 
-bool InstValidatorBase::validateTypeSize(Inst inst, bool isSrcType, unsigned val, bool isAssert /*=true*/)
+bool PropValidator::validateTypeSz(Inst inst, bool isSrcType, unsigned val, bool isAssert /*=true*/)
 {
     assert(inst);
 
@@ -440,7 +501,10 @@ bool InstValidatorBase::validateTypeSize(Inst inst, bool isSrcType, unsigned val
         break;
 
     case TYPESIZE_VAL_MODEL:
-        return validateMachineType(inst, -1, getMachineType(), isSrcType, true, isAssert);
+        return validateInstTypeSize(inst, getMachineType(), isSrcType, isAssert);
+
+    case TYPESIZE_VAL_ATOMIC:
+        return validateAtomicTypeSize(inst, getMachineType(), isAssert);
 
     default:
         assert(false);
@@ -449,23 +513,23 @@ bool InstValidatorBase::validateTypeSize(Inst inst, bool isSrcType, unsigned val
     return false;
 }
 
-bool InstValidatorBase::validateTypesize(Inst inst, unsigned prop, unsigned attr, unsigned* vals, unsigned length, bool isAssert /*=true*/)
+bool PropValidator::validateTypesize(Inst inst, unsigned prop, unsigned attr, unsigned* vals, unsigned length, bool isAssert /*=true*/)
 {
     assert(length == 1);
     assert(attr == TYPESIZE_ATTR_NONE);
 
-    return validateTypeSize(inst, false, vals[0], isAssert);
+    return validateTypeSz(inst, false, vals[0], isAssert);
 }
 
-bool InstValidatorBase::validateStypesize(Inst inst, unsigned prop, unsigned attr, unsigned* vals, unsigned length, bool isAssert /*=true*/)
+bool PropValidator::validateStypesize(Inst inst, unsigned prop, unsigned attr, unsigned* vals, unsigned length, bool isAssert /*=true*/)
 {
     assert(length == 1);
     assert(attr == STYPESIZE_ATTR_NONE);
 
-    return validateTypeSize(inst, true, vals[0], isAssert);
+    return validateTypeSz(inst, true, vals[0], isAssert);
 }
 
-bool InstValidatorBase::validateOperandAttr(Inst inst, unsigned operandIdx, unsigned attr, bool isDst, bool isAssert)
+bool PropValidator::validateOperandAttr(Inst inst, unsigned operandIdx, unsigned attr, bool isDst, bool isAssert)
 {
     assert(inst);
     assert(operandIdx <= 4);
@@ -490,7 +554,7 @@ bool InstValidatorBase::validateOperandAttr(Inst inst, unsigned operandIdx, unsi
 
     if (attr == OPERAND_ATTR_MODEL)
     {
-        return HSAIL_ASM::validateMachineType(inst, operandIdx, getMachineType(), false, false, isAssert);
+        return HSAIL_ASM::validateOperandTypeSize(inst, operandIdx, getMachineType(), isAssert);
     }
 
     // Default values
@@ -510,6 +574,8 @@ bool InstValidatorBase::validateOperandAttr(Inst inst, unsigned operandIdx, unsi
         break;
     }
 
+    if (!expandOperands) enableIntExp = false;
+
     if (isDst)
     {
         return validateDstOperand(inst, operandIdx, enableIntExp, enableFloatExp, isAssert);
@@ -523,7 +589,7 @@ bool InstValidatorBase::validateOperandAttr(Inst inst, unsigned operandIdx, unsi
 // 1) address size must match _instruction_ segment size;
 // 2) if inst.segment=flat, address must be flat
 // 3) if address includes a symbol, symbol.segment must be the same as instr.segment
-bool InstValidatorBase::checkAddrSeg(Inst inst, unsigned operandIdx, bool isAssert)
+bool PropValidator::checkAddrSeg(Inst inst, unsigned operandIdx, bool isAssert)
 {
     assert(inst);
     assert(operandIdx <= 4);
@@ -554,7 +620,7 @@ bool InstValidatorBase::checkAddrSeg(Inst inst, unsigned operandIdx, bool isAsse
 }
 
 // 4) opaque symbols used in address must match instruction type (rwimg, roimg, samp)
-bool InstValidatorBase::checkAddrTSeg(Inst inst, unsigned operandIdx, bool isAssert)
+bool PropValidator::checkAddrTSeg(Inst inst, unsigned operandIdx, bool isAssert)
 {
     assert(inst);
     assert(operandIdx <= 4);
@@ -586,14 +652,14 @@ bool InstValidatorBase::checkAddrTSeg(Inst inst, unsigned operandIdx, bool isAss
     return true;
 }
 
-bool InstValidatorBase::isImmInRange(OperandImmed imm, unsigned low, unsigned high)
+bool PropValidator::isImmInRange(OperandImmed imm, unsigned low, unsigned high)
 {
     if (imm.type() != Brig::BRIG_TYPE_B32) return false;
     unsigned val = *reinterpret_cast<const uint32_t*>(&imm.brig()->bytes[0]);
     return low <= val && val <= high;
 }
 
-bool InstValidatorBase::checkOperandKind(Inst inst, unsigned operandIdx, unsigned* vals, unsigned length, bool isAssert)
+bool PropValidator::checkOperandKind(Inst inst, unsigned operandIdx, unsigned* vals, unsigned length, bool isAssert)
 {
     assert(inst);
     assert(operandIdx <= 4);
@@ -609,7 +675,7 @@ bool InstValidatorBase::checkOperandKind(Inst inst, unsigned operandIdx, unsigne
     {
         kind = opr.kind();
         unsigned type = getOperandType(opr);
-        if (type != (unsigned)-1)
+        if (type != Brig::BRIG_TYPE_NONE) 
         {
             size = getTypeSize(type);
         }
@@ -619,7 +685,7 @@ bool InstValidatorBase::checkOperandKind(Inst inst, unsigned operandIdx, unsigne
     {
         switch(vals[i])
         {
-        case OPERAND_VAL_NULL:      if (!opr) return true; break; //F get rid of breaks, return value immediately
+        case OPERAND_VAL_NULL:      if (!opr) return true; break;
 
         //NB: According with current design, explicitly specified operand size also assumes integer type => wavesize is allowed
         case OPERAND_VAL_IMM_1:     if ((kind == BRIG_OPERAND_WAVESIZE || kind == BRIG_OPERAND_IMMED) && size == 1)   return true; break;
@@ -680,7 +746,7 @@ bool InstValidatorBase::checkOperandKind(Inst inst, unsigned operandIdx, unsigne
     return false;
 }
 
-bool InstValidatorBase::validateOperand(Inst inst, unsigned prop, unsigned attr, unsigned* vals, unsigned length, bool isAssert /*=true*/)
+bool PropValidator::validateOperand(Inst inst, unsigned prop, unsigned attr, unsigned* vals, unsigned length, bool isAssert /*=true*/)
 {
     assert(inst);
     assert(vals && length > 0);
@@ -708,12 +774,21 @@ bool InstValidatorBase::validateOperand(Inst inst, unsigned prop, unsigned attr,
     return true;
 }
 
-void InstValidatorBase::invalidVariant(Inst inst, unsigned prop)
+bool PropValidator::validateEqclass(Inst inst, unsigned prop, unsigned attr, unsigned* vals, unsigned length, bool isAssert /*=true*/)
+{
+    assert(InstMem(inst));
+    assert(prop == PROP_EQCLASS);
+    assert(attr == EQCLASS_ATTR_NONE);
+
+    return true; // currently equivClass is encoded so that there are no invalid values
+}
+
+void PropValidator::invalidVariant(Inst inst, unsigned prop) 
 {
     validate(inst, false, "Instruction has invalid " + prop2str(prop));
 }
 
-void InstValidatorBase::invalidVariant(Inst inst, unsigned prop1, unsigned prop2)
+void PropValidator::invalidVariant(Inst inst, unsigned prop1, unsigned prop2) 
 {
     validate(inst, false, "Instruction has invalid combination of " + prop2str(prop1) + " and " + prop2str(prop2));
 }

@@ -45,9 +45,11 @@
 #ifdef _WIN32
 #include <io.h>
 #define O_BINARY_ O_BINARY
+#define LSEEK _lseeki64
 #else
 #include <unistd.h>
 #define O_BINARY_ 0
+#define LSEEK lseek64
 #endif
 
 #include <cstring>
@@ -95,9 +97,9 @@ struct SectionDesc {
 const int NUM_PREDEFINED_ELF_SECTIONS = sizeof(sectionDescs)/sizeof(const SectionDesc*);
 
 template<typename T> inline bool myEq(T a, T b) { return a == b; }
-inline bool myEq(const char* a, const char* b) {
+inline bool myEq(const char* a, const char* b) { 
     if (a==0 || b==0) return false;
-    return 0 == strcmp(a, b);
+    return 0 == strcmp(a, b); 
 }
 
 template<typename T>
@@ -127,17 +129,43 @@ ReadAdapter::~ReadAdapter() {
 ReadWriteAdapter::~ReadWriteAdapter() {
 }
 
+struct Elf32Policy {
+    typedef Elf32_Ehdr Ehdr;
+    typedef Elf32_Shdr Shdr;
+    typedef Elf32_Sym Sym;
+    typedef Elf32_Word ElfWord;
+    typedef Elf32_Half ElfHalf;
+
+    enum { ELFCLASS = ELFCLASS32 };
+};
+
+struct Elf64Policy {
+    typedef Elf64_Ehdr Ehdr;
+    typedef Elf64_Shdr Shdr;
+    typedef Elf64_Sym Sym;
+    typedef Elf64_Word ElfWord;
+    typedef Elf64_Half ElfHalf;
+
+    enum { ELFCLASS = ELFCLASS64 };
+};
+
+template<typename Policy>
 class BrigIOImpl {
-    Elf32_Ehdr elfHeader;
-    std::vector<Elf32_Shdr> sectionHeaders;
+    typedef typename Policy::Ehdr Ehdr;
+    typedef typename Policy::Shdr Shdr;
+    typedef typename Policy::Sym Sym;
+    typedef typename Policy::ElfWord ElfWord;
+    typedef typename Policy::ElfHalf ElfHalf;
+    Ehdr elfHeader;
+    std::vector<Shdr> sectionHeaders;
     std::vector<char> sectionNameTable;
     std::vector<char> symtabData;
     std::vector<char> strtabData;
     std::vector< SRef > sectionData;
-    BinaryFileFormat fmt;
+    int fmt;
 
 public:
-    BrigIOImpl(BinaryFileFormat fmt_)
+    BrigIOImpl(int fmt_) 
         : fmt(fmt_)
     {
     }
@@ -159,7 +187,7 @@ public:
             } else if (elfHeader.e_type == ET_NONE && elfHeader.e_machine == EM_NONE) {
                 fmt = FILE_FORMAT_BRIG;
             } else {
-                s->errs << "Unable to detect format with type="
+                s->errs << "Unable to detect format with type=" 
                           << elfHeader.e_type
                           << ", machine = "
                           << elfHeader.e_machine;
@@ -167,8 +195,8 @@ public:
         }
         sectionHeaders.resize(elfHeader.e_shnum);
         for(int i=0; i < elfHeader.e_shnum; ++i) {
-            if (s->pread((char*)&sectionHeaders[i], sizeof(Elf32_Shdr),
-                              elfHeader.e_shoff + i * elfHeader.e_shentsize))
+            if (s->pread((char*)&sectionHeaders[i], sizeof(Shdr),
+                              elfHeader.e_shoff + i * elfHeader.e_shentsize)) 
             {
                 s->errs << " reading section headers";
                 return 1;
@@ -189,13 +217,15 @@ public:
             std::vector<char> data;
             if (readSection(data, s, i)) return 1;
 
-            c.sectionById(desc->sectionId).setData(&data[0],data.size()); // TBD095 replace with normal swap
+            if (!data.empty()) {
+                c.sectionById(desc->sectionId).setData(&data[0],data.size()); // TBD095 replace with normal swap
+            }
         };
         return 0;
     }
 private:
 
-    int preadVec(ReadAdapter *s, std::vector<char> &dst, unsigned size, size_t ofs) const {
+    int preadVec(ReadAdapter *s, std::vector<char> &dst, unsigned size, uint64_t ofs) const {
         dst.resize(size);
         if (0 == size) return 0;
         return s->pread(&(dst[0]), size, ofs);
@@ -213,7 +243,7 @@ private:
     }
 
     const char* SectionDesc::* predefinedSectionName() {
-        switch(fmt) {
+        switch(fmt & FILE_FORMAT_MASK) {
         case FILE_FORMAT_BIF:
             return &SectionDesc::bifName;
         case FILE_FORMAT_BRIG:
@@ -229,12 +259,16 @@ private:
             s->errs << "Section index " << index << " out of bounds";
             return 1;
         }
-        Elf32_Shdr &shdr = sectionHeaders[index];
-        if (preadVec(s, dst, shdr.sh_size, shdr.sh_offset))
+        Shdr &shdr = sectionHeaders[index];
+        if (shdr.sh_size > (std::numeric_limits<unsigned>::max)()) {
+            s->errs << "Section size more than 4GB is not supported";
+            return 1;
+        }
+        if (preadVec(s, dst, static_cast<unsigned>(shdr.sh_size), shdr.sh_offset))
         {
             const char* name = sectionName(index);
             s->errs << " reading section ";
-            if (name) { s->errs << name; } else { s->errs << index; }
+            if (name) { s->errs << name; } else { s->errs << index; } 
             return 1;
         }
         return 0;
@@ -255,7 +289,7 @@ public:
             strTabNdx = addSection(descById(ELF_SECTION_STRTAB), strtabData);
             symTabNdx = addSection(descById(ELF_SECTION_SYMTAB), symtabData);
             sectionHeaders[symTabNdx].sh_link = strTabNdx;
-            sectionHeaders[symTabNdx].sh_entsize = sizeof(Elf32_Sym);
+            sectionHeaders[symTabNdx].sh_entsize = sizeof(Sym);
         }
         unsigned shStrTabNdx = addSection(descById(ELF_SECTION_SHSTRTAB), sectionNameTable);
 
@@ -301,18 +335,18 @@ private:
 
     void updateSection(unsigned shndx, SRef data) {
         sectionData[shndx] = data;
-        sectionHeaders[shndx].sh_size = (Elf32_Word)data.length();
-        for(size_t pos = sizeof(Elf32_Sym); pos < symtabData.size(); pos += sizeof(Elf32_Sym)) {
-          Elf32_Sym *pSym = (Elf32_Sym*)(&symtabData[pos]);
+        sectionHeaders[shndx].sh_size = (ElfWord)data.length();
+        for(size_t pos = sizeof(Sym); pos < symtabData.size(); pos += sizeof(Sym)) {
+          Sym *pSym = (Sym*)(&symtabData[pos]);
           if (pSym->st_shndx == shndx) {
-            pSym->st_size = (Elf32_Word)data.length();
+            pSym->st_size = (ElfWord)data.length();
             break;
           }
         }
     }
 
     unsigned addSection(const SectionDesc& desc, SRef data) {
-        Elf32_Shdr thisSec;
+        Shdr thisSec;
         memset(&thisSec, 0, sizeof(thisSec));
         if (sectionHeaders.empty()) {
             sectionHeaders.push_back(thisSec);
@@ -324,17 +358,17 @@ private:
         thisSec.sh_flags = desc.flags;
         thisSec.sh_addralign = desc.align;
         thisSec.sh_name = addString(&sectionNameTable, desc.*predefinedSectionName());
-        thisSec.sh_size = (Elf32_Word)data.length();
+        thisSec.sh_size = (ElfWord)data.length();
         const char* symbolName = desc.symbolName;
         if (fmt == FILE_FORMAT_BIF && symbolName) {
-            Elf32_Sym sym;
+            Sym sym;
             memset(&sym, 0, sizeof(sym));
             if (symtabData.empty()) {
                 symtabData.insert(symtabData.end(), (char*)(&sym), (char*)(&sym+1));
             }
             sym.st_name = addString(&strtabData, symbolName);
             sym.st_value = 0; // Value or address associated with the symbol
-            sym.st_size = (Elf32_Word)data.length(); // Size of the symbol
+            sym.st_size = (ElfWord)data.length(); // Size of the symbol
             sym.st_shndx = shndx; // Section's index
             sym.st_info = (STB_LOCAL << 4) | STT_OBJECT;
             symtabData.insert(symtabData.end(), (char*)(&sym), (char*)(&sym+1));
@@ -345,13 +379,13 @@ private:
     }
 
     int writeContents(WriteAdapter *s) {
-        unsigned filePos = sizeof(Elf32_Ehdr);
-        if (s && s->write((char*)&elfHeader, sizeof(Elf32_Ehdr))) {
+        unsigned filePos = sizeof(Ehdr);
+        if (s && s->write((char*)&elfHeader, sizeof(Ehdr))) {
             return 1;
         }
         alignFilePos(s, filePos, 4);
         for(unsigned secIndex = 1; secIndex < sectionHeaders.size(); ++secIndex) {
-            Elf32_Shdr &shdr = sectionHeaders[secIndex];
+            Shdr &shdr = sectionHeaders[secIndex];
             alignFilePos(s, filePos, shdr.sh_addralign);
             shdr.sh_offset = filePos;
             if (s && s->write(sectionData[secIndex].begin, shdr.sh_size)) {
@@ -371,7 +405,7 @@ private:
     int writeElf(WriteAdapter *s) {
         memset(&elfHeader, 0, sizeof(elfHeader));
         memcpy(elfHeader.e_ident, ElfMagic, 4);
-        elfHeader.e_ident[EI_CLASS] = ELFCLASS32;
+        elfHeader.e_ident[EI_CLASS] = Policy::ELFCLASS;
         elfHeader.e_ident[EI_DATA] = ELFDATA2LSB;
         elfHeader.e_ident[EI_VERSION] = EV_CURRENT;
         elfHeader.e_version = EV_CURRENT;
@@ -382,11 +416,11 @@ private:
         }
 
         elfHeader.e_ehsize = sizeof(elfHeader);
-        elfHeader.e_shentsize = sizeof(Elf32_Shdr);
-        elfHeader.e_shnum = Elf32_Half(sectionHeaders.size());
+        elfHeader.e_shentsize = sizeof(Shdr);
+        elfHeader.e_shnum = ElfHalf(sectionHeaders.size());
         elfHeader.e_shstrndx = elfHeader.e_shnum - 1; // must always be the last
 
-        // dry run to calculate section offsets, then
+        // dry run to calculate section offsets, then 
         return writeContents(0)
             || writeContents(s);
     };
@@ -437,10 +471,10 @@ struct FileAdapter : public ReadWriteAdapter {
         }
         return 0;
     }
-    virtual int pread(char* data, size_t numBytes, size_t offset) const {
-        long lrc = ::lseek(fd, (long)offset, SEEK_SET);
+    virtual int pread(char* data, size_t numBytes, uint64_t offset) const {
+        int64_t lrc = ::LSEEK(fd, offset, SEEK_SET);
         if (check1((int)lrc)) return 1;
-        if (lrc != (long)offset) {
+        if ((uint64_t)lrc != offset) {
             errs << "Seeked to " << lrc << " instead of " << offset;
             return 1;
         }
@@ -473,13 +507,13 @@ struct VectorAdapter : public ReadWriteAdapter {
         buf.insert(buf.end(), data, data + numBytes);
         return 0;
     }
-    virtual int pread(char* data, size_t numBytes, size_t offset) const {
+    virtual int pread(char* data, size_t numBytes, uint64_t offset) const {
         if (offset + numBytes > buf.size()) {
             errs << "Reading beyond the end of the buffer";
             return 1;
         }
         if (numBytes == 0) return 0;
-        memcpy(data, &buf[offset], numBytes);
+        memcpy(data, &buf[static_cast<size_t>(offset)], numBytes);
         return 0;
     }
     ~VectorAdapter() {
@@ -507,7 +541,7 @@ struct MemoryAdapter : public ReadWriteAdapter {
         pos += numBytes;
         return 0;
     }
-    virtual int pread(char* data, size_t numBytes, size_t offset) const {
+    virtual int pread(char* data, size_t numBytes, uint64_t offset) const {
         if (offset + numBytes > bufSize) {
             errs << "Reading beyond the end of the buffer";
             return 1;
@@ -526,7 +560,7 @@ std::ostream& BrigIO::defaultErrs() {
 }
 
 std::auto_ptr<ReadAdapter> BrigIO::fileReadingAdapter(
-                const char* fileName,
+                const char* fileName, 
                 std::ostream& errs)
 {
     std::auto_ptr<FileAdapter> theFile( new FileAdapter(errs) );
@@ -537,7 +571,7 @@ std::auto_ptr<ReadAdapter> BrigIO::fileReadingAdapter(
 }
 
 std::auto_ptr<WriteAdapter> BrigIO::fileWritingAdapter(
-                const char* fileName,
+                const char* fileName, 
                 std::ostream& errs)
 {
     std::auto_ptr<FileAdapter> theFile( new FileAdapter(errs) );
@@ -548,7 +582,7 @@ std::auto_ptr<WriteAdapter> BrigIO::fileWritingAdapter(
 }
 
 std::auto_ptr<WriteAdapter> BrigIO::memoryWritingAdapter(
-                    char         *buf,
+                    char         *buf, 
                     size_t        size,
                     std::ostream& errs)
 {
@@ -557,7 +591,7 @@ std::auto_ptr<WriteAdapter> BrigIO::memoryWritingAdapter(
 }
 
 std::auto_ptr<ReadAdapter> BrigIO::memoryReadingAdapter(
-                    const char   *buf,
+                    const char   *buf, 
                     size_t        size,
                     std::ostream& errs)
 {
@@ -565,19 +599,32 @@ std::auto_ptr<ReadAdapter> BrigIO::memoryReadingAdapter(
             new MemoryAdapter((char*)buf, size, errs) );
 }
 
-int BrigIO::load(BrigContainer &dst,
-                 BinaryFileFormat fmt,
-                 ReadAdapter& src)
+int BrigIO::load(BrigContainer &dst, 
+                 int           fmt,
+                 ReadAdapter&  src)
 {
-    BrigIOImpl impl(fmt);
-    return impl.readContainer(dst, &src);
+    unsigned char ident[16];
+    src.pread((char*)ident, 16, 0);
+    switch(ident[EI_CLASS]) {
+    case ELFCLASS32: {
+        BrigIOImpl<Elf32Policy> impl(fmt);
+        return impl.readContainer(dst, &src);
+        }
+    case ELFCLASS64: {
+        BrigIOImpl<Elf64Policy> impl(fmt);
+        return impl.readContainer(dst, &src);
+        }
+    default:
+        src.errs << "Invalid ELFCLASS";
+        return 1;
+    }
 }
 
-int BrigIO::save(BrigContainer &src,
-                 BinaryFileFormat fmt,
+int BrigIO::save(BrigContainer &src, 
+                 int           fmt,
                  WriteAdapter& dst)
 {
-    BrigIOImpl impl(fmt);
+    BrigIOImpl<Elf32Policy> impl(fmt);
     return impl.writeContainer(&dst, src);
 }
 

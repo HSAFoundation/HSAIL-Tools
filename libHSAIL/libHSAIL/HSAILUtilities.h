@@ -52,6 +52,8 @@ namespace HSAIL_ASM
 class Inst;
 class Operand;
 class Directive;
+class DirectiveVariable;
+class DirectiveExecutable;
 class BrigContainer;
 class OperandRegVector;
 
@@ -61,40 +63,50 @@ size_t     align(size_t s, size_t pow2);
 /// if len < room fills the gap with zeroes. returns min(len,room).
 size_t     zeroPaddedCopy(void *dst, const void* src, size_t len, size_t room);
 
-unsigned   getSrcType(Inst inst);
 unsigned   getType(Inst i);
+unsigned   getSrcType(Inst inst);
+unsigned   getSegment(Inst inst);
+unsigned   getPacking(Inst inst);
 
 unsigned   getDefWidth(Inst inst);
 unsigned   getDefRounding(unsigned opCode, unsigned type);
 unsigned   getDefRoundingForCvt(unsigned srcType, unsigned dstType);
-
+           
 bool       isFloatType(unsigned type);
 bool       isIntType(unsigned type);
+bool       isSignedType(unsigned type);
 bool       isUnsignedType(unsigned type);
 bool       isPackedType(unsigned type);
 bool       isIntPackedType(unsigned type);
 bool       isFloatPackedType(unsigned type);
 bool       isBitType(unsigned type);
 unsigned   convType2BitType(unsigned type);
+unsigned   convPackedType2U(unsigned type);
 
 int        getBitSize(unsigned type);
 inline int getByteSize(unsigned type) { return getBitSize(type) / 8; }
 unsigned   getTypeSize(unsigned type);
 unsigned   getSegAddrSize(unsigned segment, bool isLargeModel);
-unsigned   getSegment(Inst inst);
 
-unsigned   getImmOperandType(Inst inst, unsigned operandIdx, unsigned machineType);
+unsigned   getOperandType(Inst inst, unsigned operandIdx, unsigned machineType);
+unsigned   getImmOperandType(Inst inst, unsigned operandIdx, unsigned machineType); // deprecated
 unsigned   getOperandType(Operand opr);
 unsigned   getOperandType(Operand opr, bool isLargeModel);
+
+DirectiveVariable getInputArg(DirectiveExecutable kernel, unsigned idx); 
 
 bool validateDstVector(OperandRegVector vector);
 
 bool validateSrcOperand(Inst inst, int oprIdx, bool enableIntExp, bool enableFloatExp, bool instType, bool isAssert);
 bool validateDstOperand(Inst inst, int oprIdx, bool enableIntExp, bool enableFloatExp, bool isAssert);
-bool validateMachineType(Inst inst, int oprIdx, unsigned machineType, bool isSrcType, bool isUnsigned, bool isAssert);
+bool validateOperandTypeSize(Inst inst, int oprIdx, unsigned machineType, bool isAssert);
+bool validateInstTypeSize(Inst inst, unsigned machineType, bool isSrcType, bool isAssert);
+bool validateAtomicTypeSize(Inst inst, unsigned machineType, bool isAssert);
+
+bool isImageInst(unsigned opcode);
 
 inline bool isGcnInst(unsigned opcode) {
-    return (opcode & (1<<15))!=0;
+    return (opcode & (1<<15))!=0; 
 }
 
 const char* width2str(unsigned val);

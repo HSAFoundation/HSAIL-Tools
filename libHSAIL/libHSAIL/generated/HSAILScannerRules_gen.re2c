@@ -184,7 +184,6 @@ ETokens Scanner::scanModifier()
     "_f32x4"              { m_brigId = Brig::BRIG_TYPE_F32X4;        return m_token = EMType;       }
     "_f64"                { m_brigId = Brig::BRIG_TYPE_F64;          return m_token = EMType;       }
     "_f64x2"              { m_brigId = Brig::BRIG_TYPE_F64X2;        return m_token = EMType;       }
-    "_fbar"               { m_brigId = Brig::BRIG_TYPE_FBAR;         return m_token = EMType;       }
     "_roimg"              { m_brigId = Brig::BRIG_TYPE_ROIMG;        return m_token = EMType;       }
     "_rwimg"              { m_brigId = Brig::BRIG_TYPE_RWIMG;        return m_token = EMType;       }
     "_s16"                { m_brigId = Brig::BRIG_TYPE_S16;          return m_token = EMType;       }
@@ -214,38 +213,38 @@ ETokens Scanner::scanModifier()
     "_u8x16"              { m_brigId = Brig::BRIG_TYPE_U8X16;        return m_token = EMType;       }
     "_u8x4"               { m_brigId = Brig::BRIG_TYPE_U8X4;         return m_token = EMType;       }
     "_u8x8"               { m_brigId = Brig::BRIG_TYPE_U8X8;         return m_token = EMType;       }
-    "_acq"                { m_brigId = Brig::BRIG_SEMANTIC_ACQUIRE;  return m_token = EMSemantics;  }
-    "_ar"                 { m_brigId = Brig::BRIG_SEMANTIC_ACQUIRE_RELEASE; return m_token = EMSemantics;  }
-    "_part_acq"           { m_brigId = Brig::BRIG_SEMANTIC_PARTIAL_ACQUIRE; return m_token = EMSemantics;  }
-    "_part_ar"            { m_brigId = Brig::BRIG_SEMANTIC_PARTIAL_ACQUIRE_RELEASE; return m_token = EMSemantics;  }
-    "_part_rel"           { m_brigId = Brig::BRIG_SEMANTIC_PARTIAL_RELEASE; return m_token = EMSemantics;  }
-    "_regular"            { m_brigId = Brig::BRIG_SEMANTIC_REGULAR;  return m_token = EMSemantics;  }
-    "_rel"                { m_brigId = Brig::BRIG_SEMANTIC_RELEASE;  return m_token = EMSemantics;  }
+    "_acq"                { m_brigId = Brig::BRIG_MEMORY_ORDER_ACQUIRE; return m_token = EMMemoryOrder; }
+    "_ar"                 { m_brigId = Brig::BRIG_MEMORY_ORDER_ACQUIRE_RELEASE; return m_token = EMMemoryOrder; }
+    "_rlx"                { m_brigId = Brig::BRIG_MEMORY_ORDER_RELAXED; return m_token = EMMemoryOrder; }
+    "_rel"                { m_brigId = Brig::BRIG_MEMORY_ORDER_RELEASE; return m_token = EMMemoryOrder; }
+    "_sc"                 { m_brigId = Brig::BRIG_MEMORY_ORDER_SEQUENTIALLY_CONSISTENT; return m_token = EMMemoryOrder; }
+    "_cmp"                { m_brigId = Brig::BRIG_MEMORY_SCOPE_COMPONENT; return m_token = EMMemoryScope; }
+    "_sys"                { m_brigId = Brig::BRIG_MEMORY_SCOPE_SYSTEM; return m_token = EMMemoryScope; }
+    "_wg"                 { m_brigId = Brig::BRIG_MEMORY_SCOPE_WORKGROUP; return m_token = EMMemoryScope; }
     "_add"                { m_brigId = Brig::BRIG_ATOMIC_ADD;        return m_token = EMAtomicOp;   }
     "_and"                { m_brigId = Brig::BRIG_ATOMIC_AND;        return m_token = EMAtomicOp;   }
     "_cas"                { m_brigId = Brig::BRIG_ATOMIC_CAS;        return m_token = EMAtomicOp;   }
     "_dec"                { m_brigId = Brig::BRIG_ATOMIC_DEC;        return m_token = EMAtomicOp;   }
     "_exch"               { m_brigId = Brig::BRIG_ATOMIC_EXCH;       return m_token = EMAtomicOp;   }
     "_inc"                { m_brigId = Brig::BRIG_ATOMIC_INC;        return m_token = EMAtomicOp;   }
+    "_ld"                 { m_brigId = Brig::BRIG_ATOMIC_LD;         return m_token = EMAtomicOp;   }
     "_max"                { m_brigId = Brig::BRIG_ATOMIC_MAX;        return m_token = EMAtomicOp;   }
     "_min"                { m_brigId = Brig::BRIG_ATOMIC_MIN;        return m_token = EMAtomicOp;   }
     "_or"                 { m_brigId = Brig::BRIG_ATOMIC_OR;         return m_token = EMAtomicOp;   }
+    "_st"                 { m_brigId = Brig::BRIG_ATOMIC_ST;         return m_token = EMAtomicOp;   }
     "_sub"                { m_brigId = Brig::BRIG_ATOMIC_SUB;        return m_token = EMAtomicOp;   }
     "_xor"                { m_brigId = Brig::BRIG_ATOMIC_XOR;        return m_token = EMAtomicOp;   }
     "_arg"                { m_brigId = Brig::BRIG_SEGMENT_ARG;       return m_token = EMSegment;    }
-    "_extspace0"          { m_brigId = Brig::BRIG_SEGMENT_EXTSPACE0; return m_token = EMSegment;    }
+    "_region"             { m_brigId = Brig::BRIG_SEGMENT_EXTSPACE0; return m_token = EMSegment;    }
     "_global"             { m_brigId = Brig::BRIG_SEGMENT_GLOBAL;    return m_token = EMSegment;    }
     "_group"              { m_brigId = Brig::BRIG_SEGMENT_GROUP;     return m_token = EMSegment;    }
     "_kernarg"            { m_brigId = Brig::BRIG_SEGMENT_KERNARG;   return m_token = EMSegment;    }
     "_private"            { m_brigId = Brig::BRIG_SEGMENT_PRIVATE;   return m_token = EMSegment;    }
     "_readonly"           { m_brigId = Brig::BRIG_SEGMENT_READONLY;  return m_token = EMSegment;    }
     "_spill"              { m_brigId = Brig::BRIG_SEGMENT_SPILL;     return m_token = EMSegment;    }
-    "_fboth"              { m_brigId = Brig::BRIG_FENCE_BOTH;        return m_token = EMMemoryFence; }
-    "_fglobal"            { m_brigId = Brig::BRIG_FENCE_GLOBAL;      return m_token = EMMemoryFence; }
-    "_fgroup"             { m_brigId = Brig::BRIG_FENCE_GROUP;       return m_token = EMMemoryFence; }
-    "_fnone"              { m_brigId = Brig::BRIG_FENCE_NONE;        return m_token = EMMemoryFence; }
-    "_fpartial"           { m_brigId = Brig::BRIG_FENCE_PARTIAL;     return m_token = EMMemoryFence; }
-    "_fpartialboth"       { m_brigId = Brig::BRIG_FENCE_PARTIAL_BOTH; return m_token = EMMemoryFence; }
+    "_fboth"              { m_brigId = Brig::BRIG_MEMORY_FENCE_BOTH; return m_token = EMMemoryFence; }
+    "_fglobal"            { m_brigId = Brig::BRIG_MEMORY_FENCE_GLOBAL; return m_token = EMMemoryFence; }
+    "_fgroup"             { m_brigId = Brig::BRIG_MEMORY_FENCE_GROUP; return m_token = EMMemoryFence; }
 
     "_width"     { return m_token = EMWidth; }
     "_v2"        { m_brigId = 2; return m_token = EMVector; }
@@ -255,7 +254,7 @@ ETokens Scanner::scanModifier()
 
     "_ftz"       { return m_token = EMFTZ; }
 
-    "_region"    { m_brigId = Brig::BRIG_ExtSpace0;      return m_token = EMSegment; }
+    "_region"    { m_brigId = Brig::BRIG_SEGMENT_EXTSPACE0; return m_token = EMSegment; }
     "_aligned"   { m_brigId = Brig::BRIG_MEMORY_ALIGNED; return m_token = EMAligned; }
 
     "_down"               { m_brigId = Brig::BRIG_ROUND_FLOAT_MINUS_INFINITY; return m_token = EMRound;      }
@@ -438,6 +437,7 @@ ETokens Scanner::scan()
     "clamp"               { m_brigId = Brig::BRIG_BOUNDARY_CLAMP;    return m_token = ESamplerBoundaryMode; }
     "mirror"              { m_brigId = Brig::BRIG_BOUNDARY_MIRROR;   return m_token = ESamplerBoundaryMode; }
     "mirroronce"          { m_brigId = Brig::BRIG_BOUNDARY_MIRRORONCE; return m_token = ESamplerBoundaryMode; }
+    "undefined"           { m_brigId = Brig::BRIG_BOUNDARY_UNDEFINED; return m_token = ESamplerBoundaryMode; }
     "wrap"                { m_brigId = Brig::BRIG_BOUNDARY_WRAP;     return m_token = ESamplerBoundaryMode; }
 
     "normalized"         { m_brigId = 1;                            return m_token = ESamplerCoord;  }
@@ -482,6 +482,7 @@ ETokens Scanner::scan()
     "clock"               { m_brigId = Brig::BRIG_OPCODE_CLOCK;      return m_token = EInstruction; }
     "cmov"                { m_brigId = Brig::BRIG_OPCODE_CMOV;       return m_token = EInstruction; }
     "cmp"                 { m_brigId = Brig::BRIG_OPCODE_CMP;        return m_token = EInstruction; }
+    "codeblockend"        { m_brigId = Brig::BRIG_OPCODE_CODEBLOCKEND; return m_token = EInstruction; }
     "combine"             { m_brigId = Brig::BRIG_OPCODE_COMBINE;    return m_token = EInstruction_Vx; }
     "copysign"            { m_brigId = Brig::BRIG_OPCODE_COPYSIGN;   return m_token = EInstruction; }
     "countlane"           { m_brigId = Brig::BRIG_OPCODE_COUNTLANE;  return m_token = EInstruction; }
@@ -500,6 +501,33 @@ ETokens Scanner::scan()
     "fma"                 { m_brigId = Brig::BRIG_OPCODE_FMA;        return m_token = EInstruction; }
     "fract"               { m_brigId = Brig::BRIG_OPCODE_FRACT;      return m_token = EInstruction; }
     "ftos"                { m_brigId = Brig::BRIG_OPCODE_FTOS;       return m_token = EInstruction; }
+    "gcn_atomic_append"   { m_brigId = Brig::BRIG_OPCODE_GCNAPPEND;  return m_token = EInstruction; }
+    "gcn_atomic"          { m_brigId = Brig::BRIG_OPCODE_GCNATOMIC;  return m_token = EInstruction; }
+    "gcn_atomicNoRet"     { m_brigId = Brig::BRIG_OPCODE_GCNATOMICNORET; return m_token = EInstruction; }
+    "gcn_b32xchg"         { m_brigId = Brig::BRIG_OPCODE_GCNB32XCHG; return m_token = EInstruction; }
+    "gcn_b4xchg"          { m_brigId = Brig::BRIG_OPCODE_GCNB4XCHG;  return m_token = EInstruction; }
+    "gcn_bfm"             { m_brigId = Brig::BRIG_OPCODE_GCNBFM;     return m_token = EInstruction; }
+    "gcn_atomic_consume"  { m_brigId = Brig::BRIG_OPCODE_GCNCONSUME; return m_token = EInstruction; }
+    "gcn_fldexp"          { m_brigId = Brig::BRIG_OPCODE_GCNFLDEXP;  return m_token = EInstruction; }
+    "gcn_frexp_exp"       { m_brigId = Brig::BRIG_OPCODE_GCNFREXP_EXP; return m_token = EInstruction; }
+    "gcn_frexp_mant"      { m_brigId = Brig::BRIG_OPCODE_GCNFREXP_MANT; return m_token = EInstruction; }
+    "gcn_ld"              { m_brigId = Brig::BRIG_OPCODE_GCNLD;      return m_token = EInstruction_Vx; }
+    "gcn_mads"            { m_brigId = Brig::BRIG_OPCODE_GCNMADS;    return m_token = EInstruction; }
+    "gcn_madu"            { m_brigId = Brig::BRIG_OPCODE_GCNMADU;    return m_token = EInstruction; }
+    "gcn_max3"            { m_brigId = Brig::BRIG_OPCODE_GCNMAX3;    return m_token = EInstruction; }
+    "gcn_med3"            { m_brigId = Brig::BRIG_OPCODE_GCNMED3;    return m_token = EInstruction; }
+    "gcn_min3"            { m_brigId = Brig::BRIG_OPCODE_GCNMIN3;    return m_token = EInstruction; }
+    "gcn_mqsad"           { m_brigId = Brig::BRIG_OPCODE_GCNMQSAD;   return m_token = EInstruction; }
+    "gcn_mqsad4"          { m_brigId = Brig::BRIG_OPCODE_GCNMQSAD4;  return m_token = EInstruction; }
+    "gcn_msad"            { m_brigId = Brig::BRIG_OPCODE_GCNMSAD;    return m_token = EInstruction; }
+    "gcn_priority"        { m_brigId = Brig::BRIG_OPCODE_GCNPRIORITY; return m_token = EInstruction; }
+    "gcn_qsad"            { m_brigId = Brig::BRIG_OPCODE_GCNQSAD;    return m_token = EInstruction; }
+    "gcn_region_alloc"    { m_brigId = Brig::BRIG_OPCODE_GCNREGIONALLOC; return m_token = EInstruction; }
+    "gcn_sadd"            { m_brigId = Brig::BRIG_OPCODE_GCNSADD;    return m_token = EInstruction; }
+    "gcn_sadw"            { m_brigId = Brig::BRIG_OPCODE_GCNSADW;    return m_token = EInstruction; }
+    "gcn_sleep"           { m_brigId = Brig::BRIG_OPCODE_GCNSLEEP;   return m_token = EInstruction; }
+    "gcn_st"              { m_brigId = Brig::BRIG_OPCODE_GCNST;      return m_token = EInstruction_Vx; }
+    "gcn_trig_preop"      { m_brigId = Brig::BRIG_OPCODE_GCNTRIG_PREOP; return m_token = EInstruction; }
     "getdetectexcept"     { m_brigId = Brig::BRIG_OPCODE_GETDETECTEXCEPT; return m_token = EInstruction; }
     "gridgroups"          { m_brigId = Brig::BRIG_OPCODE_GRIDGROUPS; return m_token = EInstruction; }
     "gridsize"            { m_brigId = Brig::BRIG_OPCODE_GRIDSIZE;   return m_token = EInstruction; }
@@ -551,6 +579,7 @@ ETokens Scanner::scan()
     "queryimageheight"    { m_brigId = Brig::BRIG_OPCODE_QUERYIMAGEHEIGHT; return m_token = EInstruction; }
     "queryimageorder"     { m_brigId = Brig::BRIG_OPCODE_QUERYIMAGEORDER; return m_token = EInstruction; }
     "queryimagewidth"     { m_brigId = Brig::BRIG_OPCODE_QUERYIMAGEWIDTH; return m_token = EInstruction; }
+    "querysamplerboundary"  { m_brigId = Brig::BRIG_OPCODE_QUERYSAMPLERBOUNDARY; return m_token = EInstruction; }
     "querysamplercoord"   { m_brigId = Brig::BRIG_OPCODE_QUERYSAMPLERCOORD; return m_token = EInstruction; }
     "querysamplerfilter"  { m_brigId = Brig::BRIG_OPCODE_QUERYSAMPLERFILTER; return m_token = EInstruction; }
     "rdimage"             { m_brigId = Brig::BRIG_OPCODE_RDIMAGE;    return m_token = EInstruction; }
@@ -642,7 +671,7 @@ ETokens Scanner::scan()
 
     FLOAT [hH]           { return m_token = EHlfNumber; }
     FLOAT [fF]           { return m_token = ESglNumber; }
-    FLOAT [lL]?          { return m_token = EDblNumber; }
+    FLOAT [dD]?          { return m_token = EDblNumber; }
 
     HLFHEX               { return m_token = EHlfHexNumber; }
     SGLHEX               { return m_token = ESglHexNumber; }

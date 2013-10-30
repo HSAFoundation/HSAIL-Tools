@@ -11,6 +11,12 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "HSAILAsm", "HSAILAsm\HSAILA
 		{CBFC3C87-D765-4CC7-8695-EAC3B9335D47} = {CBFC3C87-D765-4CC7-8695-EAC3B9335D47}
 	EndProjectSection
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "HSAILTestGen", "HSAILTestGen\HSAILTestGen.vcxproj", "{7E427487-52F7-4E15-98D7-DEDFDAE9E9C6}"
+	ProjectSection(ProjectDependencies) = postProject
+		{E113CE4A-A1B4-43B6-A73F-86F8F1734CA3} = {E113CE4A-A1B4-43B6-A73F-86F8F1734CA3}
+		{CBFC3C87-D765-4CC7-8695-EAC3B9335D47} = {CBFC3C87-D765-4CC7-8695-EAC3B9335D47}
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -43,6 +49,14 @@ Global
 		{CBE274DD-CFE9-446C-8539-946E9FA12755}.Release|Win32.Build.0 = Release|Win32
 		{CBE274DD-CFE9-446C-8539-946E9FA12755}.Release|x64.ActiveCfg = Release|x64
 		{CBE274DD-CFE9-446C-8539-946E9FA12755}.Release|x64.Build.0 = Release|x64
+		{7E427487-52F7-4E15-98D7-DEDFDAE9E9C6}.Debug|Win32.ActiveCfg = Debug|Win32
+		{7E427487-52F7-4E15-98D7-DEDFDAE9E9C6}.Debug|Win32.Build.0 = Debug|Win32
+		{7E427487-52F7-4E15-98D7-DEDFDAE9E9C6}.Debug|x64.ActiveCfg = Debug|x64
+		{7E427487-52F7-4E15-98D7-DEDFDAE9E9C6}.Debug|x64.Build.0 = Debug|x64
+		{7E427487-52F7-4E15-98D7-DEDFDAE9E9C6}.Release|Win32.ActiveCfg = Release|Win32
+		{7E427487-52F7-4E15-98D7-DEDFDAE9E9C6}.Release|Win32.Build.0 = Release|Win32
+		{7E427487-52F7-4E15-98D7-DEDFDAE9E9C6}.Release|x64.ActiveCfg = Release|x64
+		{7E427487-52F7-4E15-98D7-DEDFDAE9E9C6}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

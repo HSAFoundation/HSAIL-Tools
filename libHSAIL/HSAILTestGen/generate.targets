@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <CustomBuild Include="$(ProjectDir)\..\libHSAIL\HidelProcessor.pl">
+      <FileType>Document</FileType>
+      <Command>$(DK_ROOT)\perl\5.12.2\bin\perl.exe $(ProjectDir)\..\libHSAIL\HidelProcessor.pl -target=testgen &lt; $(ProjectDir)\..\libHSAIL\HSAILBrigInstr.hdl &gt; $(ProjectDir)\generated\HSAILTestGen_gen.hpp</Command>
+      <Outputs>$(ProjectDir)\generated\HSAILTestGen_gen.hpp</Outputs>
+      <AdditionalInputs>$(ProjectDir)\..\libHSAIL\HSAILBrigInstr.hdl;$(DK_ROOT)\perl\5.12.2\bin\perl.exe</AdditionalInputs>
+      <Message>Generating HSAILTestGen_gen.hpp using DK perl and HidelProcessor.pl from HSAILBrigInstr.hdl. If compilation fails make sure that DK_ROOT variable is set in the shell from which you start Visual Studio IDE.</Message>
+    </CustomBuild>
+  </ItemGroup>
+</Project>

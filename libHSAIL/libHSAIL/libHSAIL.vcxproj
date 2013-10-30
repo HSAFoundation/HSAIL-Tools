@@ -1,6 +1,14 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug-Optimized|Win32">
+      <Configuration>Debug-Optimized</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug-Optimized|x64">
+      <Configuration>Debug-Optimized</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
     <ProjectConfiguration Include="Debug|Win32">
       <Configuration>Debug</Configuration>
       <Platform>Win32</Platform>
@@ -35,16 +43,15 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Brig_new.hpp" />
-    <CLInclude Include="$(ProjectDir)\generated\HSAILBrigStaticChecks_gen.hpp" />
-    <CLInclude Include="$(ProjectDir)\generated\HSAILBrigUtilities_gen.hpp" />
-    <CLInclude Include="$(ProjectDir)\generated\HSAILInitBrig_gen.hpp" />
-    <CLInclude Include="$(ProjectDir)\generated\HSAILItems_gen.hpp" />
-    <CLInclude Include="$(ProjectDir)\generated\HSAILParserUtilities_gen.hpp" />
+    <ClInclude Include="$(ProjectDir)\generated\HSAILBrigStaticChecks_gen.hpp" />
+    <ClInclude Include="$(ProjectDir)\generated\HSAILBrigUtilities_gen.hpp" />
+    <ClInclude Include="$(ProjectDir)\generated\HSAILInitBrig_gen.hpp" />
+    <ClInclude Include="$(ProjectDir)\generated\HSAILItems_gen.hpp" />
+    <ClInclude Include="$(ProjectDir)\generated\HSAILParserUtilities_gen.hpp" />
     <ClInclude Include="$(ProjectDir)\generated\HSAILScannerRules_gen_re2c.hpp" />
-    <ClInclude Include="$(ProjectDir)\generated\HSAILScannerUtilities_gen.hpp" />
     <ClInclude Include="$(ProjectDir)\generated\HSAILTemplateUtilities_gen.hpp" />
-    <CLInclude Include="$(ProjectDir)\generated\HSAILVisitItems_gen.hpp" />
-    <CLInclude Include="$(ProjectDir)generated\HSAILInstValidation_gen.hpp" />
+    <ClInclude Include="$(ProjectDir)\generated\HSAILVisitItems_gen.hpp" />
+    <ClInclude Include="$(ProjectDir)\generated\HSAILInstValidation_gen.hpp" />
     <ClInclude Include="Brig.h" />
     <ClInclude Include="HSAILb128_t.h" />
     <ClInclude Include="HSAILBrigantine.h" />
@@ -54,12 +61,14 @@
     <ClInclude Include="HSAILDisassembler.h" />
     <ClInclude Include="HSAILDump.h" />
     <ClInclude Include="HSAILFloats.h" />
+    <ClInclude Include="HSAILInstProps.h" />
     <ClInclude Include="HSAILItemBase.h" />
     <ClInclude Include="HSAILItems.h" />
     <ClInclude Include="HSAILParser.h" />
     <ClInclude Include="HSAILScanner.h" />
     <ClInclude Include="HSAILScope.h" />
     <ClInclude Include="HSAILSRef.h" />
+    <ClInclude Include="HSAILTypeUtilities.h" />
     <ClInclude Include="HSAILUtilities.h" />
     <ClInclude Include="HSAILValidator.h" />
     <ClInclude Include="HSAILValidatorBase.h" />
@@ -80,7 +89,17 @@
     <UseDebugLibraries>true</UseDebugLibraries>
     <CharacterSet>NotSet</CharacterSet>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug-Optimized|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <CharacterSet>NotSet</CharacterSet>
+  </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <CharacterSet>NotSet</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug-Optimized|x64'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <CharacterSet>NotSet</CharacterSet>
@@ -105,7 +124,15 @@
     <OutDir>$(SolutionDir)build\$(Configuration)\$(PlatformShortName)\$(ProjectName)\</OutDir>
     <IntDir>$(SolutionDir)build\$(Configuration)\$(PlatformShortName)\$(ProjectName)\</IntDir>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug-Optimized|Win32'">
+    <OutDir>$(SolutionDir)build\$(Configuration)\$(PlatformShortName)\$(ProjectName)\</OutDir>
+    <IntDir>$(SolutionDir)build\$(Configuration)\$(PlatformShortName)\$(ProjectName)\</IntDir>
+  </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <OutDir>$(SolutionDir)build\$(Configuration)\$(PlatformShortName)\$(ProjectName)\</OutDir>
+    <IntDir>$(SolutionDir)build\$(Configuration)\$(PlatformShortName)\$(ProjectName)\</IntDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug-Optimized|x64'">
     <OutDir>$(SolutionDir)build\$(Configuration)\$(PlatformShortName)\$(ProjectName)\</OutDir>
     <IntDir>$(SolutionDir)build\$(Configuration)\$(PlatformShortName)\$(ProjectName)\</IntDir>
   </PropertyGroup>
@@ -125,9 +152,47 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_SCL_SECURE_NO_WARNINGS;_CRT_SECURE_NO_WARNINGS;_CRT_SECURE_NO_DEPRECATE;_CRT_NONSTDC_NO_WARNINGS;_CRT_NONSTDC_NO_DEPRECATE;_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
-      <AdditionalIncludeDirectories>$(ProjectDir)..\..\llvm\include;$(ProjectDir)..\..\llvm\win32\include;$(ProjectDir)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\..\llvm-hsa\include;$(ProjectDir)..\..\llvm-hsa\win32\include;$(ProjectDir)</AdditionalIncludeDirectories>
       <TreatWarningAsError>true</TreatWarningAsError>
       <InlineFunctionExpansion>Default</InlineFunctionExpansion>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+    <CustomBuildStep>
+      <Inputs>
+      </Inputs>
+    </CustomBuildStep>
+    <PreBuildEvent>
+      <Command>
+      </Command>
+    </PreBuildEvent>
+    <PreBuildEvent>
+      <Message>
+      </Message>
+    </PreBuildEvent>
+    <CustomBuild>
+      <AdditionalInputs>
+      </AdditionalInputs>
+    </CustomBuild>
+    <Lib>
+      <AdditionalOptions>/ignore:4221 /ignore:4099 %(AdditionalOptions)</AdditionalOptions>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug-Optimized|Win32'">
+    <ClCompile>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>MaxSpeed</Optimization>
+      <PreprocessorDefinitions>WIN32;_SCL_SECURE_NO_WARNINGS;_CRT_SECURE_NO_WARNINGS;_CRT_SECURE_NO_DEPRECATE;_CRT_NONSTDC_NO_WARNINGS;_CRT_NONSTDC_NO_DEPRECATE;_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\..\llvm-hsa\include;$(ProjectDir)..\..\llvm-hsa\win32\include;$(ProjectDir)</AdditionalIncludeDirectories>
+      <TreatWarningAsError>true</TreatWarningAsError>
+      <InlineFunctionExpansion>Default</InlineFunctionExpansion>
+      <BasicRuntimeChecks>Default</BasicRuntimeChecks>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -160,9 +225,34 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_SCL_SECURE_NO_WARNINGS;_CRT_SECURE_NO_WARNINGS;_CRT_SECURE_NO_DEPRECATE;_CRT_NONSTDC_NO_WARNINGS;_CRT_NONSTDC_NO_DEPRECATE;WIN64;_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(ProjectDir)..\..\llvm\include;$(ProjectDir)..\..\llvm\win32\include;$(ProjectDir)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\..\llvm-hsa\include;$(ProjectDir)..\..\llvm-hsa\win32\include;$(ProjectDir)</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <TreatWarningAsError>true</TreatWarningAsError>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+    <CustomBuildStep>
+      <Inputs>
+      </Inputs>
+    </CustomBuildStep>
+    <CustomBuild>
+      <AdditionalInputs>
+      </AdditionalInputs>
+    </CustomBuild>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug-Optimized|x64'">
+    <ClCompile>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>MaxSpeed</Optimization>
+      <PreprocessorDefinitions>WIN32;_SCL_SECURE_NO_WARNINGS;_CRT_SECURE_NO_WARNINGS;_CRT_SECURE_NO_DEPRECATE;_CRT_NONSTDC_NO_WARNINGS;_CRT_NONSTDC_NO_DEPRECATE;WIN64;_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\..\llvm-hsa\include;$(ProjectDir)..\..\llvm-hsa\win32\include;$(ProjectDir)</AdditionalIncludeDirectories>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+      <TreatWarningAsError>true</TreatWarningAsError>
+      <BasicRuntimeChecks>Default</BasicRuntimeChecks>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -187,7 +277,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;_SCL_SECURE_NO_WARNINGS;_CRT_SECURE_NO_WARNINGS;_CRT_SECURE_NO_DEPRECATE;_CRT_NONSTDC_NO_WARNINGS;_CRT_NONSTDC_NO_DEPRECATE;NDEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
-      <AdditionalIncludeDirectories>$(ProjectDir)..\..\llvm\include;$(ProjectDir)..\..\llvm\win32\include;$(ProjectDir)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\..\llvm-hsa\include;$(ProjectDir)..\..\llvm-hsa\win32\include;$(ProjectDir)</AdditionalIncludeDirectories>
       <TreatWarningAsError>true</TreatWarningAsError>
     </ClCompile>
     <Link>
@@ -217,7 +307,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;_SCL_SECURE_NO_WARNINGS;_CRT_SECURE_NO_WARNINGS;_CRT_SECURE_NO_DEPRECATE;_CRT_NONSTDC_NO_WARNINGS;_CRT_NONSTDC_NO_DEPRECATE;WIN64;NDEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(ProjectDir)..\..\llvm\include;$(ProjectDir)..\..\llvm\win32\include;$(ProjectDir)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\..\llvm-hsa\include;$(ProjectDir)..\..\llvm-hsa\win32\include;$(ProjectDir)</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <TreatWarningAsError>true</TreatWarningAsError>
     </ClCompile>

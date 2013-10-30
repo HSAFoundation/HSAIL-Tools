@@ -93,6 +93,7 @@ void Brigantine::startProgram()
 void Brigantine::endProgram()
 {
     m_globalScope.reset();
+    m_container.patchDecl2Defs();
 }
 
 DirectiveVersion Brigantine::version(
@@ -130,6 +131,7 @@ DirectiveFunction Brigantine::declFunc(const SRef& name, const SourceInfo* srcIn
 {
     DirectiveFunction func= m_container.append<DirectiveFunction>();
     func.modifier().linkage() = Brig::BRIG_LINKAGE_NONE;
+    func.modifier().isDeclaration() = true; // will be false on startBody later
     return declFuncCommon(func,name,srcInfo);
 }
 
@@ -156,7 +158,7 @@ DirectiveExecutable Brigantine::declFuncCommon(DirectiveExecutable func,const SR
     return func;
 }
 
-void Brigantine::addOutputParameter(DirectiveSymbol sym)
+void Brigantine::addOutputParameter(DirectiveVariable sym)
 {
     assert(m_func && sym);
     DirectiveFunction func = m_func;
@@ -167,7 +169,7 @@ void Brigantine::addOutputParameter(DirectiveSymbol sym)
     func.firstInArg() = m_container.directives().end();
 }
 
-void Brigantine::addInputParameter(DirectiveSymbol sym)
+void Brigantine::addInputParameter(DirectiveVariable sym)
 {
     assert(m_func && sym);
     sym.modifier().isDeclaration() = 1;
@@ -181,12 +183,13 @@ void Brigantine::startBody()
 {
     assert(m_func && m_funcScope.get()==NULL);
 
+    m_func.modifier().isDeclaration() = false;
     m_funcScope.reset(new Scope(&m_container));
     m_func.firstScopedDirective() = m_container.directives().end();
 
     DirectiveFunction func = m_func;
     if (func && func.outArgCount() > 0) {
-        DirectiveSymbol sym = func.next();
+        DirectiveVariable sym = func.next();
         for(uint32_t i=func.outArgCount(); i>0; --i) {
             assert(sym);
             addSymbolToFunctionScope(sym);
@@ -194,7 +197,7 @@ void Brigantine::startBody()
         }
     }
     if (m_func.inArgCount() > 0) {
-        DirectiveSymbol sym = m_func.firstInArg();
+        DirectiveVariable sym = m_func.firstInArg();
         for(uint32_t i=m_func.inArgCount(); i>0; --i) {
             assert(sym);
             addSymbolToFunctionScope(sym);
@@ -209,6 +212,10 @@ bool Brigantine::endBody()
     if (!checkForUnboundLabels()) {
         return false;
     }
+
+    InstBasic inst = addInst<InstBasic>(Brig::BRIG_OPCODE_CODEBLOCKEND);
+    inst.type() = Brig::BRIG_TYPE_NONE;
+
     m_func.nextTopLevelDirective() = m_container.directives().end();
     m_funcScope.reset();
     DirectiveExecutable fx = m_func;
@@ -250,25 +257,11 @@ DirectiveArgScopeEnd Brigantine::endArgScope(const SourceInfo* srcInfo)
     return e;
 }
 
-DirectiveLabelTargets Brigantine::findTargets(DirectiveLabel lbl) {
-    DirectiveLabelTargets tgts;
-    Directive d = lbl.next();
-    if (d!=m_container.directives().end()) {
-        tgts = d;
-        assert(!tgts || tgts.label()==lbl);
-    }
-    return tgts;
-}
-
-void Brigantine::recordLabelRef(ItemRef<Directive> ref, const SRef& name, const SourceInfo* srcInfo)
+void Brigantine::recordLabelRef(ItemRef<DirectiveLabel> ref, const SRef& name, const SourceInfo* srcInfo)
 {
     DirectiveLabel lbl = m_funcScope->get<DirectiveLabel>(name);
     if (lbl) {
-        if (DirectiveLabelTargets tgts = findTargets(lbl)) {
-            ref = tgts;
-        } else {
-            ref = lbl;
-        }
+        ref = lbl;
     } else {
         Offset const nameOfs = m_container.addString(name);
         m_labelMap[nameOfs].push_back(std::make_pair(ref,srcInfo ? *srcInfo : SourceInfo()));
@@ -279,18 +272,16 @@ void Brigantine::patchLabelRefs(DirectiveLabel label)
 {
     LabelMap::iterator l = m_labelMap.find(label.name().deref());
     if (l!=m_labelMap.end()) {
-        DirectiveLabelTargets tgts = findTargets(label);
-        Directive res = tgts ? static_cast<Directive>(tgts) : static_cast<Directive>(label);
         const RefList &refList = (*l).second;
         for(RefList::const_iterator i=refList.begin(), e=refList.end(); i!=e; ++i) {
-            ItemRef<Directive> ref = (*i).first;
-            ref = res;
+            ItemRef<DirectiveLabel> ref = (*i).first;
+            ref = label;
         }
         m_labelMap.erase(l);
     }
 }
 
-DirectiveSymbol Brigantine::addSymbol(DirectiveSymbol sym)
+DirectiveVariable Brigantine::addSymbol(DirectiveVariable sym)
 {
     if (isLocalName(sym.name())) {
         if (localScope()!=NULL) {
@@ -329,30 +320,20 @@ DirectiveVariable Brigantine::addArrayVariable(
     return sym;
 }
 
-DirectiveImage Brigantine::addImage(
+DirectiveVariable Brigantine::addImage(
     const SRef& name,
     Brig::BrigSegment8_t segment,
     const SourceInfo* srcInfo)
 {
-    DirectiveImage sym = createCodeRefDir<DirectiveImage>(srcInfo);
-    sym.name() = name;
-    sym.segment() = segment;
-    sym.type() = Brig::BRIG_TYPE_RWIMG;
-    addSymbol(sym);
-    return sym;
+    return addVariable(name,segment,Brig::BRIG_TYPE_RWIMG,srcInfo);
 }
 
-DirectiveSampler Brigantine::addSampler(
+DirectiveVariable Brigantine::addSampler(
     const SRef& name,
     Brig::BrigSegment8_t segment,
     const SourceInfo* srcInfo)
 {
-    DirectiveSampler sym = createCodeRefDir<DirectiveSampler>(srcInfo);
-    sym.name() = name;
-    sym.segment() = segment;
-    sym.type() = Brig::BRIG_TYPE_SAMP;
-    addSymbol(sym);
-    return sym;
+    return addVariable(name,segment,Brig::BRIG_TYPE_SAMP,srcInfo);
 }
 
 DirectiveFbarrier Brigantine::addFbarrier(const SRef& name,const SourceInfo* srcInfo) {
@@ -367,6 +348,10 @@ DirectiveFbarrier Brigantine::addFbarrier(const SRef& name,const SourceInfo* src
         s = m_globalScope.get();
     }
     assert(s);
+    if (s->get<Directive>(name)) {
+        brigWriteError("duplicate symbol declaration",srcInfo);
+        return DirectiveFbarrier();
+    }
     DirectiveFbarrier fbar = createCodeRefDir<DirectiveFbarrier>(srcInfo);
     fbar.name() = name;
     s->add(name, fbar);
@@ -437,25 +422,6 @@ DirectiveLabel Brigantine::addExtension(const char *name,const SourceInfo* srcIn
     ext.name() = name;
     ext.code() = m_container.insts().end();
     return ext;
-}
-
-
-OperandArgumentRef Brigantine::createArgRef(const SRef& argName, const SourceInfo* srcInfo)
-{
-    DirectiveSymbol const argDir = findInScopes<DirectiveSymbol>(argName);
-    if (!argDir) {
-        brigWriteError("argument symbol not found",srcInfo);
-        return OperandArgumentRef();
-    }
-    return createArgRef(argDir,srcInfo);
-}
-
-OperandArgumentRef Brigantine::createArgRef(DirectiveSymbol arg, const SourceInfo* srcInfo)
-{
-    OperandArgumentRef opndRef = m_container.append<OperandArgumentRef>();
-    annotate(opndRef,srcInfo);
-    opndRef.arg() = arg;
-    return opndRef;
 }
 
 OperandFunctionList Brigantine::createFuncList(const SourceInfo* srcInfo)
@@ -605,33 +571,52 @@ Operand Brigantine::createLabelRef(const SRef& labelName, const SourceInfo* srcI
 
     OperandLabelRef operand = m_container.append<OperandLabelRef>();
     annotate(operand,srcInfo);
-    recordLabelRef(operand.ref(),labelName,srcInfo);
+    recordLabelRef(operand.label(),labelName,srcInfo);
     return operand;
 }
 
-bool Brigantine::appendLabelRef(LabelList list,const SRef& name, const SourceInfo* srcInfo)
+template <typename List>
+bool Brigantine::appendLabelRef(List list,const SRef& name, const SourceInfo* srcInfo)
 {
     if (!list.push_back(DirectiveLabel())) {
         brigWriteError("LabelList is full",srcInfo);
         return false;
     }
     ItemRef<DirectiveLabel> r = list[ list.size()-1 ];
-    recordLabelRef(r.asRefTo<Directive>(),name,srcInfo);
+    recordLabelRef(r,name,srcInfo);
     return true;
 }
 
-DirectiveLabelInit Brigantine::createLabelInitList(const SourceInfo* srcInfo) {
+bool Brigantine::appendLabelRef(LabelTargetsList list,const SRef& name, const SourceInfo* srcInfo) {
+    return appendLabelRef<LabelTargetsList>(list,name,srcInfo);
+}
+
+bool Brigantine::appendLabelRef(LabelInitList list,const SRef& name, const SourceInfo* srcInfo) {
+    return appendLabelRef<LabelInitList>(list,name,srcInfo);
+}
+
+
+DirectiveLabelInit Brigantine::createLabelInit(const SourceInfo* srcInfo) {
     return createCodeRefDir<DirectiveLabelInit>(srcInfo);
 }
 
-DirectiveLabelTargets Brigantine::createLabelTargets(const SRef& labelName, const SourceInfo* srcInfo) {
-    DirectiveLabel lbl = addLabelInternal(labelName,srcInfo);
-    DirectiveLabelTargets tgts;
-    if (lbl) {
-        tgts = createCodeRefDir<DirectiveLabelTargets>(srcInfo);
-        tgts.label() = lbl;
-        patchLabelRefs(lbl);
+DirectiveLabelTargets Brigantine::createLabelTargets(const SRef& name, const SourceInfo* srcInfo) {
+    if (!isLocalName(name)) {
+        brigWriteError("labeltargets name should be a local symbol",srcInfo);
+        return DirectiveLabelTargets();
     }
+    Scope *s = m_funcScope.get();
+    if (s==NULL) {
+        brigWriteError("labeltargets should be declared inside function or kernel scope",srcInfo);
+        return DirectiveLabelTargets();
+    }
+    if (s->get<Directive>(name)) {
+        brigWriteError("duplicate symbol declaration",srcInfo);
+        return DirectiveLabelTargets();
+    }
+    DirectiveLabelTargets tgts = createCodeRefDir<DirectiveLabelTargets>(srcInfo);
+    tgts.name() = name;
+    s->add(name, tgts);
     return tgts;
 }
 
@@ -649,14 +634,14 @@ unsigned Brigantine::getMachineType() const {
 OperandAddress Brigantine::createRef(
     const SRef& symName,
     const SRef& reg,
-    int32_t offset,
+    int64_t offset, 
     const SourceInfo* srcInfo) {
 
     OperandAddress operand = m_container.append<OperandAddress>();
     annotate(operand,srcInfo);
 
     if (!symName.empty()) {
-        DirectiveSymbol nameDS = findInScopes<DirectiveSymbol>(symName);
+        DirectiveVariable nameDS = findInScopes<DirectiveVariable>(symName);
         if (!nameDS) {
             brigWriteError("Symbol not found",srcInfo);
             return OperandAddress();
@@ -666,7 +651,15 @@ OperandAddress Brigantine::createRef(
     if (!reg.empty()) {
         operand.reg() = reg;
     }
-    operand.offset() = offset;
+    if (m_machine == Brig::BRIG_MACHINE_LARGE) {
+      operand.offset() = (uint64_t)offset;
+    } else {
+      // os: it would be nice to have a range check here, but it is not quite 
+      // clear if the user is supposed to provide signed or unsigned offsets,
+      // so the range is unclear, too. So we are just going to discard the 
+      // upper word.
+      operand.offset() = (uint64_t)(offset & 0xFFFFFFFF);
+    }
 
     //dp operand.type()   = getMachineType();
     //dp: this is a patch; operand type may depend on instruction as well!
@@ -705,6 +698,21 @@ public:
         return r;
     }
 
+    OperandRef operator()(DirectiveVariable var) const { 
+        if (isa<DirectiveLabelInit>(var.init())) {
+            OperandLabelVariableRef r = m_container.append<OperandLabelVariableRef>();
+            r.symbol() = var;
+            return r;
+        }
+        return OperandRef();
+    }
+
+    OperandRef operator()(DirectiveLabelTargets lTgts) const { 
+        OperandLabelTargetsRef r = m_container.append<OperandLabelTargetsRef>();
+        r.targets() = lTgts;
+        return r;
+    }
+
     template <typename Dir>
     OperandRef operator()(Dir) const { return OperandRef(); }
 };
@@ -736,19 +744,19 @@ void Brigantine::addSymbolToGlobalScope(DirectiveExecutable sym) {
     m_globalScope->add(sym.name(), sym);
 }
 
-void Brigantine::addSymbolToGlobalScope(DirectiveSymbol sym) {
+void Brigantine::addSymbolToGlobalScope(DirectiveVariable sym) {
     assert(isGlobalName(sym.name()));
     assert(m_globalScope.get()!=NULL);
     m_globalScope->add(sym.name(), sym);
 }
 
-void Brigantine::addSymbolToFunctionScope(DirectiveSymbol sym) {
+void Brigantine::addSymbolToFunctionScope(DirectiveVariable sym) {
     assert(isLocalName(sym.name()));
     assert(m_funcScope.get());
     m_funcScope->add(sym.name(), sym);
 }
 
-void Brigantine::addSymbolToLocalScope(DirectiveSymbol sym) {
+void Brigantine::addSymbolToLocalScope(DirectiveVariable sym) {
     assert(isLocalName(sym.name()));
     if (sym.segment()!=Brig::BRIG_SEGMENT_ARG) {
         assert(m_funcScope.get());
@@ -825,18 +833,6 @@ void Brigantine::setOperand(Inst inst, int oprIdx, Operand opnd)
 void Brigantine::setOperandEx(Inst inst, int oprIdx, Operand opnd)
 {
     setOperand(inst,oprIdx,opnd);
-
-    // This is a lowering-specific patch to sync symbol segment with instruction segment
-    if (OperandAddress addr = opnd) {
-        DirectiveSymbol sym = addr.symbol();
-        if (sym && sym.segment() == Brig::BRIG_SEGMENT_READONLY) {
-            if (InstMem im = inst) {
-                im.segment() = Brig::BRIG_SEGMENT_READONLY;
-            } else if (InstAddr ia = inst) {
-                ia.segment() = Brig::BRIG_SEGMENT_READONLY;
-            }
-        }
-    }
 }
 
 void Brigantine::appendOperand(Inst inst, Operand opnd)
@@ -850,74 +846,6 @@ void Brigantine::appendOperand(Inst inst, Operand opnd)
         brigWriteError("not more than 5 operands allowed",inst.srcInfo());
     }
 }
-
-/*
-class FillWithZeroes {
-    unsigned      m_numZeroes;
-    DirectiveVariableInit m_init;
-public:
-    FillWithZeroes(unsigned numZeroes,DirectiveVariableInit init)
-        : m_numZeroes(numZeroes), m_init(init) {}
-    template <typename DstBrigType>
-    void visit() {
-        typedef typename DstBrigType::CType DstCType;
-        DirectiveInitValues<DstCType> values = m_init.values<DstCType>();
-        const DstCType zero = DstCType();
-        for(unsigned i = m_numZeroes; i>0; --i) {
-            values.push_back(zero);
-        }
-    }
-    void visitNone(...) {}
-};
-
-void Brigantine::appendTrailingZeroes(HSAIL_ASM::DirectiveSymbol sym)
-{
-    if (!sym.init()) {
-        sym.init() = createInitializer(sym.type());
-    }
-    DirectiveVariableInit init = sym.init();
-    if (init) {
-        uint32_t const reqElems = sym.dim();
-        uint32_t const elems = init.elementCount();
-
-        if (sym.attribute() & Brig::BRIG_SYMBOL_ARRAY) {
-            if ( reqElems > elems ) {
-                FillWithZeroes fillWithZeroes(reqElems - elems,sym.init());
-                dispatchByType(sym.type(),fillWithZeroes);
-            }
-        } else {
-            if ( elems==0 ) {
-                FillWithZeroes fillWithZeroes(1,sym.init());
-                dispatchByType(sym.type(),fillWithZeroes);
-            }
-        }
-
-    }
-}*/
-
-// TBD095 replace with addSampler, createSamplerInitializer
-/*
-void Brigantine::CreateSampler(
-    const SRef& name,
-    const int normalized,
-    const Brig::BrigSamplerFilter filter,
-    const Brig::BrigSamplerBoundaryMode mode) {
-
-    DirectiveSymbol sym = createCodeRefDir<DirectiveSymbol>();
-    sym.type() = Brig::BRIG_TYPE_SAMP;
-    sym.name() = name;
-    sym.segment() = Brig::BRIG_SEGMENT_GLOBAL;
-
-    DirectiveSamplerInit init = m_container.append<DirectiveSamplerInit>();
-    init.modifier().filter() = filter;
-    init.modifier().isUnnormalized() = normalized==0;
-    init.boundaryU() = mode;
-    init.boundaryV() = mode;
-    init.boundaryW() = mode;
-
-    sym.init() = init;
-    addSymbolToGlobalScope(sym);
-}*/
 
 // Brigantine end
 }

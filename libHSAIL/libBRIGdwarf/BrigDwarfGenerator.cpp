@@ -285,9 +285,9 @@ private:
     //
     HSAIL_ASM::Offset generateDwarfForBrigParameters( Dwarf_P_Die pSuborutineEntry,
                                                   HSAIL_ASM::Directive d,
-                                                  HSAIL_ASM::DirectiveSymbol firstInArg,
+                                                  HSAIL_ASM::DirectiveVariable firstInArg,
                                                   unsigned numInParams,
-                                                  HSAIL_ASM::DirectiveSymbol firstOutParam,
+                                                  HSAIL_ASM::DirectiveVariable firstOutParam,
                                                   unsigned numOutParams );
     void generateDwarfForBrigSubprogramBody( HSAIL_ASM::Offset largestParamDirectiveOffset,
                                              Dwarf_P_Die pSuborutineEntry,
@@ -663,8 +663,8 @@ BrigDwarfGenerator_impl::generateDwarfForBrigSymbol( HSAIL_ASM::Directive d,
                                                      Dwarf_P_Die parent,
                                                      unsigned dwarfTag)
 {
-    HSAIL_ASM::DirectiveSymbol dSym( d );
-    Brig::BrigDirectiveSymbol * pBds( dSym.brig() );
+    HSAIL_ASM::DirectiveVariable dSym( d );
+    Brig::BrigDirectiveVariable * pBds( dSym.brig() );
     Dwarf_Error * nullError( 0 );
     Dwarf_P_Die nullSibling( 0 );
 
@@ -727,9 +727,9 @@ void BrigDwarfGenerator_impl::generateDwarfForBrigKernelFunction( HSAIL_ASM::Dir
     bool isKernel = true;
     unsigned declLine = 1;
     unsigned declColumn = 0;
-    HSAIL_ASM::DirectiveSymbol firstInArg;
+    HSAIL_ASM::DirectiveVariable firstInArg;
     unsigned numInParams = 0;
-    HSAIL_ASM::DirectiveSymbol firstOutParam;
+    HSAIL_ASM::DirectiveVariable firstOutParam;
     unsigned numOutParams = 0;
     HSAIL_ASM::Directive firstDirectiveInSubprogram;
     HSAIL_ASM::Directive firstDirectiveAfterSubprogram;
@@ -789,6 +789,7 @@ void BrigDwarfGenerator_impl::generateDwarfForBrigKernelFunction( HSAIL_ASM::Dir
     {
         lastInstr = instr;
         const HSAIL_ASM::SourceInfo *pSrcInfo( instr.container()->sourceInfo( instr ) );
+        if (!pSrcInfo) continue;
         if ( !m_isDwarfLineSetAddressCalled )
         {
             Dwarf_Unsigned rv = dwarf_lne_set_address( m_pDwarfDebug,
@@ -879,14 +880,14 @@ void BrigDwarfGenerator_impl::generateDwarfForBrigKernelFunction( HSAIL_ASM::Dir
 HSAIL_ASM::Offset BrigDwarfGenerator_impl::generateDwarfForBrigParameters(
     Dwarf_P_Die pSuborutineEntry,
     HSAIL_ASM::Directive d,
-    HSAIL_ASM::DirectiveSymbol firstInArg,
+    HSAIL_ASM::DirectiveVariable firstInArg,
     unsigned numInParams,
-    HSAIL_ASM::DirectiveSymbol firstOutParam,
+    HSAIL_ASM::DirectiveVariable firstOutParam,
     unsigned numOutParams )
 {
     Dwarf_Error * nullError( 0 );
-    HSAIL_ASM::DirectiveSymbol inParam( firstInArg );
-    HSAIL_ASM::DirectiveSymbol outParam( firstOutParam );
+    HSAIL_ASM::DirectiveVariable inParam( firstInArg );
+    HSAIL_ASM::DirectiveVariable outParam( firstOutParam );
     HSAIL_ASM::Offset largestOffset = 0;
 
     // generate entries for outut parameters
@@ -940,7 +941,7 @@ void BrigDwarfGenerator_impl::generateDwarfForBrigSubprogramBody(
         {
          case Brig::BRIG_DIRECTIVE_VARIABLE:
          {
-             HSAIL_ASM::DirectiveSymbol dSym( d );
+             HSAIL_ASM::DirectiveVariable dSym( d );
              if ( inArgScope && ( dSym.segment() == Brig::BRIG_SEGMENT_ARG ) )
              {
                  // argument variable, parent entry is arg scope

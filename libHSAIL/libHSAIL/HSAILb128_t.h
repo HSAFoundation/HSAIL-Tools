@@ -54,15 +54,15 @@ class b128_t
     uint64_t m_value[2];
 
     template <typename UnsT>
-    void uset(UnsT v ) {
-        m_value[0] = v;
-        m_value[1] = 0;
+    void uset(UnsT v ) { 
+        m_value[0] = v; 
+        m_value[1] = 0; 
     }
 
     template <typename SignT>
-    void sset(SignT v) {
-        m_value[0] = static_cast<int64_t>(v);
-        m_value[1] = v < 0 ? -1LL : 0;
+    void sset(SignT v) { 
+        m_value[0] = static_cast<int64_t>(v); 
+        m_value[1] = v < 0 ? -1LL : 0; 
     }
 
 public:
@@ -116,7 +116,7 @@ inline uint64_t hiPart(const b128_t& v)  { return v.m_value[1]; }
 
 template <typename OS>
 inline OS& operator << (OS& os,const b128_t& v) {
-    os << hiPart(v);
+    os << hiPart(v); 
     os << lowPart(v);
     return os;
 }

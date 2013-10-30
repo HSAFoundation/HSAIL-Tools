@@ -68,7 +68,7 @@ class Brigantine
     DirectiveExecutable     m_func;
     unsigned                m_machine;
 
-    typedef std::vector< std::pair< ItemRef<Directive>, SourceInfo > > RefList;
+    typedef std::vector< std::pair< ItemRef<DirectiveLabel>, SourceInfo > > RefList;
     typedef std::map<Brig::BrigStringOffset32_t, RefList> LabelMap;
 
     LabelMap m_labelMap; // string offset -> array of label refs
@@ -125,12 +125,12 @@ public:
     /// add output param to function. Should be called after declFunc
     /// and before startBody.
     /// @param sym - symbol directive, returned from addSymbol
-    void addOutputParameter(DirectiveSymbol sym);
+    void addOutputParameter(DirectiveVariable sym);
 
     /// add input param to function/kernel. Should be called after declFunc/declKernel
     /// and before startBody.
     /// @param sym - symbol directive, returned from addSymbol
-    void addInputParameter(DirectiveSymbol sym);
+    void addInputParameter(DirectiveVariable sym);
 
     /// start function/kernel body.
     ///
@@ -152,18 +152,18 @@ public:
 
 
     /// @name Symbols
-    /// emit DirectiveSymbol/DirectiveImage/DirectiveSampler.
+    /// emit DirectiveVariable.
     /// @param name - symbol name
     /// @param srcInfo - (optional) source location
     /// @{
 
-    DirectiveSymbol   addSymbol(DirectiveSymbol sym);
+    DirectiveVariable   addSymbol(DirectiveVariable sym);
 
     DirectiveVariable addVariable(const SRef& name, Brig::BrigSegment8_t segment, unsigned dType,const SourceInfo* srcInfo=NULL);
     DirectiveVariable addArrayVariable(const SRef& name, uint64_t size, Brig::BrigSegment8_t segment, unsigned dType,const SourceInfo* srcInfo=NULL);
 
-    DirectiveImage    addImage   (const SRef& name, Brig::BrigSegment8_t segment=Brig::BRIG_SEGMENT_GLOBAL, const SourceInfo* srcInfo=NULL);
-    DirectiveSampler  addSampler (const SRef& name, Brig::BrigSegment8_t segment=Brig::BRIG_SEGMENT_GLOBAL, const SourceInfo* srcInfo=NULL);
+    DirectiveVariable addImage   (const SRef& name, Brig::BrigSegment8_t segment=Brig::BRIG_SEGMENT_GLOBAL, const SourceInfo* srcInfo=NULL);
+    DirectiveVariable addSampler (const SRef& name, Brig::BrigSegment8_t segment=Brig::BRIG_SEGMENT_GLOBAL, const SourceInfo* srcInfo=NULL);
 
     DirectiveFbarrier addFbarrier(const SRef& name,const SourceInfo* srcInfo=NULL);
 
@@ -179,8 +179,8 @@ public:
     /// initializer size with declared dimension of symbol. If the symbol doesn't have associated initializer
     /// this routine creates one with type specified for the symbol. For nonarray symbols single zero value
     /// initializer is created.
-    /// @param sym - DirectiveSymbol.
-    void             appendTrailingZeroes(DirectiveSymbol sym);
+    /// @param sym - DirectiveVariable. 
+    void             appendTrailingZeroes(DirectiveVariable sym);
 
     /// @}
 
@@ -189,7 +189,7 @@ public:
     /// @param name - label name.
     DirectiveLabel   addLabel(const SRef& name,const SourceInfo* srcInfo=NULL);
 
-    DirectiveLabelInit    createLabelInitList(const SourceInfo* srcInfo=NULL);
+    DirectiveLabelInit    createLabelInit(const SourceInfo* srcInfo=NULL);
     DirectiveLabelTargets createLabelTargets(const SRef& labelName, const SourceInfo* srcInfo=NULL);
 
     /// append label reference to the label list.
@@ -197,7 +197,13 @@ public:
     /// @param name - name of label being referenced, can be forward reference
     /// (this is label with the name is not created yet)
     /// @param srcInfo - (optional) source location.
-    bool             appendLabelRef(LabelList list,const SRef& name, const SourceInfo* srcInfo=NULL);
+    bool             appendLabelRef(LabelTargetsList list,const SRef& name, const SourceInfo* srcInfo=NULL);
+    bool             appendLabelRef(LabelInitList list,const SRef& name, const SourceInfo* srcInfo=NULL);
+
+private:
+    template <typename List> bool appendLabelRef(List list,const SRef& name, const SourceInfo* srcInfo);
+
+public:
 
     /// emit comment for the following instruction.
     /// @param comment - any text.
@@ -252,16 +258,6 @@ public:
     OperandRegVector    createOperandRegVec(std::string o[],unsigned num,const SourceInfo* srcInfo=NULL);
     /// @}
 
-    /// @name Function arguments
-    /// emit function argument reference.
-    /// @param arg - symbol directive.
-    /// @param argName - symbol name including '%' or '&' (search in scopes)
-    /// @param srcInfo - (optional) source location.
-    /// @{
-    OperandArgumentRef  createArgRef(DirectiveSymbol arg, const SourceInfo* srcInfo=NULL);
-    OperandArgumentRef  createArgRef(const SRef& argName, const SourceInfo* srcInfo=NULL);
-    /// @}
-
     /// @name Argument list
     /// emit list of OperandArgumentRef.
     /// @param list - ItemRange of OperandArgumentRef.
@@ -271,7 +267,7 @@ public:
     /// @param srcInfo - (optional) source location.
     /// @{
     OperandArgumentList createArgList(const SourceInfo* srcInfo=NULL);
-    /*OperandArgumentList createArgList(const ItemRange<DirectiveSymbol>& list, const SourceInfo* srcInfo=NULL);*/
+    /*OperandArgumentList createArgList(const ItemRange<DirectiveVariable>& list, const SourceInfo* srcInfo=NULL);*/
     template <typename Iterator>
     OperandArgumentList createArgList(Iterator from, Iterator till, const SourceInfo* srcInfo=NULL);
     /// @}
@@ -342,8 +338,8 @@ public:
     /// @param offset - offset (optional, that is 0).
     /// @param srcInfo - (optional) source location.
     /// at least one of symName,reg, offset should be supplied upon call.
-    OperandAddress     createRef(const SRef& symName, const SRef& reg, int32_t offset=0, const SourceInfo* srcInfo=NULL);
-    OperandAddress     createRef(const SRef& symName, int32_t offset=0, const SourceInfo* srcInfo=NULL) {
+    OperandAddress     createRef(const SRef& symName, const SRef& reg, int64_t offset=0, const SourceInfo* srcInfo=NULL);
+    OperandAddress     createRef(const SRef& symName, int64_t offset=0, const SourceInfo* srcInfo=NULL) {
         return createRef(symName, SRef(), offset, srcInfo);
     }
 
@@ -402,15 +398,14 @@ private:
 
     DirectiveExecutable declFuncCommon(DirectiveExecutable func, const SRef& name, const SourceInfo* srcInfo);
 
-    void addSymbolToLocalScope(DirectiveSymbol sym);
-    void addSymbolToFunctionScope(DirectiveSymbol sym);
+    void addSymbolToLocalScope(DirectiveVariable sym);
+    void addSymbolToFunctionScope(DirectiveVariable sym);
     void addSymbolToGlobalScope(DirectiveExecutable sym);
-    void addSymbolToGlobalScope(DirectiveSymbol sym);
+    void addSymbolToGlobalScope(DirectiveVariable sym);
 
     bool checkForUnboundLabels();
-    void recordLabelRef(ItemRef<Directive> ref, const SRef& name, const SourceInfo*);
+    void recordLabelRef(ItemRef<DirectiveLabel> ref, const SRef& name, const SourceInfo*);
     void patchLabelRefs(DirectiveLabel label);
-    DirectiveLabelTargets findTargets(DirectiveLabel lbl);
 
     DirectiveLabel addLabelInternal(const SRef& name,const SourceInfo* srcInfo);
 

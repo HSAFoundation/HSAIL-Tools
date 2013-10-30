@@ -55,12 +55,17 @@ public:
         : d_container_p(container)
     {
     }
+    
+    BrigContainer* container() const { return d_container_p; }
 
     template<typename Item>
     Item get(const SRef& name);
 
     template<typename Item>
     bool add(const SRef& name, const Item& item);
+
+    template<typename Item>
+    bool replaceOtherwiseAdd(const SRef& name, const Item& item);
 };
 
 template<typename Item>
@@ -76,8 +81,18 @@ Item Scope::get(const SRef& name) {
 
 template<typename Item>
 bool Scope::add(const SRef& name, const Item& item) {
-    std::pair<Map::iterator, bool> res =
+    std::pair<Map::iterator, bool> res = 
         d_map.insert(std::make_pair(std::string(name.begin,name.end), item.brigOffset()));
+    return res.second;
+}
+
+template<typename Item>
+bool Scope::replaceOtherwiseAdd(const SRef& name, const Item& item) {
+    std::pair<Map::iterator, bool> res = 
+        d_map.insert(std::make_pair(std::string(name.begin,name.end), item.brigOffset()));
+    if (res.second==false) {
+        (*res.first).second = item.brigOffset();
+    }
     return res.second;
 }
 

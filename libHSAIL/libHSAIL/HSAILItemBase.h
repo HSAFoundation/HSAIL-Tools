@@ -62,7 +62,7 @@ public:
     Ptr(const Accessor& a) : Accessor(a) {}
 
     // QT is T optionally qualified with const depending on Accessor::SectionType
-    typedef typename copy_const<T,typename Accessor::SectionType>::type QT;
+    typedef typename copy_const<T,typename Accessor::SectionType>::type QT; 
     QT* valuePtr()   const { return Accessor::section()->template getData<QT>(Accessor::offset()); }
     QT& operator*()  const { return *valuePtr(); }
     QT* operator->() const { return valuePtr(); }
@@ -87,9 +87,9 @@ public:
     typedef DirectAccessor<SrcSectionType> OffsetAccessor;
     typedef DstSectionType SectionType;
 
-    IndirectAccessor(DstSectionType* dstSection, SrcSectionType *srcSection, Offset srcOffset)
+    IndirectAccessor(DstSectionType* dstSection, SrcSectionType *srcSection, Offset srcOffset) 
         : m_dstSection(dstSection)
-        , m_srcOffsetPtr(OffsetAccessor(srcSection,srcOffset))
+        , m_srcOffsetPtr(OffsetAccessor(srcSection,srcOffset)) 
     {}
 
     Ptr<Offset,OffsetAccessor> srcOffsetPtr() const { return m_srcOffsetPtr; }
@@ -106,7 +106,7 @@ template <typename ElemT, typename Accessor>
 class DataItemInterface {
     typedef Ptr<Brig::BrigString,Accessor> PtrT;
     PtrT m_ptr;
-public:
+public: 
     DataItemInterface(const Accessor& r) : m_ptr(r) {}
 
     const PtrT& ptr() const { return m_ptr; }
@@ -116,7 +116,7 @@ public:
 
     uint32_t numBytes() const { return m_ptr->byteCount; }
     uint32_t numElements() const { return numBytes() / sizeof(ElemT); }
-
+    
     QElemT&  operator[](int index) const { return reinterpret_cast<QElemT*>(m_ptr->bytes)[index]; }
     QElemT*  begin() const { return &(*this)[0]; }
     QElemT*  end() const   { return begin()+numElements(); }
@@ -124,8 +124,8 @@ public:
 
 
 
-template <typename ElemT,
-          typename SectionType=BrigSectionImpl,
+template <typename ElemT, 
+          typename SectionType=BrigSectionImpl, 
           typename Acc=DirectAccessor<SectionType> >
 class DataItemT : public DataItemInterface<ElemT,Acc> {
 public:
@@ -137,15 +137,15 @@ public:
     operator DataItemT<OtherT>() const { return DataItemT<OtherT>(this->ptr().section(),this->ptr().offset()); }
 };
 
-template <typename ElemT,
-          typename DstSectionType = StringSection,
-          typename SrcSectionType = BrigSectionImpl,
-          typename Acc            = IndirectAccessor<DstSectionType,SrcSectionType>
+template <typename ElemT, 
+          typename DstSectionType = StringSection, 
+          typename SrcSectionType = BrigSectionImpl, 
+          typename Acc            = IndirectAccessor<DstSectionType,SrcSectionType> 
          >
 class DataItemRefT : public DataItemInterface<ElemT,Acc> {
 public:
     DataItemRefT(SrcSectionType* srcSection, Offset srcOffset)
-        : DataItemInterface<ElemT,Acc>( Acc(&srcSection->container()->strings(), srcSection, srcOffset) )
+        : DataItemInterface<ElemT,Acc>( Acc(&srcSection->container()->strings(), srcSection, srcOffset) ) 
     {}
 
     operator DataItemT<ElemT>() const { return DataItemT<ElemT>(this->ptr().section(),this->ptr().offset()); }
@@ -215,7 +215,7 @@ public:
 
     /// constructor.
     /// @param refSection - section that contain item
-    /// @param refOffset - offset inside refSection to the
+    /// @param refOffset - offset inside refSection to the 
     /// item's field that reference string (that is offset to offset)
     StrRef(BrigSectionImpl *refSection, Offset& refOffset)
         : m_refSection(refSection)
@@ -249,6 +249,8 @@ public:
 
     operator SRef() const { return m_refSection->container()->strings().getString(deref()); }
 
+    std::string str() const { return static_cast<SRef>(*this); }
+
     /// return non-null if wrapper points to an item.
     operator bool_type() const { return deref() != 0 ? &StrRef::toCompare : NULL; }
 
@@ -272,7 +274,7 @@ class ItemRef : public Item {
 private:
     ItemRef(); // not default-constructible
 public:
-    ItemRef(const ItemRef& rhs) // FIXME patch! this actually should be disabled.
+    ItemRef(const ItemRef& rhs) // FIXME patch! this actually should be disabled. 
         : Item(rhs)
         , m_refSection(rhs.m_refSection)
         , m_offset2Ref(rhs.m_offset2Ref)
@@ -281,7 +283,7 @@ public:
 
     /// constructor.
     /// @param refSection - section containing item with reference.
-    /// @param refOffset - offset inside refSection to the
+    /// @param refOffset - offset inside refSection to the 
     /// item's field that reference another item (that is offset to offset)
     ItemRef(BrigSectionImpl *refSection, Offset& refOffset)
         : Item(&refSection->container()->section<typename Item::Kind>(), refOffset)
@@ -297,12 +299,7 @@ public:
         , m_offset2Ref(0)
     {
     }
-
-    template <typename Other>
-    ItemRef<Other> asRefTo() {  // TBD095 needs relationship test
-        return ItemRef<Other>(m_refSection,deref());
-    }
-
+    
     /// access to the actual offset that reference the Item.
     Offset& deref() { return *m_refSection->getData<Offset>(m_offset2Ref); }
     Offset deref() const { return *m_refSection->getData<Offset>(m_offset2Ref); }
@@ -335,7 +332,7 @@ public:
     {
     }
 
-    /// @name set accessors.
+    /// @name set accessors. 
     /// @{
     ValRef& operator=(T rhs) {
         *m_refSection->getData<T>(m_valOffset) = rhs;
@@ -346,8 +343,8 @@ public:
     }
     /// @}
 
-    /// @name get accessors.
-    /// @{
+    /// @name get accessors. 
+    /// @{ 
     T value() const { return *m_refSection->getData<T>(m_valOffset); }
     operator T() const { return value(); }
     /// @}
@@ -365,10 +362,10 @@ template <typename EnumT, typename BuiltInT=int>
 class EnumValRef : public ValRef<BuiltInT> {
 public:
     EnumValRef();
-    EnumValRef(BrigSectionImpl *refSection, BuiltInT* valPtr)
+    EnumValRef(BrigSectionImpl *refSection, BuiltInT* valPtr) 
         : ValRef<BuiltInT>(refSection,valPtr) {}
 
-    EnumValRef(BrigSectionImpl *refSection, EnumT* valPtr)
+    EnumValRef(BrigSectionImpl *refSection, EnumT* valPtr) 
         : ValRef<BuiltInT>(refSection,reinterpret_cast<BuiltInT*>(valPtr)) {}
 
     EnumT enumValue() const { return static_cast<EnumT>(this->value()); }
@@ -391,13 +388,13 @@ class BFValRef {
     Offset            m_valOffset;
 
     // choose suitable underlying uint to represent bits
-    typedef typename containing_uint<firstBit+width-1>::type BitsT;
+    typedef typename containing_uint<firstBit+width-1>::type BitsT; 
 
     static const BitsT mask = ((static_cast<BitsT>(1) << width) - 1);
     static const BitsT shiftedMask = mask << firstBit;
 
 public:
-    BFValRef();
+    BFValRef(); 
     BFValRef(const BFValRef&);
     BFValRef(BrigSectionImpl *refSection, void* valPtr)
         : m_refSection(refSection)
@@ -416,7 +413,7 @@ public:
         return *this = static_cast<T>(rhs);
     }
 
-    operator T() const {
+    operator T() const { 
         return static_cast<T>((*m_refSection->getData<BitsT>(m_valOffset) >> firstBit) & mask);
     }
 };
@@ -463,7 +460,7 @@ protected:
     }
 
     // this method allows correct assign DstItem i = ItemRef<SrcItem>()
-    template <typename DstItem, typename SrcItem>
+    template <typename DstItem, typename SrcItem> 
     static DstItem& assignItem(DstItem& to, const ItemRef<SrcItem>& from) {
         return assignItem<DstItem,SrcItem>(to,*static_cast<const SrcItem*>(&from));
     }
@@ -532,23 +529,23 @@ public:
 
     template<typename OtherItem>
     OtherItem itemRef(const Offset *ofs) const { return OtherItem(container(),ofs); }
-    template<typename Other>
+    template<typename Other>                      
     ItemRef<Other> itemRef(Offset *ofs) { return ItemRef<Other>(m_section, *ofs); }
 
     template<typename SubItem>
-    SubItem subItem(void* subItem) { return SubItem(m_section,
+    SubItem subItem(void* subItem) { return SubItem(m_section, 
     	(Offset)(reinterpret_cast<char*>(subItem) - m_section->getData(0))); }
 
     template<typename Other>
     ItemRef<Other> noItemRef() { return ItemRef<Other>(m_section); }
 
-    DataItemRef dataItemRef(void *val) const {
+    DataItemRef dataItemRef(void *val) const { 
         return DataItemRef(m_section,
             (Offset)(reinterpret_cast<char*>(val) - m_section->getData(0)));
     }
 
     template <typename ElemT>
-    DataItemRefT<ElemT> dataItemRefT(void *val) const {
+    DataItemRefT<ElemT> dataItemRefT(void *val) const { 
         return DataItemRefT<ElemT>(m_section,
             (Offset)(reinterpret_cast<char*>(val) - m_section->getData(0)));
     }
@@ -575,14 +572,14 @@ inline bool isa(SrcItem src) {
 /// grows an item size. Item should be the last item in it's section.
 /// Used primarily for items with trailing values to append.
 /// @param item - the item
-/// @param reqSize - new size (can be smaller than original item size)
+/// @param reqSize - new size (can be smaller than original item size)  
 /// @return new size of an item, may be smaller than reqSize.
 template <typename Item>
 unsigned grow(Item item, size_t reqSize) {
     return item.section()->grow(item,reqSize);
 }
 
-/// proxy for trailing values of a brig item.
+/// proxy for trailing values of a brig item. 
 /// Think of DirectiveVariableInit as an example: it consist of header and tail of init values.
 /// @param Item - item wrapper type.
 /// @param T - type of trailing values.
@@ -600,46 +597,46 @@ public:
     TrailingValues(const TrailingValues& rhs) : item(rhs.item) {
     }
     /// section this item belongs to.
-    typename Item::MySection *section() const {
-        return item.section();
+    typename Item::MySection *section() const { 
+        return item.section(); 
     }
     /// container this item belongs to.
-    BrigContainer* container() const {
-        return item.container();
+    BrigContainer* container() const { 
+        return item.container(); 
     }
     /// number of values.
-    Offset size() const {
-        return Item(item).elementCount();
+    Offset size() const { 
+        return Item(item).elementCount(); 
     }
 
     /// pointer to the first value.
-    const T* begin() const {
-        return reinterpret_cast<const T*>(reinterpret_cast<const char*>(item.brig()) + ValOffset);
+    const T* begin() const { 
+        return reinterpret_cast<const T*>(reinterpret_cast<const char*>(item.brig()) + ValOffset); 
     }
     /// pointer beyound the last value.
-    const T* end() const {
-        return begin() + size();
+    const T* end() const { 
+        return begin() + size(); 
     }
     /// value by index.
     const T& operator[](size_t index) const {
         return begin()[index];
     }
 
-    T* begin() {
-        return reinterpret_cast<T*>(reinterpret_cast<char*>(item.brig()) + ValOffset);
+    T* begin() { 
+        return reinterpret_cast<T*>(reinterpret_cast<char*>(item.brig()) + ValOffset); 
     }
-    T* end() {
-        return begin() + size();
+    T* end() { 
+        return begin() + size(); 
     }
     T& operator[](size_t index) {
         return begin()[index];
     }
 
     /// modify size to reqNumElem.
-    /// @param reqNumElem - required number of elements.
+    /// @param reqNumElem - required number of elements. 
     /// returns number of allocated elements, can be smaller than reqNumElem.
     unsigned resize(size_t reqNumElem) {
-        unsigned newNumElem;
+        unsigned newNumElem;       
         if (reqNumElem > item.elementCount()) {
             size_t const fitNumElem = (grow(item,ValOffset + reqNumElem*sizeof(T)) - ValOffset)/sizeof(T);
             newNumElem = (unsigned)std::min(reqNumElem,fitNumElem);
@@ -649,7 +646,7 @@ public:
         item.elementCount() = static_cast<uint16_t>(newNumElem);
         return newNumElem;
     }
-    /// add value to the tail.
+    /// add value to the tail. 
     /// @return whether allocation was successfull.
     bool push_back(const T& val) {
         Offset n = size();
@@ -683,12 +680,12 @@ public:
         return ItemRef<ElemItem>(m_values.section(), m_values[index]);
     }
     /// modify size to reqNumElem.
-    /// @param reqNumElem - required number of elements.
+    /// @param reqNumElem - required number of elements. 
     /// @return number of allocated elements, can be smaller than reqNumElem.
     unsigned resize(unsigned numElem) {
         return m_values.resize(numElem);
     }
-    /// add value to the tail.
+    /// add value to the tail. 
     /// @return whether allocation was successfull.
     bool push_back(const ElemItem& val) {
         return m_values.push_back(val.brigOffset());
@@ -708,12 +705,12 @@ public:
         return StrRef(m_values.section(), m_values[index]);
     }
     /// modify size to reqNumElem.
-    /// @param reqNumElem - required number of elements.
+    /// @param reqNumElem - required number of elements. 
     /// @return number of allocated elements, can be smaller than reqNumElem.
     unsigned resize(unsigned numElem) {
         return m_values.resize(numElem);
     }
-    /// add value to the tail.
+    /// add value to the tail. 
     /// @return whether allocation was successfull.
     bool push_back(const SRef& str) {
         Offset offs = m_values.container()->strings().addString(str);

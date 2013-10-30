@@ -157,7 +157,8 @@ ETokens Scanner::scanModifier()
 
 @print $scanner{_EMPacking}
 @print $scanner{_EMType}
-@print $scanner{_EMSemantics}
+@print $scanner{_EMMemoryOrder}
+@print $scanner{_EMMemoryScope}
 @print $scanner{_EMAtomicOp}
 @print $scanner{_EMSegment}
 @print $scanner{_EMMemoryFence}
@@ -170,7 +171,7 @@ ETokens Scanner::scanModifier()
 
     "_ftz"       { return m_token = EMFTZ; }
 
-    "_region"    { m_brigId = Brig::BRIG_ExtSpace0;      return m_token = EMSegment; }
+    "_region"    { m_brigId = Brig::BRIG_SEGMENT_EXTSPACE0; return m_token = EMSegment; }
     "_aligned"   { m_brigId = Brig::BRIG_MEMORY_ALIGNED; return m_token = EMAligned; }
 
 @print $scanner{_EMRound}
@@ -337,7 +338,7 @@ ETokens Scanner::scan()
 
     FLOAT [hH]           { return m_token = EHlfNumber; }
     FLOAT [fF]           { return m_token = ESglNumber; }
-    FLOAT [lL]?          { return m_token = EDblNumber; }
+    FLOAT [dD]?          { return m_token = EDblNumber; }
 
     HLFHEX               { return m_token = EHlfHexNumber; }
     SGLHEX               { return m_token = ESglHexNumber; }
