@@ -174,8 +174,9 @@ struct LosslessConvert {
 
     // float = int
     DstType visit(BrigTypeF*, BrigTypeNF*) const {
-        DstType res = static_cast<DstType>(src);
-        // int converted to float cannot be a NaN
+        typedef typename IEEE754Traits<DstType>::NativeType NativeType;
+        NativeType s = static_cast<NativeType>(src);
+        DstType res(&s);
         if ((SrcType)(res.floatValue()) != src) {
             throw ConversionError("conversion loses precision, use float literal");
         }
@@ -242,7 +243,7 @@ struct ConvertImmediate {
     DstType visit(BrigTypeB*, ...) const { return use<LengthOnlyRuleConvert>(); }
 
     // int or float = int
-    //DstType visit(BrigTypeNonPacked*, BrigTypeNF*) const { return use<LosslessConvert>(); }
+    DstType visit(BrigTypeNonPacked*, BrigTypeNF*) const { return use<LosslessConvert>(); }
     DstType visit(BrigTypeNF*, BrigTypeNF*) const { return use<LosslessConvert>(); }
 
     // special overload to resolve overload conflict with assign(BrigTypeB*, ...)
