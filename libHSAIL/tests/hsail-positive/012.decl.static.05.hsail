@@ -1,0 +1,11 @@
+// HSAIL 1.3: address of static variables IS available to the application
+
+version 0:96:$full:$large;
+
+static global_u32 &global_var;
+
+function &TestCalls()(arg_u32 %in_arg0)
+{
+	lda_global_u64 $d1, [&global_var]; // valid
+	ret;
+};

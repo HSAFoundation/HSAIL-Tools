@@ -1,0 +1,79 @@
+// Img & Samp: may be defined only in global segment or as a kernel argument
+
+version 0:96:$full:$large;
+
+function &TestFunc12(arg_s32x2 %out_arg0)(
+	arg_u32 %in_arg0,
+	arg_u32 %in_arg1)
+{
+	ret;
+};
+
+function &TestFunc()(arg_s32 %out_arg0[]) { ret; };
+
+global_u32   &global_var[3]  = {1, 2, 3};
+readonly_u32  &readonly_var[1] = { 1 };
+
+const readonly_u32 &readonly_const[4]  = {1, 31, 28, 31};
+const global_u32   &global_const[3]    = {1, 2, 3};
+
+extern const global_u32  &extern_global_const0[]; // not necessary flexible because array size may be omitted in decl 
+
+const global_u32 &global_const_var1 = 1;    // const definition  => migh have initializer
+extern const global_u32 &global_const_var2; // const declaration => cannot have initializer
+
+// In new spec, initializers for const and readonly are optional 
+
+const global_u32 &x1;    
+const global_u32 &x2[10];
+const global_roimg &x3;  
+const global_samp &x4;   
+
+const readonly_u32 &x10;    
+const readonly_u32 &x11[10];
+const readonly_roimg &x12;  
+const readonly_samp &x13;   
+
+readonly_u32 &x21;    
+readonly_u32 &x22[10];
+readonly_roimg &x23;  
+readonly_samp &x24;   
+
+kernel &TestKernel(kernarg_samp %x)
+{
+	const align 4 global_u32   %globalConst0   = 1;
+	const align 8 global_u32   %globalConst1   = 1;
+	const align 8 global_u32   %globalConst2   = 1;
+	align 8 const global_u32   %globalConst3   = 1;
+	align 8 const global_u32   %globalConst4   = 1;
+	align 8 const global_u32   %globalConst5   = 1;
+
+	align 4 const readonly_u32 %readonlyConst = 1;
+
+	global_u32   %globalVar1   = 1;
+	readonly_u32 %readonlyVar1 = 1;
+
+	group_u32   %groupVar1;
+	private_u32 %privateVar1;
+
+	spill_u32   %spillVar1;
+
+@lab:
+	{
+		arg_s32x2 %oarg;
+		arg_u32   %iarg0;
+		arg_u32   %iarg1;
+
+		global_u32  %globalVar2;
+		group_u32   %groupVar2;
+		private_u32 %privateVar2;
+		readonly_u32 %readonlyVar2;
+		spill_u32   %spillVar2;
+
+		st_arg_u32	0, [%iarg0];
+		st_arg_u32	0, [%iarg1];
+		call  		&TestFunc12 (%oarg) (%iarg0, %iarg1);
+		ld_arg_u64    	$d0, [%oarg];
+	}
+	ret;
+};

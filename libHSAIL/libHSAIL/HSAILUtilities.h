@@ -55,7 +55,11 @@ class Directive;
 class DirectiveVariable;
 class DirectiveExecutable;
 class BrigContainer;
+class OperandReg;
 class OperandRegVector;
+class OperandAddress;
+class OperandImmed;
+struct SRef;
 
 size_t     align(size_t s, size_t pow2);
 
@@ -65,12 +69,13 @@ size_t     zeroPaddedCopy(void *dst, const void* src, size_t len, size_t room);
 
 unsigned   getType(Inst i);
 unsigned   getSrcType(Inst inst);
+unsigned   getImgType(Inst inst);
 unsigned   getSegment(Inst inst);
 unsigned   getPacking(Inst inst);
+unsigned   getEqClass(Inst inst);
 
 unsigned   getDefWidth(Inst inst);
-unsigned   getDefRounding(unsigned opCode, unsigned type);
-unsigned   getDefRoundingForCvt(unsigned srcType, unsigned dstType);
+unsigned   getDefRounding(Inst inst);
            
 bool       isFloatType(unsigned type);
 bool       isIntType(unsigned type);
@@ -80,28 +85,49 @@ bool       isPackedType(unsigned type);
 bool       isIntPackedType(unsigned type);
 bool       isFloatPackedType(unsigned type);
 bool       isBitType(unsigned type);
+bool       isOpaqueType(unsigned type);
+bool       isValidImmType(unsigned type);
+bool       isValidVarType(unsigned type);
 unsigned   convType2BitType(unsigned type);
 unsigned   convPackedType2U(unsigned type);
 
-int        getBitSize(unsigned type);
-inline int getByteSize(unsigned type) { return getBitSize(type) / 8; }
+unsigned   getBitSize(unsigned type);
+unsigned   getBitType(unsigned size);
+unsigned   getSignedType(unsigned size);
+unsigned   getUnsignedType(unsigned size);
+inline unsigned getByteSize(unsigned type) { return getBitSize(type) / 8; }
 unsigned   getTypeSize(unsigned type);
 unsigned   getSegAddrSize(unsigned segment, bool isLargeModel);
 
-unsigned   getOperandType(Inst inst, unsigned operandIdx, unsigned machineType);
-unsigned   getImmOperandType(Inst inst, unsigned operandIdx, unsigned machineType); // deprecated
-unsigned   getOperandType(Operand opr);
-unsigned   getOperandType(Operand opr, bool isLargeModel);
+// This function returns type of the specified operand based on values of instruction fields 
+// and machineModel (BRIG_MACHINE_SMALL or BRIG_MACHINE_LARGE). 
+// The specified instruction must be properly formed with all fields containing valid values.
+// It is recommended to call 'preValidateInst' before using this function.
+// The returned value is BRIG_TYPE_NONE in the following cases:
+// - the specified operand is not supported and must be null;
+// - the specified operand is optional (e.g. list of call targets);
+// - the specified operand is supported, but has no type (e.g. list of call arguments);
+// The returned value is BRIG_TYPE_INVALID in the following cases:
+// - type cannot be determined because of malformed instruction.
+unsigned   getOperandType(Inst inst, unsigned operandIdx, unsigned machineModel);
+
+// This function may be used to validate instruction before requesting type of operands.
+// It returns 0 for properly formed instructions and a string containing an error
+// message for malformed instructions.
+// 
+// This function should be used to avoid cryptic error messages in case of malformed instructions.
+// For example, "masklane_b64 $d1, 1" has missing src type, as a result, 'getOperandType' will 
+// return NONE for 2d operand which will result in 'unexpected operand' message
+//
+const char* preValidateInst(Inst inst, unsigned machineModel);
+
+unsigned   getRegSize(SRef opr);
+unsigned   getRegSize(Operand opr);
+unsigned   getImmSize(OperandImmed opr);
+unsigned   isImmB1(OperandImmed imm);
+unsigned   getAddrSize(OperandAddress addr, bool isLargeModel);
 
 DirectiveVariable getInputArg(DirectiveExecutable kernel, unsigned idx); 
-
-bool validateDstVector(OperandRegVector vector);
-
-bool validateSrcOperand(Inst inst, int oprIdx, bool enableIntExp, bool enableFloatExp, bool instType, bool isAssert);
-bool validateDstOperand(Inst inst, int oprIdx, bool enableIntExp, bool enableFloatExp, bool isAssert);
-bool validateOperandTypeSize(Inst inst, int oprIdx, unsigned machineType, bool isAssert);
-bool validateInstTypeSize(Inst inst, unsigned machineType, bool isSrcType, bool isAssert);
-bool validateAtomicTypeSize(Inst inst, unsigned machineType, bool isAssert);
 
 bool isImageInst(unsigned opcode);
 
@@ -110,6 +136,22 @@ inline bool isGcnInst(unsigned opcode) {
 }
 
 const char* width2str(unsigned val);
+const char* align2str(unsigned val);
+Brig::BrigAlignment num2align(unsigned val);
+unsigned align2num(unsigned val);
+Brig::BrigAlignment getNaturalAlignment(unsigned type);
+bool        isValidAlignment(unsigned align, unsigned type);
+const char* memoryFenceSeg2str(unsigned arg);
+
+bool       isSatPacking(unsigned packing);
+bool       isUnrPacking(unsigned packing);
+bool       isBinPacking(unsigned packing);
+unsigned   getPackedTypeDim(unsigned type);
+char       getPackingControl(unsigned srcOperandIdx, unsigned packing);
+unsigned   packedType2baseType(unsigned type);
+unsigned   packedType2elementType(unsigned type);
+unsigned   expandSubwordType(unsigned type);
+unsigned   getPackedDstDim(unsigned type, unsigned packing);
 
 } // end namespace
 

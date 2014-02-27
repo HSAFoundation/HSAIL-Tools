@@ -1,0 +1,109 @@
+version 0:96:$full:$large;
+
+function &test_direct()()
+{
+    cbr $c0, @k1;
+
+    add_s32 $s1, $s2, $s3;
+    brn @join;
+
+@k1:
+    sub_s32 $s1, $s2, $s3;
+
+@join:
+
+    ret;
+};
+
+function &test_indirect()()
+{
+    ldc_u64 $d0, @k1;
+    ldc_u64 $d1, @join;
+    cbr $c0, $d0;
+
+    add_s32 $s7, $s8, $s9;
+    brn $d1;
+
+@k1:
+    sub_s32 $s7, $s8, $s9;
+
+@join:
+
+    ret;
+};
+
+function &test_lab_array()()
+{
+	// Errors:
+	// - initializer refer undef label
+	// - empty initializer list
+	// - initializer includes only numbers
+	// - initializer includes a mix of numbers and labels
+	// - not u32
+	// - dim does not match initializer length
+	// - segment (not global or readonly)
+    global_u64 %x[]   = {@lab1, @lab2, @lab3, @lab4, @lab1};
+    readonly_u64 %y[] = {@lab3, @lab1, @lab3, @lab4, @lab1};
+    readonly_u64 %z[] = {@lab3};
+
+	// Errors:
+        // - x does not have an initializer
+	// - x is externally defined
+	// - x is not an array
+	// Syntax errors:
+	// - []
+	// - [%x,%y]
+	// - [x]
+	// - [%]
+    brn_width(all) $d1, %x;
+@lab1:
+    brn $d1, %y;
+@lab2:
+    cbr_width(all) $c1, $d1, %x;
+@lab3:
+    cbr $c1, $d1, %z;
+@lab4:
+
+    ret;
+};
+
+function &test_labeltargets()()
+{
+    labeltargets %targets1 = {@lab1, @lab2, @lab3, @lab4, @lab1}; 
+    labeltargets %targets3 = {@lab3, @lab1, @lab3, @lab4, @lab1};
+
+    brn_width(4) $d1, %targets1;
+@lab1:
+    brn $d1, %targets3;
+@lab2:
+
+    cbr_width(4) $c1, $d1, %targets1;
+@lab3:
+    cbr $c1, $d1, %targets3;
+@lab4:
+
+    ret;
+};
+
+function &test_labeltargets_scoped()()
+{
+    {
+        labeltargets %targets1 = {@lab1, @lab2, @lab3, @lab4, @lab1}; 
+
+@lab3:
+        cbr_width(4) $c1, $d1, %targets1;
+
+        labeltargets %targets3 = {@lab3, @lab1, @lab3, @lab4, @lab1};
+
+        brn_width(4) $d1, %targets1;
+@lab1:
+        brn $d1, %targets3;
+@lab2:
+
+        cbr $c1, $d1, %targets3;
+@lab4:
+    }
+
+    ret;
+};
+

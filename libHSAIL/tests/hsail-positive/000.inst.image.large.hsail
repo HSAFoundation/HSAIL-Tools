@@ -1,0 +1,279 @@
+version 0:96:$full:$large;
+extension "IMAGE";
+
+global_u32 &x;
+group_u32  &g;
+
+global_roimg &roimage_1d =  {geometry = 1d,  width = 1,                                  format = unorm_short_101010, order = rgbx};
+global_roimg &roimage_2d =  {geometry = 2d,  width = 2, height = 1,                      format = unorm_short_101010, order = rgbx};
+global_roimg &roimage_3d =  {geometry = 3d,  width = 3, height = 2, depth = 1,           format = unorm_short_101010, order = rgbx};
+global_roimg &roimage_3d1=  {geometry = 3d,  width = 3, height = 2, depth = 6,           format = unorm_short_101010, order = rgbx};
+global_roimg &roimage_1da = {geometry = 1da, width = 4,                       array = 4, format = unorm_short_101010, order = rgbx};
+global_roimg &roimage_2da = {geometry = 2da, width = 5, height = 4,           array = 4, format = unorm_short_101010, order = rgbx};
+global_roimg &roimage_1db = {geometry = 1db, width = 5,                                  format = unorm_short_101010, order = rgbx};
+
+global_roimg &roimage = {geometry = 3d, width = 5, height = 4, depth = 6, format = unorm_short_101010, order = rgbx};
+global_rwimg &rwimage = {geometry = 3d, width = 5, height = 4, depth = 6, format = unorm_short_101010, order = rgbx};
+global_samp  &samp    = {coord = normalized, filter = nearest, boundaryu = clamp, boundaryv = clamp, boundaryw = clamp};
+
+readonly_roimg &roimageRO = {geometry = 3d, width = 5, height = 4, depth = 6, format = unorm_short_101010, order = rgbx};
+readonly_rwimg &rwimageRO = {geometry = 3d, width = 5, height = 4, depth = 6, format = unorm_short_101010, order = rgbx};
+readonly_samp  &sampRO    = {coord = normalized, filter = nearest, boundaryu = clamp, boundaryv = clamp, boundaryw = clamp};
+
+function &fn789()() { { arg_rwimg       %x; } };
+function &fn790()() { { arg_samp        %x; } };
+kernel &k800()      { { arg_rwimg       %x; } };
+kernel &k801()      { { arg_roimg       %x; } };
+
+kernel &TestKernelOpaque(kernarg_rwimg %x1, kernarg_samp %x2)
+{
+    lda_kernarg_u64   $d1, [%x1];
+
+    ld_kernarg_rwimg  $d2, [$d1];
+    ld_kernarg_rwimg  $d2, [%x1];
+
+    queryimagewidth_u32_rwimg $s1, $d2;
+};
+
+function &TestFuncOpaque()(arg_rwimg %x1, arg_samp %x2)
+{
+    lda_arg_u32   $s1, [%x1];
+
+    ld_arg_rwimg  $d2, [$s1];
+    ld_arg_rwimg  $d2, [%x1];
+
+    queryimagewidth_u32_rwimg $s1, $d2;
+};
+
+function &Testinst()(arg_u32 %arg)
+{
+
+    rdimage_v4_1d_s32_rwimg_f32     ($s0, $s1, $s5, $s3), $d1, $d3,    $s6;
+    rdimage_v4_1da_u32_rwimg_s32    ($s0, $s1, $s2, $s3), $d1, $d3,    ($s6, $s7);
+    rdimage_v4_2d_s32_roimg_s32     ($s0, $s1, $s3, $s4), $d2, $d3,    ($s6, $s9);
+    rdimage_v4_2da_f32_rwimg_f32    ($s0, $s1, $s3, $s4), $d1, $d3,    ($s6, $s9, $s12);
+    rdimage_v4_3d_s32_roimg_f32     ($s0, $s1, $s3, $s4), $d2, $d3,    ($s6, $s9, $s2);
+
+    rdimage_v4_3d_equiv(0)_s32_roimg_f32     ($s0, $s1, $s3, $s4), $d2, $d3,    ($s6, $s9, $s2);
+    rdimage_v4_3d_equiv(1)_s32_roimg_f32     ($s0, $s1, $s3, $s4), $d2, $d3,    ($s6, $s9, $s2);
+    rdimage_v4_3d_equiv(255)_s32_roimg_f32     ($s0, $s1, $s3, $s4), $d2, $d3,    ($s6, $s9, $s2);
+
+    //---------------------------------------
+
+    ldimage_v4_1d_u32_roimg_u32     ($s1, $s2, $s3, $s4), $d2,    $s4;
+    ldimage_v4_1db_u32_roimg_u32    ($s1, $s2, $s3, $s4), $d2,    $s4;
+    ldimage_v4_2d_s32_rwimg_u32     ($s1, $s2, $s3, $s4), $d1,    ($s4, $s5);
+    ldimage_v4_1da_s32_rwimg_u32    ($s1, $s2, $s3, $s4), $d1,    ($s4, $s5);
+    ldimage_v4_3d_f32_rwimg_u32     ($s1, $s2, $s3, $s4), $d1,    ($s4, $s5, $s6);
+    ldimage_v4_2da_f32_roimg_u32    ($s1, $s2, $s3, $s4), $d2,    ($s4, $s1, $s2);
+
+    ldimage_v4_2da_equiv(0)_f32_roimg_u32    ($s1, $s2, $s3, $s4), $d2,    ($s4, $s1, $s2);
+    ldimage_v4_2da_equiv(1)_f32_roimg_u32    ($s1, $s2, $s3, $s4), $d2,    ($s4, $s1, $s2);
+    ldimage_v4_2da_equiv(255)_f32_roimg_u32    ($s1, $s2, $s3, $s4), $d2,    ($s4, $s1, $s2);
+
+    //---------------------------------------
+
+    stimage_v4_1d_f32_rwimg_u32     ($s1, $s2, $s3, $s4), $d1,    $s4;
+    stimage_v4_1db_f32_rwimg_u32    ($s1, $s2, $s3, $s4), $d1,    $s4;
+    stimage_v4_2d_u32_rwimg_u32     ($s1, $s2, $s3, $s4), $d1,    ($s4, $s5);
+    stimage_v4_1da_u32_rwimg_u32    ($s1, $s2, $s3, $s4), $d1,    ($s4, $s5);
+    stimage_v4_3d_f32_rwimg_u32     ($s1, $s2, $s3, $s4), $d1,    ($s4, $s5, $s6);
+    stimage_v4_2da_s32_rwimg_u32    ($s1, $s2, $s3, $s4), $d1,    ($s4, $s5, $s6);
+
+    stimage_v4_2da_equiv(0)_s32_rwimg_u32    ($s1, $s2, $s3, $s4), $d1,    ($s4, $s5, $s6);
+    stimage_v4_2da_equiv(1)_s32_rwimg_u32    ($s1, $s2, $s3, $s4), $d1,    ($s4, $s5, $s6);
+    stimage_v4_2da_equiv(255)_s32_rwimg_u32    ($s1, $s2, $s3, $s4), $d1,    ($s4, $s5, $s6);
+
+    //---------------------------------------
+
+    atomicimage_and_1d_b32_rwimg_u32        $s3,    $d1,    $s1,              $s10;
+    atomicimage_or_1d_b32_rwimg_u32         $s3,    $d1,    $s1,              $s3;
+    atomicimage_xor_1db_b32_rwimg_u32       $s0,    $d1,    $s1,              $s3;
+    atomicimage_cas_1d_b32_rwimg_u32        $s10,   $d1,    $s1,              $s3, $s4;
+    atomicimage_min_1d_s64_rwimg_u32        $d3,    $d2,    $s1,              $d4;
+    atomicimage_min_1d_u64_rwimg_u32        $d3,    $d2,    $s1,              $d4;
+    atomicimage_max_1d_s64_rwimg_u32        $d3,    $d2,    $s1,              $d4;
+    atomicimage_max_1d_u64_rwimg_u32        $d3,    $d2,    $s1,              $d4;
+
+    atomicimage_and_2d_b32_rwimg_u32        $s2,    $d1,    ($s0, $s3),       $s2;
+    atomicimage_sub_2d_s64_rwimg_u32        $d3,    $d2,    ($s0, $s3),       $d4;
+    atomicimage_sub_2d_u64_rwimg_u32        $d3,    $d2,    ($s0, $s3),       $d4;
+    atomicimage_add_2d_s64_rwimg_u32        $d3,    $d2,    ($s0, $s3),       $d4;
+    atomicimage_add_2d_u64_rwimg_u32        $d3,    $d2,    ($s0, $s3),       $d4;
+    atomicimage_max_1da_u64_rwimg_u32       $d3,    $d2,    ($s1, $s2),       $d4;
+    atomicimage_inc_2d_u64_rwimg_u32        $d3,    $d2,    ($s0, $s3),       $d4;
+    atomicimage_dec_2d_u64_rwimg_u32        $d3,    $d2,    ($s0, $s3),       $d4;
+
+    atomicimage_and_3d_b32_rwimg_u32        $s1,    $d1,    ($s0, $s3, $s1),  $s1;
+    atomicimage_add_3d_s32_rwimg_u32        $s4,    $d1,    ($s0, $s3, $s1),  $s2;
+    atomicimage_exch_2da_b64_rwimg_u32      $d3,    $d2,    ($s1, $s2, $s3),  $d4;
+
+    atomicimage_exch_2da_equiv(0)_b64_rwimg_u32      $d3,    $d2,    ($s1, $s2, $s3),  $d4;
+    atomicimage_exch_2da_equiv(1)_b64_rwimg_u32      $d3,    $d2,    ($s1, $s2, $s3),  $d4;
+    atomicimage_exch_2da_equiv(255)_b64_rwimg_u32     $d3,    $d2,    ($s1, $s2, $s3),  $d4;
+
+    //---------------------------------------
+
+    atomicimagenoret_and_1d_b32_rwimg_u32       $d1, $s1,               $s10;
+    atomicimagenoret_and_1d_b64_rwimg_u32       $d1, $s1,               $d10;
+    atomicimagenoret_or_1d_b32_rwimg_u32        $d1, $s1,               $s3;
+    atomicimagenoret_or_1d_b64_rwimg_u32        $d1, $s1,               $d3;
+    atomicimagenoret_xor_1db_b32_rwimg_u32      $d1, $s1,               $s3;
+    atomicimagenoret_xor_1db_b64_rwimg_u32      $d1, $s1,               $d3;
+    atomicimagenoret_cas_1d_b32_rwimg_u32       $d1, $s1,               $s3, $s4;
+    atomicimagenoret_cas_1d_b64_rwimg_u32       $d1, $s1,               $d3, $d4;
+
+    atomicimagenoret_min_1d_u64_rwimg_u32       $d2, $s1,               $d4;
+    atomicimagenoret_min_1d_s64_rwimg_u32       $d2, $s1,               $d4;
+    atomicimagenoret_min_1d_u32_rwimg_u32       $d2, $s1,               $s4;
+    atomicimagenoret_min_1d_s32_rwimg_u32       $d2, $s1,               $s4;
+    atomicimagenoret_max_1d_u64_rwimg_u32       $d2, $s1,               $d4;
+    atomicimagenoret_max_1d_s64_rwimg_u32       $d2, $s1,               $d4;
+    atomicimagenoret_max_1d_u32_rwimg_u32       $d2, $s1,               $s4;
+    atomicimagenoret_max_1d_s32_rwimg_u32       $d2, $s1,               $s4;
+    atomicimagenoret_add_1d_u64_rwimg_u32       $d2, $s1,               $d4;
+    atomicimagenoret_add_1d_s64_rwimg_u32       $d2, $s1,               $d4;
+    atomicimagenoret_add_1d_u32_rwimg_u32       $d2, $s1,               $s4;
+    atomicimagenoret_add_1d_s32_rwimg_u32       $d2, $s1,               $s4;
+    atomicimagenoret_sub_1d_u64_rwimg_u32       $d2, $s1,               $d4;
+    atomicimagenoret_sub_1d_s64_rwimg_u32       $d2, $s1,               $d4;
+    atomicimagenoret_sub_1d_u32_rwimg_u32       $d2, $s1,               $s4;
+    atomicimagenoret_sub_1d_s32_rwimg_u32       $d2, $s1,               $s4;
+
+    atomicimagenoret_inc_1d_u64_rwimg_u32       $d2, $s1,               $d4;
+    atomicimagenoret_inc_1d_u32_rwimg_u32       $d2, $s1,               $s4;
+    atomicimagenoret_dec_1d_u64_rwimg_u32       $d2, $s1,               $d4;
+    atomicimagenoret_dec_1d_u32_rwimg_u32       $d2, $s1,               $s4;
+
+    atomicimagenoret_and_2d_b32_rwimg_u32       $d1, ($s0, $s3),        $s2;
+    atomicimagenoret_sub_2d_s64_rwimg_u32       $d2, ($s0, $s3),        $d4;
+    atomicimagenoret_max_1da_u64_rwimg_u32      $d2, ($s1, $s2),        $d4;
+
+    atomicimagenoret_and_3d_b32_rwimg_u32       $d1, ($s0, $s3, $s1),   $s1;
+    atomicimagenoret_add_3d_s32_rwimg_u32       $d1, ($s0, $s3, $s1),   $s2;
+
+    atomicimagenoret_add_3d_equiv(0)_s32_rwimg_u32       $d1, ($s0, $s3, $s1),   $s2;
+    atomicimagenoret_add_3d_equiv(1)_s32_rwimg_u32       $d1, ($s0, $s3, $s1),   $s2;
+    atomicimagenoret_add_3d_equiv(255)_s32_rwimg_u32      $d1, ($s0, $s3, $s1),   $s2;
+
+    //---------------------------------------
+
+    queryimagewidth_u32_rwimg        $s1, $d1;
+    queryimageheight_u32_rwimg       $s0, $d1;
+    queryimagedepth_u32_rwimg        $s0, $d1;
+    queryimagearray_u32_roimg        $s1, $d2;
+    queryimageorder_u32_roimg        $s0, $d2;
+    queryimageformat_u32_roimg       $s0, $d2;
+    querysamplercoord_u32_samp       $s0, $d3;
+    querysamplerfilter_u32_samp      $s0, $d3;
+    querysamplerboundary_u32_samp    $s0, $d3, 1;
+
+};
+
+// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+// NB NB NB NB NB NB NB NB NB NB NB NB NB 
+// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+// 
+// These tests are temporary and should be moved to negative
+// They check workaround for instructions working with images and samplers:
+//   - these instructions accept both 'd' registers and addresses
+//
+function &TestOpaqueWorkaround()(arg_roimg %roimg, arg_rwimg %rwimg, arg_samp %samp)
+{
+    rdimage_v4_1d_s32_rwimg_f32     ($s0, $s1, $s5, $s3), [%rwimg], [%samp],    $s6;
+    rdimage_v4_1da_u32_rwimg_s32    ($s0, $s1, $s2, $s3), [%rwimg], [%samp],    ($s6, $s7);
+    rdimage_v4_2d_s32_roimg_s32     ($s0, $s1, $s3, $s4), [%roimg], [%samp],    ($s6, $s9);
+    rdimage_v4_2da_f32_rwimg_f32    ($s0, $s1, $s3, $s4), [%rwimg], [%samp],    ($s6, $s9, $s12);
+    rdimage_v4_3d_s32_roimg_f32     ($s0, $s1, $s3, $s4), [%roimg], [%samp],    ($s6, $s9, $s2);
+
+    //---------------------------------------
+
+    ldimage_v4_1d_u32_roimg_u32     ($s1, $s2, $s3, $s4), [%roimg],    $s4;
+    ldimage_v4_1db_u32_roimg_u32    ($s1, $s2, $s3, $s4), [%roimg],    $s4;
+    ldimage_v4_2d_s32_rwimg_u32     ($s1, $s2, $s3, $s4), [%rwimg],    ($s4, $s5);
+    ldimage_v4_1da_s32_rwimg_u32    ($s1, $s2, $s3, $s4), [%rwimg],    ($s4, $s5);
+    ldimage_v4_3d_f32_rwimg_u32     ($s1, $s2, $s3, $s4), [%rwimg],    ($s4, $s5, $s6);
+    ldimage_v4_2da_f32_roimg_u32    ($s1, $s2, $s3, $s4), [%roimg],    ($s4, $s1, $s2);
+
+    //---------------------------------------
+
+    stimage_v4_1d_f32_rwimg_u32     ($s1, $s2, $s3, $s4), [%rwimg],    $s4;
+    stimage_v4_1db_f32_rwimg_u32    ($s1, $s2, $s3, $s4), [%rwimg],    $s4;
+    stimage_v4_2d_u32_rwimg_u32     ($s1, $s2, $s3, $s4), [%rwimg],    ($s4, $s5);
+    stimage_v4_1da_u32_rwimg_u32    ($s1, $s2, $s3, $s4), [%rwimg],    ($s4, $s5);
+    stimage_v4_3d_f32_rwimg_u32     ($s1, $s2, $s3, $s4), [%rwimg],    ($s4, $s5, $s6);
+    stimage_v4_2da_s32_rwimg_u32    ($s1, $s2, $s3, $s4), [%rwimg],    ($s4, $s5, $s6);
+
+    //---------------------------------------
+
+    atomicimage_and_1d_b32_rwimg_u32        $s3,    [%rwimg],    $s1,              $s10;
+    atomicimage_or_1d_b32_rwimg_u32         $s3,    [%rwimg],    $s1,              $s3;
+    atomicimage_xor_1db_b32_rwimg_u32       $s0,    [%rwimg],    $s1,              $s3;
+    atomicimage_cas_1d_b32_rwimg_u32        $s10,   [%rwimg],    $s1,              $s3, $s4;
+    atomicimage_min_1d_s64_rwimg_u32        $d3,    [%rwimg],    $s1,              $d4;
+    atomicimage_min_1d_u64_rwimg_u32        $d3,    [%rwimg],    $s1,              $d4;
+    atomicimage_max_1d_s64_rwimg_u32        $d3,    [%rwimg],    $s1,              $d4;
+    atomicimage_max_1d_u64_rwimg_u32        $d3,    [%rwimg],    $s1,              $d4;
+    atomicimage_and_2d_b32_rwimg_u32        $s2,    [%rwimg],    ($s0, $s3),       $s2;
+    atomicimage_sub_2d_s64_rwimg_u32        $d3,    [%rwimg],    ($s0, $s3),       $d4;
+    atomicimage_sub_2d_u64_rwimg_u32        $d3,    [%rwimg],    ($s0, $s3),       $d4;
+    atomicimage_add_2d_s64_rwimg_u32        $d3,    [%rwimg],    ($s0, $s3),       $d4;
+    atomicimage_add_2d_u64_rwimg_u32        $d3,    [%rwimg],    ($s0, $s3),       $d4;
+    atomicimage_max_1da_u64_rwimg_u32       $d3,    [%rwimg],    ($s1, $s2),       $d4;
+    atomicimage_inc_2d_u64_rwimg_u32        $d3,    [%rwimg],    ($s0, $s3),       $d4;
+    atomicimage_dec_2d_u64_rwimg_u32        $d3,    [%rwimg],    ($s0, $s3),       $d4;
+    atomicimage_and_3d_b32_rwimg_u32        $s1,    [%rwimg],    ($s0, $s3, $s1),  $s1;
+    atomicimage_add_3d_s32_rwimg_u32        $s4,    [%rwimg],    ($s0, $s3, $s1),  $s2;
+    atomicimage_exch_2da_b64_rwimg_u32      $d3,    [%rwimg],    ($s1, $s2, $s3),  $d4;
+
+    //---------------------------------------
+
+    atomicimagenoret_and_1d_b32_rwimg_u32       [%rwimg], $s1,               $s10;
+    atomicimagenoret_and_1d_b64_rwimg_u32       [%rwimg], $s1,               $d10;
+    atomicimagenoret_or_1d_b32_rwimg_u32        [%rwimg], $s1,               $s3;
+    atomicimagenoret_or_1d_b64_rwimg_u32        [%rwimg], $s1,               $d3;
+    atomicimagenoret_xor_1db_b32_rwimg_u32      [%rwimg], $s1,               $s3;
+    atomicimagenoret_xor_1db_b64_rwimg_u32      [%rwimg], $s1,               $d3;
+    atomicimagenoret_cas_1d_b32_rwimg_u32       [%rwimg], $s1,               $s3, $s4;
+    atomicimagenoret_cas_1d_b64_rwimg_u32       [%rwimg], $s1,               $d3, $d4;
+    atomicimagenoret_min_1d_u64_rwimg_u32       [%rwimg], $s1,               $d4;
+    atomicimagenoret_min_1d_s64_rwimg_u32       [%rwimg], $s1,               $d4;
+    atomicimagenoret_min_1d_u32_rwimg_u32       [%rwimg], $s1,               $s4;
+    atomicimagenoret_min_1d_s32_rwimg_u32       [%rwimg], $s1,               $s4;
+    atomicimagenoret_max_1d_u64_rwimg_u32       [%rwimg], $s1,               $d4;
+    atomicimagenoret_max_1d_s64_rwimg_u32       [%rwimg], $s1,               $d4;
+    atomicimagenoret_max_1d_u32_rwimg_u32       [%rwimg], $s1,               $s4;
+    atomicimagenoret_max_1d_s32_rwimg_u32       [%rwimg], $s1,               $s4;
+    atomicimagenoret_add_1d_u64_rwimg_u32       [%rwimg], $s1,               $d4;
+    atomicimagenoret_add_1d_s64_rwimg_u32       [%rwimg], $s1,               $d4;
+    atomicimagenoret_add_1d_u32_rwimg_u32       [%rwimg], $s1,               $s4;
+    atomicimagenoret_add_1d_s32_rwimg_u32       [%rwimg], $s1,               $s4;
+    atomicimagenoret_sub_1d_u64_rwimg_u32       [%rwimg], $s1,               $d4;
+    atomicimagenoret_sub_1d_s64_rwimg_u32       [%rwimg], $s1,               $d4;
+    atomicimagenoret_sub_1d_u32_rwimg_u32       [%rwimg], $s1,               $s4;
+    atomicimagenoret_sub_1d_s32_rwimg_u32       [%rwimg], $s1,               $s4;
+    atomicimagenoret_inc_1d_u64_rwimg_u32       [%rwimg], $s1,               $d4;
+    atomicimagenoret_inc_1d_u32_rwimg_u32       [%rwimg], $s1,               $s4;
+    atomicimagenoret_dec_1d_u64_rwimg_u32       [%rwimg], $s1,               $d4;
+    atomicimagenoret_dec_1d_u32_rwimg_u32       [%rwimg], $s1,               $s4;
+    atomicimagenoret_and_2d_b32_rwimg_u32       [%rwimg], ($s0, $s3),        $s2;
+    atomicimagenoret_sub_2d_s64_rwimg_u32       [%rwimg], ($s0, $s3),        $d4;
+    atomicimagenoret_max_1da_u64_rwimg_u32      [%rwimg], ($s1, $s2),        $d4;
+    atomicimagenoret_and_3d_b32_rwimg_u32       [%rwimg], ($s0, $s3, $s1),   $s1;
+    atomicimagenoret_add_3d_s32_rwimg_u32       [%rwimg], ($s0, $s3, $s1),   $s2;
+
+    //---------------------------------------
+
+    queryimagewidth_u32_rwimg        $s1, [%rwimg];
+    queryimageheight_u32_rwimg       $s0, [%rwimg];
+    queryimagedepth_u32_rwimg        $s0, [%rwimg];
+    queryimagearray_u32_roimg        $s1, [%roimg];
+    queryimageorder_u32_roimg        $s0, [%roimg];
+    queryimageformat_u32_roimg       $s0, [%roimg];
+    querysamplercoord_u32_samp       $s0, [%samp];
+    querysamplerfilter_u32_samp      $s0, [%samp];
+
+    //---------------------------------------
+
+    querysamplerboundary_u32_samp    $s0, [%samp], 1;
+};

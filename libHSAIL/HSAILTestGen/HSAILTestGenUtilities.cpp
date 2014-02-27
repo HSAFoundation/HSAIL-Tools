@@ -25,7 +25,6 @@ using HSAIL_ASM::DirectiveFbarrier;
 using HSAIL_ASM::InstBasic;
 using HSAIL_ASM::InstAtomic;
 using HSAIL_ASM::InstAtomicImage;
-using HSAIL_ASM::InstBar;
 using HSAIL_ASM::InstCmp;
 using HSAIL_ASM::InstCvt;
 using HSAIL_ASM::InstImage;
@@ -45,6 +44,9 @@ using HSAIL_ASM::OperandLabelRef;
 using HSAIL_ASM::OperandFbarrierRef;
 
 using HSAIL_ASM::getTypeSize;
+using HSAIL_ASM::isSignedType;
+using HSAIL_ASM::isFloatType;
+using HSAIL_ASM::isOpaqueType;
 
 namespace TESTGEN {
 
@@ -127,12 +129,13 @@ void BrigContext::emitSt(unsigned type, unsigned segment, Operand from, Operand 
 {
     InstMem inst = getContainer().append<InstMem>();
 
-    inst.opcode()  = Brig::BRIG_OPCODE_ST;
-    inst.segment() = segment;
-    inst.type()    = type;
-    inst.modifier().aligned() = false;
+    inst.opcode()     = Brig::BRIG_OPCODE_ST;
+    inst.segment()    = segment;
+    inst.type()       = conv2LdStType(type);
+    inst.align()      = Brig::BRIG_ALIGNMENT_1;
     inst.width()      = Brig::BRIG_WIDTH_NONE;
     inst.equivClass() = 0;
+    inst.modifier().isConst() = false;
 
     inst.operand(0) = from;
     inst.operand(1) = to;
@@ -144,11 +147,11 @@ void BrigContext::emitLd(unsigned type, unsigned segment, Operand to, Operand fr
 
     inst.opcode()     = Brig::BRIG_OPCODE_LD;
     inst.segment()    = segment;
-    inst.type()       = type;
+    inst.type()       = conv2LdStType(type);
     inst.width()      = width;
     inst.equivClass() = 0;
-
-    inst.modifier().aligned() = false;
+    inst.align()      = Brig::BRIG_ALIGNMENT_1;
+    inst.modifier().isConst() = false;
 
     inst.operand(0) = to;
     inst.operand(1) = from;
@@ -163,7 +166,7 @@ void BrigContext::emitShl(unsigned type, Operand res, Operand src, unsigned shif
 
     inst.operand(0) = res;
     inst.operand(1) = src;
-    inst.operand(2) = emitImm(Brig::BRIG_TYPE_B32, shift);
+    inst.operand(2) = emitImm(32, shift);
 }
 
 void BrigContext::emitMul(unsigned type, Operand res, Operand src, unsigned multiplier)
@@ -175,7 +178,7 @@ void BrigContext::emitMul(unsigned type, Operand res, Operand src, unsigned mult
 
     inst.operand(0) = res;
     inst.operand(1) = src;
-    inst.operand(2) = emitImm(getTypeSize(type) == 64? Brig::BRIG_TYPE_B64 : Brig::BRIG_TYPE_B32, multiplier);
+    inst.operand(2) = emitImm(getTypeSize(type), multiplier);
 }
 
 void BrigContext::emitMov(unsigned type, Operand to, Operand from)
@@ -216,7 +219,7 @@ void BrigContext::emitGetWorkItemId(Operand res, unsigned dim)
     inst.opcode()   = Brig::BRIG_OPCODE_WORKITEMABSID;
     inst.type()     = Brig::BRIG_TYPE_U32;
     inst.operand(0) = res;
-    inst.operand(1) = emitImm(Brig::BRIG_TYPE_B32, dim);
+    inst.operand(1) = emitImm(32, dim);
 }
 
 void BrigContext::emitCvt(unsigned dstType, unsigned srcType, OperandReg to, OperandReg from)
@@ -238,7 +241,7 @@ void BrigContext::emitLda(OperandReg dst, DirectiveVariable var)
     InstAddr lda = getContainer().append<InstAddr>();
 
     lda.opcode()    = Brig::BRIG_OPCODE_LDA;
-    lda.type()      = getSegAddrTypeU(var.segment());
+    lda.type()      = getSegAddrType(var.segment());
     lda.segment()   = var.segment();
 
     lda.operand(0)  = dst;
@@ -249,96 +252,88 @@ void BrigContext::emitLda(OperandReg dst, DirectiveVariable var)
 //=============================================================================
 //=============================================================================
 
-string BrigContext::getRegName(unsigned type, unsigned idx)
+string BrigContext::getRegName(unsigned size, unsigned idx)
 {
-    using namespace Brig;
-
     ostringstream name;
 
-    switch(type)
+    switch(size)
     {
-    case BRIG_TYPE_B1:      name << "$c";  break;
-    case BRIG_TYPE_B32:     name << "$s";  break;
-    case BRIG_TYPE_B64:     name << "$d";  break;
-    case BRIG_TYPE_B128:    name << "$q";  break;
-    default: assert(false);       name << "ERR"; break;
+    case 1:      name << "$c";  break;
+    case 32:     name << "$s";  break;
+    case 64:     name << "$d";  break;
+    case 128:    name << "$q";  break;
+    default: 
+        assert(false);       
+        name << "ERR"; 
+        break;
     }
     name << idx;
 
     return name.str();
 }
 
-Operand BrigContext::emitReg(unsigned type, SRef regName)
+Operand BrigContext::emitReg(SRef regName)
 {
     OperandReg opr = getContainer().append<OperandReg>();
-    opr.type()     = type;
     opr.reg()      = regName;
     return opr;
 }
 
-Operand BrigContext::emitReg(unsigned type, unsigned idx /*=0*/)
+Operand BrigContext::emitReg(unsigned size, unsigned idx /*=0*/)
 {
     OperandReg opr = getContainer().append<OperandReg>();
-    opr.type()     = type;
-    opr.reg()      = getRegName(type, idx);
+    opr.reg()      = getRegName(size, idx);
     return opr;
 }
 
-Operand BrigContext::emitRegVector(unsigned cnt, unsigned type, unsigned idx0)
+Operand BrigContext::emitRegVector(unsigned cnt, unsigned size, unsigned idx0)
 {
     OperandRegVector opr = getContainer().append<OperandRegVector>();
-    opr.type() = type;
 
     for(unsigned i = 0; i < cnt; ++i)
     {
-        opr.regs().push_back(getRegName(type, idx0 + i));
+        opr.regs().push_back(getRegName(size, idx0 + i));
     }
 
     return opr;
 }
 
-
-Operand BrigContext::emitRegVector(unsigned cnt, unsigned type, bool isSrc /*=true*/)
+Operand BrigContext::emitRegVector(unsigned cnt, unsigned size, bool isSrc /*=true*/)
 {
     assert(2 <= cnt && cnt <= 4);
 
     OperandRegVector opr = getContainer().append<OperandRegVector>();
-    opr.type() = type;
 
     for(unsigned i = 0; i < cnt; ++i)
     {
-        opr.regs().push_back(getRegName(type, isSrc? 0 : i));
+        opr.regs().push_back(getRegName(size, isSrc? 0 : i));
     }
 
     return opr;
 }
 
-Operand BrigContext::emitWavesize(unsigned type /*= Brig::BRIG_TYPE_B32*/)
+Operand BrigContext::emitWavesize()
 {
     OperandWavesize ws = getContainer().append<OperandWavesize>();
-    ws.type() = type;
     return ws;
 }
 
-Operand BrigContext::emitImm(unsigned type /*=Brig::BRIG_TYPE_B32*/, uint64_t lVal /*=0*/, uint64_t hVal /*=0*/)
+Operand BrigContext::emitImm(unsigned size /*=32*/, uint64_t lVal /*=0*/, uint64_t hVal /*=0*/)
 {
     OperandImmed imm = getContainer().append<OperandImmed>();
 
-    using namespace Brig;
-    switch(type)
+    switch(size)
     {
-    case BRIG_TYPE_B1:      setImmed(imm, (uint8_t)(lVal? 1 : 0)); break;
-    case BRIG_TYPE_B8:      setImmed(imm, (uint8_t)lVal); break;
-    case BRIG_TYPE_B16:     setImmed(imm, (uint16_t)lVal); break;
-    case BRIG_TYPE_B32:     setImmed(imm, (uint32_t)lVal); break;
-    case BRIG_TYPE_B64:     setImmed(imm, (uint64_t)lVal); break;
-    case BRIG_TYPE_B128:    setImmed(imm, HSAIL_ASM::b128_t(lVal, hVal)); break;
+    case 1:      setImmed(imm, (uint8_t)(lVal? 1 : 0)); break;
+    case 8:      setImmed(imm, (uint8_t)lVal);          break;
+    case 16:     setImmed(imm, (uint16_t)lVal);         break;
+    case 32:     setImmed(imm, (uint32_t)lVal);         break;
+    case 64:     setImmed(imm, (uint64_t)lVal);         break;
+    case 128:    setImmed(imm, HSAIL_ASM::b128_t(lVal, hVal)); break;
 
     default:
         assert(false);
     }
-
-    imm.type() = type;
 
     return imm;
 }
@@ -361,48 +356,40 @@ Operand BrigContext::emitFuncRef(DirectiveFunction func)
     return ref;
 }
 
-Operand BrigContext::emitAddrRef(Directive var, unsigned type, int reg /*=-1*/, int offset /*=0*/)
-{
-    using namespace Brig;
-    OperandAddress addr = getContainer().append<OperandAddress>();
-    if (reg >= 0) addr.reg() = getRegName(type, reg);
-
-    if (type == BRIG_TYPE_NONE) 
-    {
-        if (DirectiveVariable v = var) {
-            type = (getSegAddrSize(v.segment(), !isSmallModel) == 32)? BRIG_TYPE_B32 : BRIG_TYPE_B64;
-        } else {
-            type = isSmallModel? BRIG_TYPE_B32 : BRIG_TYPE_B64; 
-        }
-    }
-
-    addr.type()   = type; // depends on machineModel model
-    addr.symbol() = var;
-    addr.offset() = static_cast<uint64_t>(offset);
-    return addr;
-}
-
 Operand BrigContext::emitAddrRef(Directive var, OperandReg reg, unsigned offset /*=0*/)
 {
-    OperandAddress addr = emitAddrRef(var, Brig::BRIG_TYPE_NONE);
+    assert(reg);
+
+    OperandAddress addr = emitAddrRef(var);
     addr.reg()    = static_cast<SRef>(reg.reg());
-    addr.offset() = static_cast<uint64_t>(offset);
+    addr.offset() = offset;
     return addr;
 }
 
-Operand BrigContext::emitAddrRef(Directive var)
+Operand BrigContext::emitAddrRef(Directive var, unsigned offset /*=0*/)
 {
-    return emitAddrRef(var, Brig::BRIG_TYPE_NONE);
+    OperandAddress addr = getContainer().append<OperandAddress>();
+
+    addr.symbol() = var;
+    addr.offset() = offset;
+    return addr;
 }
 
-Operand BrigContext::emitIndirRef(OperandReg reg, uint64_t offset)
+Operand BrigContext::emitAddrRef(OperandReg reg, uint64_t offset)
 {
     assert(reg);
 
     OperandAddress addr = getContainer().append<OperandAddress>();
     
-    addr.type()   = reg.type();
     addr.reg()    = static_cast<SRef>(reg.reg());
+    addr.offset() = offset;
+    return addr;
+}
+
+Operand BrigContext::emitAddrRef(uint64_t offset)
+{
+    OperandAddress addr = getContainer().append<OperandAddress>();
+    
     addr.offset() = offset;
     return addr;
 }
@@ -540,7 +527,7 @@ Operand BrigContext::emitArgList(unsigned num, bool isInputArg)
 
         if (isInputArg) // Generate initialization code
         {
-            emitSt(BRIG_TYPE_U32, Brig::BRIG_SEGMENT_ARG, emitImm(), emitAddrRef(arg, BRIG_TYPE_B32));
+            emitSt(BRIG_TYPE_U32, Brig::BRIG_SEGMENT_ARG, emitImm(), emitAddrRef(arg));
         }
     }
     return list;
@@ -569,6 +556,26 @@ void BrigContext::emitCall(DirectiveFunction func, unsigned outArgs, unsigned in
     }
     DirectiveArgScopeEnd e1 = getContainer().append<DirectiveArgScopeEnd>();
     e1.code() = getContainer().insts().end();
+}
+
+unsigned BrigContext::conv2LdStType(unsigned type) // Convert to type supported by ld/st
+{
+    using namespace Brig;
+
+    if (isSignedType(type) || isFloatType(type) || isOpaqueType(type)) return type;
+
+    switch(getTypeSize(type)) 
+    {
+    case 8:      return BRIG_TYPE_U8;
+    case 16:     return BRIG_TYPE_U16;
+    case 32:     return BRIG_TYPE_U32;
+    case 64:     return BRIG_TYPE_U64;
+    case 128:    return BRIG_TYPE_B128;
+
+    default: 
+        assert(false); 
+        return BRIG_TYPE_NONE;
+    }
 }
 
 //=============================================================================

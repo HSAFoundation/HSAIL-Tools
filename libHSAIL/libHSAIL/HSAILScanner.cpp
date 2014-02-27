@@ -307,6 +307,10 @@ void Scanner::throwTokenExpected(ETokens token, const char* message) {
                           message = "sampler boundary mode value"; break;
         case ESamplerCoord:
                           message = "sampler coord value"; break;
+        case EMMemoryOrder:
+                          message = "memory order value"; break;
+        case EMMemoryScope:
+                          message = "memory scope value"; break;
         default:  {
             assert(0);
             std::stringstream ss;

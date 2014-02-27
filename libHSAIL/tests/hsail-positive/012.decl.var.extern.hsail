@@ -1,0 +1,14 @@
+version 0:96:$full:$large;
+
+// A name can be both defined in a compilation unit and also declared as extern in the
+// same compilation unit.
+
+extern global_s32 &k;
+
+global_s32 &k;
+
+// -----------------
+
+global_s32 &xxx;
+
+extern global_s32 &xxx;

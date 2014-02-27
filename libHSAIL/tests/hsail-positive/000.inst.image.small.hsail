@@ -1,0 +1,40 @@
+version 0:96:$full:$small;
+extension "IMAGE";
+
+global_u32 &x;
+group_u32 &g;
+
+global_roimg &roimage_1d =  {geometry = 1d,  width = 5,                                  format = unorm_short_101010, order = rgbx};
+global_roimg &roimage_2d =  {geometry = 2d,  width = 5, height = 4,                      format = unorm_short_101010, order = rgbx};
+global_roimg &roimage_3d =  {geometry = 3d,  width = 5, height = 4, depth = 6,           format = unorm_short_101010, order = rgbx};
+global_roimg &roimage_1da = {geometry = 1da, width = 5,                       array = 4, format = unorm_short_101010, order = rgbx};
+global_roimg &roimage_2da = {geometry = 2da, width = 5, height = 4,           array = 4, format = unorm_short_101010, order = rgbx};
+global_roimg &roimage_1db = {geometry = 1db, width = 5,                                  format = unorm_short_101010, order = rgbx};
+
+global_roimg &roimage = {geometry = 3d, width = 5, height = 4, depth = 6, format = unorm_short_101010, order = rgbx};
+global_rwimg &rwimage = {geometry = 3d, width = 5, height = 4, depth = 6, format = unorm_short_101010, order = rgbx};
+global_samp  &samp    = {coord = normalized, filter = nearest, boundaryu = clamp, boundaryv = clamp, boundaryw = clamp};
+
+readonly_roimg &roimageRO = {geometry = 3d, width = 5, height = 4, depth = 6, format = unorm_short_101010, order = rgbx};
+readonly_rwimg &rwimageRO = {geometry = 3d, width = 5, height = 4, depth = 6, format = unorm_short_101010, order = rgbx};
+readonly_samp  &sampRO    = {coord = normalized, filter = nearest, boundaryu = clamp, boundaryv = clamp, boundaryw = clamp};
+
+kernel &TestKernelOpaque(kernarg_rwimg %x1, kernarg_samp %x2)
+{
+    lda_kernarg_u32   $s1, [%x1];
+
+    ld_kernarg_rwimg  $d2, [$s1];
+    ld_kernarg_rwimg  $d2, [%x1];
+
+    queryimagewidth_u32_rwimg $s1, $d2;
+};
+
+function &TestFuncOpaque()(arg_rwimg %x1, arg_samp %x2)
+{
+    lda_arg_u32   $s1, [%x1];
+
+    ld_arg_rwimg  $d2, [$s1];
+    ld_arg_rwimg  $d2, [%x1];
+
+    queryimagewidth_u32_rwimg $s1, $d2;
+};

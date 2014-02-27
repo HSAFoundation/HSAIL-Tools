@@ -1,0 +1,126 @@
+version 0:96:$full:$large;
+
+signature &TestSignature0(align 4 arg_b32 %x[])();
+signature &TestSignature0(        arg_b32 %y[])();
+
+signature &TestSignature1(arg_b32 %x[4])();
+signature &TestSignature1(arg_b32 %y[4])();
+
+signature &TestSignature2(arg_b32)(arg_s32, arg_u32);
+signature &TestSignature2(arg_b32)(arg_s32, arg_u32);
+
+signature &TestSignature3(arg_b32 %out_arg0)(arg_s32         , arg_u32         );
+signature &TestSignature3(arg_b32          )(arg_s32 %in_arg0, arg_u32 %in_arg1);
+
+signature &TestSignature4(align 4 arg_b8)(align 8 arg_s32, align 8 arg_u32 %in_arg111);
+signature &TestSignature4(align 4 arg_b8)(align 8 arg_s32, align 8 arg_u32 %in_arg222);
+
+signature &TestSignature5(align 8 arg_s32, align 8 arg_u32 %in_arg111);
+signature &TestSignature5()(align 8 arg_s32, align 8 arg_u32 %in_arg111);
+
+signature &TestSignature77()(align 16 arg_samp, align 16 arg_rwimg);
+
+signature &TestSignature6();
+signature &TestSignature6()();
+
+signature &TestSignature7;
+signature &TestSignature7();
+signature &TestSignature7()();
+
+signature &TestSignature8;
+signature &TestSignature8();
+signature &TestSignature8()();
+
+function &TestCalls()(arg_b64 %addr0, arg_b64 %addr1, arg_b64 %addr2)
+{
+
+	{
+		ld_arg_u64 $d1, [%addr0];
+		call   $d1 () () &TestSignature0;
+	}       		
+	{
+		arg_b32 %oarg0[3];
+
+		ld_arg_u64 $d1, [%addr0];
+		call   $d1 (%oarg0) () &TestSignature0;
+	}       		
+	{
+		ld_arg_u64 $d1, [%addr0];
+		call   $d1 () () &TestSignature1;
+	}       		
+	{
+		arg_b32 %oarg0;
+		arg_s32 %iarg0;
+		arg_u32 %iarg1;
+
+		st_arg_s32	0, [%iarg0];
+		st_arg_u32	0, [%iarg1];
+
+		ld_arg_u64 $d1, [%addr1];
+		call   $d1 (%oarg0) (%iarg0, %iarg1) &TestSignature2;
+	}       		
+	{
+		arg_b32 %oarg0;
+		arg_s32 %iarg0;
+		arg_u32 %iarg1;
+
+		st_arg_s32	0, [%iarg0];
+		st_arg_u32	0, [%iarg1];
+
+		ld_arg_u64 $d1, [%addr2];
+		call   $d1 (%oarg0) (%iarg0, %iarg1) &TestSignature3;
+	}       		
+	{
+		align 4 arg_b8  %oarg0;
+		align 8 arg_s32 %iarg0;
+		align 8 arg_u32 %iarg1;
+
+		st_arg_s32	0, [%iarg0];
+		st_arg_u32	0, [%iarg1];
+
+		call_width(all)  $d1 (%oarg0) (%iarg0, %iarg1) &TestSignature4;
+	}       		
+
+	{
+		align 8 arg_s32 %iarg0;
+		align 8 arg_u32 %iarg1;
+
+		st_arg_s32	0, [%iarg0];
+		st_arg_u32	0, [%iarg1];
+
+		call_width(all)  $d1 () (%iarg0, %iarg1) &TestSignature5;
+	}       		
+
+	{
+		call_width(all)   $d1 () &TestSignature6;
+	}       		
+
+	{
+		call_width(all)   $d1 () &TestSignature7;
+	}       		
+
+	{
+		call_width(all)  $d1 () &TestSignature8;
+	}       		
+
+	{
+		align 16 arg_samp  %arg0;
+		align 16 arg_rwimg %arg1;
+
+		call $d1 () (%arg0, %arg1) &TestSignature77;
+	}       		
+	ret;
+};
+
+
+version 0:96:$full:$large;
+
+signature &TestSigTheSame()();
+
+version 0:96:$full:$large;
+
+signature &TestSigTheSame(arg_b32)(arg_b32, arg_b32); // signature with the same name with different args but in another scope
+
+version 0:96:$full:$large;
+
+static function &TestSigTheSame()() {ret;}; // Function with the same name but visible only in another scope

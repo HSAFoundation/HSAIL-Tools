@@ -319,7 +319,7 @@ static void printVersion() {
 }
 
 int main(int argc, char **argv) {
-
+    
     // Enable this to enable finegrained heap checks
     // _CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF | _CRTDBG_CHECK_ALWAYS_DF );
 
@@ -328,10 +328,10 @@ int main(int argc, char **argv) {
 
     cl::SetVersionPrinter(printVersion);
     cl::ParseCommandLineOptions(argc, argv, "HSAIL Assembler/Disassembler\n");
-    DEBUG(EnableComments=true);
+    DEBUG(EnableComments=true);    
 
     switch (Action) {
-    default:
+    default:      
     case AC_Assemble:
         return Repeat(AssembleInput);
     case AC_Disassemble:
@@ -342,3 +342,4 @@ int main(int argc, char **argv) {
 }
 
 // ============================================================================
+

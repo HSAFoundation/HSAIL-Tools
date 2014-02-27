@@ -1,0 +1,6 @@
+version 0:96:$full:$large;
+
+function &TestFunc100()(         arg_s8 %in_arg0[1])     {ret;};
+
+function &TestFunc104()(align 1  arg_u8 %in_arg0[10])    {ret;};
+function &TestFunc112  (align 2  arg_b8 %in_arg0[20]) () {ret;};

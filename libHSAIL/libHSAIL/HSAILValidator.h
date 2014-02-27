@@ -76,10 +76,6 @@ public:
          
     std::string getErrorMsg(istream *is) const;
     int getErrorCode() const;
-
-    //==========================================================================
-
-    static void validate(Inst inst, int operandIdx, SRef msg, bool cond);
 };
 
 } // namespace HSAIL_ASM

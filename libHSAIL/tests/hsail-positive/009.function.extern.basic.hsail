@@ -1,0 +1,35 @@
+// By default, all definitions of names starting with an ampersand (&) in a compilation unit
+// are visible to other compilation units and have external linkage.
+
+version 0:96:$full:$large;
+
+extern function &TestFunc()();
+
+function &TestCalls_01()()
+{
+	{
+		call	&TestFunc () ();
+	}
+	ret;
+};
+
+function &TestFunc()()   // NB:
+{                        // A name can be both defined in a compilation unit and also declared as extern in the
+	ret;             // same compilation unit.
+};
+
+version 0:96:$full:$large;
+
+extern function &TestFunc()();
+function &TestFuncEXT()();
+
+function &TestCalls_02()()
+{
+	{
+		call	&TestFunc () ();
+	}
+	{
+		call	&TestFuncEXT () ();
+	}
+	ret;
+};

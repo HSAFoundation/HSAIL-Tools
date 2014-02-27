@@ -28,6 +28,8 @@ namespace TESTGEN {
 //=============================================================================
 // Brig operands created for testing
 
+// NB: The order of operands in this list affects generated tests in optimal search mode.
+// Operands which are low in this list will less likely appear in generated tests.
 enum BrigOperandId
 {
     O_MINID = 0,
@@ -72,13 +74,15 @@ enum BrigOperandId
     O_IMM32_1,
     O_IMM32_2,
     O_IMM32_3,
-    O_IMM32_4,
 
     O_WAVESIZE,
-
+    
     O_LABELREF,
     O_FUNCTIONREF,
     O_FBARRIERREF,
+
+//  O_ADDRESS_FLAT_REG,     
+//  O_ADDRESS_FLAT_OFF,
 
     O_ADDRESS_GLOBAL_VAR,
     O_ADDRESS_READONLY_VAR,
@@ -94,6 +98,12 @@ enum BrigOperandId
 
     O_ADDRESS_GLOBAL_SAMP,
     O_ADDRESS_READONLY_SAMP,
+
+    O_ADDRESS_GLOBAL_SIG32,
+    O_ADDRESS_READONLY_SIG32,
+
+    O_ADDRESS_GLOBAL_SIG64,
+    O_ADDRESS_READONLY_SIG64,
 
     O_ADDRESS_FLAT_REG,     
     O_ADDRESS_FLAT_OFF,
@@ -134,6 +144,10 @@ extern const char* NAME_READONLY_ROIMG;
 extern const char* NAME_READONLY_RWIMG;
 extern const char* NAME_GLOBAL_SAMP; 
 extern const char* NAME_READONLY_SAMP;
+extern const char* NAME_GLOBAL_SIG32; 
+extern const char* NAME_READONLY_SIG32;
+extern const char* NAME_GLOBAL_SIG64; 
+extern const char* NAME_READONLY_SIG64;
 extern const char* NAME_FBARRIER;
 extern const char* NAME_LABEL;
 
@@ -216,15 +230,8 @@ public:
 
     //==========================================================================
 private:
-    void init(const unsigned* pVals, unsigned pValsNum, const unsigned* nVals, unsigned nValsNum)
-    {
-        for (unsigned i = 0; i < pValsNum; ++i) appendPositive(pVals[i]);
-        for (unsigned i = 0; i < nValsNum; ++i) appendNegative(nVals[i]); // NB: positive values may be excluded for neutral props 
-
-        // This is to minimize deps from HDL-generated code
-        std::sort(pValues.begin(), pValues.end());
-        std::sort(nValues.begin(), nValues.end());
-    }
+    void init(const unsigned* pVals, unsigned pValsNum, const unsigned* nVals, unsigned nValsNum);
+    void tryRemoveImmOperands();
 
     //==========================================================================
 protected:

@@ -1,0 +1,7 @@
+version 0:96:$full:$large;
+
+// align 4 = natural alignment for u32
+function &TestFunc1()(align 4 arg_u32 %a);
+
+function &TestFunc1()(arg_u32 %a) { ret; };
+

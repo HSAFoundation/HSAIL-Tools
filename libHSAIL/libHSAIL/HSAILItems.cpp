@@ -1,36 +1,36 @@
 // University of Illinois/NCSA
 // Open Source License
-// 
+//
 // Copyright (c) 2013, Advanced Micro Devices, Inc.
 // All rights reserved.
-// 
+//
 // Developed by:
-// 
+//
 //     HSA Team
-// 
+//
 //     Advanced Micro Devices, Inc
-// 
+//
 //     www.amd.com
-// 
+//
 // Permission is hereby granted, free of charge, to any person obtaining a copy of
 // this software and associated documentation files (the "Software"), to deal with
 // the Software without restriction, including without limitation the rights to
 // use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies
 // of the Software, and to permit persons to whom the Software is furnished to do
 // so, subject to the following conditions:
-// 
+//
 //     * Redistributions of source code must retain the above copyright notice,
 //       this list of conditions and the following disclaimers.
-// 
+//
 //     * Redistributions in binary form must reproduce the above copyright notice,
 //       this list of conditions and the following disclaimers in the
 //       documentation and/or other materials provided with the distribution.
-// 
+//
 //     * Neither the names of the LLVM Team, University of Illinois at
 //       Urbana-Champaign, nor the names of its contributors may be used to
 //       endorse or promote products derived from this Software without specific
 //       prior written permission.
-// 
+//
 // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 // IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
 // FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SHALL THE
@@ -40,38 +40,41 @@
 // SOFTWARE.
 #include "HSAILItems.h"
 
+namespace Brig {
+// #include "HSAILBrigStaticChecks_gen.hpp"
+}
+
 namespace HSAIL_ASM
 {
 
-void setImmedImpl(OperandImmed op, const void * v, size_t numBytes, Brig::BrigType16_t type) {
+void setImmedImpl(OperandImmed op, const void * v, size_t numBytes) {
     size_t const reqSize = offsetof(Brig::BrigOperandImmed,bytes) + numBytes;
     if (grow(op,reqSize) < reqSize) {
         assert(false);
     }
     memcpy(&op.brig()->bytes[0],v,numBytes);
     op.byteCount() = static_cast<uint16_t>(numBytes); //dp
-    op.type() = type;
 }
 
 void setImmed(OperandImmed op, const void * v, Brig::BrigType16_t type) {
-	setImmedImpl(op,v,getByteSize(type),convType2BitType(type));
+	setImmedImpl(op,v,getByteSize(type));
 }
 
 template <typename T>
 void setImmed(OperandImmed op, T v) {
-	setImmedImpl(op,&v,sizeof v,CType2Brig<T>::asBitType::value);
+	setImmedImpl(op,&v,sizeof v);
 }
 
 template <typename T, size_t N>
 void setImmed(OperandImmed op, const T (&v)[N])
 {
-	setImmedImpl(op,&v,sizeof v,CType2Brig<T,N>::asBitType::value);
+	setImmedImpl(op,&v,sizeof v);
 }
 
 template <>
 void setImmed<bool>(OperandImmed op, bool v) {
     uint8_t t = v;
-    setImmedImpl(op,&t,sizeof t,Brig::BRIG_TYPE_B1);
+    setImmedImpl(op,&t,sizeof t);
 }
 
 template void setImmed(OperandImmed, uint8_t);
@@ -211,8 +214,8 @@ template void setImmed(OperandImmed, const f16_t (&)[8], Brig::BrigType16_t     
 
 #endif
 
-#include "generated/HSAILBrigStaticChecks_gen.hpp"
-#include "generated/HSAILBrigUtilities_gen.hpp"
-#include "generated/HSAILInitBrig_gen.hpp"
+//#include "HSAILBrigStaticChecks_gen.hpp"
+#include "HSAILBrigUtilities_gen.hpp"
+#include "HSAILInitBrig_gen.hpp"
 
 }

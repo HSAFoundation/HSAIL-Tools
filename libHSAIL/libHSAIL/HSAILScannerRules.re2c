@@ -155,15 +155,10 @@ ETokens Scanner::scanModifier()
 /*!re2c
     re2c:indent:string = "    ";
 
-@print $scanner{_EMPacking}
-@print $scanner{_EMType}
-@print $scanner{_EMMemoryOrder}
-@print $scanner{_EMMemoryScope}
-@print $scanner{_EMAtomicOp}
-@print $scanner{_EMSegment}
-@print $scanner{_EMMemoryFence}
+@print $scanner{_mods_}
 
     "_width"     { return m_token = EMWidth; }
+    "_align"     { return m_token = EMAlign; }
     "_v2"        { m_brigId = 2; return m_token = EMVector; }
     "_v3"        { m_brigId = 3; return m_token = EMVector; }
     "_v4"        { m_brigId = 4; return m_token = EMVector; }
@@ -172,11 +167,8 @@ ETokens Scanner::scanModifier()
     "_ftz"       { return m_token = EMFTZ; }
 
     "_region"    { m_brigId = Brig::BRIG_SEGMENT_EXTSPACE0; return m_token = EMSegment; }
-    "_aligned"   { m_brigId = Brig::BRIG_MEMORY_ALIGNED; return m_token = EMAligned; }
-
-@print $scanner{_EMRound}
-@print $scanner{_EMCompare}
-@print $scanner{_EMGeom}
+    "_const"     { m_brigId = Brig::BRIG_MEMORY_CONST; return m_token = EMConst; }
+    "_nonull"    { m_brigId = Brig::BRIG_SEGCVT_NONULL; return m_token = EMNoNull; }
 
     "_" WORD     {  m_brigId = 0; return m_token = EMSkip; } /* TBD just to skip unknown modifiers, remove */
 
@@ -210,6 +202,24 @@ Brig::BrigImageOrder8_t Scanner::scanImageOrder()
 @print $scanner{ImageOrder}
     ""          { syntaxError("unknown image order"); }
 */
+}
+
+Brig::BrigImageGeometry8_t Scanner::scanImageGeometry()
+{
+    skipWhitespaces();
+    m_tokStart = m_curPos;
+    const char *marker;
+/*!re2c
+    re2c:indent:string = "    ";
+
+    "1d"      { return Brig::BRIG_GEOMETRY_1D;  }
+    "1db"     { return Brig::BRIG_GEOMETRY_1DB; }
+    "1da"     { return Brig::BRIG_GEOMETRY_1DA; }
+    "2d"      { return Brig::BRIG_GEOMETRY_2D;  }
+    "2da"     { return Brig::BRIG_GEOMETRY_2DA; }
+    "3d"      { return Brig::BRIG_GEOMETRY_3D;  }
+    ""        { syntaxError("unknown image geometry"); }
+  */
 }
 
 //#define DBGNL std::cout << "\n"
@@ -247,7 +257,6 @@ ETokens Scanner::scan()
     "rti"                { return m_token = EKWRTI; }
     "loc"                { return m_token = EKWLoc; }
     "extension"          { return m_token = EKWExtension; }
-    "file"               { return m_token = EKWFile; }
     "labeltargets"       { return m_token = EKWLabelTargets; }
     "signature"          { return m_token = EKWSignature; }
     "all"                { return m_token = EKWWidthAll;  }
@@ -260,10 +269,12 @@ ETokens Scanner::scan()
     "depth"              { return m_token = EKWImageDepth; }
     "format"             { return m_token = EKWImageFormat; }
     "order"              { return m_token = EKWImageOrder; }
+    "geometry"           { return m_token = EKWImageGeometry; }
+    "array"              { return m_token = EKWImageArray; }
 
-    "boundaryU"          { return m_token = EKWSamplerBoundaryU; }
-    "boundaryV"          { return m_token = EKWSamplerBoundaryV; }
-    "boundaryW"          { return m_token = EKWSamplerBoundaryW; }
+    "boundaryu"          { return m_token = EKWSamplerBoundaryU; }
+    "boundaryv"          { return m_token = EKWSamplerBoundaryV; }
+    "boundaryw"          { return m_token = EKWSamplerBoundaryW; }
     "coord"              { return m_token = EKWSamplerCoord; }
     "filter"             { return m_token = EKWSamplerFilter; }
 

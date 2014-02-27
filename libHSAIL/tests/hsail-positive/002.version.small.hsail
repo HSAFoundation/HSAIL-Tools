@@ -1,0 +1,38 @@
+version 0:96:$full:$small;
+
+function &TestFunc1()()
+{
+	ret;
+};
+
+version 0:95:$full:$small;
+
+function &TestFunc2()()
+{
+	ret;
+};
+
+version 0:90:$full:$small;
+
+function &TestFunc3()()
+{
+	ret;
+};
+
+version 0:0:$full:$small;
+
+function &TestFunc4()()
+{
+	ret;
+};
+
+function &TestFunc7()()
+{
+	ret;
+};
+
+function &TestFunc8()()
+{
+	ldc_u32	$s0, &TestFunc7;
+	ret;
+};

@@ -1,0 +1,10 @@
+version 0:96:$full:$large;
+
+function &TestFunc()()
+{
+//-----------------------------------------------------------------------------------------------------------------------
+// If multiple control directives are present in the kernel or the functions it calls, they must all have the same values.
+//-----------------------------------------------------------------------------------------------------------------------
+
+    requiredworkgroupsize 10, WAVESIZE, 1; requireddim 1;  // WAVESIZE may be 1, so this code is formally correct 
+};

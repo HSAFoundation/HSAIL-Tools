@@ -1,3 +1,4 @@
+#ifdef PROPDESC
 
 namespace HSAIL_ASM {
 
@@ -34,6 +35,9 @@ private:
     static unsigned ATMOP_VALUES_INC_DEC[];
     static unsigned ATMOP_VALUES_LD[];
     static unsigned ATMOP_VALUES_ST[];
+    static unsigned CONST_VALUES_NONE[];
+    static unsigned CONST_VALUES_ANY[];
+    static unsigned EQCLASS_VALUES_0[];
     static unsigned EQCLASS_VALUES_ANY[];
     static unsigned FTZ_VALUES_NONE[];
     static unsigned FTZ_VALUES_ANY[];
@@ -43,49 +47,40 @@ private:
     static unsigned GEOM_VALUES_1D_1DB[];
     static unsigned GEOM_VALUES_2D_1DA[];
     static unsigned GEOM_VALUES_3D_2DA[];
-    static unsigned MEMFNC_VALUES_ANY[];
-    static unsigned MEMFNC_VALUES_NONE[];
     static unsigned MEMORD_VALUES_ANY[];
+    static unsigned MEMORD_VALUES_ACQ_REL_AR[];
     static unsigned MEMORD_VALUES_LD[];
-    static unsigned MEMORD_VALUES_NONE[];
     static unsigned MEMORD_VALUES_ST[];
     static unsigned MEMSCP_VALUES_ANY[];
-    static unsigned MEMSCP_VALUES_NONE[];
+    static unsigned MEMSCP_VALUES_WV_WG[];
+    static unsigned MEMSEG_VALUES_GLOBAL_BOTH[];
+    static unsigned MEMSEG_VALUES_ANY[];
+    static unsigned MEMSEG_VALUES_GROUP[];
+    static unsigned NONULL_VALUES_ANY[];
     static unsigned OPERAND_VALUES_ADDRSEG[];
-    static unsigned OPERAND_VALUES_ADDRTSEG[];
     static unsigned OPERAND_VALUES_ARGLIST[];
     static unsigned OPERAND_VALUES_NULL_CALLTAB[];
-    static unsigned OPERAND_VALUES_FBARRIER[];
-    static unsigned OPERAND_VALUES_REG32_FBARRIER[];
+    static unsigned OPERAND_VALUES_FBARRIERU32[];
+    static unsigned OPERAND_VALUES_REGU32_FBARRIERU32[];
     static unsigned OPERAND_VALUES_FUNCMODEL[];
-    static unsigned OPERAND_VALUES_LAB_FUNC[];
+    static unsigned OPERAND_VALUES_LABMODEL_FUNCMODEL[];
     static unsigned OPERAND_VALUES_REGMODEL_FUNCMODEL[];
     static unsigned OPERAND_VALUES_IMM[];
     static unsigned OPERAND_VALUES_REG_IMM[];
-    static unsigned OPERAND_VALUES_REGEXP_REGVEXP_IMMEXP[];
-    static unsigned OPERAND_VALUES_IMM012[];
-    static unsigned OPERAND_VALUES_IMM0123[];
-    static unsigned OPERAND_VALUES_REG1_IMM1[];
-    static unsigned OPERAND_VALUES_IMM32[];
-    static unsigned OPERAND_VALUES_REG32_IMM32[];
-    static unsigned OPERAND_VALUES_REG64_IMM64[];
+    static unsigned OPERAND_VALUES_REG_REGV_IMM[];
+    static unsigned OPERAND_VALUES_IMM0T2U32[];
+    static unsigned OPERAND_VALUES_IMM0T3U32[];
     static unsigned OPERAND_VALUES_NULL_JUMPTAB[];
     static unsigned OPERAND_VALUES_LABMODEL[];
     static unsigned OPERAND_VALUES_REGMODEL_LABMODEL[];
     static unsigned OPERAND_VALUES_NULL[];
     static unsigned OPERAND_VALUES_REG[];
-    static unsigned OPERAND_VALUES_REGEXP_REGVEXP[];
-    static unsigned OPERAND_VALUES_REG1[];
-    static unsigned OPERAND_VALUES_REG32[];
-    static unsigned OPERAND_VALUES_REG64[];
-    static unsigned OPERAND_VALUES_REG64_ROIMAGE[];
-    static unsigned OPERAND_VALUES_REG64_IMAGE[];
-    static unsigned OPERAND_VALUES_REG64_RWIMAGE[];
-    static unsigned OPERAND_VALUES_REG64_SAMPLER[];
+    static unsigned OPERAND_VALUES_REG_REGV[];
+    static unsigned OPERAND_VALUES_REGSTYPE_IMAGESTYPE[];
+    static unsigned OPERAND_VALUES_REGSAMP_SAMPLERSAMP[];
     static unsigned OPERAND_VALUES_REGV2CTYPE[];
     static unsigned OPERAND_VALUES_REGV3CTYPE[];
     static unsigned OPERAND_VALUES_REGV4[];
-    static unsigned OPERAND_VALUES_REGV432[];
     static unsigned OPERATOR_VALUES_0[];
     static unsigned OPERATOR_VALUES_EQ_NE_LT_LE_GT_GE[];
     static unsigned OPERATOR_VALUES_EQ_NE[];
@@ -101,13 +96,27 @@ private:
     static unsigned SEGMENT_VALUES_ANY[];
     static unsigned SEGMENT_VALUES_WRITABLE[];
     static unsigned SEGMENT_VALUES_STD[];
+    static unsigned SEGMENT_VALUES_GROUP_PRIVATE_SPILL_ARG[];
+    static unsigned SEGMENT_VALUES_FLAT_GLOBAL[];
     static unsigned SEGMENT_VALUES_GLOBAL_GROUP_FLAT[];
-    static unsigned SEGMENT_VALUES_GLOBAL[];
+    static unsigned SEGMENT_VALUES_GLOBAL_READONLY_KERNARG_FLAT[];
+    static unsigned SEGMENT_VALUES_GROUP[];
     static unsigned SEGMENT_VALUES_PRIVATE[];
+    static unsigned SIGOP_VALUES_ADD_SUB_MIN_MAX[];
+    static unsigned SIGOP_VALUES_AND_OR_XOR_EXCH[];
+    static unsigned SIGOP_VALUES_AND_OR_XOR[];
+    static unsigned SIGOP_VALUES_CAS[];
+    static unsigned SIGOP_VALUES_INC_DEC[];
+    static unsigned SIGOP_VALUES_LD[];
+    static unsigned SIGOP_VALUES_ST[];
+    static unsigned SIGOP_VALUES_WAIT[];
+    static unsigned SIGOP_VALUES_WAITTIMEOUT[];
     static unsigned STYPESIZE_VALUES_MODEL[];
     static unsigned STYPESIZE_VALUES_SEG[];
     static unsigned TYPE_VALUES_B1[];
-    static unsigned TYPE_VALUES_B1_B32_B64_B128_S32_U32_S64_U64_F_ROIMG_RWIMG_SAMP[];
+    static unsigned TYPE_VALUES_B1_B32_B64_B128[];
+    static unsigned TYPE_VALUES_B1_B32_B64_B128_S32_U32_S64_U64_F_OPAQUE[];
+    static unsigned TYPE_VALUES_B1_B32_B64_B128_S32_U32_S64_U64_F[];
     static unsigned TYPE_VALUES_B1_B32_B64[];
     static unsigned TYPE_VALUES_B1_B32_S32_U32_B64_S64_U64_F_X[];
     static unsigned TYPE_VALUES_B1_B32_S32_U32_B64_S64_U64_F[];
@@ -120,16 +129,17 @@ private:
     static unsigned TYPE_VALUES_B1_S32_U32_S64_U64_F_UX[];
     static unsigned TYPE_VALUES_B1_S32_U32_S64_U64_F[];
     static unsigned TYPE_VALUES_B1_S_U[];
-    static unsigned TYPE_VALUES_U32_B1[];
     static unsigned TYPE_VALUES_B128[];
     static unsigned TYPE_VALUES_B64_B128[];
-    static unsigned TYPE_VALUES_U_S_F_B128_ROIMG_RWIMG_SAMP[];
+    static unsigned TYPE_VALUES_U_S_F_B128_OPAQUE[];
     static unsigned TYPE_VALUES_U_S_F_B128[];
-    static unsigned TYPE_VALUES_B128_ROIMG_RWIMG_SAMP[];
+    static unsigned TYPE_VALUES_B128_OPAQUE[];
     static unsigned TYPE_VALUES_B32[];
     static unsigned TYPE_VALUES_B32_B64[];
     static unsigned TYPE_VALUES_B32_S32_U32_B64_S64_U64[];
+    static unsigned TYPE_VALUES_B32_S32_U32[];
     static unsigned TYPE_VALUES_B64[];
+    static unsigned TYPE_VALUES_B64_S64_U64[];
     static unsigned TYPE_VALUES_F16[];
     static unsigned TYPE_VALUES_F_FX[];
     static unsigned TYPE_VALUES_S32_S64_SX_F_FX[];
@@ -145,11 +155,14 @@ private:
     static unsigned TYPE_VALUES_SX_FX[];
     static unsigned TYPE_VALUES_X[];
     static unsigned TYPE_VALUES_X32_X64[];
+    static unsigned TYPE_VALUES_X32[];
     static unsigned TYPE_VALUES_S16X2_U16X2_F16X2[];
+    static unsigned TYPE_VALUES_X64[];
     static unsigned TYPE_VALUES_S16X4_U16X4_F16X4[];
     static unsigned TYPE_VALUES_S16X8_U16X8_F16X8[];
     static unsigned TYPE_VALUES_F32[];
     static unsigned TYPE_VALUES_F32_F64[];
+    static unsigned TYPE_VALUES_S32_U32_F32_F64[];
     static unsigned TYPE_VALUES_S32_F32[];
     static unsigned TYPE_VALUES_S32_U32_F32[];
     static unsigned TYPE_VALUES_F32X[];
@@ -159,8 +172,8 @@ private:
     static unsigned TYPE_VALUES_F64X[];
     static unsigned TYPE_VALUES_S64X2_U64X2_F64X2[];
     static unsigned TYPE_VALUES_NONE[];
-    static unsigned TYPE_VALUES_ROIMG[];
     static unsigned TYPE_VALUES_ROIMG_RWIMG[];
+    static unsigned TYPE_VALUES_OPAQUE[];
     static unsigned TYPE_VALUES_RWIMG[];
     static unsigned TYPE_VALUES_S_U[];
     static unsigned TYPE_VALUES_S16_U16[];
@@ -180,6 +193,9 @@ private:
     static unsigned TYPE_VALUES_S8X4_U8X4[];
     static unsigned TYPE_VALUES_S8X8_U8X8[];
     static unsigned TYPE_VALUES_SAMP[];
+    static unsigned TYPE_VALUES_SIG32[];
+    static unsigned TYPE_VALUES_SIG32_SIG64[];
+    static unsigned TYPE_VALUES_SIG64[];
     static unsigned TYPE_VALUES_U16X2[];
     static unsigned TYPE_VALUES_U8X_U16X_U32X_U64X[];
     static unsigned TYPE_VALUES_U8X_U16X_U32X[];
@@ -198,9 +214,11 @@ private:
     static unsigned TYPESIZE_VALUES_ATOMIC[];
     static unsigned TYPESIZE_VALUES_MODEL[];
     static unsigned TYPESIZE_VALUES_SEG[];
+    static unsigned TYPESIZE_VALUES_SIGNAL[];
     static unsigned WIDTH_VALUES_ANY[];
     static unsigned WIDTH_VALUES_ALL[];
     static unsigned WIDTH_VALUES_NONE[];
+    static unsigned WIDTH_VALUES_WAVESIZE[];
 
 private:
     static bool check_align_values_any(unsigned val);
@@ -215,6 +233,8 @@ private:
     static bool check_atmop_values_inc_dec(unsigned val);
     static bool check_atmop_values_ld(unsigned val);
     static bool check_atmop_values_st(unsigned val);
+    static bool check_const_values_none(unsigned val);
+    static bool check_const_values_any(unsigned val);
     static bool check_ftz_values_none(unsigned val);
     static bool check_ftz_values_any(unsigned val);
     static bool check_geom_values_1d(unsigned val);
@@ -223,14 +243,16 @@ private:
     static bool check_geom_values_1d_1db(unsigned val);
     static bool check_geom_values_2d_1da(unsigned val);
     static bool check_geom_values_3d_2da(unsigned val);
-    static bool check_memfnc_values_any(unsigned val);
-    static bool check_memfnc_values_none(unsigned val);
     static bool check_memord_values_any(unsigned val);
+    static bool check_memord_values_acq_rel_ar(unsigned val);
     static bool check_memord_values_ld(unsigned val);
-    static bool check_memord_values_none(unsigned val);
     static bool check_memord_values_st(unsigned val);
     static bool check_memscp_values_any(unsigned val);
-    static bool check_memscp_values_none(unsigned val);
+    static bool check_memscp_values_wv_wg(unsigned val);
+    static bool check_memseg_values_global_both(unsigned val);
+    static bool check_memseg_values_any(unsigned val);
+    static bool check_memseg_values_group(unsigned val);
+    static bool check_nonull_values_any(unsigned val);
     static bool check_operator_values_0(unsigned val);
     static bool check_operator_values_eq_ne_lt_le_gt_ge(unsigned val);
     static bool check_operator_values_eq_ne(unsigned val);
@@ -246,11 +268,25 @@ private:
     static bool check_segment_values_any(unsigned val);
     static bool check_segment_values_writable(unsigned val);
     static bool check_segment_values_std(unsigned val);
+    static bool check_segment_values_group_private_spill_arg(unsigned val);
+    static bool check_segment_values_flat_global(unsigned val);
     static bool check_segment_values_global_group_flat(unsigned val);
-    static bool check_segment_values_global(unsigned val);
+    static bool check_segment_values_global_readonly_kernarg_flat(unsigned val);
+    static bool check_segment_values_group(unsigned val);
     static bool check_segment_values_private(unsigned val);
+    static bool check_sigop_values_add_sub_min_max(unsigned val);
+    static bool check_sigop_values_and_or_xor_exch(unsigned val);
+    static bool check_sigop_values_and_or_xor(unsigned val);
+    static bool check_sigop_values_cas(unsigned val);
+    static bool check_sigop_values_inc_dec(unsigned val);
+    static bool check_sigop_values_ld(unsigned val);
+    static bool check_sigop_values_st(unsigned val);
+    static bool check_sigop_values_wait(unsigned val);
+    static bool check_sigop_values_waittimeout(unsigned val);
     static bool check_type_values_b1(unsigned val);
-    static bool check_type_values_b1_b32_b64_b128_s32_u32_s64_u64_f_roimg_rwimg_samp(unsigned val);
+    static bool check_type_values_b1_b32_b64_b128(unsigned val);
+    static bool check_type_values_b1_b32_b64_b128_s32_u32_s64_u64_f_opaque(unsigned val);
+    static bool check_type_values_b1_b32_b64_b128_s32_u32_s64_u64_f(unsigned val);
     static bool check_type_values_b1_b32_b64(unsigned val);
     static bool check_type_values_b1_b32_s32_u32_b64_s64_u64_f_x(unsigned val);
     static bool check_type_values_b1_b32_s32_u32_b64_s64_u64_f(unsigned val);
@@ -263,16 +299,17 @@ private:
     static bool check_type_values_b1_s32_u32_s64_u64_f_ux(unsigned val);
     static bool check_type_values_b1_s32_u32_s64_u64_f(unsigned val);
     static bool check_type_values_b1_s_u(unsigned val);
-    static bool check_type_values_u32_b1(unsigned val);
     static bool check_type_values_b128(unsigned val);
     static bool check_type_values_b64_b128(unsigned val);
-    static bool check_type_values_u_s_f_b128_roimg_rwimg_samp(unsigned val);
+    static bool check_type_values_u_s_f_b128_opaque(unsigned val);
     static bool check_type_values_u_s_f_b128(unsigned val);
-    static bool check_type_values_b128_roimg_rwimg_samp(unsigned val);
+    static bool check_type_values_b128_opaque(unsigned val);
     static bool check_type_values_b32(unsigned val);
     static bool check_type_values_b32_b64(unsigned val);
     static bool check_type_values_b32_s32_u32_b64_s64_u64(unsigned val);
+    static bool check_type_values_b32_s32_u32(unsigned val);
     static bool check_type_values_b64(unsigned val);
+    static bool check_type_values_b64_s64_u64(unsigned val);
     static bool check_type_values_f16(unsigned val);
     static bool check_type_values_f_fx(unsigned val);
     static bool check_type_values_s32_s64_sx_f_fx(unsigned val);
@@ -288,11 +325,14 @@ private:
     static bool check_type_values_sx_fx(unsigned val);
     static bool check_type_values_x(unsigned val);
     static bool check_type_values_x32_x64(unsigned val);
+    static bool check_type_values_x32(unsigned val);
     static bool check_type_values_s16x2_u16x2_f16x2(unsigned val);
+    static bool check_type_values_x64(unsigned val);
     static bool check_type_values_s16x4_u16x4_f16x4(unsigned val);
     static bool check_type_values_s16x8_u16x8_f16x8(unsigned val);
     static bool check_type_values_f32(unsigned val);
     static bool check_type_values_f32_f64(unsigned val);
+    static bool check_type_values_s32_u32_f32_f64(unsigned val);
     static bool check_type_values_s32_f32(unsigned val);
     static bool check_type_values_s32_u32_f32(unsigned val);
     static bool check_type_values_f32x(unsigned val);
@@ -302,8 +342,8 @@ private:
     static bool check_type_values_f64x(unsigned val);
     static bool check_type_values_s64x2_u64x2_f64x2(unsigned val);
     static bool check_type_values_none(unsigned val);
-    static bool check_type_values_roimg(unsigned val);
     static bool check_type_values_roimg_rwimg(unsigned val);
+    static bool check_type_values_opaque(unsigned val);
     static bool check_type_values_rwimg(unsigned val);
     static bool check_type_values_s_u(unsigned val);
     static bool check_type_values_s16_u16(unsigned val);
@@ -323,6 +363,9 @@ private:
     static bool check_type_values_s8x4_u8x4(unsigned val);
     static bool check_type_values_s8x8_u8x8(unsigned val);
     static bool check_type_values_samp(unsigned val);
+    static bool check_type_values_sig32(unsigned val);
+    static bool check_type_values_sig32_sig64(unsigned val);
+    static bool check_type_values_sig64(unsigned val);
     static bool check_type_values_u16x2(unsigned val);
     static bool check_type_values_u8x_u16x_u32x_u64x(unsigned val);
     static bool check_type_values_u8x_u16x_u32x(unsigned val);
@@ -341,6 +384,7 @@ private:
     static bool check_width_values_any(unsigned val);
     static bool check_width_values_all(unsigned val);
     static bool check_width_values_none(unsigned val);
+    static bool check_width_values_wavesize(unsigned val);
 
 private:
     static unsigned PROP_VALUES_WIDTH[];
@@ -350,23 +394,31 @@ private:
     static unsigned PROP_VALUES_ATMOP[];
     static unsigned PROP_VALUES_OPERAND[];
     static unsigned PROP_VALUES_SEGMENT[];
+    static unsigned PROP_VALUES_NONULL[];
+    static unsigned PROP_VALUES_SIGOP[];
     static unsigned PROP_VALUES_OPERATOR[];
     static unsigned PROP_VALUES_TYPESIZE[];
+    static unsigned PROP_VALUES_MEMSEG[];
     static unsigned PROP_VALUES_STYPESIZE[];
     static unsigned PROP_VALUES_PACKING[];
     static unsigned PROP_VALUES_ALIGN[];
-    static unsigned PROP_VALUES_MEMFNC[];
     static unsigned PROP_VALUES_EQCLASS[];
+    static unsigned PROP_VALUES_CONST[];
     static unsigned PROP_VALUES_ROUNDING[];
     static unsigned PROP_VALUES_FTZ[];
     static unsigned PROP_VALUES_TYPE[];
 
 private:
     static unsigned REQ_PROPS_NEG[];
+    static unsigned REQ_PROPS_ACTIVELANECOUNT[];
+    static unsigned REQ_PROPS_ACTIVELANEID[];
+    static unsigned REQ_PROPS_ACTIVELANEMASK[];
+    static unsigned REQ_PROPS_ACTIVELANESHUFFLE[];
     static unsigned REQ_PROPS_ADD[];
+    static unsigned REQ_PROPS_ADDQ_WRT[];
     static unsigned REQ_PROPS_ALLOCA[];
     static unsigned REQ_PROPS_AND[];
-    static unsigned REQ_PROPS_FBAR_SYNC_WIDTH[];
+    static unsigned REQ_PROPS_FBAR_WIDTH[];
     static unsigned REQ_PROPS_ATOMIC[];
     static unsigned REQ_PROPS_ATOMIC_IMAGE[];
     static unsigned REQ_PROPS_ATOMIC_NORET_IMAGE[];
@@ -381,6 +433,7 @@ private:
     static unsigned REQ_PROPS_REM[];
     static unsigned REQ_PROPS_BRN[];
     static unsigned REQ_PROPS_CALL[];
+    static unsigned REQ_PROPS_CASQ_WRT[];
     static unsigned REQ_PROPS_CBR[];
     static unsigned REQ_PROPS_CEIL[];
     static unsigned REQ_PROPS_CLASS[];
@@ -391,13 +444,10 @@ private:
     static unsigned REQ_PROPS_CODEBLOCKEND[];
     static unsigned REQ_PROPS_COMBINE[];
     static unsigned REQ_PROPS_COPYSIGN[];
-    static unsigned REQ_PROPS_COUNTLANE[];
-    static unsigned REQ_PROPS_COUNTUPLANE[];
     static unsigned REQ_PROPS_SPEC_REG[];
     static unsigned REQ_PROPS_SPEC_REG_DIM[];
     static unsigned REQ_PROPS_CVT[];
     static unsigned REQ_PROPS_DEBUGTRAP[];
-    static unsigned REQ_PROPS_AQLPTR[];
     static unsigned REQ_PROPS_DIV[];
     static unsigned REQ_PROPS_EXPAND[];
     static unsigned REQ_PROPS_FIRSTBIT[];
@@ -413,8 +463,10 @@ private:
     static unsigned REQ_PROPS_GCN_FREXP_EXP[];
     static unsigned REQ_PROPS_GCN_FREXP_MANT[];
     static unsigned REQ_PROPS_GCN_LD[];
-    static unsigned REQ_PROPS_GCN_MAD[];
-    static unsigned REQ_PROPS_GCN_MIN_MAX_MED[];
+    static unsigned REQ_PROPS_GCN_MADS[];
+    static unsigned REQ_PROPS_GCN_MADU[];
+    static unsigned REQ_PROPS_GCN_MIN_MAX[];
+    static unsigned REQ_PROPS_GCN_MIN_MAX_MED3[];
     static unsigned REQ_PROPS_GCN_MQSAD[];
     static unsigned REQ_PROPS_GCN_MQSAD4[];
     static unsigned REQ_PROPS_GCN_MSAD[];
@@ -424,17 +476,17 @@ private:
     static unsigned REQ_PROPS_GCN_ST[];
     static unsigned REQ_PROPS_GCN_TRIG_PREOP[];
     static unsigned REQ_PROPS_FBAR_NONE[];
-    static unsigned REQ_PROPS_FBAR_WIDTH[];
     static unsigned REQ_PROPS_LD[];
     static unsigned REQ_PROPS_LDA[];
     static unsigned REQ_PROPS_LDC[];
     static unsigned REQ_PROPS_LDF[];
     static unsigned REQ_PROPS_LD_IMAGE[];
+    static unsigned REQ_PROPS_LDQ[];
     static unsigned REQ_PROPS_LERP[];
     static unsigned REQ_PROPS_MAD[];
     static unsigned REQ_PROPS_MAD24[];
-    static unsigned REQ_PROPS_MASKLANE[];
     static unsigned REQ_PROPS_MAX[];
+    static unsigned REQ_PROPS_MEMFENCE[];
     static unsigned REQ_PROPS_MOV[];
     static unsigned REQ_PROPS_MUL[];
     static unsigned REQ_PROPS_MUL24[];
@@ -447,27 +499,30 @@ private:
     static unsigned REQ_PROPS_NULLPTR[];
     static unsigned REQ_PROPS_PACK[];
     static unsigned REQ_PROPS_PACKCVT[];
+    static unsigned REQ_PROPS_PACKET[];
     static unsigned REQ_PROPS_POPCOUNT[];
     static unsigned REQ_PROPS_QUERYIMAGE[];
     static unsigned REQ_PROPS_QUERYSAMPLERBOUNDARY[];
     static unsigned REQ_PROPS_QUERYSAMPLER[];
+    static unsigned REQ_PROPS_GPTR[];
     static unsigned REQ_PROPS_RDIMAGE[];
-    static unsigned REQ_PROPS_SENDLANE[];
     static unsigned REQ_PROPS_RET[];
     static unsigned REQ_PROPS_SAD[];
     static unsigned REQ_PROPS_SADHI[];
     static unsigned REQ_PROPS_SEGMENTP[];
     static unsigned REQ_PROPS_SHIFT[];
     static unsigned REQ_PROPS_SHUFFLE[];
+    static unsigned REQ_PROPS_SIGNAL[];
+    static unsigned REQ_PROPS_SIGNAL_NORET[];
     static unsigned REQ_PROPS_SQRT[];
     static unsigned REQ_PROPS_ST[];
     static unsigned REQ_PROPS_ST_IMAGE[];
     static unsigned REQ_PROPS_S2F[];
-    static unsigned REQ_PROPS_SYNC[];
-    static unsigned REQ_PROPS_SYSCALL[];
+    static unsigned REQ_PROPS_STQ_WRT[];
     static unsigned REQ_PROPS_UNPACK[];
     static unsigned REQ_PROPS_UNPACKCVT[];
     static unsigned REQ_PROPS_UNPACKX[];
+    static unsigned REQ_PROPS_WAVEBARRIER[];
 
 private:
     static unsigned REQ_PROP_VALUES_NEG__TYPE[];
@@ -480,6 +535,42 @@ private:
     static unsigned REQ_PROP_VALUES_NEG__FTZ[];
     static unsigned REQ_PROP_VALUES_NEG__ROUNDING[];
 
+    static unsigned REQ_PROP_VALUES_ACTIVELANECOUNT__STYPE[];
+    static unsigned REQ_PROP_VALUES_ACTIVELANECOUNT__TYPE[];
+    static unsigned REQ_PROP_VALUES_ACTIVELANECOUNT__D0[];
+    static unsigned REQ_PROP_VALUES_ACTIVELANECOUNT__S1[];
+    static unsigned REQ_PROP_VALUES_ACTIVELANECOUNT__S2[];
+    static unsigned REQ_PROP_VALUES_ACTIVELANECOUNT__S3[];
+    static unsigned REQ_PROP_VALUES_ACTIVELANECOUNT__S4[];
+    static unsigned REQ_PROP_VALUES_ACTIVELANECOUNT__WIDTH[];
+
+    static unsigned REQ_PROP_VALUES_ACTIVELANEID__STYPE[];
+    static unsigned REQ_PROP_VALUES_ACTIVELANEID__TYPE[];
+    static unsigned REQ_PROP_VALUES_ACTIVELANEID__D0[];
+    static unsigned REQ_PROP_VALUES_ACTIVELANEID__S1[];
+    static unsigned REQ_PROP_VALUES_ACTIVELANEID__S2[];
+    static unsigned REQ_PROP_VALUES_ACTIVELANEID__S3[];
+    static unsigned REQ_PROP_VALUES_ACTIVELANEID__S4[];
+    static unsigned REQ_PROP_VALUES_ACTIVELANEID__WIDTH[];
+
+    static unsigned REQ_PROP_VALUES_ACTIVELANEMASK__STYPE[];
+    static unsigned REQ_PROP_VALUES_ACTIVELANEMASK__TYPE[];
+    static unsigned REQ_PROP_VALUES_ACTIVELANEMASK__D0[];
+    static unsigned REQ_PROP_VALUES_ACTIVELANEMASK__S1[];
+    static unsigned REQ_PROP_VALUES_ACTIVELANEMASK__S2[];
+    static unsigned REQ_PROP_VALUES_ACTIVELANEMASK__S3[];
+    static unsigned REQ_PROP_VALUES_ACTIVELANEMASK__S4[];
+    static unsigned REQ_PROP_VALUES_ACTIVELANEMASK__WIDTH[];
+
+    static unsigned REQ_PROP_VALUES_ACTIVELANESHUFFLE__STYPE[];
+    static unsigned REQ_PROP_VALUES_ACTIVELANESHUFFLE__TYPE[];
+    static unsigned REQ_PROP_VALUES_ACTIVELANESHUFFLE__D0[];
+    static unsigned REQ_PROP_VALUES_ACTIVELANESHUFFLE__S1[];
+    static unsigned REQ_PROP_VALUES_ACTIVELANESHUFFLE__S2[];
+    static unsigned REQ_PROP_VALUES_ACTIVELANESHUFFLE__S3[];
+    static unsigned REQ_PROP_VALUES_ACTIVELANESHUFFLE__S4[];
+    static unsigned REQ_PROP_VALUES_ACTIVELANESHUFFLE__WIDTH[];
+
     static unsigned REQ_PROP_VALUES_ADD__TYPE[];
     static unsigned REQ_PROP_VALUES_ADD__FTZ[];
     static unsigned REQ_PROP_VALUES_ADD__PACKING[];
@@ -490,7 +581,15 @@ private:
     static unsigned REQ_PROP_VALUES_ADD__S3[];
     static unsigned REQ_PROP_VALUES_ADD__S4[];
 
-    static unsigned REQ_PROP_VALUES_ALLOCA__STYPE[];
+    static unsigned REQ_PROP_VALUES_ADDQ_WRT__TYPE[];
+    static unsigned REQ_PROP_VALUES_ADDQ_WRT__SEGMENT[];
+    static unsigned REQ_PROP_VALUES_ADDQ_WRT__D0[];
+    static unsigned REQ_PROP_VALUES_ADDQ_WRT__S1[];
+    static unsigned REQ_PROP_VALUES_ADDQ_WRT__S2[];
+    static unsigned REQ_PROP_VALUES_ADDQ_WRT__S3[];
+    static unsigned REQ_PROP_VALUES_ADDQ_WRT__S4[];
+    static unsigned REQ_PROP_VALUES_ADDQ_WRT__MEMORD[];
+
     static unsigned REQ_PROP_VALUES_ALLOCA__TYPE[];
     static unsigned REQ_PROP_VALUES_ALLOCA__SEGMENT[];
     static unsigned REQ_PROP_VALUES_ALLOCA__S0[];
@@ -498,6 +597,10 @@ private:
     static unsigned REQ_PROP_VALUES_ALLOCA__S2[];
     static unsigned REQ_PROP_VALUES_ALLOCA__S3[];
     static unsigned REQ_PROP_VALUES_ALLOCA__S4[];
+    static unsigned REQ_PROP_VALUES_ALLOCA__ALIGN[];
+    static unsigned REQ_PROP_VALUES_ALLOCA__CONST[];
+    static unsigned REQ_PROP_VALUES_ALLOCA__EQCLASS[];
+    static unsigned REQ_PROP_VALUES_ALLOCA__WIDTH[];
 
     static unsigned REQ_PROP_VALUES_AND__TYPE[];
     static unsigned REQ_PROP_VALUES_AND__D0[];
@@ -506,29 +609,28 @@ private:
     static unsigned REQ_PROP_VALUES_AND__S3[];
     static unsigned REQ_PROP_VALUES_AND__S4[];
 
-    static unsigned REQ_PROP_VALUES_FBAR_SYNC_WIDTH__TYPE[];
-    static unsigned REQ_PROP_VALUES_FBAR_SYNC_WIDTH__S0[];
-    static unsigned REQ_PROP_VALUES_FBAR_SYNC_WIDTH__S1[];
-    static unsigned REQ_PROP_VALUES_FBAR_SYNC_WIDTH__S2[];
-    static unsigned REQ_PROP_VALUES_FBAR_SYNC_WIDTH__S3[];
-    static unsigned REQ_PROP_VALUES_FBAR_SYNC_WIDTH__S4[];
-    static unsigned REQ_PROP_VALUES_FBAR_SYNC_WIDTH__MEMFNC[];
-    static unsigned REQ_PROP_VALUES_FBAR_SYNC_WIDTH__MEMORD[];
-    static unsigned REQ_PROP_VALUES_FBAR_SYNC_WIDTH__MEMSCP[];
-    static unsigned REQ_PROP_VALUES_FBAR_SYNC_WIDTH__WIDTH[];
+    static unsigned REQ_PROP_VALUES_FBAR_WIDTH__TYPE[];
+    static unsigned REQ_PROP_VALUES_FBAR_WIDTH__S0[];
+    static unsigned REQ_PROP_VALUES_FBAR_WIDTH__S1[];
+    static unsigned REQ_PROP_VALUES_FBAR_WIDTH__S2[];
+    static unsigned REQ_PROP_VALUES_FBAR_WIDTH__S3[];
+    static unsigned REQ_PROP_VALUES_FBAR_WIDTH__S4[];
+    static unsigned REQ_PROP_VALUES_FBAR_WIDTH__WIDTH[];
 
     static unsigned REQ_PROP_VALUES_ATOMIC__TYPE[];
     static unsigned REQ_PROP_VALUES_ATOMIC__ATMOP[];
     static unsigned REQ_PROP_VALUES_ATOMIC__SEGMENT[];
     static unsigned REQ_PROP_VALUES_ATOMIC__MEMORD[];
+    static unsigned REQ_PROP_VALUES_ATOMIC__MEMSCP[];
     static unsigned REQ_PROP_VALUES_ATOMIC__S2[];
     static unsigned REQ_PROP_VALUES_ATOMIC__S3[];
     static unsigned REQ_PROP_VALUES_ATOMIC__D0[];
     static unsigned REQ_PROP_VALUES_ATOMIC__S1[];
     static unsigned REQ_PROP_VALUES_ATOMIC__S4[];
-    static unsigned REQ_PROP_VALUES_ATOMIC__MEMSCP[];
+    static unsigned REQ_PROP_VALUES_ATOMIC__EQCLASS[];
 
     static unsigned REQ_PROP_VALUES_ATOMIC_IMAGE__CTYPE[];
+    static unsigned REQ_PROP_VALUES_ATOMIC_IMAGE__ITYPE[];
     static unsigned REQ_PROP_VALUES_ATOMIC_IMAGE__TYPE[];
     static unsigned REQ_PROP_VALUES_ATOMIC_IMAGE__ATMOP[];
     static unsigned REQ_PROP_VALUES_ATOMIC_IMAGE__GEOM[];
@@ -537,9 +639,10 @@ private:
     static unsigned REQ_PROP_VALUES_ATOMIC_IMAGE__D0[];
     static unsigned REQ_PROP_VALUES_ATOMIC_IMAGE__S1[];
     static unsigned REQ_PROP_VALUES_ATOMIC_IMAGE__S3[];
-    static unsigned REQ_PROP_VALUES_ATOMIC_IMAGE__ITYPE[];
+    static unsigned REQ_PROP_VALUES_ATOMIC_IMAGE__EQCLASS[];
 
     static unsigned REQ_PROP_VALUES_ATOMIC_NORET_IMAGE__CTYPE[];
+    static unsigned REQ_PROP_VALUES_ATOMIC_NORET_IMAGE__ITYPE[];
     static unsigned REQ_PROP_VALUES_ATOMIC_NORET_IMAGE__TYPE[];
     static unsigned REQ_PROP_VALUES_ATOMIC_NORET_IMAGE__ATMOP[];
     static unsigned REQ_PROP_VALUES_ATOMIC_NORET_IMAGE__GEOM[];
@@ -548,18 +651,19 @@ private:
     static unsigned REQ_PROP_VALUES_ATOMIC_NORET_IMAGE__S0[];
     static unsigned REQ_PROP_VALUES_ATOMIC_NORET_IMAGE__S2[];
     static unsigned REQ_PROP_VALUES_ATOMIC_NORET_IMAGE__S4[];
-    static unsigned REQ_PROP_VALUES_ATOMIC_NORET_IMAGE__ITYPE[];
+    static unsigned REQ_PROP_VALUES_ATOMIC_NORET_IMAGE__EQCLASS[];
 
     static unsigned REQ_PROP_VALUES_ATOMIC_NORET__TYPE[];
     static unsigned REQ_PROP_VALUES_ATOMIC_NORET__ATMOP[];
     static unsigned REQ_PROP_VALUES_ATOMIC_NORET__SEGMENT[];
     static unsigned REQ_PROP_VALUES_ATOMIC_NORET__MEMORD[];
+    static unsigned REQ_PROP_VALUES_ATOMIC_NORET__MEMSCP[];
     static unsigned REQ_PROP_VALUES_ATOMIC_NORET__S2[];
     static unsigned REQ_PROP_VALUES_ATOMIC_NORET__S0[];
     static unsigned REQ_PROP_VALUES_ATOMIC_NORET__S1[];
     static unsigned REQ_PROP_VALUES_ATOMIC_NORET__S3[];
     static unsigned REQ_PROP_VALUES_ATOMIC_NORET__S4[];
-    static unsigned REQ_PROP_VALUES_ATOMIC_NORET__MEMSCP[];
+    static unsigned REQ_PROP_VALUES_ATOMIC_NORET__EQCLASS[];
 
     static unsigned REQ_PROP_VALUES_BARRIER__TYPE[];
     static unsigned REQ_PROP_VALUES_BARRIER__S0[];
@@ -567,9 +671,6 @@ private:
     static unsigned REQ_PROP_VALUES_BARRIER__S2[];
     static unsigned REQ_PROP_VALUES_BARRIER__S3[];
     static unsigned REQ_PROP_VALUES_BARRIER__S4[];
-    static unsigned REQ_PROP_VALUES_BARRIER__MEMFNC[];
-    static unsigned REQ_PROP_VALUES_BARRIER__MEMORD[];
-    static unsigned REQ_PROP_VALUES_BARRIER__MEMSCP[];
     static unsigned REQ_PROP_VALUES_BARRIER__WIDTH[];
 
     static unsigned REQ_PROP_VALUES_ALIGN__TYPE[];
@@ -636,6 +737,15 @@ private:
     static unsigned REQ_PROP_VALUES_CALL__S0[];
     static unsigned REQ_PROP_VALUES_CALL__S2[];
     static unsigned REQ_PROP_VALUES_CALL__S4[];
+
+    static unsigned REQ_PROP_VALUES_CASQ_WRT__TYPE[];
+    static unsigned REQ_PROP_VALUES_CASQ_WRT__SEGMENT[];
+    static unsigned REQ_PROP_VALUES_CASQ_WRT__D0[];
+    static unsigned REQ_PROP_VALUES_CASQ_WRT__S1[];
+    static unsigned REQ_PROP_VALUES_CASQ_WRT__S2[];
+    static unsigned REQ_PROP_VALUES_CASQ_WRT__S3[];
+    static unsigned REQ_PROP_VALUES_CASQ_WRT__S4[];
+    static unsigned REQ_PROP_VALUES_CASQ_WRT__MEMORD[];
 
     static unsigned REQ_PROP_VALUES_CBR__TYPE[];
     static unsigned REQ_PROP_VALUES_CBR__S1[];
@@ -721,24 +831,6 @@ private:
     static unsigned REQ_PROP_VALUES_COPYSIGN__FTZ[];
     static unsigned REQ_PROP_VALUES_COPYSIGN__ROUNDING[];
 
-    static unsigned REQ_PROP_VALUES_COUNTLANE__STYPE[];
-    static unsigned REQ_PROP_VALUES_COUNTLANE__TYPE[];
-    static unsigned REQ_PROP_VALUES_COUNTLANE__D0[];
-    static unsigned REQ_PROP_VALUES_COUNTLANE__S1[];
-    static unsigned REQ_PROP_VALUES_COUNTLANE__S2[];
-    static unsigned REQ_PROP_VALUES_COUNTLANE__S3[];
-    static unsigned REQ_PROP_VALUES_COUNTLANE__S4[];
-    static unsigned REQ_PROP_VALUES_COUNTLANE__WIDTH[];
-
-    static unsigned REQ_PROP_VALUES_COUNTUPLANE__STYPE[];
-    static unsigned REQ_PROP_VALUES_COUNTUPLANE__TYPE[];
-    static unsigned REQ_PROP_VALUES_COUNTUPLANE__D0[];
-    static unsigned REQ_PROP_VALUES_COUNTUPLANE__S1[];
-    static unsigned REQ_PROP_VALUES_COUNTUPLANE__S2[];
-    static unsigned REQ_PROP_VALUES_COUNTUPLANE__S3[];
-    static unsigned REQ_PROP_VALUES_COUNTUPLANE__S4[];
-    static unsigned REQ_PROP_VALUES_COUNTUPLANE__WIDTH[];
-
     static unsigned REQ_PROP_VALUES_SPEC_REG__TYPE[];
     static unsigned REQ_PROP_VALUES_SPEC_REG__D0[];
     static unsigned REQ_PROP_VALUES_SPEC_REG__S1[];
@@ -769,15 +861,6 @@ private:
     static unsigned REQ_PROP_VALUES_DEBUGTRAP__S2[];
     static unsigned REQ_PROP_VALUES_DEBUGTRAP__S3[];
     static unsigned REQ_PROP_VALUES_DEBUGTRAP__S4[];
-
-    static unsigned REQ_PROP_VALUES_AQLPTR__STYPE[];
-    static unsigned REQ_PROP_VALUES_AQLPTR__TYPE[];
-    static unsigned REQ_PROP_VALUES_AQLPTR__SEGMENT[];
-    static unsigned REQ_PROP_VALUES_AQLPTR__S0[];
-    static unsigned REQ_PROP_VALUES_AQLPTR__S1[];
-    static unsigned REQ_PROP_VALUES_AQLPTR__S2[];
-    static unsigned REQ_PROP_VALUES_AQLPTR__S3[];
-    static unsigned REQ_PROP_VALUES_AQLPTR__S4[];
 
     static unsigned REQ_PROP_VALUES_DIV__TYPE[];
     static unsigned REQ_PROP_VALUES_DIV__FTZ[];
@@ -833,6 +916,7 @@ private:
     static unsigned REQ_PROP_VALUES_F2S__S2[];
     static unsigned REQ_PROP_VALUES_F2S__S3[];
     static unsigned REQ_PROP_VALUES_F2S__S4[];
+    static unsigned REQ_PROP_VALUES_F2S__NONULL[];
 
     static unsigned REQ_PROP_VALUES_GCN_APPEND_CONSUME__TYPE[];
     static unsigned REQ_PROP_VALUES_GCN_APPEND_CONSUME__SEGMENT[];
@@ -851,6 +935,7 @@ private:
     static unsigned REQ_PROP_VALUES_GCN_ATOMIC__D0[];
     static unsigned REQ_PROP_VALUES_GCN_ATOMIC__S1[];
     static unsigned REQ_PROP_VALUES_GCN_ATOMIC__S4[];
+    static unsigned REQ_PROP_VALUES_GCN_ATOMIC__EQCLASS[];
     static unsigned REQ_PROP_VALUES_GCN_ATOMIC__MEMSCP[];
 
     static unsigned REQ_PROP_VALUES_GCN_ATOMIC_NORET__TYPE[];
@@ -862,6 +947,7 @@ private:
     static unsigned REQ_PROP_VALUES_GCN_ATOMIC_NORET__S1[];
     static unsigned REQ_PROP_VALUES_GCN_ATOMIC_NORET__S3[];
     static unsigned REQ_PROP_VALUES_GCN_ATOMIC_NORET__S4[];
+    static unsigned REQ_PROP_VALUES_GCN_ATOMIC_NORET__EQCLASS[];
     static unsigned REQ_PROP_VALUES_GCN_ATOMIC_NORET__MEMSCP[];
 
     static unsigned REQ_PROP_VALUES_GCN_B4XCHG__TYPE[];
@@ -907,22 +993,37 @@ private:
     static unsigned REQ_PROP_VALUES_GCN_LD__S3[];
     static unsigned REQ_PROP_VALUES_GCN_LD__S4[];
     static unsigned REQ_PROP_VALUES_GCN_LD__ALIGN[];
+    static unsigned REQ_PROP_VALUES_GCN_LD__CONST[];
     static unsigned REQ_PROP_VALUES_GCN_LD__EQCLASS[];
     static unsigned REQ_PROP_VALUES_GCN_LD__WIDTH[];
 
-    static unsigned REQ_PROP_VALUES_GCN_MAD__TYPE[];
-    static unsigned REQ_PROP_VALUES_GCN_MAD__D0[];
-    static unsigned REQ_PROP_VALUES_GCN_MAD__S1[];
-    static unsigned REQ_PROP_VALUES_GCN_MAD__S2[];
-    static unsigned REQ_PROP_VALUES_GCN_MAD__S3[];
-    static unsigned REQ_PROP_VALUES_GCN_MAD__S4[];
+    static unsigned REQ_PROP_VALUES_GCN_MADS__TYPE[];
+    static unsigned REQ_PROP_VALUES_GCN_MADS__D0[];
+    static unsigned REQ_PROP_VALUES_GCN_MADS__S1[];
+    static unsigned REQ_PROP_VALUES_GCN_MADS__S2[];
+    static unsigned REQ_PROP_VALUES_GCN_MADS__S3[];
+    static unsigned REQ_PROP_VALUES_GCN_MADS__S4[];
 
-    static unsigned REQ_PROP_VALUES_GCN_MIN_MAX_MED__TYPE[];
-    static unsigned REQ_PROP_VALUES_GCN_MIN_MAX_MED__D0[];
-    static unsigned REQ_PROP_VALUES_GCN_MIN_MAX_MED__S1[];
-    static unsigned REQ_PROP_VALUES_GCN_MIN_MAX_MED__S2[];
-    static unsigned REQ_PROP_VALUES_GCN_MIN_MAX_MED__S3[];
-    static unsigned REQ_PROP_VALUES_GCN_MIN_MAX_MED__S4[];
+    static unsigned REQ_PROP_VALUES_GCN_MADU__TYPE[];
+    static unsigned REQ_PROP_VALUES_GCN_MADU__D0[];
+    static unsigned REQ_PROP_VALUES_GCN_MADU__S1[];
+    static unsigned REQ_PROP_VALUES_GCN_MADU__S2[];
+    static unsigned REQ_PROP_VALUES_GCN_MADU__S3[];
+    static unsigned REQ_PROP_VALUES_GCN_MADU__S4[];
+
+    static unsigned REQ_PROP_VALUES_GCN_MIN_MAX__TYPE[];
+    static unsigned REQ_PROP_VALUES_GCN_MIN_MAX__D0[];
+    static unsigned REQ_PROP_VALUES_GCN_MIN_MAX__S1[];
+    static unsigned REQ_PROP_VALUES_GCN_MIN_MAX__S2[];
+    static unsigned REQ_PROP_VALUES_GCN_MIN_MAX__S3[];
+    static unsigned REQ_PROP_VALUES_GCN_MIN_MAX__S4[];
+
+    static unsigned REQ_PROP_VALUES_GCN_MIN_MAX_MED3__TYPE[];
+    static unsigned REQ_PROP_VALUES_GCN_MIN_MAX_MED3__D0[];
+    static unsigned REQ_PROP_VALUES_GCN_MIN_MAX_MED3__S1[];
+    static unsigned REQ_PROP_VALUES_GCN_MIN_MAX_MED3__S2[];
+    static unsigned REQ_PROP_VALUES_GCN_MIN_MAX_MED3__S3[];
+    static unsigned REQ_PROP_VALUES_GCN_MIN_MAX_MED3__S4[];
 
     static unsigned REQ_PROP_VALUES_GCN_MQSAD__TYPE[];
     static unsigned REQ_PROP_VALUES_GCN_MQSAD__D0[];
@@ -974,6 +1075,7 @@ private:
     static unsigned REQ_PROP_VALUES_GCN_ST__S3[];
     static unsigned REQ_PROP_VALUES_GCN_ST__S4[];
     static unsigned REQ_PROP_VALUES_GCN_ST__ALIGN[];
+    static unsigned REQ_PROP_VALUES_GCN_ST__CONST[];
     static unsigned REQ_PROP_VALUES_GCN_ST__EQCLASS[];
     static unsigned REQ_PROP_VALUES_GCN_ST__WIDTH[];
 
@@ -990,24 +1092,10 @@ private:
     static unsigned REQ_PROP_VALUES_FBAR_NONE__S2[];
     static unsigned REQ_PROP_VALUES_FBAR_NONE__S3[];
     static unsigned REQ_PROP_VALUES_FBAR_NONE__S4[];
-    static unsigned REQ_PROP_VALUES_FBAR_NONE__MEMFNC[];
-    static unsigned REQ_PROP_VALUES_FBAR_NONE__MEMORD[];
-    static unsigned REQ_PROP_VALUES_FBAR_NONE__MEMSCP[];
-    static unsigned REQ_PROP_VALUES_FBAR_NONE__WIDTH[];
-
-    static unsigned REQ_PROP_VALUES_FBAR_WIDTH__TYPE[];
-    static unsigned REQ_PROP_VALUES_FBAR_WIDTH__S0[];
-    static unsigned REQ_PROP_VALUES_FBAR_WIDTH__S1[];
-    static unsigned REQ_PROP_VALUES_FBAR_WIDTH__S2[];
-    static unsigned REQ_PROP_VALUES_FBAR_WIDTH__S3[];
-    static unsigned REQ_PROP_VALUES_FBAR_WIDTH__S4[];
-    static unsigned REQ_PROP_VALUES_FBAR_WIDTH__MEMFNC[];
-    static unsigned REQ_PROP_VALUES_FBAR_WIDTH__MEMORD[];
-    static unsigned REQ_PROP_VALUES_FBAR_WIDTH__MEMSCP[];
-    static unsigned REQ_PROP_VALUES_FBAR_WIDTH__WIDTH[];
 
     static unsigned REQ_PROP_VALUES_LD__TYPE[];
     static unsigned REQ_PROP_VALUES_LD__SEGMENT[];
+    static unsigned REQ_PROP_VALUES_LD__CONST[];
     static unsigned REQ_PROP_VALUES_LD__D0[];
     static unsigned REQ_PROP_VALUES_LD__S1[];
     static unsigned REQ_PROP_VALUES_LD__S2[];
@@ -1040,14 +1128,24 @@ private:
     static unsigned REQ_PROP_VALUES_LDF__S4[];
 
     static unsigned REQ_PROP_VALUES_LD_IMAGE__CTYPE[];
+    static unsigned REQ_PROP_VALUES_LD_IMAGE__ITYPE[];
     static unsigned REQ_PROP_VALUES_LD_IMAGE__TYPE[];
     static unsigned REQ_PROP_VALUES_LD_IMAGE__GEOM[];
-    static unsigned REQ_PROP_VALUES_LD_IMAGE__ITYPE[];
-    static unsigned REQ_PROP_VALUES_LD_IMAGE__S1[];
     static unsigned REQ_PROP_VALUES_LD_IMAGE__S2[];
     static unsigned REQ_PROP_VALUES_LD_IMAGE__D0[];
+    static unsigned REQ_PROP_VALUES_LD_IMAGE__S1[];
     static unsigned REQ_PROP_VALUES_LD_IMAGE__S3[];
     static unsigned REQ_PROP_VALUES_LD_IMAGE__S4[];
+    static unsigned REQ_PROP_VALUES_LD_IMAGE__EQCLASS[];
+
+    static unsigned REQ_PROP_VALUES_LDQ__TYPE[];
+    static unsigned REQ_PROP_VALUES_LDQ__SEGMENT[];
+    static unsigned REQ_PROP_VALUES_LDQ__D0[];
+    static unsigned REQ_PROP_VALUES_LDQ__S1[];
+    static unsigned REQ_PROP_VALUES_LDQ__S2[];
+    static unsigned REQ_PROP_VALUES_LDQ__S3[];
+    static unsigned REQ_PROP_VALUES_LDQ__S4[];
+    static unsigned REQ_PROP_VALUES_LDQ__MEMORD[];
 
     static unsigned REQ_PROP_VALUES_LERP__TYPE[];
     static unsigned REQ_PROP_VALUES_LERP__D0[];
@@ -1070,15 +1168,6 @@ private:
     static unsigned REQ_PROP_VALUES_MAD24__S3[];
     static unsigned REQ_PROP_VALUES_MAD24__S4[];
 
-    static unsigned REQ_PROP_VALUES_MASKLANE__STYPE[];
-    static unsigned REQ_PROP_VALUES_MASKLANE__TYPE[];
-    static unsigned REQ_PROP_VALUES_MASKLANE__D0[];
-    static unsigned REQ_PROP_VALUES_MASKLANE__S1[];
-    static unsigned REQ_PROP_VALUES_MASKLANE__S2[];
-    static unsigned REQ_PROP_VALUES_MASKLANE__S3[];
-    static unsigned REQ_PROP_VALUES_MASKLANE__S4[];
-    static unsigned REQ_PROP_VALUES_MASKLANE__WIDTH[];
-
     static unsigned REQ_PROP_VALUES_MAX__TYPE[];
     static unsigned REQ_PROP_VALUES_MAX__FTZ[];
     static unsigned REQ_PROP_VALUES_MAX__PACKING[];
@@ -1089,9 +1178,19 @@ private:
     static unsigned REQ_PROP_VALUES_MAX__S4[];
     static unsigned REQ_PROP_VALUES_MAX__ROUNDING[];
 
+    static unsigned REQ_PROP_VALUES_MEMFENCE__TYPE[];
+    static unsigned REQ_PROP_VALUES_MEMFENCE__MEMSEG[];
+    static unsigned REQ_PROP_VALUES_MEMFENCE__MEMSCP[];
+    static unsigned REQ_PROP_VALUES_MEMFENCE__S0[];
+    static unsigned REQ_PROP_VALUES_MEMFENCE__S1[];
+    static unsigned REQ_PROP_VALUES_MEMFENCE__S2[];
+    static unsigned REQ_PROP_VALUES_MEMFENCE__S3[];
+    static unsigned REQ_PROP_VALUES_MEMFENCE__S4[];
+    static unsigned REQ_PROP_VALUES_MEMFENCE__MEMORD[];
+
     static unsigned REQ_PROP_VALUES_MOV__TYPE[];
-    static unsigned REQ_PROP_VALUES_MOV__D0[];
     static unsigned REQ_PROP_VALUES_MOV__S1[];
+    static unsigned REQ_PROP_VALUES_MOV__D0[];
     static unsigned REQ_PROP_VALUES_MOV__S2[];
     static unsigned REQ_PROP_VALUES_MOV__S3[];
     static unsigned REQ_PROP_VALUES_MOV__S4[];
@@ -1158,7 +1257,6 @@ private:
     static unsigned REQ_PROP_VALUES_TRIG__S3[];
     static unsigned REQ_PROP_VALUES_TRIG__S4[];
 
-    static unsigned REQ_PROP_VALUES_NULLPTR__STYPE[];
     static unsigned REQ_PROP_VALUES_NULLPTR__TYPE[];
     static unsigned REQ_PROP_VALUES_NULLPTR__SEGMENT[];
     static unsigned REQ_PROP_VALUES_NULLPTR__S0[];
@@ -1183,6 +1281,13 @@ private:
     static unsigned REQ_PROP_VALUES_PACKCVT__S3[];
     static unsigned REQ_PROP_VALUES_PACKCVT__S4[];
 
+    static unsigned REQ_PROP_VALUES_PACKET__TYPE[];
+    static unsigned REQ_PROP_VALUES_PACKET__S0[];
+    static unsigned REQ_PROP_VALUES_PACKET__S1[];
+    static unsigned REQ_PROP_VALUES_PACKET__S2[];
+    static unsigned REQ_PROP_VALUES_PACKET__S3[];
+    static unsigned REQ_PROP_VALUES_PACKET__S4[];
+
     static unsigned REQ_PROP_VALUES_POPCOUNT__STYPE[];
     static unsigned REQ_PROP_VALUES_POPCOUNT__TYPE[];
     static unsigned REQ_PROP_VALUES_POPCOUNT__D0[];
@@ -1193,8 +1298,8 @@ private:
 
     static unsigned REQ_PROP_VALUES_QUERYIMAGE__STYPE[];
     static unsigned REQ_PROP_VALUES_QUERYIMAGE__TYPE[];
-    static unsigned REQ_PROP_VALUES_QUERYIMAGE__S1[];
     static unsigned REQ_PROP_VALUES_QUERYIMAGE__D0[];
+    static unsigned REQ_PROP_VALUES_QUERYIMAGE__S1[];
     static unsigned REQ_PROP_VALUES_QUERYIMAGE__S2[];
     static unsigned REQ_PROP_VALUES_QUERYIMAGE__S3[];
     static unsigned REQ_PROP_VALUES_QUERYIMAGE__S4[];
@@ -1215,24 +1320,24 @@ private:
     static unsigned REQ_PROP_VALUES_QUERYSAMPLER__S3[];
     static unsigned REQ_PROP_VALUES_QUERYSAMPLER__S4[];
 
+    static unsigned REQ_PROP_VALUES_GPTR__TYPE[];
+    static unsigned REQ_PROP_VALUES_GPTR__SEGMENT[];
+    static unsigned REQ_PROP_VALUES_GPTR__S0[];
+    static unsigned REQ_PROP_VALUES_GPTR__S1[];
+    static unsigned REQ_PROP_VALUES_GPTR__S2[];
+    static unsigned REQ_PROP_VALUES_GPTR__S3[];
+    static unsigned REQ_PROP_VALUES_GPTR__S4[];
+
     static unsigned REQ_PROP_VALUES_RDIMAGE__CTYPE[];
+    static unsigned REQ_PROP_VALUES_RDIMAGE__ITYPE[];
     static unsigned REQ_PROP_VALUES_RDIMAGE__TYPE[];
     static unsigned REQ_PROP_VALUES_RDIMAGE__GEOM[];
-    static unsigned REQ_PROP_VALUES_RDIMAGE__ITYPE[];
-    static unsigned REQ_PROP_VALUES_RDIMAGE__S1[];
     static unsigned REQ_PROP_VALUES_RDIMAGE__S3[];
     static unsigned REQ_PROP_VALUES_RDIMAGE__D0[];
+    static unsigned REQ_PROP_VALUES_RDIMAGE__S1[];
     static unsigned REQ_PROP_VALUES_RDIMAGE__S2[];
     static unsigned REQ_PROP_VALUES_RDIMAGE__S4[];
-
-    static unsigned REQ_PROP_VALUES_SENDLANE__STYPE[];
-    static unsigned REQ_PROP_VALUES_SENDLANE__TYPE[];
-    static unsigned REQ_PROP_VALUES_SENDLANE__D0[];
-    static unsigned REQ_PROP_VALUES_SENDLANE__S1[];
-    static unsigned REQ_PROP_VALUES_SENDLANE__S2[];
-    static unsigned REQ_PROP_VALUES_SENDLANE__S3[];
-    static unsigned REQ_PROP_VALUES_SENDLANE__S4[];
-    static unsigned REQ_PROP_VALUES_SENDLANE__WIDTH[];
+    static unsigned REQ_PROP_VALUES_RDIMAGE__EQCLASS[];
 
     static unsigned REQ_PROP_VALUES_RET__TYPE[];
     static unsigned REQ_PROP_VALUES_RET__S0[];
@@ -1265,6 +1370,7 @@ private:
     static unsigned REQ_PROP_VALUES_SEGMENTP__S2[];
     static unsigned REQ_PROP_VALUES_SEGMENTP__S3[];
     static unsigned REQ_PROP_VALUES_SEGMENTP__S4[];
+    static unsigned REQ_PROP_VALUES_SEGMENTP__NONULL[];
 
     static unsigned REQ_PROP_VALUES_SHIFT__TYPE[];
     static unsigned REQ_PROP_VALUES_SHIFT__D0[];
@@ -1274,11 +1380,31 @@ private:
     static unsigned REQ_PROP_VALUES_SHIFT__S4[];
 
     static unsigned REQ_PROP_VALUES_SHUFFLE__TYPE[];
+    static unsigned REQ_PROP_VALUES_SHUFFLE__S3[];
     static unsigned REQ_PROP_VALUES_SHUFFLE__D0[];
     static unsigned REQ_PROP_VALUES_SHUFFLE__S1[];
     static unsigned REQ_PROP_VALUES_SHUFFLE__S2[];
-    static unsigned REQ_PROP_VALUES_SHUFFLE__S3[];
     static unsigned REQ_PROP_VALUES_SHUFFLE__S4[];
+
+    static unsigned REQ_PROP_VALUES_SIGNAL__TYPE[];
+    static unsigned REQ_PROP_VALUES_SIGNAL__SIGOP[];
+    static unsigned REQ_PROP_VALUES_SIGNAL__MEMORD[];
+    static unsigned REQ_PROP_VALUES_SIGNAL__S1[];
+    static unsigned REQ_PROP_VALUES_SIGNAL__S2[];
+    static unsigned REQ_PROP_VALUES_SIGNAL__S3[];
+    static unsigned REQ_PROP_VALUES_SIGNAL__SIGTYPE[];
+    static unsigned REQ_PROP_VALUES_SIGNAL__D0[];
+    static unsigned REQ_PROP_VALUES_SIGNAL__S4[];
+
+    static unsigned REQ_PROP_VALUES_SIGNAL_NORET__TYPE[];
+    static unsigned REQ_PROP_VALUES_SIGNAL_NORET__SIGOP[];
+    static unsigned REQ_PROP_VALUES_SIGNAL_NORET__MEMORD[];
+    static unsigned REQ_PROP_VALUES_SIGNAL_NORET__S0[];
+    static unsigned REQ_PROP_VALUES_SIGNAL_NORET__S2[];
+    static unsigned REQ_PROP_VALUES_SIGNAL_NORET__SIGTYPE[];
+    static unsigned REQ_PROP_VALUES_SIGNAL_NORET__S1[];
+    static unsigned REQ_PROP_VALUES_SIGNAL_NORET__S3[];
+    static unsigned REQ_PROP_VALUES_SIGNAL_NORET__S4[];
 
     static unsigned REQ_PROP_VALUES_SQRT__TYPE[];
     static unsigned REQ_PROP_VALUES_SQRT__PACKING[];
@@ -1298,10 +1424,12 @@ private:
     static unsigned REQ_PROP_VALUES_ST__S3[];
     static unsigned REQ_PROP_VALUES_ST__S4[];
     static unsigned REQ_PROP_VALUES_ST__ALIGN[];
+    static unsigned REQ_PROP_VALUES_ST__CONST[];
     static unsigned REQ_PROP_VALUES_ST__EQCLASS[];
     static unsigned REQ_PROP_VALUES_ST__WIDTH[];
 
     static unsigned REQ_PROP_VALUES_ST_IMAGE__CTYPE[];
+    static unsigned REQ_PROP_VALUES_ST_IMAGE__ITYPE[];
     static unsigned REQ_PROP_VALUES_ST_IMAGE__TYPE[];
     static unsigned REQ_PROP_VALUES_ST_IMAGE__GEOM[];
     static unsigned REQ_PROP_VALUES_ST_IMAGE__S2[];
@@ -1309,7 +1437,7 @@ private:
     static unsigned REQ_PROP_VALUES_ST_IMAGE__S1[];
     static unsigned REQ_PROP_VALUES_ST_IMAGE__S3[];
     static unsigned REQ_PROP_VALUES_ST_IMAGE__S4[];
-    static unsigned REQ_PROP_VALUES_ST_IMAGE__ITYPE[];
+    static unsigned REQ_PROP_VALUES_ST_IMAGE__EQCLASS[];
 
     static unsigned REQ_PROP_VALUES_S2F__STYPE[];
     static unsigned REQ_PROP_VALUES_S2F__TYPE[];
@@ -1319,24 +1447,16 @@ private:
     static unsigned REQ_PROP_VALUES_S2F__S2[];
     static unsigned REQ_PROP_VALUES_S2F__S3[];
     static unsigned REQ_PROP_VALUES_S2F__S4[];
+    static unsigned REQ_PROP_VALUES_S2F__NONULL[];
 
-    static unsigned REQ_PROP_VALUES_SYNC__TYPE[];
-    static unsigned REQ_PROP_VALUES_SYNC__S0[];
-    static unsigned REQ_PROP_VALUES_SYNC__S1[];
-    static unsigned REQ_PROP_VALUES_SYNC__S2[];
-    static unsigned REQ_PROP_VALUES_SYNC__S3[];
-    static unsigned REQ_PROP_VALUES_SYNC__S4[];
-    static unsigned REQ_PROP_VALUES_SYNC__MEMFNC[];
-    static unsigned REQ_PROP_VALUES_SYNC__MEMORD[];
-    static unsigned REQ_PROP_VALUES_SYNC__MEMSCP[];
-    static unsigned REQ_PROP_VALUES_SYNC__WIDTH[];
-
-    static unsigned REQ_PROP_VALUES_SYSCALL__TYPE[];
-    static unsigned REQ_PROP_VALUES_SYSCALL__S0[];
-    static unsigned REQ_PROP_VALUES_SYSCALL__S1[];
-    static unsigned REQ_PROP_VALUES_SYSCALL__S2[];
-    static unsigned REQ_PROP_VALUES_SYSCALL__S3[];
-    static unsigned REQ_PROP_VALUES_SYSCALL__S4[];
+    static unsigned REQ_PROP_VALUES_STQ_WRT__TYPE[];
+    static unsigned REQ_PROP_VALUES_STQ_WRT__SEGMENT[];
+    static unsigned REQ_PROP_VALUES_STQ_WRT__S0[];
+    static unsigned REQ_PROP_VALUES_STQ_WRT__S1[];
+    static unsigned REQ_PROP_VALUES_STQ_WRT__S2[];
+    static unsigned REQ_PROP_VALUES_STQ_WRT__S3[];
+    static unsigned REQ_PROP_VALUES_STQ_WRT__S4[];
+    static unsigned REQ_PROP_VALUES_STQ_WRT__MEMORD[];
 
     static unsigned REQ_PROP_VALUES_UNPACK__STYPE[];
     static unsigned REQ_PROP_VALUES_UNPACK__TYPE[];
@@ -1361,13 +1481,26 @@ private:
     static unsigned REQ_PROP_VALUES_UNPACKX__S3[];
     static unsigned REQ_PROP_VALUES_UNPACKX__S4[];
 
+    static unsigned REQ_PROP_VALUES_WAVEBARRIER__TYPE[];
+    static unsigned REQ_PROP_VALUES_WAVEBARRIER__S0[];
+    static unsigned REQ_PROP_VALUES_WAVEBARRIER__S1[];
+    static unsigned REQ_PROP_VALUES_WAVEBARRIER__S2[];
+    static unsigned REQ_PROP_VALUES_WAVEBARRIER__S3[];
+    static unsigned REQ_PROP_VALUES_WAVEBARRIER__S4[];
+    static unsigned REQ_PROP_VALUES_WAVEBARRIER__WIDTH[];
+
 
 private:
     template<class T> static bool chkReqPropNeg(T inst, unsigned propId);
+    template<class T> static bool chkReqPropActivelanecount(T inst, unsigned propId);
+    template<class T> static bool chkReqPropActivelaneid(T inst, unsigned propId);
+    template<class T> static bool chkReqPropActivelanemask(T inst, unsigned propId);
+    template<class T> static bool chkReqPropActivelaneshuffle(T inst, unsigned propId);
     template<class T> static bool chkReqPropAdd(T inst, unsigned propId);
+    template<class T> static bool chkReqPropAddq_wrt(T inst, unsigned propId);
     template<class T> static bool chkReqPropAlloca(T inst, unsigned propId);
     template<class T> static bool chkReqPropAnd(T inst, unsigned propId);
-    template<class T> static bool chkReqPropFbar_sync_width(T inst, unsigned propId);
+    template<class T> static bool chkReqPropFbar_width(T inst, unsigned propId);
     template<class T> static bool chkReqPropAtomic(T inst, unsigned propId);
     template<class T> static bool chkReqPropAtomic_image(T inst, unsigned propId);
     template<class T> static bool chkReqPropAtomic_noret_image(T inst, unsigned propId);
@@ -1382,6 +1515,7 @@ private:
     template<class T> static bool chkReqPropRem(T inst, unsigned propId);
     template<class T> static bool chkReqPropBrn(T inst, unsigned propId);
     template<class T> static bool chkReqPropCall(T inst, unsigned propId);
+    template<class T> static bool chkReqPropCasq_wrt(T inst, unsigned propId);
     template<class T> static bool chkReqPropCbr(T inst, unsigned propId);
     template<class T> static bool chkReqPropCeil(T inst, unsigned propId);
     template<class T> static bool chkReqPropClass(T inst, unsigned propId);
@@ -1392,13 +1526,10 @@ private:
     template<class T> static bool chkReqPropCodeblockend(T inst, unsigned propId);
     template<class T> static bool chkReqPropCombine(T inst, unsigned propId);
     template<class T> static bool chkReqPropCopysign(T inst, unsigned propId);
-    template<class T> static bool chkReqPropCountlane(T inst, unsigned propId);
-    template<class T> static bool chkReqPropCountuplane(T inst, unsigned propId);
     template<class T> static bool chkReqPropSpec_reg(T inst, unsigned propId);
     template<class T> static bool chkReqPropSpec_reg_dim(T inst, unsigned propId);
     template<class T> static bool chkReqPropCvt(T inst, unsigned propId);
     template<class T> static bool chkReqPropDebugtrap(T inst, unsigned propId);
-    template<class T> static bool chkReqPropAqlptr(T inst, unsigned propId);
     template<class T> static bool chkReqPropDiv(T inst, unsigned propId);
     template<class T> static bool chkReqPropExpand(T inst, unsigned propId);
     template<class T> static bool chkReqPropFirstbit(T inst, unsigned propId);
@@ -1414,8 +1545,10 @@ private:
     template<class T> static bool chkReqPropGcn_frexp_exp(T inst, unsigned propId);
     template<class T> static bool chkReqPropGcn_frexp_mant(T inst, unsigned propId);
     template<class T> static bool chkReqPropGcn_ld(T inst, unsigned propId);
-    template<class T> static bool chkReqPropGcn_mad(T inst, unsigned propId);
-    template<class T> static bool chkReqPropGcn_min_max_med(T inst, unsigned propId);
+    template<class T> static bool chkReqPropGcn_mads(T inst, unsigned propId);
+    template<class T> static bool chkReqPropGcn_madu(T inst, unsigned propId);
+    template<class T> static bool chkReqPropGcn_min_max(T inst, unsigned propId);
+    template<class T> static bool chkReqPropGcn_min_max_med3(T inst, unsigned propId);
     template<class T> static bool chkReqPropGcn_mqsad(T inst, unsigned propId);
     template<class T> static bool chkReqPropGcn_mqsad4(T inst, unsigned propId);
     template<class T> static bool chkReqPropGcn_msad(T inst, unsigned propId);
@@ -1425,17 +1558,17 @@ private:
     template<class T> static bool chkReqPropGcn_st(T inst, unsigned propId);
     template<class T> static bool chkReqPropGcn_trig_preop(T inst, unsigned propId);
     template<class T> static bool chkReqPropFbar_none(T inst, unsigned propId);
-    template<class T> static bool chkReqPropFbar_width(T inst, unsigned propId);
     template<class T> static bool chkReqPropLd(T inst, unsigned propId);
     template<class T> static bool chkReqPropLda(T inst, unsigned propId);
     template<class T> static bool chkReqPropLdc(T inst, unsigned propId);
     template<class T> static bool chkReqPropLdf(T inst, unsigned propId);
     template<class T> static bool chkReqPropLd_image(T inst, unsigned propId);
+    template<class T> static bool chkReqPropLdq(T inst, unsigned propId);
     template<class T> static bool chkReqPropLerp(T inst, unsigned propId);
     template<class T> static bool chkReqPropMad(T inst, unsigned propId);
     template<class T> static bool chkReqPropMad24(T inst, unsigned propId);
-    template<class T> static bool chkReqPropMasklane(T inst, unsigned propId);
     template<class T> static bool chkReqPropMax(T inst, unsigned propId);
+    template<class T> static bool chkReqPropMemfence(T inst, unsigned propId);
     template<class T> static bool chkReqPropMov(T inst, unsigned propId);
     template<class T> static bool chkReqPropMul(T inst, unsigned propId);
     template<class T> static bool chkReqPropMul24(T inst, unsigned propId);
@@ -1448,34 +1581,42 @@ private:
     template<class T> static bool chkReqPropNullptr(T inst, unsigned propId);
     template<class T> static bool chkReqPropPack(T inst, unsigned propId);
     template<class T> static bool chkReqPropPackcvt(T inst, unsigned propId);
+    template<class T> static bool chkReqPropPacket(T inst, unsigned propId);
     template<class T> static bool chkReqPropPopcount(T inst, unsigned propId);
     template<class T> static bool chkReqPropQueryimage(T inst, unsigned propId);
     template<class T> static bool chkReqPropQuerysamplerboundary(T inst, unsigned propId);
     template<class T> static bool chkReqPropQuerysampler(T inst, unsigned propId);
+    template<class T> static bool chkReqPropGptr(T inst, unsigned propId);
     template<class T> static bool chkReqPropRdimage(T inst, unsigned propId);
-    template<class T> static bool chkReqPropSendlane(T inst, unsigned propId);
     template<class T> static bool chkReqPropRet(T inst, unsigned propId);
     template<class T> static bool chkReqPropSad(T inst, unsigned propId);
     template<class T> static bool chkReqPropSadhi(T inst, unsigned propId);
     template<class T> static bool chkReqPropSegmentp(T inst, unsigned propId);
     template<class T> static bool chkReqPropShift(T inst, unsigned propId);
     template<class T> static bool chkReqPropShuffle(T inst, unsigned propId);
+    template<class T> static bool chkReqPropSignal(T inst, unsigned propId);
+    template<class T> static bool chkReqPropSignal_noret(T inst, unsigned propId);
     template<class T> static bool chkReqPropSqrt(T inst, unsigned propId);
     template<class T> static bool chkReqPropSt(T inst, unsigned propId);
     template<class T> static bool chkReqPropSt_image(T inst, unsigned propId);
     template<class T> static bool chkReqPropS2f(T inst, unsigned propId);
-    template<class T> static bool chkReqPropSync(T inst, unsigned propId);
-    template<class T> static bool chkReqPropSyscall(T inst, unsigned propId);
+    template<class T> static bool chkReqPropStq_wrt(T inst, unsigned propId);
     template<class T> static bool chkReqPropUnpack(T inst, unsigned propId);
     template<class T> static bool chkReqPropUnpackcvt(T inst, unsigned propId);
     template<class T> static bool chkReqPropUnpackx(T inst, unsigned propId);
+    template<class T> static bool chkReqPropWavebarrier(T inst, unsigned propId);
 
 private:
     template<class T> static bool validateReqNeg(T inst);
+    template<class T> static bool validateReqActivelanecount(T inst);
+    template<class T> static bool validateReqActivelaneid(T inst);
+    template<class T> static bool validateReqActivelanemask(T inst);
+    template<class T> static bool validateReqActivelaneshuffle(T inst);
     template<class T> static bool validateReqAdd(T inst);
+    template<class T> static bool validateReqAddq_wrt(T inst);
     template<class T> static bool validateReqAlloca(T inst);
     template<class T> static bool validateReqAnd(T inst);
-    template<class T> static bool validateReqFbar_sync_width(T inst);
+    template<class T> static bool validateReqFbar_width(T inst);
     template<class T> static bool validateReqAtomic(T inst);
     template<class T> static bool validateReqAtomic_image(T inst);
     template<class T> static bool validateReqAtomic_noret_image(T inst);
@@ -1490,6 +1631,7 @@ private:
     template<class T> static bool validateReqRem(T inst);
     template<class T> static bool validateReqBrn(T inst);
     template<class T> static bool validateReqCall(T inst);
+    template<class T> static bool validateReqCasq_wrt(T inst);
     template<class T> static bool validateReqCbr(T inst);
     template<class T> static bool validateReqCeil(T inst);
     template<class T> static bool validateReqClass(T inst);
@@ -1500,13 +1642,10 @@ private:
     template<class T> static bool validateReqCodeblockend(T inst);
     template<class T> static bool validateReqCombine(T inst);
     template<class T> static bool validateReqCopysign(T inst);
-    template<class T> static bool validateReqCountlane(T inst);
-    template<class T> static bool validateReqCountuplane(T inst);
     template<class T> static bool validateReqSpec_reg(T inst);
     template<class T> static bool validateReqSpec_reg_dim(T inst);
     template<class T> static bool validateReqCvt(T inst);
     template<class T> static bool validateReqDebugtrap(T inst);
-    template<class T> static bool validateReqAqlptr(T inst);
     template<class T> static bool validateReqDiv(T inst);
     template<class T> static bool validateReqExpand(T inst);
     template<class T> static bool validateReqFirstbit(T inst);
@@ -1522,8 +1661,10 @@ private:
     template<class T> static bool validateReqGcn_frexp_exp(T inst);
     template<class T> static bool validateReqGcn_frexp_mant(T inst);
     template<class T> static bool validateReqGcn_ld(T inst);
-    template<class T> static bool validateReqGcn_mad(T inst);
-    template<class T> static bool validateReqGcn_min_max_med(T inst);
+    template<class T> static bool validateReqGcn_mads(T inst);
+    template<class T> static bool validateReqGcn_madu(T inst);
+    template<class T> static bool validateReqGcn_min_max(T inst);
+    template<class T> static bool validateReqGcn_min_max_med3(T inst);
     template<class T> static bool validateReqGcn_mqsad(T inst);
     template<class T> static bool validateReqGcn_mqsad4(T inst);
     template<class T> static bool validateReqGcn_msad(T inst);
@@ -1533,17 +1674,17 @@ private:
     template<class T> static bool validateReqGcn_st(T inst);
     template<class T> static bool validateReqGcn_trig_preop(T inst);
     template<class T> static bool validateReqFbar_none(T inst);
-    template<class T> static bool validateReqFbar_width(T inst);
     template<class T> static bool validateReqLd(T inst);
     template<class T> static bool validateReqLda(T inst);
     template<class T> static bool validateReqLdc(T inst);
     template<class T> static bool validateReqLdf(T inst);
     template<class T> static bool validateReqLd_image(T inst);
+    template<class T> static bool validateReqLdq(T inst);
     template<class T> static bool validateReqLerp(T inst);
     template<class T> static bool validateReqMad(T inst);
     template<class T> static bool validateReqMad24(T inst);
-    template<class T> static bool validateReqMasklane(T inst);
     template<class T> static bool validateReqMax(T inst);
+    template<class T> static bool validateReqMemfence(T inst);
     template<class T> static bool validateReqMov(T inst);
     template<class T> static bool validateReqMul(T inst);
     template<class T> static bool validateReqMul24(T inst);
@@ -1556,32 +1697,41 @@ private:
     template<class T> static bool validateReqNullptr(T inst);
     template<class T> static bool validateReqPack(T inst);
     template<class T> static bool validateReqPackcvt(T inst);
+    template<class T> static bool validateReqPacket(T inst);
     template<class T> static bool validateReqPopcount(T inst);
     template<class T> static bool validateReqQueryimage(T inst);
     template<class T> static bool validateReqQuerysamplerboundary(T inst);
     template<class T> static bool validateReqQuerysampler(T inst);
+    template<class T> static bool validateReqGptr(T inst);
     template<class T> static bool validateReqRdimage(T inst);
-    template<class T> static bool validateReqSendlane(T inst);
     template<class T> static bool validateReqRet(T inst);
     template<class T> static bool validateReqSad(T inst);
     template<class T> static bool validateReqSadhi(T inst);
     template<class T> static bool validateReqSegmentp(T inst);
     template<class T> static bool validateReqShift(T inst);
     template<class T> static bool validateReqShuffle(T inst);
+    template<class T> static bool validateReqSignal(T inst);
+    template<class T> static bool validateReqSignal_noret(T inst);
     template<class T> static bool validateReqSqrt(T inst);
     template<class T> static bool validateReqSt(T inst);
     template<class T> static bool validateReqSt_image(T inst);
     template<class T> static bool validateReqS2f(T inst);
-    template<class T> static bool validateReqSync(T inst);
-    template<class T> static bool validateReqSyscall(T inst);
+    template<class T> static bool validateReqStq_wrt(T inst);
     template<class T> static bool validateReqUnpack(T inst);
     template<class T> static bool validateReqUnpackcvt(T inst);
     template<class T> static bool validateReqUnpackx(T inst);
+    template<class T> static bool validateReqWavebarrier(T inst);
 }; // class PropDescImpl 
 
 unsigned PropDescImpl::ALIGN_VALUES_ANY[] = {
-    0,
-    1
+    Brig::BRIG_ALIGNMENT_1,
+    Brig::BRIG_ALIGNMENT_128,
+    Brig::BRIG_ALIGNMENT_16,
+    Brig::BRIG_ALIGNMENT_2,
+    Brig::BRIG_ALIGNMENT_32,
+    Brig::BRIG_ALIGNMENT_4,
+    Brig::BRIG_ALIGNMENT_64,
+    Brig::BRIG_ALIGNMENT_8
 };
 
 unsigned PropDescImpl::ATMOP_VALUES_GENERIC_EXCH_LD[] = {
@@ -1677,6 +1827,19 @@ unsigned PropDescImpl::ATMOP_VALUES_ST[] = {
     Brig::BRIG_ATOMIC_ST
 };
 
+unsigned PropDescImpl::CONST_VALUES_NONE[] = {
+    0
+};
+
+unsigned PropDescImpl::CONST_VALUES_ANY[] = {
+    0,
+    1
+};
+
+unsigned PropDescImpl::EQCLASS_VALUES_0[] = {
+    EQCLASS_VAL_0
+};
+
 unsigned PropDescImpl::EQCLASS_VALUES_ANY[] = {
     EQCLASS_VAL_ANY
 };
@@ -1726,56 +1889,63 @@ unsigned PropDescImpl::GEOM_VALUES_3D_2DA[] = {
     Brig::BRIG_GEOMETRY_3D
 };
 
-unsigned PropDescImpl::MEMFNC_VALUES_ANY[] = {
-    Brig::BRIG_MEMORY_FENCE_BOTH,
-    Brig::BRIG_MEMORY_FENCE_GLOBAL,
-    Brig::BRIG_MEMORY_FENCE_GROUP
-};
-
-unsigned PropDescImpl::MEMFNC_VALUES_NONE[] = {
-    Brig::BRIG_MEMORY_FENCE_NONE
-};
-
 unsigned PropDescImpl::MEMORD_VALUES_ANY[] = {
     Brig::BRIG_MEMORY_ORDER_ACQUIRE,
     Brig::BRIG_MEMORY_ORDER_ACQUIRE_RELEASE,
     Brig::BRIG_MEMORY_ORDER_RELAXED,
-    Brig::BRIG_MEMORY_ORDER_RELEASE,
-    Brig::BRIG_MEMORY_ORDER_SEQUENTIALLY_CONSISTENT
+    Brig::BRIG_MEMORY_ORDER_RELEASE
+};
+
+unsigned PropDescImpl::MEMORD_VALUES_ACQ_REL_AR[] = {
+    Brig::BRIG_MEMORY_ORDER_ACQUIRE,
+    Brig::BRIG_MEMORY_ORDER_ACQUIRE_RELEASE,
+    Brig::BRIG_MEMORY_ORDER_RELEASE
 };
 
 unsigned PropDescImpl::MEMORD_VALUES_LD[] = {
     Brig::BRIG_MEMORY_ORDER_ACQUIRE,
-    Brig::BRIG_MEMORY_ORDER_RELAXED,
-    Brig::BRIG_MEMORY_ORDER_SEQUENTIALLY_CONSISTENT
-};
-
-unsigned PropDescImpl::MEMORD_VALUES_NONE[] = {
-    Brig::BRIG_MEMORY_ORDER_NONE
+    Brig::BRIG_MEMORY_ORDER_RELAXED
 };
 
 unsigned PropDescImpl::MEMORD_VALUES_ST[] = {
     Brig::BRIG_MEMORY_ORDER_RELAXED,
-    Brig::BRIG_MEMORY_ORDER_RELEASE,
-    Brig::BRIG_MEMORY_ORDER_SEQUENTIALLY_CONSISTENT
+    Brig::BRIG_MEMORY_ORDER_RELEASE
 };
 
 unsigned PropDescImpl::MEMSCP_VALUES_ANY[] = {
     Brig::BRIG_MEMORY_SCOPE_COMPONENT,
     Brig::BRIG_MEMORY_SCOPE_SYSTEM,
+    Brig::BRIG_MEMORY_SCOPE_WAVEFRONT,
     Brig::BRIG_MEMORY_SCOPE_WORKGROUP
 };
 
-unsigned PropDescImpl::MEMSCP_VALUES_NONE[] = {
-    Brig::BRIG_MEMORY_SCOPE_NONE
+unsigned PropDescImpl::MEMSCP_VALUES_WV_WG[] = {
+    Brig::BRIG_MEMORY_SCOPE_WAVEFRONT,
+    Brig::BRIG_MEMORY_SCOPE_WORKGROUP
+};
+
+unsigned PropDescImpl::MEMSEG_VALUES_GLOBAL_BOTH[] = {
+    Brig::BRIG_MEMORY_FENCE_BOTH,
+    Brig::BRIG_MEMORY_FENCE_GLOBAL
+};
+
+unsigned PropDescImpl::MEMSEG_VALUES_ANY[] = {
+    Brig::BRIG_MEMORY_FENCE_BOTH,
+    Brig::BRIG_MEMORY_FENCE_GLOBAL,
+    Brig::BRIG_MEMORY_FENCE_GROUP
+};
+
+unsigned PropDescImpl::MEMSEG_VALUES_GROUP[] = {
+    Brig::BRIG_MEMORY_FENCE_GROUP
+};
+
+unsigned PropDescImpl::NONULL_VALUES_ANY[] = {
+    0,
+    1
 };
 
 unsigned PropDescImpl::OPERAND_VALUES_ADDRSEG[] = {
-    OPERAND_VAL_ADDR_SEG
-};
-
-unsigned PropDescImpl::OPERAND_VALUES_ADDRTSEG[] = {
-    OPERAND_VAL_ADDR_TSEG
+    OPERAND_VAL_ADDR
 };
 
 unsigned PropDescImpl::OPERAND_VALUES_ARGLIST[] = {
@@ -1787,20 +1957,20 @@ unsigned PropDescImpl::OPERAND_VALUES_NULL_CALLTAB[] = {
     OPERAND_VAL_NULL
 };
 
-unsigned PropDescImpl::OPERAND_VALUES_FBARRIER[] = {
+unsigned PropDescImpl::OPERAND_VALUES_FBARRIERU32[] = {
     OPERAND_VAL_FBARRIER
 };
 
-unsigned PropDescImpl::OPERAND_VALUES_REG32_FBARRIER[] = {
+unsigned PropDescImpl::OPERAND_VALUES_REGU32_FBARRIERU32[] = {
     OPERAND_VAL_FBARRIER,
-    OPERAND_VAL_REG_32
+    OPERAND_VAL_REG
 };
 
 unsigned PropDescImpl::OPERAND_VALUES_FUNCMODEL[] = {
     OPERAND_VAL_FUNC
 };
 
-unsigned PropDescImpl::OPERAND_VALUES_LAB_FUNC[] = {
+unsigned PropDescImpl::OPERAND_VALUES_LABMODEL_FUNCMODEL[] = {
     OPERAND_VAL_FUNC,
     OPERAND_VAL_LAB
 };
@@ -1819,7 +1989,7 @@ unsigned PropDescImpl::OPERAND_VALUES_REG_IMM[] = {
     OPERAND_VAL_REG
 };
 
-unsigned PropDescImpl::OPERAND_VALUES_REGEXP_REGVEXP_IMMEXP[] = {
+unsigned PropDescImpl::OPERAND_VALUES_REG_REGV_IMM[] = {
     OPERAND_VAL_IMM,
     OPERAND_VAL_REG,
     OPERAND_VAL_REG_V2,
@@ -1827,31 +1997,12 @@ unsigned PropDescImpl::OPERAND_VALUES_REGEXP_REGVEXP_IMMEXP[] = {
     OPERAND_VAL_REG_V4
 };
 
-unsigned PropDescImpl::OPERAND_VALUES_IMM012[] = {
-    OPERAND_VAL_IMM_0_1_2
+unsigned PropDescImpl::OPERAND_VALUES_IMM0T2U32[] = {
+    OPERAND_VAL_IMM0T2
 };
 
-unsigned PropDescImpl::OPERAND_VALUES_IMM0123[] = {
-    OPERAND_VAL_IMM_0_1_2_3
-};
-
-unsigned PropDescImpl::OPERAND_VALUES_REG1_IMM1[] = {
-    OPERAND_VAL_IMM_1,
-    OPERAND_VAL_REG_1
-};
-
-unsigned PropDescImpl::OPERAND_VALUES_IMM32[] = {
-    OPERAND_VAL_IMM_32
-};
-
-unsigned PropDescImpl::OPERAND_VALUES_REG32_IMM32[] = {
-    OPERAND_VAL_IMM_32,
-    OPERAND_VAL_REG_32
-};
-
-unsigned PropDescImpl::OPERAND_VALUES_REG64_IMM64[] = {
-    OPERAND_VAL_IMM_64,
-    OPERAND_VAL_REG_64
+unsigned PropDescImpl::OPERAND_VALUES_IMM0T3U32[] = {
+    OPERAND_VAL_IMM0T3
 };
 
 unsigned PropDescImpl::OPERAND_VALUES_NULL_JUMPTAB[] = {
@@ -1876,43 +2027,21 @@ unsigned PropDescImpl::OPERAND_VALUES_REG[] = {
     OPERAND_VAL_REG
 };
 
-unsigned PropDescImpl::OPERAND_VALUES_REGEXP_REGVEXP[] = {
+unsigned PropDescImpl::OPERAND_VALUES_REG_REGV[] = {
     OPERAND_VAL_REG,
     OPERAND_VAL_REG_V2,
     OPERAND_VAL_REG_V3,
     OPERAND_VAL_REG_V4
 };
 
-unsigned PropDescImpl::OPERAND_VALUES_REG1[] = {
-    OPERAND_VAL_REG_1
-};
-
-unsigned PropDescImpl::OPERAND_VALUES_REG32[] = {
-    OPERAND_VAL_REG_32
-};
-
-unsigned PropDescImpl::OPERAND_VALUES_REG64[] = {
-    OPERAND_VAL_REG_64
-};
-
-unsigned PropDescImpl::OPERAND_VALUES_REG64_ROIMAGE[] = {
-    OPERAND_VAL_REG_64,
-    OPERAND_VAL_ROIMAGE
-};
-
-unsigned PropDescImpl::OPERAND_VALUES_REG64_IMAGE[] = {
-    OPERAND_VAL_REG_64,
+unsigned PropDescImpl::OPERAND_VALUES_REGSTYPE_IMAGESTYPE[] = {
+    OPERAND_VAL_REG,
     OPERAND_VAL_ROIMAGE,
     OPERAND_VAL_RWIMAGE
 };
 
-unsigned PropDescImpl::OPERAND_VALUES_REG64_RWIMAGE[] = {
-    OPERAND_VAL_REG_64,
-    OPERAND_VAL_RWIMAGE
-};
-
-unsigned PropDescImpl::OPERAND_VALUES_REG64_SAMPLER[] = {
-    OPERAND_VAL_REG_64,
+unsigned PropDescImpl::OPERAND_VALUES_REGSAMP_SAMPLERSAMP[] = {
+    OPERAND_VAL_REG,
     OPERAND_VAL_SAMPLER
 };
 
@@ -1926,10 +2055,6 @@ unsigned PropDescImpl::OPERAND_VALUES_REGV3CTYPE[] = {
 
 unsigned PropDescImpl::OPERAND_VALUES_REGV4[] = {
     OPERAND_VAL_REG_V4
-};
-
-unsigned PropDescImpl::OPERAND_VALUES_REGV432[] = {
-    OPERAND_VAL_REG_V4_32
 };
 
 unsigned PropDescImpl::OPERATOR_VALUES_0[] = {
@@ -2064,18 +2189,88 @@ unsigned PropDescImpl::SEGMENT_VALUES_STD[] = {
     Brig::BRIG_SEGMENT_SPILL
 };
 
+unsigned PropDescImpl::SEGMENT_VALUES_GROUP_PRIVATE_SPILL_ARG[] = {
+    Brig::BRIG_SEGMENT_ARG,
+    Brig::BRIG_SEGMENT_GROUP,
+    Brig::BRIG_SEGMENT_PRIVATE,
+    Brig::BRIG_SEGMENT_SPILL
+};
+
+unsigned PropDescImpl::SEGMENT_VALUES_FLAT_GLOBAL[] = {
+    Brig::BRIG_SEGMENT_FLAT,
+    Brig::BRIG_SEGMENT_GLOBAL
+};
+
 unsigned PropDescImpl::SEGMENT_VALUES_GLOBAL_GROUP_FLAT[] = {
     Brig::BRIG_SEGMENT_FLAT,
     Brig::BRIG_SEGMENT_GLOBAL,
     Brig::BRIG_SEGMENT_GROUP
 };
 
-unsigned PropDescImpl::SEGMENT_VALUES_GLOBAL[] = {
-    Brig::BRIG_SEGMENT_GLOBAL
+unsigned PropDescImpl::SEGMENT_VALUES_GLOBAL_READONLY_KERNARG_FLAT[] = {
+    Brig::BRIG_SEGMENT_FLAT,
+    Brig::BRIG_SEGMENT_GLOBAL,
+    Brig::BRIG_SEGMENT_KERNARG,
+    Brig::BRIG_SEGMENT_READONLY
+};
+
+unsigned PropDescImpl::SEGMENT_VALUES_GROUP[] = {
+    Brig::BRIG_SEGMENT_GROUP
 };
 
 unsigned PropDescImpl::SEGMENT_VALUES_PRIVATE[] = {
     Brig::BRIG_SEGMENT_PRIVATE
+};
+
+unsigned PropDescImpl::SIGOP_VALUES_ADD_SUB_MIN_MAX[] = {
+    Brig::BRIG_SIGNAL_ADD,
+    Brig::BRIG_SIGNAL_MAX,
+    Brig::BRIG_SIGNAL_MIN,
+    Brig::BRIG_SIGNAL_SUB
+};
+
+unsigned PropDescImpl::SIGOP_VALUES_AND_OR_XOR_EXCH[] = {
+    Brig::BRIG_SIGNAL_AND,
+    Brig::BRIG_SIGNAL_EXCH,
+    Brig::BRIG_SIGNAL_OR,
+    Brig::BRIG_SIGNAL_XOR
+};
+
+unsigned PropDescImpl::SIGOP_VALUES_AND_OR_XOR[] = {
+    Brig::BRIG_SIGNAL_AND,
+    Brig::BRIG_SIGNAL_OR,
+    Brig::BRIG_SIGNAL_XOR
+};
+
+unsigned PropDescImpl::SIGOP_VALUES_CAS[] = {
+    Brig::BRIG_SIGNAL_CAS
+};
+
+unsigned PropDescImpl::SIGOP_VALUES_INC_DEC[] = {
+    Brig::BRIG_SIGNAL_DEC,
+    Brig::BRIG_SIGNAL_INC
+};
+
+unsigned PropDescImpl::SIGOP_VALUES_LD[] = {
+    Brig::BRIG_SIGNAL_LD
+};
+
+unsigned PropDescImpl::SIGOP_VALUES_ST[] = {
+    Brig::BRIG_SIGNAL_ST
+};
+
+unsigned PropDescImpl::SIGOP_VALUES_WAIT[] = {
+    Brig::BRIG_SIGNAL_WAIT_EQ,
+    Brig::BRIG_SIGNAL_WAIT_GTE,
+    Brig::BRIG_SIGNAL_WAIT_LT,
+    Brig::BRIG_SIGNAL_WAIT_NE
+};
+
+unsigned PropDescImpl::SIGOP_VALUES_WAITTIMEOUT[] = {
+    Brig::BRIG_SIGNAL_WAITTIMEOUT_EQ,
+    Brig::BRIG_SIGNAL_WAITTIMEOUT_GTE,
+    Brig::BRIG_SIGNAL_WAITTIMEOUT_LT,
+    Brig::BRIG_SIGNAL_WAITTIMEOUT_NE
 };
 
 unsigned PropDescImpl::STYPESIZE_VALUES_MODEL[] = {
@@ -2090,7 +2285,14 @@ unsigned PropDescImpl::TYPE_VALUES_B1[] = {
     Brig::BRIG_TYPE_B1
 };
 
-unsigned PropDescImpl::TYPE_VALUES_B1_B32_B64_B128_S32_U32_S64_U64_F_ROIMG_RWIMG_SAMP[] = {
+unsigned PropDescImpl::TYPE_VALUES_B1_B32_B64_B128[] = {
+    Brig::BRIG_TYPE_B1,
+    Brig::BRIG_TYPE_B128,
+    Brig::BRIG_TYPE_B32,
+    Brig::BRIG_TYPE_B64
+};
+
+unsigned PropDescImpl::TYPE_VALUES_B1_B32_B64_B128_S32_U32_S64_U64_F_OPAQUE[] = {
     Brig::BRIG_TYPE_B1,
     Brig::BRIG_TYPE_B128,
     Brig::BRIG_TYPE_B32,
@@ -2103,6 +2305,22 @@ unsigned PropDescImpl::TYPE_VALUES_B1_B32_B64_B128_S32_U32_S64_U64_F_ROIMG_RWIMG
     Brig::BRIG_TYPE_S32,
     Brig::BRIG_TYPE_S64,
     Brig::BRIG_TYPE_SAMP,
+    Brig::BRIG_TYPE_SIG32,
+    Brig::BRIG_TYPE_SIG64,
+    Brig::BRIG_TYPE_U32,
+    Brig::BRIG_TYPE_U64
+};
+
+unsigned PropDescImpl::TYPE_VALUES_B1_B32_B64_B128_S32_U32_S64_U64_F[] = {
+    Brig::BRIG_TYPE_B1,
+    Brig::BRIG_TYPE_B128,
+    Brig::BRIG_TYPE_B32,
+    Brig::BRIG_TYPE_B64,
+    Brig::BRIG_TYPE_F16,
+    Brig::BRIG_TYPE_F32,
+    Brig::BRIG_TYPE_F64,
+    Brig::BRIG_TYPE_S32,
+    Brig::BRIG_TYPE_S64,
     Brig::BRIG_TYPE_U32,
     Brig::BRIG_TYPE_U64
 };
@@ -2303,11 +2521,6 @@ unsigned PropDescImpl::TYPE_VALUES_B1_S_U[] = {
     Brig::BRIG_TYPE_U8
 };
 
-unsigned PropDescImpl::TYPE_VALUES_U32_B1[] = {
-    Brig::BRIG_TYPE_B1,
-    Brig::BRIG_TYPE_U32
-};
-
 unsigned PropDescImpl::TYPE_VALUES_B128[] = {
     Brig::BRIG_TYPE_B128
 };
@@ -2317,7 +2530,7 @@ unsigned PropDescImpl::TYPE_VALUES_B64_B128[] = {
     Brig::BRIG_TYPE_B64
 };
 
-unsigned PropDescImpl::TYPE_VALUES_U_S_F_B128_ROIMG_RWIMG_SAMP[] = {
+unsigned PropDescImpl::TYPE_VALUES_U_S_F_B128_OPAQUE[] = {
     Brig::BRIG_TYPE_B128,
     Brig::BRIG_TYPE_F16,
     Brig::BRIG_TYPE_F32,
@@ -2329,6 +2542,8 @@ unsigned PropDescImpl::TYPE_VALUES_U_S_F_B128_ROIMG_RWIMG_SAMP[] = {
     Brig::BRIG_TYPE_S64,
     Brig::BRIG_TYPE_S8,
     Brig::BRIG_TYPE_SAMP,
+    Brig::BRIG_TYPE_SIG32,
+    Brig::BRIG_TYPE_SIG64,
     Brig::BRIG_TYPE_U16,
     Brig::BRIG_TYPE_U32,
     Brig::BRIG_TYPE_U64,
@@ -2350,11 +2565,13 @@ unsigned PropDescImpl::TYPE_VALUES_U_S_F_B128[] = {
     Brig::BRIG_TYPE_U8
 };
 
-unsigned PropDescImpl::TYPE_VALUES_B128_ROIMG_RWIMG_SAMP[] = {
+unsigned PropDescImpl::TYPE_VALUES_B128_OPAQUE[] = {
     Brig::BRIG_TYPE_B128,
     Brig::BRIG_TYPE_ROIMG,
     Brig::BRIG_TYPE_RWIMG,
-    Brig::BRIG_TYPE_SAMP
+    Brig::BRIG_TYPE_SAMP,
+    Brig::BRIG_TYPE_SIG32,
+    Brig::BRIG_TYPE_SIG64
 };
 
 unsigned PropDescImpl::TYPE_VALUES_B32[] = {
@@ -2375,8 +2592,20 @@ unsigned PropDescImpl::TYPE_VALUES_B32_S32_U32_B64_S64_U64[] = {
     Brig::BRIG_TYPE_U64
 };
 
+unsigned PropDescImpl::TYPE_VALUES_B32_S32_U32[] = {
+    Brig::BRIG_TYPE_B32,
+    Brig::BRIG_TYPE_S32,
+    Brig::BRIG_TYPE_U32
+};
+
 unsigned PropDescImpl::TYPE_VALUES_B64[] = {
     Brig::BRIG_TYPE_B64
+};
+
+unsigned PropDescImpl::TYPE_VALUES_B64_S64_U64[] = {
+    Brig::BRIG_TYPE_B64,
+    Brig::BRIG_TYPE_S64,
+    Brig::BRIG_TYPE_U64
 };
 
 unsigned PropDescImpl::TYPE_VALUES_F16[] = {
@@ -2587,10 +2816,29 @@ unsigned PropDescImpl::TYPE_VALUES_X32_X64[] = {
     Brig::BRIG_TYPE_U8X8
 };
 
+unsigned PropDescImpl::TYPE_VALUES_X32[] = {
+    Brig::BRIG_TYPE_F16X2,
+    Brig::BRIG_TYPE_S16X2,
+    Brig::BRIG_TYPE_S8X4,
+    Brig::BRIG_TYPE_U16X2,
+    Brig::BRIG_TYPE_U8X4
+};
+
 unsigned PropDescImpl::TYPE_VALUES_S16X2_U16X2_F16X2[] = {
     Brig::BRIG_TYPE_F16X2,
     Brig::BRIG_TYPE_S16X2,
     Brig::BRIG_TYPE_U16X2
+};
+
+unsigned PropDescImpl::TYPE_VALUES_X64[] = {
+    Brig::BRIG_TYPE_F16X4,
+    Brig::BRIG_TYPE_F32X2,
+    Brig::BRIG_TYPE_S16X4,
+    Brig::BRIG_TYPE_S32X2,
+    Brig::BRIG_TYPE_S8X8,
+    Brig::BRIG_TYPE_U16X4,
+    Brig::BRIG_TYPE_U32X2,
+    Brig::BRIG_TYPE_U8X8
 };
 
 unsigned PropDescImpl::TYPE_VALUES_S16X4_U16X4_F16X4[] = {
@@ -2612,6 +2860,13 @@ unsigned PropDescImpl::TYPE_VALUES_F32[] = {
 unsigned PropDescImpl::TYPE_VALUES_F32_F64[] = {
     Brig::BRIG_TYPE_F32,
     Brig::BRIG_TYPE_F64
+};
+
+unsigned PropDescImpl::TYPE_VALUES_S32_U32_F32_F64[] = {
+    Brig::BRIG_TYPE_F32,
+    Brig::BRIG_TYPE_F64,
+    Brig::BRIG_TYPE_S32,
+    Brig::BRIG_TYPE_U32
 };
 
 unsigned PropDescImpl::TYPE_VALUES_S32_F32[] = {
@@ -2660,13 +2915,17 @@ unsigned PropDescImpl::TYPE_VALUES_NONE[] = {
     Brig::BRIG_TYPE_NONE
 };
 
-unsigned PropDescImpl::TYPE_VALUES_ROIMG[] = {
-    Brig::BRIG_TYPE_ROIMG
-};
-
 unsigned PropDescImpl::TYPE_VALUES_ROIMG_RWIMG[] = {
     Brig::BRIG_TYPE_ROIMG,
     Brig::BRIG_TYPE_RWIMG
+};
+
+unsigned PropDescImpl::TYPE_VALUES_OPAQUE[] = {
+    Brig::BRIG_TYPE_ROIMG,
+    Brig::BRIG_TYPE_RWIMG,
+    Brig::BRIG_TYPE_SAMP,
+    Brig::BRIG_TYPE_SIG32,
+    Brig::BRIG_TYPE_SIG64
 };
 
 unsigned PropDescImpl::TYPE_VALUES_RWIMG[] = {
@@ -2816,6 +3075,19 @@ unsigned PropDescImpl::TYPE_VALUES_SAMP[] = {
     Brig::BRIG_TYPE_SAMP
 };
 
+unsigned PropDescImpl::TYPE_VALUES_SIG32[] = {
+    Brig::BRIG_TYPE_SIG32
+};
+
+unsigned PropDescImpl::TYPE_VALUES_SIG32_SIG64[] = {
+    Brig::BRIG_TYPE_SIG32,
+    Brig::BRIG_TYPE_SIG64
+};
+
+unsigned PropDescImpl::TYPE_VALUES_SIG64[] = {
+    Brig::BRIG_TYPE_SIG64
+};
+
 unsigned PropDescImpl::TYPE_VALUES_U16X2[] = {
     Brig::BRIG_TYPE_U16X2
 };
@@ -2906,6 +3178,10 @@ unsigned PropDescImpl::TYPESIZE_VALUES_SEG[] = {
     TYPESIZE_VAL_SEG
 };
 
+unsigned PropDescImpl::TYPESIZE_VALUES_SIGNAL[] = {
+    TYPESIZE_VAL_SIGNAL
+};
+
 unsigned PropDescImpl::WIDTH_VALUES_ANY[] = {
     Brig::BRIG_WIDTH_1,
     Brig::BRIG_WIDTH_1024,
@@ -2951,12 +3227,22 @@ unsigned PropDescImpl::WIDTH_VALUES_NONE[] = {
     Brig::BRIG_WIDTH_NONE
 };
 
+unsigned PropDescImpl::WIDTH_VALUES_WAVESIZE[] = {
+    Brig::BRIG_WIDTH_WAVESIZE
+};
+
 bool PropDescImpl::check_align_values_any(unsigned val)
 {
     switch(val)
     {    
-    case 0:
-    case 1:
+    case Brig::BRIG_ALIGNMENT_1:
+    case Brig::BRIG_ALIGNMENT_128:
+    case Brig::BRIG_ALIGNMENT_16:
+    case Brig::BRIG_ALIGNMENT_2:
+    case Brig::BRIG_ALIGNMENT_32:
+    case Brig::BRIG_ALIGNMENT_4:
+    case Brig::BRIG_ALIGNMENT_64:
+    case Brig::BRIG_ALIGNMENT_8:
         return true;
     default: 
         return false;
@@ -3133,6 +3419,29 @@ bool PropDescImpl::check_atmop_values_st(unsigned val)
     }
 }
 
+bool PropDescImpl::check_const_values_none(unsigned val)
+{
+    switch(val)
+    {    
+    case 0:
+        return true;
+    default: 
+        return false;
+    }
+}
+
+bool PropDescImpl::check_const_values_any(unsigned val)
+{
+    switch(val)
+    {    
+    case 0:
+    case 1:
+        return true;
+    default: 
+        return false;
+    }
+}
+
 bool PropDescImpl::check_ftz_values_none(unsigned val)
 {
     switch(val)
@@ -3234,30 +3543,6 @@ bool PropDescImpl::check_geom_values_3d_2da(unsigned val)
     }
 }
 
-bool PropDescImpl::check_memfnc_values_any(unsigned val)
-{
-    switch(val)
-    {    
-    case Brig::BRIG_MEMORY_FENCE_BOTH:
-    case Brig::BRIG_MEMORY_FENCE_GLOBAL:
-    case Brig::BRIG_MEMORY_FENCE_GROUP:
-        return true;
-    default: 
-        return false;
-    }
-}
-
-bool PropDescImpl::check_memfnc_values_none(unsigned val)
-{
-    switch(val)
-    {    
-    case Brig::BRIG_MEMORY_FENCE_NONE:
-        return true;
-    default: 
-        return false;
-    }
-}
-
 bool PropDescImpl::check_memord_values_any(unsigned val)
 {
     switch(val)
@@ -3266,7 +3551,19 @@ bool PropDescImpl::check_memord_values_any(unsigned val)
     case Brig::BRIG_MEMORY_ORDER_ACQUIRE_RELEASE:
     case Brig::BRIG_MEMORY_ORDER_RELAXED:
     case Brig::BRIG_MEMORY_ORDER_RELEASE:
-    case Brig::BRIG_MEMORY_ORDER_SEQUENTIALLY_CONSISTENT:
+        return true;
+    default: 
+        return false;
+    }
+}
+
+bool PropDescImpl::check_memord_values_acq_rel_ar(unsigned val)
+{
+    switch(val)
+    {    
+    case Brig::BRIG_MEMORY_ORDER_ACQUIRE:
+    case Brig::BRIG_MEMORY_ORDER_ACQUIRE_RELEASE:
+    case Brig::BRIG_MEMORY_ORDER_RELEASE:
         return true;
     default: 
         return false;
@@ -3279,18 +3576,6 @@ bool PropDescImpl::check_memord_values_ld(unsigned val)
     {    
     case Brig::BRIG_MEMORY_ORDER_ACQUIRE:
     case Brig::BRIG_MEMORY_ORDER_RELAXED:
-    case Brig::BRIG_MEMORY_ORDER_SEQUENTIALLY_CONSISTENT:
-        return true;
-    default: 
-        return false;
-    }
-}
-
-bool PropDescImpl::check_memord_values_none(unsigned val)
-{
-    switch(val)
-    {    
-    case Brig::BRIG_MEMORY_ORDER_NONE:
         return true;
     default: 
         return false;
@@ -3303,7 +3588,6 @@ bool PropDescImpl::check_memord_values_st(unsigned val)
     {    
     case Brig::BRIG_MEMORY_ORDER_RELAXED:
     case Brig::BRIG_MEMORY_ORDER_RELEASE:
-    case Brig::BRIG_MEMORY_ORDER_SEQUENTIALLY_CONSISTENT:
         return true;
     default: 
         return false;
@@ -3316,6 +3600,7 @@ bool PropDescImpl::check_memscp_values_any(unsigned val)
     {    
     case Brig::BRIG_MEMORY_SCOPE_COMPONENT:
     case Brig::BRIG_MEMORY_SCOPE_SYSTEM:
+    case Brig::BRIG_MEMORY_SCOPE_WAVEFRONT:
     case Brig::BRIG_MEMORY_SCOPE_WORKGROUP:
         return true;
     default: 
@@ -3323,11 +3608,60 @@ bool PropDescImpl::check_memscp_values_any(unsigned val)
     }
 }
 
-bool PropDescImpl::check_memscp_values_none(unsigned val)
+bool PropDescImpl::check_memscp_values_wv_wg(unsigned val)
 {
     switch(val)
     {    
-    case Brig::BRIG_MEMORY_SCOPE_NONE:
+    case Brig::BRIG_MEMORY_SCOPE_WAVEFRONT:
+    case Brig::BRIG_MEMORY_SCOPE_WORKGROUP:
+        return true;
+    default: 
+        return false;
+    }
+}
+
+bool PropDescImpl::check_memseg_values_global_both(unsigned val)
+{
+    switch(val)
+    {    
+    case Brig::BRIG_MEMORY_FENCE_BOTH:
+    case Brig::BRIG_MEMORY_FENCE_GLOBAL:
+        return true;
+    default: 
+        return false;
+    }
+}
+
+bool PropDescImpl::check_memseg_values_any(unsigned val)
+{
+    switch(val)
+    {    
+    case Brig::BRIG_MEMORY_FENCE_BOTH:
+    case Brig::BRIG_MEMORY_FENCE_GLOBAL:
+    case Brig::BRIG_MEMORY_FENCE_GROUP:
+        return true;
+    default: 
+        return false;
+    }
+}
+
+bool PropDescImpl::check_memseg_values_group(unsigned val)
+{
+    switch(val)
+    {    
+    case Brig::BRIG_MEMORY_FENCE_GROUP:
+        return true;
+    default: 
+        return false;
+    }
+}
+
+bool PropDescImpl::check_nonull_values_any(unsigned val)
+{
+    switch(val)
+    {    
+    case 0:
+    case 1:
         return true;
     default: 
         return false;
@@ -3571,6 +3905,32 @@ bool PropDescImpl::check_segment_values_std(unsigned val)
     }
 }
 
+bool PropDescImpl::check_segment_values_group_private_spill_arg(unsigned val)
+{
+    switch(val)
+    {    
+    case Brig::BRIG_SEGMENT_ARG:
+    case Brig::BRIG_SEGMENT_GROUP:
+    case Brig::BRIG_SEGMENT_PRIVATE:
+    case Brig::BRIG_SEGMENT_SPILL:
+        return true;
+    default: 
+        return false;
+    }
+}
+
+bool PropDescImpl::check_segment_values_flat_global(unsigned val)
+{
+    switch(val)
+    {    
+    case Brig::BRIG_SEGMENT_FLAT:
+    case Brig::BRIG_SEGMENT_GLOBAL:
+        return true;
+    default: 
+        return false;
+    }
+}
+
 bool PropDescImpl::check_segment_values_global_group_flat(unsigned val)
 {
     switch(val)
@@ -3584,11 +3944,25 @@ bool PropDescImpl::check_segment_values_global_group_flat(unsigned val)
     }
 }
 
-bool PropDescImpl::check_segment_values_global(unsigned val)
+bool PropDescImpl::check_segment_values_global_readonly_kernarg_flat(unsigned val)
 {
     switch(val)
     {    
+    case Brig::BRIG_SEGMENT_FLAT:
     case Brig::BRIG_SEGMENT_GLOBAL:
+    case Brig::BRIG_SEGMENT_KERNARG:
+    case Brig::BRIG_SEGMENT_READONLY:
+        return true;
+    default: 
+        return false;
+    }
+}
+
+bool PropDescImpl::check_segment_values_group(unsigned val)
+{
+    switch(val)
+    {    
+    case Brig::BRIG_SEGMENT_GROUP:
         return true;
     default: 
         return false;
@@ -3606,6 +3980,120 @@ bool PropDescImpl::check_segment_values_private(unsigned val)
     }
 }
 
+bool PropDescImpl::check_sigop_values_add_sub_min_max(unsigned val)
+{
+    switch(val)
+    {    
+    case Brig::BRIG_SIGNAL_ADD:
+    case Brig::BRIG_SIGNAL_MAX:
+    case Brig::BRIG_SIGNAL_MIN:
+    case Brig::BRIG_SIGNAL_SUB:
+        return true;
+    default: 
+        return false;
+    }
+}
+
+bool PropDescImpl::check_sigop_values_and_or_xor_exch(unsigned val)
+{
+    switch(val)
+    {    
+    case Brig::BRIG_SIGNAL_AND:
+    case Brig::BRIG_SIGNAL_EXCH:
+    case Brig::BRIG_SIGNAL_OR:
+    case Brig::BRIG_SIGNAL_XOR:
+        return true;
+    default: 
+        return false;
+    }
+}
+
+bool PropDescImpl::check_sigop_values_and_or_xor(unsigned val)
+{
+    switch(val)
+    {    
+    case Brig::BRIG_SIGNAL_AND:
+    case Brig::BRIG_SIGNAL_OR:
+    case Brig::BRIG_SIGNAL_XOR:
+        return true;
+    default: 
+        return false;
+    }
+}
+
+bool PropDescImpl::check_sigop_values_cas(unsigned val)
+{
+    switch(val)
+    {    
+    case Brig::BRIG_SIGNAL_CAS:
+        return true;
+    default: 
+        return false;
+    }
+}
+
+bool PropDescImpl::check_sigop_values_inc_dec(unsigned val)
+{
+    switch(val)
+    {    
+    case Brig::BRIG_SIGNAL_DEC:
+    case Brig::BRIG_SIGNAL_INC:
+        return true;
+    default: 
+        return false;
+    }
+}
+
+bool PropDescImpl::check_sigop_values_ld(unsigned val)
+{
+    switch(val)
+    {    
+    case Brig::BRIG_SIGNAL_LD:
+        return true;
+    default: 
+        return false;
+    }
+}
+
+bool PropDescImpl::check_sigop_values_st(unsigned val)
+{
+    switch(val)
+    {    
+    case Brig::BRIG_SIGNAL_ST:
+        return true;
+    default: 
+        return false;
+    }
+}
+
+bool PropDescImpl::check_sigop_values_wait(unsigned val)
+{
+    switch(val)
+    {    
+    case Brig::BRIG_SIGNAL_WAIT_EQ:
+    case Brig::BRIG_SIGNAL_WAIT_GTE:
+    case Brig::BRIG_SIGNAL_WAIT_LT:
+    case Brig::BRIG_SIGNAL_WAIT_NE:
+        return true;
+    default: 
+        return false;
+    }
+}
+
+bool PropDescImpl::check_sigop_values_waittimeout(unsigned val)
+{
+    switch(val)
+    {    
+    case Brig::BRIG_SIGNAL_WAITTIMEOUT_EQ:
+    case Brig::BRIG_SIGNAL_WAITTIMEOUT_GTE:
+    case Brig::BRIG_SIGNAL_WAITTIMEOUT_LT:
+    case Brig::BRIG_SIGNAL_WAITTIMEOUT_NE:
+        return true;
+    default: 
+        return false;
+    }
+}
+
 bool PropDescImpl::check_type_values_b1(unsigned val)
 {
     switch(val)
@@ -3617,7 +4105,21 @@ bool PropDescImpl::check_type_values_b1(unsigned val)
     }
 }
 
-bool PropDescImpl::check_type_values_b1_b32_b64_b128_s32_u32_s64_u64_f_roimg_rwimg_samp(unsigned val)
+bool PropDescImpl::check_type_values_b1_b32_b64_b128(unsigned val)
+{
+    switch(val)
+    {    
+    case Brig::BRIG_TYPE_B1:
+    case Brig::BRIG_TYPE_B128:
+    case Brig::BRIG_TYPE_B32:
+    case Brig::BRIG_TYPE_B64:
+        return true;
+    default: 
+        return false;
+    }
+}
+
+bool PropDescImpl::check_type_values_b1_b32_b64_b128_s32_u32_s64_u64_f_opaque(unsigned val)
 {
     switch(val)
     {    
@@ -3633,6 +4135,29 @@ bool PropDescImpl::check_type_values_b1_b32_b64_b128_s32_u32_s64_u64_f_roimg_rwi
     case Brig::BRIG_TYPE_S32:
     case Brig::BRIG_TYPE_S64:
     case Brig::BRIG_TYPE_SAMP:
+    case Brig::BRIG_TYPE_SIG32:
+    case Brig::BRIG_TYPE_SIG64:
+    case Brig::BRIG_TYPE_U32:
+    case Brig::BRIG_TYPE_U64:
+        return true;
+    default: 
+        return false;
+    }
+}
+
+bool PropDescImpl::check_type_values_b1_b32_b64_b128_s32_u32_s64_u64_f(unsigned val)
+{
+    switch(val)
+    {    
+    case Brig::BRIG_TYPE_B1:
+    case Brig::BRIG_TYPE_B128:
+    case Brig::BRIG_TYPE_B32:
+    case Brig::BRIG_TYPE_B64:
+    case Brig::BRIG_TYPE_F16:
+    case Brig::BRIG_TYPE_F32:
+    case Brig::BRIG_TYPE_F64:
+    case Brig::BRIG_TYPE_S32:
+    case Brig::BRIG_TYPE_S64:
     case Brig::BRIG_TYPE_U32:
     case Brig::BRIG_TYPE_U64:
         return true;
@@ -3921,18 +4446,6 @@ bool PropDescImpl::check_type_values_b1_s_u(unsigned val)
     }
 }
 
-bool PropDescImpl::check_type_values_u32_b1(unsigned val)
-{
-    switch(val)
-    {    
-    case Brig::BRIG_TYPE_B1:
-    case Brig::BRIG_TYPE_U32:
-        return true;
-    default: 
-        return false;
-    }
-}
-
 bool PropDescImpl::check_type_values_b128(unsigned val)
 {
     switch(val)
@@ -3956,7 +4469,7 @@ bool PropDescImpl::check_type_values_b64_b128(unsigned val)
     }
 }
 
-bool PropDescImpl::check_type_values_u_s_f_b128_roimg_rwimg_samp(unsigned val)
+bool PropDescImpl::check_type_values_u_s_f_b128_opaque(unsigned val)
 {
     switch(val)
     {    
@@ -3971,6 +4484,8 @@ bool PropDescImpl::check_type_values_u_s_f_b128_roimg_rwimg_samp(unsigned val)
     case Brig::BRIG_TYPE_S64:
     case Brig::BRIG_TYPE_S8:
     case Brig::BRIG_TYPE_SAMP:
+    case Brig::BRIG_TYPE_SIG32:
+    case Brig::BRIG_TYPE_SIG64:
     case Brig::BRIG_TYPE_U16:
     case Brig::BRIG_TYPE_U32:
     case Brig::BRIG_TYPE_U64:
@@ -4003,7 +4518,7 @@ bool PropDescImpl::check_type_values_u_s_f_b128(unsigned val)
     }
 }
 
-bool PropDescImpl::check_type_values_b128_roimg_rwimg_samp(unsigned val)
+bool PropDescImpl::check_type_values_b128_opaque(unsigned val)
 {
     switch(val)
     {    
@@ -4011,6 +4526,8 @@ bool PropDescImpl::check_type_values_b128_roimg_rwimg_samp(unsigned val)
     case Brig::BRIG_TYPE_ROIMG:
     case Brig::BRIG_TYPE_RWIMG:
     case Brig::BRIG_TYPE_SAMP:
+    case Brig::BRIG_TYPE_SIG32:
+    case Brig::BRIG_TYPE_SIG64:
         return true;
     default: 
         return false;
@@ -4056,11 +4573,37 @@ bool PropDescImpl::check_type_values_b32_s32_u32_b64_s64_u64(unsigned val)
     }
 }
 
+bool PropDescImpl::check_type_values_b32_s32_u32(unsigned val)
+{
+    switch(val)
+    {    
+    case Brig::BRIG_TYPE_B32:
+    case Brig::BRIG_TYPE_S32:
+    case Brig::BRIG_TYPE_U32:
+        return true;
+    default: 
+        return false;
+    }
+}
+
 bool PropDescImpl::check_type_values_b64(unsigned val)
 {
     switch(val)
     {    
     case Brig::BRIG_TYPE_B64:
+        return true;
+    default: 
+        return false;
+    }
+}
+
+bool PropDescImpl::check_type_values_b64_s64_u64(unsigned val)
+{
+    switch(val)
+    {    
+    case Brig::BRIG_TYPE_B64:
+    case Brig::BRIG_TYPE_S64:
+    case Brig::BRIG_TYPE_U64:
         return true;
     default: 
         return false;
@@ -4380,6 +4923,21 @@ bool PropDescImpl::check_type_values_x32_x64(unsigned val)
     }
 }
 
+bool PropDescImpl::check_type_values_x32(unsigned val)
+{
+    switch(val)
+    {    
+    case Brig::BRIG_TYPE_F16X2:
+    case Brig::BRIG_TYPE_S16X2:
+    case Brig::BRIG_TYPE_S8X4:
+    case Brig::BRIG_TYPE_U16X2:
+    case Brig::BRIG_TYPE_U8X4:
+        return true;
+    default: 
+        return false;
+    }
+}
+
 bool PropDescImpl::check_type_values_s16x2_u16x2_f16x2(unsigned val)
 {
     switch(val)
@@ -4387,6 +4945,24 @@ bool PropDescImpl::check_type_values_s16x2_u16x2_f16x2(unsigned val)
     case Brig::BRIG_TYPE_F16X2:
     case Brig::BRIG_TYPE_S16X2:
     case Brig::BRIG_TYPE_U16X2:
+        return true;
+    default: 
+        return false;
+    }
+}
+
+bool PropDescImpl::check_type_values_x64(unsigned val)
+{
+    switch(val)
+    {    
+    case Brig::BRIG_TYPE_F16X4:
+    case Brig::BRIG_TYPE_F32X2:
+    case Brig::BRIG_TYPE_S16X4:
+    case Brig::BRIG_TYPE_S32X2:
+    case Brig::BRIG_TYPE_S8X8:
+    case Brig::BRIG_TYPE_U16X4:
+    case Brig::BRIG_TYPE_U32X2:
+    case Brig::BRIG_TYPE_U8X8:
         return true;
     default: 
         return false;
@@ -4436,6 +5012,20 @@ bool PropDescImpl::check_type_values_f32_f64(unsigned val)
     {    
     case Brig::BRIG_TYPE_F32:
     case Brig::BRIG_TYPE_F64:
+        return true;
+    default: 
+        return false;
+    }
+}
+
+bool PropDescImpl::check_type_values_s32_u32_f32_f64(unsigned val)
+{
+    switch(val)
+    {    
+    case Brig::BRIG_TYPE_F32:
+    case Brig::BRIG_TYPE_F64:
+    case Brig::BRIG_TYPE_S32:
+    case Brig::BRIG_TYPE_U32:
         return true;
     default: 
         return false;
@@ -4551,23 +5141,27 @@ bool PropDescImpl::check_type_values_none(unsigned val)
     }
 }
 
-bool PropDescImpl::check_type_values_roimg(unsigned val)
-{
-    switch(val)
-    {    
-    case Brig::BRIG_TYPE_ROIMG:
-        return true;
-    default: 
-        return false;
-    }
-}
-
 bool PropDescImpl::check_type_values_roimg_rwimg(unsigned val)
 {
     switch(val)
     {    
     case Brig::BRIG_TYPE_ROIMG:
     case Brig::BRIG_TYPE_RWIMG:
+        return true;
+    default: 
+        return false;
+    }
+}
+
+bool PropDescImpl::check_type_values_opaque(unsigned val)
+{
+    switch(val)
+    {    
+    case Brig::BRIG_TYPE_ROIMG:
+    case Brig::BRIG_TYPE_RWIMG:
+    case Brig::BRIG_TYPE_SAMP:
+    case Brig::BRIG_TYPE_SIG32:
+    case Brig::BRIG_TYPE_SIG64:
         return true;
     default: 
         return false;
@@ -4854,6 +5448,40 @@ bool PropDescImpl::check_type_values_samp(unsigned val)
     }
 }
 
+bool PropDescImpl::check_type_values_sig32(unsigned val)
+{
+    switch(val)
+    {    
+    case Brig::BRIG_TYPE_SIG32:
+        return true;
+    default: 
+        return false;
+    }
+}
+
+bool PropDescImpl::check_type_values_sig32_sig64(unsigned val)
+{
+    switch(val)
+    {    
+    case Brig::BRIG_TYPE_SIG32:
+    case Brig::BRIG_TYPE_SIG64:
+        return true;
+    default: 
+        return false;
+    }
+}
+
+bool PropDescImpl::check_type_values_sig64(unsigned val)
+{
+    switch(val)
+    {    
+    case Brig::BRIG_TYPE_SIG64:
+        return true;
+    default: 
+        return false;
+    }
+}
+
 bool PropDescImpl::check_type_values_u16x2(unsigned val)
 {
     switch(val)
@@ -5103,6 +5731,17 @@ bool PropDescImpl::check_width_values_none(unsigned val)
     }
 }
 
+bool PropDescImpl::check_width_values_wavesize(unsigned val)
+{
+    switch(val)
+    {    
+    case Brig::BRIG_WIDTH_WAVESIZE:
+        return true;
+    default: 
+        return false;
+    }
+}
+
 bool PropDescImpl::isBrigProp(unsigned propId)
 {
     switch(propId)
@@ -5114,13 +5753,16 @@ bool PropDescImpl::isBrigProp(unsigned propId)
     case PROP_ATMOP: return true;
     case PROP_OPERAND: return false;
     case PROP_SEGMENT: return true;
+    case PROP_NONULL: return true;
+    case PROP_SIGOP: return true;
     case PROP_OPERATOR: return true;
     case PROP_TYPESIZE: return false;
+    case PROP_MEMSEG: return true;
     case PROP_STYPESIZE: return false;
     case PROP_PACKING: return true;
     case PROP_ALIGN: return true;
-    case PROP_MEMFNC: return true;
     case PROP_EQCLASS: return false;
+    case PROP_CONST: return true;
     case PROP_ROUNDING: return true;
     case PROP_FTZ: return true;
     case PROP_TYPE: return true;
@@ -5130,6 +5772,7 @@ bool PropDescImpl::isBrigProp(unsigned propId)
     case PROP_S4: return false;
     case PROP_STYPE: return true;
     case PROP_S0: return false;
+    case PROP_SIGTYPE: return true;
     case PROP_S2: return false;
     case PROP_S3: return false;
     case PROP_D0: return false;
@@ -5216,6 +5859,8 @@ unsigned PropDescImpl::OPCODES[] =
     Brig::BRIG_OPCODE_ST,
     Brig::BRIG_OPCODE_ATOMIC,
     Brig::BRIG_OPCODE_ATOMICNORET,
+    Brig::BRIG_OPCODE_SIGNAL,
+    Brig::BRIG_OPCODE_SIGNALNORET,
     Brig::BRIG_OPCODE_RDIMAGE,
     Brig::BRIG_OPCODE_LDIMAGE,
     Brig::BRIG_OPCODE_STIMAGE,
@@ -5233,6 +5878,7 @@ unsigned PropDescImpl::OPCODES[] =
     Brig::BRIG_OPCODE_CBR,
     Brig::BRIG_OPCODE_BRN,
     Brig::BRIG_OPCODE_BARRIER,
+    Brig::BRIG_OPCODE_WAVEBARRIER,
     Brig::BRIG_OPCODE_INITFBAR,
     Brig::BRIG_OPCODE_RELEASEFBAR,
     Brig::BRIG_OPCODE_JOINFBAR,
@@ -5240,15 +5886,13 @@ unsigned PropDescImpl::OPCODES[] =
     Brig::BRIG_OPCODE_WAITFBAR,
     Brig::BRIG_OPCODE_ARRIVEFBAR,
     Brig::BRIG_OPCODE_LDF,
-    Brig::BRIG_OPCODE_SYNC,
-    Brig::BRIG_OPCODE_MASKLANE,
-    Brig::BRIG_OPCODE_COUNTLANE,
-    Brig::BRIG_OPCODE_COUNTUPLANE,
-    Brig::BRIG_OPCODE_SENDLANE,
-    Brig::BRIG_OPCODE_RECEIVELANE,
+    Brig::BRIG_OPCODE_MEMFENCE,
+    Brig::BRIG_OPCODE_ACTIVELANEMASK,
+    Brig::BRIG_OPCODE_ACTIVELANECOUNT,
+    Brig::BRIG_OPCODE_ACTIVELANEID,
+    Brig::BRIG_OPCODE_ACTIVELANESHUFFLE,
     Brig::BRIG_OPCODE_CALL,
     Brig::BRIG_OPCODE_RET,
-    Brig::BRIG_OPCODE_SYSCALL,
     Brig::BRIG_OPCODE_ALLOCA,
     Brig::BRIG_OPCODE_CUID,
     Brig::BRIG_OPCODE_DIM,
@@ -5256,7 +5900,7 @@ unsigned PropDescImpl::OPCODES[] =
     Brig::BRIG_OPCODE_LANEID,
     Brig::BRIG_OPCODE_MAXCUID,
     Brig::BRIG_OPCODE_MAXWAVEID,
-    Brig::BRIG_OPCODE_QID,
+    Brig::BRIG_OPCODE_QUEUEID,
     Brig::BRIG_OPCODE_WAVEID,
     Brig::BRIG_OPCODE_WORKITEMFLATABSID,
     Brig::BRIG_OPCODE_WORKITEMFLATID,
@@ -5270,15 +5914,23 @@ unsigned PropDescImpl::OPCODES[] =
     Brig::BRIG_OPCODE_CLEARDETECTEXCEPT,
     Brig::BRIG_OPCODE_SETDETECTEXCEPT,
     Brig::BRIG_OPCODE_CLOCK,
-    Brig::BRIG_OPCODE_DISPATCHID,
+    Brig::BRIG_OPCODE_PACKETID,
+    Brig::BRIG_OPCODE_PACKETCOMPLETIONSIG,
     Brig::BRIG_OPCODE_NOP,
-    Brig::BRIG_OPCODE_DISPATCHPTR,
-    Brig::BRIG_OPCODE_QPTR,
+    Brig::BRIG_OPCODE_QUEUEPTR,
+    Brig::BRIG_OPCODE_SERVICEQUEUEPTR,
     Brig::BRIG_OPCODE_NULLPTR,
+    Brig::BRIG_OPCODE_ADDQUEUEWRITEINDEX,
+    Brig::BRIG_OPCODE_CASQUEUEWRITEINDEX,
+    Brig::BRIG_OPCODE_LDQUEUEREADINDEX,
+    Brig::BRIG_OPCODE_LDQUEUEWRITEINDEX,
+    Brig::BRIG_OPCODE_STQUEUEWRITEINDEX,
     Brig::BRIG_OPCODE_DEBUGTRAP,
     Brig::BRIG_OPCODE_CODEBLOCKEND,
     Brig::BRIG_OPCODE_GCNMADU,
     Brig::BRIG_OPCODE_GCNMADS,
+    Brig::BRIG_OPCODE_GCNMIN,
+    Brig::BRIG_OPCODE_GCNMAX,
     Brig::BRIG_OPCODE_GCNMIN3,
     Brig::BRIG_OPCODE_GCNMED3,
     Brig::BRIG_OPCODE_GCNMAX3,
@@ -5317,15 +5969,20 @@ unsigned PropDescImpl::getFormat(unsigned opcode)
     switch(opcode)
     {
     case Brig::BRIG_OPCODE_ABS: return Brig::BRIG_INST_MOD;
+    case Brig::BRIG_OPCODE_ACTIVELANECOUNT: return Brig::BRIG_INST_LANE;
+    case Brig::BRIG_OPCODE_ACTIVELANEID: return Brig::BRIG_INST_LANE;
+    case Brig::BRIG_OPCODE_ACTIVELANEMASK: return Brig::BRIG_INST_LANE;
+    case Brig::BRIG_OPCODE_ACTIVELANESHUFFLE: return Brig::BRIG_INST_LANE;
     case Brig::BRIG_OPCODE_ADD: return Brig::BRIG_INST_MOD;
-    case Brig::BRIG_OPCODE_ALLOCA: return Brig::BRIG_INST_SEG;
+    case Brig::BRIG_OPCODE_ADDQUEUEWRITEINDEX: return Brig::BRIG_INST_QUEUE;
+    case Brig::BRIG_OPCODE_ALLOCA: return Brig::BRIG_INST_MEM;
     case Brig::BRIG_OPCODE_AND: return Brig::BRIG_INST_BASIC;
-    case Brig::BRIG_OPCODE_ARRIVEFBAR: return Brig::BRIG_INST_BAR;
+    case Brig::BRIG_OPCODE_ARRIVEFBAR: return Brig::BRIG_INST_BR;
     case Brig::BRIG_OPCODE_ATOMIC: return Brig::BRIG_INST_ATOMIC;
     case Brig::BRIG_OPCODE_ATOMICIMAGE: return Brig::BRIG_INST_ATOMIC_IMAGE;
     case Brig::BRIG_OPCODE_ATOMICIMAGENORET: return Brig::BRIG_INST_ATOMIC_IMAGE;
     case Brig::BRIG_OPCODE_ATOMICNORET: return Brig::BRIG_INST_ATOMIC;
-    case Brig::BRIG_OPCODE_BARRIER: return Brig::BRIG_INST_BAR;
+    case Brig::BRIG_OPCODE_BARRIER: return Brig::BRIG_INST_BR;
     case Brig::BRIG_OPCODE_BITALIGN: return Brig::BRIG_INST_BASIC;
     case Brig::BRIG_OPCODE_BITEXTRACT: return Brig::BRIG_INST_BASIC;
     case Brig::BRIG_OPCODE_BITINSERT: return Brig::BRIG_INST_BASIC;
@@ -5337,6 +5994,7 @@ unsigned PropDescImpl::getFormat(unsigned opcode)
     case Brig::BRIG_OPCODE_BYTEALIGN: return Brig::BRIG_INST_BASIC;
     case Brig::BRIG_OPCODE_CALL: return Brig::BRIG_INST_BR;
     case Brig::BRIG_OPCODE_CARRY: return Brig::BRIG_INST_BASIC;
+    case Brig::BRIG_OPCODE_CASQUEUEWRITEINDEX: return Brig::BRIG_INST_QUEUE;
     case Brig::BRIG_OPCODE_CBR: return Brig::BRIG_INST_BR;
     case Brig::BRIG_OPCODE_CEIL: return Brig::BRIG_INST_MOD;
     case Brig::BRIG_OPCODE_CLASS: return Brig::BRIG_INST_SOURCE_TYPE;
@@ -5347,22 +6005,18 @@ unsigned PropDescImpl::getFormat(unsigned opcode)
     case Brig::BRIG_OPCODE_CODEBLOCKEND: return Brig::BRIG_INST_BASIC;
     case Brig::BRIG_OPCODE_COMBINE: return Brig::BRIG_INST_SOURCE_TYPE;
     case Brig::BRIG_OPCODE_COPYSIGN: return Brig::BRIG_INST_MOD;
-    case Brig::BRIG_OPCODE_COUNTLANE: return Brig::BRIG_INST_LANE;
-    case Brig::BRIG_OPCODE_COUNTUPLANE: return Brig::BRIG_INST_LANE;
     case Brig::BRIG_OPCODE_CUID: return Brig::BRIG_INST_BASIC;
     case Brig::BRIG_OPCODE_CURRENTWORKGROUPSIZE: return Brig::BRIG_INST_BASIC;
     case Brig::BRIG_OPCODE_CVT: return Brig::BRIG_INST_CVT;
     case Brig::BRIG_OPCODE_DEBUGTRAP: return Brig::BRIG_INST_BASIC;
     case Brig::BRIG_OPCODE_DIM: return Brig::BRIG_INST_BASIC;
-    case Brig::BRIG_OPCODE_DISPATCHID: return Brig::BRIG_INST_BASIC;
-    case Brig::BRIG_OPCODE_DISPATCHPTR: return Brig::BRIG_INST_SEG;
     case Brig::BRIG_OPCODE_DIV: return Brig::BRIG_INST_MOD;
     case Brig::BRIG_OPCODE_EXPAND: return Brig::BRIG_INST_SOURCE_TYPE;
     case Brig::BRIG_OPCODE_FIRSTBIT: return Brig::BRIG_INST_SOURCE_TYPE;
     case Brig::BRIG_OPCODE_FLOOR: return Brig::BRIG_INST_MOD;
     case Brig::BRIG_OPCODE_FMA: return Brig::BRIG_INST_MOD;
     case Brig::BRIG_OPCODE_FRACT: return Brig::BRIG_INST_MOD;
-    case Brig::BRIG_OPCODE_FTOS: return Brig::BRIG_INST_SEG;
+    case Brig::BRIG_OPCODE_FTOS: return Brig::BRIG_INST_SEG_CVT;
     case Brig::BRIG_OPCODE_GCNAPPEND: return Brig::BRIG_INST_ADDR;
     case Brig::BRIG_OPCODE_GCNATOMIC: return Brig::BRIG_INST_ATOMIC;
     case Brig::BRIG_OPCODE_GCNATOMICNORET: return Brig::BRIG_INST_ATOMIC;
@@ -5376,8 +6030,10 @@ unsigned PropDescImpl::getFormat(unsigned opcode)
     case Brig::BRIG_OPCODE_GCNLD: return Brig::BRIG_INST_MEM;
     case Brig::BRIG_OPCODE_GCNMADS: return Brig::BRIG_INST_BASIC;
     case Brig::BRIG_OPCODE_GCNMADU: return Brig::BRIG_INST_BASIC;
+    case Brig::BRIG_OPCODE_GCNMAX: return Brig::BRIG_INST_BASIC;
     case Brig::BRIG_OPCODE_GCNMAX3: return Brig::BRIG_INST_BASIC;
     case Brig::BRIG_OPCODE_GCNMED3: return Brig::BRIG_INST_BASIC;
+    case Brig::BRIG_OPCODE_GCNMIN: return Brig::BRIG_INST_BASIC;
     case Brig::BRIG_OPCODE_GCNMIN3: return Brig::BRIG_INST_BASIC;
     case Brig::BRIG_OPCODE_GCNMQSAD: return Brig::BRIG_INST_BASIC;
     case Brig::BRIG_OPCODE_GCNMQSAD4: return Brig::BRIG_INST_BASIC;
@@ -5393,8 +6049,8 @@ unsigned PropDescImpl::getFormat(unsigned opcode)
     case Brig::BRIG_OPCODE_GETDETECTEXCEPT: return Brig::BRIG_INST_BASIC;
     case Brig::BRIG_OPCODE_GRIDGROUPS: return Brig::BRIG_INST_BASIC;
     case Brig::BRIG_OPCODE_GRIDSIZE: return Brig::BRIG_INST_BASIC;
-    case Brig::BRIG_OPCODE_INITFBAR: return Brig::BRIG_INST_BAR;
-    case Brig::BRIG_OPCODE_JOINFBAR: return Brig::BRIG_INST_BAR;
+    case Brig::BRIG_OPCODE_INITFBAR: return Brig::BRIG_INST_BASIC;
+    case Brig::BRIG_OPCODE_JOINFBAR: return Brig::BRIG_INST_BR;
     case Brig::BRIG_OPCODE_LANEID: return Brig::BRIG_INST_BASIC;
     case Brig::BRIG_OPCODE_LASTBIT: return Brig::BRIG_INST_SOURCE_TYPE;
     case Brig::BRIG_OPCODE_LD: return Brig::BRIG_INST_MEM;
@@ -5402,15 +6058,17 @@ unsigned PropDescImpl::getFormat(unsigned opcode)
     case Brig::BRIG_OPCODE_LDC: return Brig::BRIG_INST_BASIC;
     case Brig::BRIG_OPCODE_LDF: return Brig::BRIG_INST_BASIC;
     case Brig::BRIG_OPCODE_LDIMAGE: return Brig::BRIG_INST_IMAGE;
-    case Brig::BRIG_OPCODE_LEAVEFBAR: return Brig::BRIG_INST_BAR;
+    case Brig::BRIG_OPCODE_LDQUEUEREADINDEX: return Brig::BRIG_INST_QUEUE;
+    case Brig::BRIG_OPCODE_LDQUEUEWRITEINDEX: return Brig::BRIG_INST_QUEUE;
+    case Brig::BRIG_OPCODE_LEAVEFBAR: return Brig::BRIG_INST_BR;
     case Brig::BRIG_OPCODE_LERP: return Brig::BRIG_INST_BASIC;
     case Brig::BRIG_OPCODE_MAD: return Brig::BRIG_INST_BASIC;
     case Brig::BRIG_OPCODE_MAD24: return Brig::BRIG_INST_BASIC;
     case Brig::BRIG_OPCODE_MAD24HI: return Brig::BRIG_INST_BASIC;
-    case Brig::BRIG_OPCODE_MASKLANE: return Brig::BRIG_INST_LANE;
     case Brig::BRIG_OPCODE_MAX: return Brig::BRIG_INST_MOD;
     case Brig::BRIG_OPCODE_MAXCUID: return Brig::BRIG_INST_BASIC;
     case Brig::BRIG_OPCODE_MAXWAVEID: return Brig::BRIG_INST_BASIC;
+    case Brig::BRIG_OPCODE_MEMFENCE: return Brig::BRIG_INST_MEM_FENCE;
     case Brig::BRIG_OPCODE_MIN: return Brig::BRIG_INST_MOD;
     case Brig::BRIG_OPCODE_MOV: return Brig::BRIG_INST_BASIC;
     case Brig::BRIG_OPCODE_MUL: return Brig::BRIG_INST_MOD;
@@ -5432,9 +6090,9 @@ unsigned PropDescImpl::getFormat(unsigned opcode)
     case Brig::BRIG_OPCODE_OR: return Brig::BRIG_INST_BASIC;
     case Brig::BRIG_OPCODE_PACK: return Brig::BRIG_INST_SOURCE_TYPE;
     case Brig::BRIG_OPCODE_PACKCVT: return Brig::BRIG_INST_SOURCE_TYPE;
+    case Brig::BRIG_OPCODE_PACKETCOMPLETIONSIG: return Brig::BRIG_INST_BASIC;
+    case Brig::BRIG_OPCODE_PACKETID: return Brig::BRIG_INST_BASIC;
     case Brig::BRIG_OPCODE_POPCOUNT: return Brig::BRIG_INST_SOURCE_TYPE;
-    case Brig::BRIG_OPCODE_QID: return Brig::BRIG_INST_BASIC;
-    case Brig::BRIG_OPCODE_QPTR: return Brig::BRIG_INST_SEG;
     case Brig::BRIG_OPCODE_QUERYIMAGEARRAY: return Brig::BRIG_INST_SOURCE_TYPE;
     case Brig::BRIG_OPCODE_QUERYIMAGEDEPTH: return Brig::BRIG_INST_SOURCE_TYPE;
     case Brig::BRIG_OPCODE_QUERYIMAGEFORMAT: return Brig::BRIG_INST_SOURCE_TYPE;
@@ -5444,33 +6102,36 @@ unsigned PropDescImpl::getFormat(unsigned opcode)
     case Brig::BRIG_OPCODE_QUERYSAMPLERBOUNDARY: return Brig::BRIG_INST_SOURCE_TYPE;
     case Brig::BRIG_OPCODE_QUERYSAMPLERCOORD: return Brig::BRIG_INST_SOURCE_TYPE;
     case Brig::BRIG_OPCODE_QUERYSAMPLERFILTER: return Brig::BRIG_INST_SOURCE_TYPE;
+    case Brig::BRIG_OPCODE_QUEUEID: return Brig::BRIG_INST_BASIC;
+    case Brig::BRIG_OPCODE_QUEUEPTR: return Brig::BRIG_INST_SEG;
     case Brig::BRIG_OPCODE_RDIMAGE: return Brig::BRIG_INST_IMAGE;
-    case Brig::BRIG_OPCODE_RECEIVELANE: return Brig::BRIG_INST_LANE;
-    case Brig::BRIG_OPCODE_RELEASEFBAR: return Brig::BRIG_INST_BAR;
+    case Brig::BRIG_OPCODE_RELEASEFBAR: return Brig::BRIG_INST_BASIC;
     case Brig::BRIG_OPCODE_REM: return Brig::BRIG_INST_BASIC;
     case Brig::BRIG_OPCODE_RET: return Brig::BRIG_INST_BASIC;
     case Brig::BRIG_OPCODE_RINT: return Brig::BRIG_INST_MOD;
     case Brig::BRIG_OPCODE_SAD: return Brig::BRIG_INST_SOURCE_TYPE;
     case Brig::BRIG_OPCODE_SADHI: return Brig::BRIG_INST_SOURCE_TYPE;
-    case Brig::BRIG_OPCODE_SEGMENTP: return Brig::BRIG_INST_SEG;
-    case Brig::BRIG_OPCODE_SENDLANE: return Brig::BRIG_INST_LANE;
+    case Brig::BRIG_OPCODE_SEGMENTP: return Brig::BRIG_INST_SEG_CVT;
+    case Brig::BRIG_OPCODE_SERVICEQUEUEPTR: return Brig::BRIG_INST_SEG;
     case Brig::BRIG_OPCODE_SETDETECTEXCEPT: return Brig::BRIG_INST_BASIC;
     case Brig::BRIG_OPCODE_SHL: return Brig::BRIG_INST_BASIC;
     case Brig::BRIG_OPCODE_SHR: return Brig::BRIG_INST_BASIC;
     case Brig::BRIG_OPCODE_SHUFFLE: return Brig::BRIG_INST_BASIC;
+    case Brig::BRIG_OPCODE_SIGNAL: return Brig::BRIG_INST_SIGNAL;
+    case Brig::BRIG_OPCODE_SIGNALNORET: return Brig::BRIG_INST_SIGNAL;
     case Brig::BRIG_OPCODE_SQRT: return Brig::BRIG_INST_MOD;
     case Brig::BRIG_OPCODE_ST: return Brig::BRIG_INST_MEM;
     case Brig::BRIG_OPCODE_STIMAGE: return Brig::BRIG_INST_IMAGE;
-    case Brig::BRIG_OPCODE_STOF: return Brig::BRIG_INST_SEG;
+    case Brig::BRIG_OPCODE_STOF: return Brig::BRIG_INST_SEG_CVT;
+    case Brig::BRIG_OPCODE_STQUEUEWRITEINDEX: return Brig::BRIG_INST_QUEUE;
     case Brig::BRIG_OPCODE_SUB: return Brig::BRIG_INST_MOD;
-    case Brig::BRIG_OPCODE_SYNC: return Brig::BRIG_INST_BAR;
-    case Brig::BRIG_OPCODE_SYSCALL: return Brig::BRIG_INST_BASIC;
     case Brig::BRIG_OPCODE_TRUNC: return Brig::BRIG_INST_MOD;
     case Brig::BRIG_OPCODE_UNPACK: return Brig::BRIG_INST_SOURCE_TYPE;
     case Brig::BRIG_OPCODE_UNPACKCVT: return Brig::BRIG_INST_SOURCE_TYPE;
     case Brig::BRIG_OPCODE_UNPACKHI: return Brig::BRIG_INST_BASIC;
     case Brig::BRIG_OPCODE_UNPACKLO: return Brig::BRIG_INST_BASIC;
-    case Brig::BRIG_OPCODE_WAITFBAR: return Brig::BRIG_INST_BAR;
+    case Brig::BRIG_OPCODE_WAITFBAR: return Brig::BRIG_INST_BR;
+    case Brig::BRIG_OPCODE_WAVEBARRIER: return Brig::BRIG_INST_BR;
     case Brig::BRIG_OPCODE_WAVEID: return Brig::BRIG_INST_BASIC;
     case Brig::BRIG_OPCODE_WORKGROUPID: return Brig::BRIG_INST_BASIC;
     case Brig::BRIG_OPCODE_WORKGROUPSIZE: return Brig::BRIG_INST_BASIC;
@@ -5529,6 +6190,7 @@ unsigned PropDescImpl::PROP_VALUES_MEMSCP[] =
     Brig::BRIG_MEMORY_SCOPE_COMPONENT,
     Brig::BRIG_MEMORY_SCOPE_NONE,
     Brig::BRIG_MEMORY_SCOPE_SYSTEM,
+    Brig::BRIG_MEMORY_SCOPE_WAVEFRONT,
     Brig::BRIG_MEMORY_SCOPE_WORKGROUP,
 };
 
@@ -5539,7 +6201,6 @@ unsigned PropDescImpl::PROP_VALUES_MEMORD[] =
     Brig::BRIG_MEMORY_ORDER_NONE,
     Brig::BRIG_MEMORY_ORDER_RELAXED,
     Brig::BRIG_MEMORY_ORDER_RELEASE,
-    Brig::BRIG_MEMORY_ORDER_SEQUENTIALLY_CONSISTENT,
 };
 
 unsigned PropDescImpl::PROP_VALUES_GEOM[] = 
@@ -5571,41 +6232,20 @@ unsigned PropDescImpl::PROP_VALUES_ATMOP[] =
 
 unsigned PropDescImpl::PROP_VALUES_OPERAND[] = 
 {
-    OPERAND_VAL_ADDR_SEG,
-    OPERAND_VAL_ADDR_TSEG,
+    OPERAND_VAL_ADDR,
     OPERAND_VAL_ARGLIST,
     OPERAND_VAL_CALLTAB,
     OPERAND_VAL_FBARRIER,
     OPERAND_VAL_FUNC,
-    OPERAND_VAL_IMM_0_1_2,
-    OPERAND_VAL_IMM_0_1_2_3,
-    OPERAND_VAL_IMM_1,
-    OPERAND_VAL_IMM_128,
-    OPERAND_VAL_IMM_32,
-    OPERAND_VAL_IMM_64,
+    OPERAND_VAL_IMM0T2,
+    OPERAND_VAL_IMM0T3,
     OPERAND_VAL_IMM,
     OPERAND_VAL_JUMPTAB,
     OPERAND_VAL_LAB,
     OPERAND_VAL_NULL,
-    OPERAND_VAL_REG_1,
-    OPERAND_VAL_REG_128,
-    OPERAND_VAL_REG_32,
-    OPERAND_VAL_REG_64,
     OPERAND_VAL_REG,
-    OPERAND_VAL_REG_V2_1,
-    OPERAND_VAL_REG_V2_128,
-    OPERAND_VAL_REG_V2_32,
-    OPERAND_VAL_REG_V2_64,
     OPERAND_VAL_REG_V2,
-    OPERAND_VAL_REG_V3_1,
-    OPERAND_VAL_REG_V3_128,
-    OPERAND_VAL_REG_V3_32,
-    OPERAND_VAL_REG_V3_64,
     OPERAND_VAL_REG_V3,
-    OPERAND_VAL_REG_V4_1,
-    OPERAND_VAL_REG_V4_128,
-    OPERAND_VAL_REG_V4_32,
-    OPERAND_VAL_REG_V4_64,
     OPERAND_VAL_REG_V4,
     OPERAND_VAL_ROIMAGE,
     OPERAND_VAL_RWIMAGE,
@@ -5625,6 +6265,37 @@ unsigned PropDescImpl::PROP_VALUES_SEGMENT[] =
     Brig::BRIG_SEGMENT_PRIVATE,
     Brig::BRIG_SEGMENT_READONLY,
     Brig::BRIG_SEGMENT_SPILL,
+};
+
+unsigned PropDescImpl::PROP_VALUES_NONULL[] = 
+{
+    0,
+    1,
+};
+
+unsigned PropDescImpl::PROP_VALUES_SIGOP[] = 
+{
+    Brig::BRIG_SIGNAL_ADD,
+    Brig::BRIG_SIGNAL_AND,
+    Brig::BRIG_SIGNAL_CAS,
+    Brig::BRIG_SIGNAL_DEC,
+    Brig::BRIG_SIGNAL_EXCH,
+    Brig::BRIG_SIGNAL_INC,
+    Brig::BRIG_SIGNAL_LD,
+    Brig::BRIG_SIGNAL_MAX,
+    Brig::BRIG_SIGNAL_MIN,
+    Brig::BRIG_SIGNAL_OR,
+    Brig::BRIG_SIGNAL_ST,
+    Brig::BRIG_SIGNAL_SUB,
+    Brig::BRIG_SIGNAL_WAIT_EQ,
+    Brig::BRIG_SIGNAL_WAIT_GTE,
+    Brig::BRIG_SIGNAL_WAIT_LT,
+    Brig::BRIG_SIGNAL_WAIT_NE,
+    Brig::BRIG_SIGNAL_WAITTIMEOUT_EQ,
+    Brig::BRIG_SIGNAL_WAITTIMEOUT_GTE,
+    Brig::BRIG_SIGNAL_WAITTIMEOUT_LT,
+    Brig::BRIG_SIGNAL_WAITTIMEOUT_NE,
+    Brig::BRIG_SIGNAL_XOR,
 };
 
 unsigned PropDescImpl::PROP_VALUES_OPERATOR[] = 
@@ -5664,7 +6335,16 @@ unsigned PropDescImpl::PROP_VALUES_TYPESIZE[] =
     TYPESIZE_VAL_ATOMIC,
     TYPESIZE_VAL_MODEL,
     TYPESIZE_VAL_SEG,
+    TYPESIZE_VAL_SIGNAL,
     TYPESIZE_VAL_INVALID,
+};
+
+unsigned PropDescImpl::PROP_VALUES_MEMSEG[] = 
+{
+    Brig::BRIG_MEMORY_FENCE_BOTH,
+    Brig::BRIG_MEMORY_FENCE_GLOBAL,
+    Brig::BRIG_MEMORY_FENCE_GROUP,
+    Brig::BRIG_MEMORY_FENCE_NONE,
 };
 
 unsigned PropDescImpl::PROP_VALUES_STYPESIZE[] = 
@@ -5693,22 +6373,28 @@ unsigned PropDescImpl::PROP_VALUES_PACKING[] =
 
 unsigned PropDescImpl::PROP_VALUES_ALIGN[] = 
 {
-    0,
-    1,
-};
-
-unsigned PropDescImpl::PROP_VALUES_MEMFNC[] = 
-{
-    Brig::BRIG_MEMORY_FENCE_BOTH,
-    Brig::BRIG_MEMORY_FENCE_GLOBAL,
-    Brig::BRIG_MEMORY_FENCE_GROUP,
-    Brig::BRIG_MEMORY_FENCE_NONE,
+    Brig::BRIG_ALIGNMENT_1,
+    Brig::BRIG_ALIGNMENT_128,
+    Brig::BRIG_ALIGNMENT_16,
+    Brig::BRIG_ALIGNMENT_2,
+    Brig::BRIG_ALIGNMENT_32,
+    Brig::BRIG_ALIGNMENT_4,
+    Brig::BRIG_ALIGNMENT_64,
+    Brig::BRIG_ALIGNMENT_8,
+    Brig::BRIG_ALIGNMENT_NONE,
 };
 
 unsigned PropDescImpl::PROP_VALUES_EQCLASS[] = 
 {
+    EQCLASS_VAL_0,
     EQCLASS_VAL_ANY,
     EQCLASS_VAL_INVALID,
+};
+
+unsigned PropDescImpl::PROP_VALUES_CONST[] = 
+{
+    0,
+    1,
 };
 
 unsigned PropDescImpl::PROP_VALUES_ROUNDING[] = 
@@ -5768,6 +6454,8 @@ unsigned PropDescImpl::PROP_VALUES_TYPE[] =
     Brig::BRIG_TYPE_S8X4,
     Brig::BRIG_TYPE_S8X8,
     Brig::BRIG_TYPE_SAMP,
+    Brig::BRIG_TYPE_SIG32,
+    Brig::BRIG_TYPE_SIG64,
     Brig::BRIG_TYPE_U16,
     Brig::BRIG_TYPE_U16X2,
     Brig::BRIG_TYPE_U16X4,
@@ -5791,17 +6479,21 @@ const unsigned* PropDescImpl::getPropVals(unsigned propId, unsigned& num) // sho
 
     case PROP_ATMOP: 	num = sizeof(PROP_VALUES_ATMOP) / sizeof(unsigned); return PROP_VALUES_ATMOP;
 
+    case PROP_CONST: 	num = sizeof(PROP_VALUES_CONST) / sizeof(unsigned); return PROP_VALUES_CONST;
+
     case PROP_EQCLASS: 	num = sizeof(PROP_VALUES_EQCLASS) / sizeof(unsigned); return PROP_VALUES_EQCLASS;
 
     case PROP_FTZ: 	num = sizeof(PROP_VALUES_FTZ) / sizeof(unsigned); return PROP_VALUES_FTZ;
 
     case PROP_GEOM: 	num = sizeof(PROP_VALUES_GEOM) / sizeof(unsigned); return PROP_VALUES_GEOM;
 
-    case PROP_MEMFNC: 	num = sizeof(PROP_VALUES_MEMFNC) / sizeof(unsigned); return PROP_VALUES_MEMFNC;
-
     case PROP_MEMORD: 	num = sizeof(PROP_VALUES_MEMORD) / sizeof(unsigned); return PROP_VALUES_MEMORD;
 
     case PROP_MEMSCP: 	num = sizeof(PROP_VALUES_MEMSCP) / sizeof(unsigned); return PROP_VALUES_MEMSCP;
+
+    case PROP_MEMSEG: 	num = sizeof(PROP_VALUES_MEMSEG) / sizeof(unsigned); return PROP_VALUES_MEMSEG;
+
+    case PROP_NONULL: 	num = sizeof(PROP_VALUES_NONULL) / sizeof(unsigned); return PROP_VALUES_NONULL;
 
     case PROP_D0:
     case PROP_D1:
@@ -5820,10 +6512,13 @@ const unsigned* PropDescImpl::getPropVals(unsigned propId, unsigned& num) // sho
 
     case PROP_SEGMENT: 	num = sizeof(PROP_VALUES_SEGMENT) / sizeof(unsigned); return PROP_VALUES_SEGMENT;
 
+    case PROP_SIGOP: 	num = sizeof(PROP_VALUES_SIGOP) / sizeof(unsigned); return PROP_VALUES_SIGOP;
+
     case PROP_STYPESIZE: 	num = sizeof(PROP_VALUES_STYPESIZE) / sizeof(unsigned); return PROP_VALUES_STYPESIZE;
 
     case PROP_CTYPE:
     case PROP_ITYPE:
+    case PROP_SIGTYPE:
     case PROP_STYPE:
     case PROP_TYPE: 	num = sizeof(PROP_VALUES_TYPE) / sizeof(unsigned); return PROP_VALUES_TYPE;
 
@@ -5850,6 +6545,54 @@ unsigned PropDescImpl::REQ_PROPS_NEG[] =
     PROP_ROUNDING,       // Plain
 };
 
+unsigned PropDescImpl::REQ_PROPS_ACTIVELANECOUNT[] =
+{
+    PROP_STYPE,          // Leading Primary
+    PROP_TYPE,           // Leading Primary
+    PROP_D0,             // Dependent
+    PROP_S1,             // Dependent
+    PROP_S2,             // Dependent
+    PROP_S3,             // Dependent
+    PROP_S4,             // Dependent
+    PROP_WIDTH,          // Plain
+};
+
+unsigned PropDescImpl::REQ_PROPS_ACTIVELANEID[] =
+{
+    PROP_STYPE,          // Leading Primary
+    PROP_TYPE,           // Leading Primary
+    PROP_D0,             // Dependent
+    PROP_S1,             // Dependent
+    PROP_S2,             // Dependent
+    PROP_S3,             // Dependent
+    PROP_S4,             // Dependent
+    PROP_WIDTH,          // Plain
+};
+
+unsigned PropDescImpl::REQ_PROPS_ACTIVELANEMASK[] =
+{
+    PROP_STYPE,          // Leading Primary
+    PROP_TYPE,           // Leading Primary
+    PROP_D0,             // Dependent
+    PROP_S1,             // Dependent
+    PROP_S2,             // Dependent
+    PROP_S3,             // Dependent
+    PROP_S4,             // Dependent
+    PROP_WIDTH,          // Plain
+};
+
+unsigned PropDescImpl::REQ_PROPS_ACTIVELANESHUFFLE[] =
+{
+    PROP_STYPE,          // Leading Primary
+    PROP_TYPE,           // Leading Primary
+    PROP_D0,             // Dependent
+    PROP_S1,             // Dependent
+    PROP_S2,             // Dependent
+    PROP_S3,             // Dependent
+    PROP_S4,             // Dependent
+    PROP_WIDTH,          // Plain
+};
+
 unsigned PropDescImpl::REQ_PROPS_ADD[] =
 {
     PROP_TYPE,           // Leading Primary
@@ -5863,9 +6606,20 @@ unsigned PropDescImpl::REQ_PROPS_ADD[] =
     PROP_S4,             // Dependent
 };
 
+unsigned PropDescImpl::REQ_PROPS_ADDQ_WRT[] =
+{
+    PROP_TYPE,           // Leading Primary
+    PROP_SEGMENT,        // Primary
+    PROP_D0,             // Dependent
+    PROP_S1,             // Dependent
+    PROP_S2,             // Dependent
+    PROP_S3,             // Dependent
+    PROP_S4,             // Dependent
+    PROP_MEMORD,         // Plain
+};
+
 unsigned PropDescImpl::REQ_PROPS_ALLOCA[] =
 {
-    PROP_STYPE,          // Leading Primary
     PROP_TYPE,           // Leading Primary
     PROP_SEGMENT,        // Primary
     PROP_S0,             // Dependent
@@ -5873,6 +6627,10 @@ unsigned PropDescImpl::REQ_PROPS_ALLOCA[] =
     PROP_S2,             // Dependent
     PROP_S3,             // Dependent
     PROP_S4,             // Dependent
+    PROP_ALIGN,          // Plain
+    PROP_CONST,          // Plain
+    PROP_EQCLASS,        // Plain
+    PROP_WIDTH,          // Plain
 };
 
 unsigned PropDescImpl::REQ_PROPS_AND[] =
@@ -5885,7 +6643,7 @@ unsigned PropDescImpl::REQ_PROPS_AND[] =
     PROP_S4,             // Dependent
 };
 
-unsigned PropDescImpl::REQ_PROPS_FBAR_SYNC_WIDTH[] =
+unsigned PropDescImpl::REQ_PROPS_FBAR_WIDTH[] =
 {
     PROP_TYPE,           // Leading Primary
     PROP_S0,             // Dependent
@@ -5893,9 +6651,6 @@ unsigned PropDescImpl::REQ_PROPS_FBAR_SYNC_WIDTH[] =
     PROP_S2,             // Dependent
     PROP_S3,             // Dependent
     PROP_S4,             // Dependent
-    PROP_MEMFNC,         // Plain
-    PROP_MEMORD,         // Plain
-    PROP_MEMSCP,         // Plain
     PROP_WIDTH,          // Plain
 };
 
@@ -5905,17 +6660,19 @@ unsigned PropDescImpl::REQ_PROPS_ATOMIC[] =
     PROP_ATMOP,          // Primary
     PROP_SEGMENT,        // Primary
     PROP_MEMORD,         // Conditional
+    PROP_MEMSCP,         // Conditional
     PROP_S2,             // Conditional
     PROP_S3,             // Conditional
     PROP_D0,             // Dependent
     PROP_S1,             // Dependent
     PROP_S4,             // Dependent
-    PROP_MEMSCP,         // Plain
+    PROP_EQCLASS,        // Plain
 };
 
 unsigned PropDescImpl::REQ_PROPS_ATOMIC_IMAGE[] =
 {
     PROP_CTYPE,          // Leading Primary
+    PROP_ITYPE,          // Leading Primary
     PROP_TYPE,           // Leading Primary
     PROP_ATMOP,          // Primary
     PROP_GEOM,           // Primary
@@ -5924,12 +6681,13 @@ unsigned PropDescImpl::REQ_PROPS_ATOMIC_IMAGE[] =
     PROP_D0,             // Dependent
     PROP_S1,             // Dependent
     PROP_S3,             // Dependent
-    PROP_ITYPE,          // Plain
+    PROP_EQCLASS,        // Plain
 };
 
 unsigned PropDescImpl::REQ_PROPS_ATOMIC_NORET_IMAGE[] =
 {
     PROP_CTYPE,          // Leading Primary
+    PROP_ITYPE,          // Leading Primary
     PROP_TYPE,           // Leading Primary
     PROP_ATMOP,          // Primary
     PROP_GEOM,           // Primary
@@ -5938,7 +6696,7 @@ unsigned PropDescImpl::REQ_PROPS_ATOMIC_NORET_IMAGE[] =
     PROP_S0,             // Dependent
     PROP_S2,             // Dependent
     PROP_S4,             // Dependent
-    PROP_ITYPE,          // Plain
+    PROP_EQCLASS,        // Plain
 };
 
 unsigned PropDescImpl::REQ_PROPS_ATOMIC_NORET[] =
@@ -5947,12 +6705,13 @@ unsigned PropDescImpl::REQ_PROPS_ATOMIC_NORET[] =
     PROP_ATMOP,          // Primary
     PROP_SEGMENT,        // Primary
     PROP_MEMORD,         // Conditional
+    PROP_MEMSCP,         // Conditional
     PROP_S2,             // Conditional
     PROP_S0,             // Dependent
     PROP_S1,             // Dependent
     PROP_S3,             // Dependent
     PROP_S4,             // Dependent
-    PROP_MEMSCP,         // Plain
+    PROP_EQCLASS,        // Plain
 };
 
 unsigned PropDescImpl::REQ_PROPS_BARRIER[] =
@@ -5963,9 +6722,6 @@ unsigned PropDescImpl::REQ_PROPS_BARRIER[] =
     PROP_S2,             // Dependent
     PROP_S3,             // Dependent
     PROP_S4,             // Dependent
-    PROP_MEMFNC,         // Plain
-    PROP_MEMORD,         // Plain
-    PROP_MEMSCP,         // Plain
     PROP_WIDTH,          // Plain
 };
 
@@ -6059,6 +6815,18 @@ unsigned PropDescImpl::REQ_PROPS_CALL[] =
     PROP_S0,             // Dependent
     PROP_S2,             // Dependent
     PROP_S4,             // Dependent
+};
+
+unsigned PropDescImpl::REQ_PROPS_CASQ_WRT[] =
+{
+    PROP_TYPE,           // Leading Primary
+    PROP_SEGMENT,        // Primary
+    PROP_D0,             // Dependent
+    PROP_S1,             // Dependent
+    PROP_S2,             // Dependent
+    PROP_S3,             // Dependent
+    PROP_S4,             // Dependent
+    PROP_MEMORD,         // Plain
 };
 
 unsigned PropDescImpl::REQ_PROPS_CBR[] =
@@ -6175,30 +6943,6 @@ unsigned PropDescImpl::REQ_PROPS_COPYSIGN[] =
     PROP_ROUNDING,       // Plain
 };
 
-unsigned PropDescImpl::REQ_PROPS_COUNTLANE[] =
-{
-    PROP_STYPE,          // Leading Primary
-    PROP_TYPE,           // Leading Primary
-    PROP_D0,             // Dependent
-    PROP_S1,             // Dependent
-    PROP_S2,             // Dependent
-    PROP_S3,             // Dependent
-    PROP_S4,             // Dependent
-    PROP_WIDTH,          // Plain
-};
-
-unsigned PropDescImpl::REQ_PROPS_COUNTUPLANE[] =
-{
-    PROP_STYPE,          // Leading Primary
-    PROP_TYPE,           // Leading Primary
-    PROP_D0,             // Dependent
-    PROP_S1,             // Dependent
-    PROP_S2,             // Dependent
-    PROP_S3,             // Dependent
-    PROP_S4,             // Dependent
-    PROP_WIDTH,          // Plain
-};
-
 unsigned PropDescImpl::REQ_PROPS_SPEC_REG[] =
 {
     PROP_TYPE,           // Leading Primary
@@ -6235,18 +6979,6 @@ unsigned PropDescImpl::REQ_PROPS_CVT[] =
 unsigned PropDescImpl::REQ_PROPS_DEBUGTRAP[] =
 {
     PROP_TYPE,           // Leading Primary
-    PROP_S0,             // Dependent
-    PROP_S1,             // Dependent
-    PROP_S2,             // Dependent
-    PROP_S3,             // Dependent
-    PROP_S4,             // Dependent
-};
-
-unsigned PropDescImpl::REQ_PROPS_AQLPTR[] =
-{
-    PROP_STYPE,          // Leading Primary
-    PROP_TYPE,           // Leading Primary
-    PROP_SEGMENT,        // Primary
     PROP_S0,             // Dependent
     PROP_S1,             // Dependent
     PROP_S2,             // Dependent
@@ -6325,6 +7057,7 @@ unsigned PropDescImpl::REQ_PROPS_F2S[] =
     PROP_S2,             // Dependent
     PROP_S3,             // Dependent
     PROP_S4,             // Dependent
+    PROP_NONULL,         // Plain
 };
 
 unsigned PropDescImpl::REQ_PROPS_GCN_APPEND_CONSUME[] =
@@ -6349,6 +7082,7 @@ unsigned PropDescImpl::REQ_PROPS_GCN_ATOMIC[] =
     PROP_D0,             // Dependent
     PROP_S1,             // Dependent
     PROP_S4,             // Dependent
+    PROP_EQCLASS,        // Plain
     PROP_MEMSCP,         // Plain
 };
 
@@ -6363,6 +7097,7 @@ unsigned PropDescImpl::REQ_PROPS_GCN_ATOMIC_NORET[] =
     PROP_S1,             // Dependent
     PROP_S3,             // Dependent
     PROP_S4,             // Dependent
+    PROP_EQCLASS,        // Plain
     PROP_MEMSCP,         // Plain
 };
 
@@ -6426,11 +7161,12 @@ unsigned PropDescImpl::REQ_PROPS_GCN_LD[] =
     PROP_S3,             // Dependent
     PROP_S4,             // Dependent
     PROP_ALIGN,          // Plain
+    PROP_CONST,          // Plain
     PROP_EQCLASS,        // Plain
     PROP_WIDTH,          // Plain
 };
 
-unsigned PropDescImpl::REQ_PROPS_GCN_MAD[] =
+unsigned PropDescImpl::REQ_PROPS_GCN_MADS[] =
 {
     PROP_TYPE,           // Leading Primary
     PROP_D0,             // Dependent
@@ -6440,7 +7176,27 @@ unsigned PropDescImpl::REQ_PROPS_GCN_MAD[] =
     PROP_S4,             // Dependent
 };
 
-unsigned PropDescImpl::REQ_PROPS_GCN_MIN_MAX_MED[] =
+unsigned PropDescImpl::REQ_PROPS_GCN_MADU[] =
+{
+    PROP_TYPE,           // Leading Primary
+    PROP_D0,             // Dependent
+    PROP_S1,             // Dependent
+    PROP_S2,             // Dependent
+    PROP_S3,             // Dependent
+    PROP_S4,             // Dependent
+};
+
+unsigned PropDescImpl::REQ_PROPS_GCN_MIN_MAX[] =
+{
+    PROP_TYPE,           // Leading Primary
+    PROP_D0,             // Dependent
+    PROP_S1,             // Dependent
+    PROP_S2,             // Dependent
+    PROP_S3,             // Dependent
+    PROP_S4,             // Dependent
+};
+
+unsigned PropDescImpl::REQ_PROPS_GCN_MIN_MAX_MED3[] =
 {
     PROP_TYPE,           // Leading Primary
     PROP_D0,             // Dependent
@@ -6520,6 +7276,7 @@ unsigned PropDescImpl::REQ_PROPS_GCN_ST[] =
     PROP_S3,             // Dependent
     PROP_S4,             // Dependent
     PROP_ALIGN,          // Plain
+    PROP_CONST,          // Plain
     PROP_EQCLASS,        // Plain
     PROP_WIDTH,          // Plain
 };
@@ -6542,30 +7299,13 @@ unsigned PropDescImpl::REQ_PROPS_FBAR_NONE[] =
     PROP_S2,             // Dependent
     PROP_S3,             // Dependent
     PROP_S4,             // Dependent
-    PROP_MEMFNC,         // Plain
-    PROP_MEMORD,         // Plain
-    PROP_MEMSCP,         // Plain
-    PROP_WIDTH,          // Plain
-};
-
-unsigned PropDescImpl::REQ_PROPS_FBAR_WIDTH[] =
-{
-    PROP_TYPE,           // Leading Primary
-    PROP_S0,             // Dependent
-    PROP_S1,             // Dependent
-    PROP_S2,             // Dependent
-    PROP_S3,             // Dependent
-    PROP_S4,             // Dependent
-    PROP_MEMFNC,         // Plain
-    PROP_MEMORD,         // Plain
-    PROP_MEMSCP,         // Plain
-    PROP_WIDTH,          // Plain
 };
 
 unsigned PropDescImpl::REQ_PROPS_LD[] =
 {
     PROP_TYPE,           // Leading Primary
     PROP_SEGMENT,        // Primary
+    PROP_CONST,          // Conditional
     PROP_D0,             // Conditional
     PROP_S1,             // Dependent
     PROP_S2,             // Dependent
@@ -6610,14 +7350,27 @@ unsigned PropDescImpl::REQ_PROPS_LDF[] =
 unsigned PropDescImpl::REQ_PROPS_LD_IMAGE[] =
 {
     PROP_CTYPE,          // Leading Primary
+    PROP_ITYPE,          // Leading Primary
     PROP_TYPE,           // Leading Primary
     PROP_GEOM,           // Primary
-    PROP_ITYPE,          // Primary
-    PROP_S1,             // Conditional
     PROP_S2,             // Conditional
     PROP_D0,             // Dependent
+    PROP_S1,             // Dependent
     PROP_S3,             // Dependent
     PROP_S4,             // Dependent
+    PROP_EQCLASS,        // Plain
+};
+
+unsigned PropDescImpl::REQ_PROPS_LDQ[] =
+{
+    PROP_TYPE,           // Leading Primary
+    PROP_SEGMENT,        // Primary
+    PROP_D0,             // Dependent
+    PROP_S1,             // Dependent
+    PROP_S2,             // Dependent
+    PROP_S3,             // Dependent
+    PROP_S4,             // Dependent
+    PROP_MEMORD,         // Plain
 };
 
 unsigned PropDescImpl::REQ_PROPS_LERP[] =
@@ -6650,18 +7403,6 @@ unsigned PropDescImpl::REQ_PROPS_MAD24[] =
     PROP_S4,             // Dependent
 };
 
-unsigned PropDescImpl::REQ_PROPS_MASKLANE[] =
-{
-    PROP_STYPE,          // Leading Primary
-    PROP_TYPE,           // Leading Primary
-    PROP_D0,             // Dependent
-    PROP_S1,             // Dependent
-    PROP_S2,             // Dependent
-    PROP_S3,             // Dependent
-    PROP_S4,             // Dependent
-    PROP_WIDTH,          // Plain
-};
-
 unsigned PropDescImpl::REQ_PROPS_MAX[] =
 {
     PROP_TYPE,           // Leading Primary
@@ -6675,11 +7416,24 @@ unsigned PropDescImpl::REQ_PROPS_MAX[] =
     PROP_ROUNDING,       // Plain
 };
 
+unsigned PropDescImpl::REQ_PROPS_MEMFENCE[] =
+{
+    PROP_TYPE,           // Leading Primary
+    PROP_MEMSEG,         // Primary
+    PROP_MEMSCP,         // Conditional
+    PROP_S0,             // Dependent
+    PROP_S1,             // Dependent
+    PROP_S2,             // Dependent
+    PROP_S3,             // Dependent
+    PROP_S4,             // Dependent
+    PROP_MEMORD,         // Plain
+};
+
 unsigned PropDescImpl::REQ_PROPS_MOV[] =
 {
     PROP_TYPE,           // Leading Primary
+    PROP_S1,             // Conditional
     PROP_D0,             // Dependent
-    PROP_S1,             // Dependent
     PROP_S2,             // Dependent
     PROP_S3,             // Dependent
     PROP_S4,             // Dependent
@@ -6773,7 +7527,6 @@ unsigned PropDescImpl::REQ_PROPS_TRIG[] =
 
 unsigned PropDescImpl::REQ_PROPS_NULLPTR[] =
 {
-    PROP_STYPE,          // Leading Primary
     PROP_TYPE,           // Leading Primary
     PROP_SEGMENT,        // Primary
     PROP_S0,             // Dependent
@@ -6805,6 +7558,16 @@ unsigned PropDescImpl::REQ_PROPS_PACKCVT[] =
     PROP_S4,             // Dependent
 };
 
+unsigned PropDescImpl::REQ_PROPS_PACKET[] =
+{
+    PROP_TYPE,           // Leading Primary
+    PROP_S0,             // Dependent
+    PROP_S1,             // Dependent
+    PROP_S2,             // Dependent
+    PROP_S3,             // Dependent
+    PROP_S4,             // Dependent
+};
+
 unsigned PropDescImpl::REQ_PROPS_POPCOUNT[] =
 {
     PROP_STYPE,          // Leading Primary
@@ -6820,8 +7583,8 @@ unsigned PropDescImpl::REQ_PROPS_QUERYIMAGE[] =
 {
     PROP_STYPE,          // Leading Primary
     PROP_TYPE,           // Leading Primary
-    PROP_S1,             // Conditional
     PROP_D0,             // Dependent
+    PROP_S1,             // Dependent
     PROP_S2,             // Dependent
     PROP_S3,             // Dependent
     PROP_S4,             // Dependent
@@ -6849,29 +7612,29 @@ unsigned PropDescImpl::REQ_PROPS_QUERYSAMPLER[] =
     PROP_S4,             // Dependent
 };
 
-unsigned PropDescImpl::REQ_PROPS_RDIMAGE[] =
+unsigned PropDescImpl::REQ_PROPS_GPTR[] =
 {
-    PROP_CTYPE,          // Leading Primary
     PROP_TYPE,           // Leading Primary
-    PROP_GEOM,           // Primary
-    PROP_ITYPE,          // Primary
-    PROP_S1,             // Conditional
-    PROP_S3,             // Conditional
-    PROP_D0,             // Dependent
-    PROP_S2,             // Dependent
-    PROP_S4,             // Dependent
-};
-
-unsigned PropDescImpl::REQ_PROPS_SENDLANE[] =
-{
-    PROP_STYPE,          // Leading Primary
-    PROP_TYPE,           // Leading Primary
-    PROP_D0,             // Dependent
+    PROP_SEGMENT,        // Primary
+    PROP_S0,             // Dependent
     PROP_S1,             // Dependent
     PROP_S2,             // Dependent
     PROP_S3,             // Dependent
     PROP_S4,             // Dependent
-    PROP_WIDTH,          // Plain
+};
+
+unsigned PropDescImpl::REQ_PROPS_RDIMAGE[] =
+{
+    PROP_CTYPE,          // Leading Primary
+    PROP_ITYPE,          // Leading Primary
+    PROP_TYPE,           // Leading Primary
+    PROP_GEOM,           // Primary
+    PROP_S3,             // Conditional
+    PROP_D0,             // Dependent
+    PROP_S1,             // Dependent
+    PROP_S2,             // Dependent
+    PROP_S4,             // Dependent
+    PROP_EQCLASS,        // Plain
 };
 
 unsigned PropDescImpl::REQ_PROPS_RET[] =
@@ -6916,6 +7679,7 @@ unsigned PropDescImpl::REQ_PROPS_SEGMENTP[] =
     PROP_S2,             // Dependent
     PROP_S3,             // Dependent
     PROP_S4,             // Dependent
+    PROP_NONULL,         // Plain
 };
 
 unsigned PropDescImpl::REQ_PROPS_SHIFT[] =
@@ -6931,9 +7695,35 @@ unsigned PropDescImpl::REQ_PROPS_SHIFT[] =
 unsigned PropDescImpl::REQ_PROPS_SHUFFLE[] =
 {
     PROP_TYPE,           // Leading Primary
+    PROP_S3,             // Conditional
     PROP_D0,             // Dependent
     PROP_S1,             // Dependent
     PROP_S2,             // Dependent
+    PROP_S4,             // Dependent
+};
+
+unsigned PropDescImpl::REQ_PROPS_SIGNAL[] =
+{
+    PROP_TYPE,           // Leading Primary
+    PROP_SIGOP,          // Primary
+    PROP_MEMORD,         // Conditional
+    PROP_S1,             // Conditional
+    PROP_S2,             // Conditional
+    PROP_S3,             // Conditional
+    PROP_SIGTYPE,        // Conditional
+    PROP_D0,             // Dependent
+    PROP_S4,             // Dependent
+};
+
+unsigned PropDescImpl::REQ_PROPS_SIGNAL_NORET[] =
+{
+    PROP_TYPE,           // Leading Primary
+    PROP_SIGOP,          // Primary
+    PROP_MEMORD,         // Conditional
+    PROP_S0,             // Conditional
+    PROP_S2,             // Conditional
+    PROP_SIGTYPE,        // Conditional
+    PROP_S1,             // Dependent
     PROP_S3,             // Dependent
     PROP_S4,             // Dependent
 };
@@ -6961,6 +7751,7 @@ unsigned PropDescImpl::REQ_PROPS_ST[] =
     PROP_S3,             // Dependent
     PROP_S4,             // Dependent
     PROP_ALIGN,          // Plain
+    PROP_CONST,          // Plain
     PROP_EQCLASS,        // Plain
     PROP_WIDTH,          // Plain
 };
@@ -6968,6 +7759,7 @@ unsigned PropDescImpl::REQ_PROPS_ST[] =
 unsigned PropDescImpl::REQ_PROPS_ST_IMAGE[] =
 {
     PROP_CTYPE,          // Leading Primary
+    PROP_ITYPE,          // Leading Primary
     PROP_TYPE,           // Leading Primary
     PROP_GEOM,           // Primary
     PROP_S2,             // Conditional
@@ -6975,7 +7767,7 @@ unsigned PropDescImpl::REQ_PROPS_ST_IMAGE[] =
     PROP_S1,             // Dependent
     PROP_S3,             // Dependent
     PROP_S4,             // Dependent
-    PROP_ITYPE,          // Plain
+    PROP_EQCLASS,        // Plain
 };
 
 unsigned PropDescImpl::REQ_PROPS_S2F[] =
@@ -6988,30 +7780,19 @@ unsigned PropDescImpl::REQ_PROPS_S2F[] =
     PROP_S2,             // Dependent
     PROP_S3,             // Dependent
     PROP_S4,             // Dependent
+    PROP_NONULL,         // Plain
 };
 
-unsigned PropDescImpl::REQ_PROPS_SYNC[] =
+unsigned PropDescImpl::REQ_PROPS_STQ_WRT[] =
 {
     PROP_TYPE,           // Leading Primary
+    PROP_SEGMENT,        // Primary
     PROP_S0,             // Dependent
     PROP_S1,             // Dependent
     PROP_S2,             // Dependent
     PROP_S3,             // Dependent
     PROP_S4,             // Dependent
-    PROP_MEMFNC,         // Plain
     PROP_MEMORD,         // Plain
-    PROP_MEMSCP,         // Plain
-    PROP_WIDTH,          // Plain
-};
-
-unsigned PropDescImpl::REQ_PROPS_SYSCALL[] =
-{
-    PROP_TYPE,           // Leading Primary
-    PROP_S0,             // Dependent
-    PROP_S1,             // Dependent
-    PROP_S2,             // Dependent
-    PROP_S3,             // Dependent
-    PROP_S4,             // Dependent
 };
 
 unsigned PropDescImpl::REQ_PROPS_UNPACK[] =
@@ -7046,6 +7827,17 @@ unsigned PropDescImpl::REQ_PROPS_UNPACKX[] =
     PROP_S4,             // Dependent
 };
 
+unsigned PropDescImpl::REQ_PROPS_WAVEBARRIER[] =
+{
+    PROP_TYPE,           // Leading Primary
+    PROP_S0,             // Dependent
+    PROP_S1,             // Dependent
+    PROP_S2,             // Dependent
+    PROP_S3,             // Dependent
+    PROP_S4,             // Dependent
+    PROP_WIDTH,          // Plain
+};
+
 const unsigned* PropDescImpl::getProps(unsigned opcode, unsigned& prm, unsigned& sec) 
 {
     switch(opcode)
@@ -7056,15 +7848,40 @@ const unsigned* PropDescImpl::getProps(unsigned opcode, unsigned& prm, unsigned&
         sec = 8;
         return REQ_PROPS_NEG;
 
+    case Brig::BRIG_OPCODE_ACTIVELANECOUNT:
+        prm = 2;
+        sec = 6;
+        return REQ_PROPS_ACTIVELANECOUNT;
+
+    case Brig::BRIG_OPCODE_ACTIVELANEID:
+        prm = 2;
+        sec = 6;
+        return REQ_PROPS_ACTIVELANEID;
+
+    case Brig::BRIG_OPCODE_ACTIVELANEMASK:
+        prm = 2;
+        sec = 6;
+        return REQ_PROPS_ACTIVELANEMASK;
+
+    case Brig::BRIG_OPCODE_ACTIVELANESHUFFLE:
+        prm = 2;
+        sec = 6;
+        return REQ_PROPS_ACTIVELANESHUFFLE;
+
     case Brig::BRIG_OPCODE_ADD:
     case Brig::BRIG_OPCODE_SUB:
         prm = 1;
         sec = 8;
         return REQ_PROPS_ADD;
 
+    case Brig::BRIG_OPCODE_ADDQUEUEWRITEINDEX:
+        prm = 2;
+        sec = 6;
+        return REQ_PROPS_ADDQ_WRT;
+
     case Brig::BRIG_OPCODE_ALLOCA:
-        prm = 3;
-        sec = 5;
+        prm = 2;
+        sec = 9;
         return REQ_PROPS_ALLOCA;
 
     case Brig::BRIG_OPCODE_AND:
@@ -7075,34 +7892,36 @@ const unsigned* PropDescImpl::getProps(unsigned opcode, unsigned& prm, unsigned&
         return REQ_PROPS_AND;
 
     case Brig::BRIG_OPCODE_ARRIVEFBAR:
+    case Brig::BRIG_OPCODE_JOINFBAR:
+    case Brig::BRIG_OPCODE_LEAVEFBAR:
     case Brig::BRIG_OPCODE_WAITFBAR:
         prm = 1;
-        sec = 9;
-        return REQ_PROPS_FBAR_SYNC_WIDTH;
+        sec = 6;
+        return REQ_PROPS_FBAR_WIDTH;
 
     case Brig::BRIG_OPCODE_ATOMIC:
         prm = 3;
-        sec = 7;
+        sec = 8;
         return REQ_PROPS_ATOMIC;
 
     case Brig::BRIG_OPCODE_ATOMICIMAGE:
-        prm = 4;
+        prm = 5;
         sec = 6;
         return REQ_PROPS_ATOMIC_IMAGE;
 
     case Brig::BRIG_OPCODE_ATOMICIMAGENORET:
-        prm = 4;
+        prm = 5;
         sec = 6;
         return REQ_PROPS_ATOMIC_NORET_IMAGE;
 
     case Brig::BRIG_OPCODE_ATOMICNORET:
         prm = 3;
-        sec = 7;
+        sec = 8;
         return REQ_PROPS_ATOMIC_NORET;
 
     case Brig::BRIG_OPCODE_BARRIER:
         prm = 1;
-        sec = 9;
+        sec = 6;
         return REQ_PROPS_BARRIER;
 
     case Brig::BRIG_OPCODE_BITALIGN:
@@ -7153,6 +7972,11 @@ const unsigned* PropDescImpl::getProps(unsigned opcode, unsigned& prm, unsigned&
         sec = 5;
         return REQ_PROPS_CALL;
 
+    case Brig::BRIG_OPCODE_CASQUEUEWRITEINDEX:
+        prm = 2;
+        sec = 6;
+        return REQ_PROPS_CASQ_WRT;
+
     case Brig::BRIG_OPCODE_CBR:
         prm = 2;
         sec = 5;
@@ -7178,7 +8002,7 @@ const unsigned* PropDescImpl::getProps(unsigned opcode, unsigned& prm, unsigned&
         return REQ_PROPS_SPEC_EXCEPT;
 
     case Brig::BRIG_OPCODE_CLOCK:
-    case Brig::BRIG_OPCODE_DISPATCHID:
+    case Brig::BRIG_OPCODE_PACKETID:
         prm = 1;
         sec = 5;
         return REQ_PROPS_SPEC_CLOCK;
@@ -7208,23 +8032,13 @@ const unsigned* PropDescImpl::getProps(unsigned opcode, unsigned& prm, unsigned&
         sec = 8;
         return REQ_PROPS_COPYSIGN;
 
-    case Brig::BRIG_OPCODE_COUNTLANE:
-        prm = 2;
-        sec = 6;
-        return REQ_PROPS_COUNTLANE;
-
-    case Brig::BRIG_OPCODE_COUNTUPLANE:
-        prm = 2;
-        sec = 6;
-        return REQ_PROPS_COUNTUPLANE;
-
     case Brig::BRIG_OPCODE_CUID:
     case Brig::BRIG_OPCODE_DIM:
     case Brig::BRIG_OPCODE_GETDETECTEXCEPT:
     case Brig::BRIG_OPCODE_LANEID:
     case Brig::BRIG_OPCODE_MAXCUID:
     case Brig::BRIG_OPCODE_MAXWAVEID:
-    case Brig::BRIG_OPCODE_QID:
+    case Brig::BRIG_OPCODE_QUEUEID:
     case Brig::BRIG_OPCODE_WAVEID:
     case Brig::BRIG_OPCODE_WORKITEMFLATABSID:
     case Brig::BRIG_OPCODE_WORKITEMFLATID:
@@ -7252,12 +8066,6 @@ const unsigned* PropDescImpl::getProps(unsigned opcode, unsigned& prm, unsigned&
         prm = 1;
         sec = 5;
         return REQ_PROPS_DEBUGTRAP;
-
-    case Brig::BRIG_OPCODE_DISPATCHPTR:
-    case Brig::BRIG_OPCODE_QPTR:
-        prm = 3;
-        sec = 5;
-        return REQ_PROPS_AQLPTR;
 
     case Brig::BRIG_OPCODE_DIV:
         prm = 1;
@@ -7287,7 +8095,7 @@ const unsigned* PropDescImpl::getProps(unsigned opcode, unsigned& prm, unsigned&
 
     case Brig::BRIG_OPCODE_FTOS:
         prm = 3;
-        sec = 5;
+        sec = 6;
         return REQ_PROPS_F2S;
 
     case Brig::BRIG_OPCODE_GCNAPPEND:
@@ -7298,12 +8106,12 @@ const unsigned* PropDescImpl::getProps(unsigned opcode, unsigned& prm, unsigned&
 
     case Brig::BRIG_OPCODE_GCNATOMIC:
         prm = 3;
-        sec = 7;
+        sec = 8;
         return REQ_PROPS_GCN_ATOMIC;
 
     case Brig::BRIG_OPCODE_GCNATOMICNORET:
         prm = 3;
-        sec = 7;
+        sec = 8;
         return REQ_PROPS_GCN_ATOMIC_NORET;
 
     case Brig::BRIG_OPCODE_GCNB32XCHG:
@@ -7334,21 +8142,31 @@ const unsigned* PropDescImpl::getProps(unsigned opcode, unsigned& prm, unsigned&
 
     case Brig::BRIG_OPCODE_GCNLD:
         prm = 2;
-        sec = 8;
+        sec = 9;
         return REQ_PROPS_GCN_LD;
 
     case Brig::BRIG_OPCODE_GCNMADS:
+        prm = 1;
+        sec = 5;
+        return REQ_PROPS_GCN_MADS;
+
     case Brig::BRIG_OPCODE_GCNMADU:
         prm = 1;
         sec = 5;
-        return REQ_PROPS_GCN_MAD;
+        return REQ_PROPS_GCN_MADU;
+
+    case Brig::BRIG_OPCODE_GCNMAX:
+    case Brig::BRIG_OPCODE_GCNMIN:
+        prm = 1;
+        sec = 5;
+        return REQ_PROPS_GCN_MIN_MAX;
 
     case Brig::BRIG_OPCODE_GCNMAX3:
     case Brig::BRIG_OPCODE_GCNMED3:
     case Brig::BRIG_OPCODE_GCNMIN3:
         prm = 1;
         sec = 5;
-        return REQ_PROPS_GCN_MIN_MAX_MED;
+        return REQ_PROPS_GCN_MIN_MAX_MED3;
 
     case Brig::BRIG_OPCODE_GCNMQSAD:
         prm = 1;
@@ -7385,7 +8203,7 @@ const unsigned* PropDescImpl::getProps(unsigned opcode, unsigned& prm, unsigned&
 
     case Brig::BRIG_OPCODE_GCNST:
         prm = 2;
-        sec = 8;
+        sec = 9;
         return REQ_PROPS_GCN_ST;
 
     case Brig::BRIG_OPCODE_GCNTRIG_PREOP:
@@ -7396,18 +8214,12 @@ const unsigned* PropDescImpl::getProps(unsigned opcode, unsigned& prm, unsigned&
     case Brig::BRIG_OPCODE_INITFBAR:
     case Brig::BRIG_OPCODE_RELEASEFBAR:
         prm = 1;
-        sec = 9;
+        sec = 5;
         return REQ_PROPS_FBAR_NONE;
-
-    case Brig::BRIG_OPCODE_JOINFBAR:
-    case Brig::BRIG_OPCODE_LEAVEFBAR:
-        prm = 1;
-        sec = 9;
-        return REQ_PROPS_FBAR_WIDTH;
 
     case Brig::BRIG_OPCODE_LD:
         prm = 2;
-        sec = 8;
+        sec = 9;
         return REQ_PROPS_LD;
 
     case Brig::BRIG_OPCODE_LDA:
@@ -7427,8 +8239,14 @@ const unsigned* PropDescImpl::getProps(unsigned opcode, unsigned& prm, unsigned&
 
     case Brig::BRIG_OPCODE_LDIMAGE:
         prm = 4;
-        sec = 5;
+        sec = 6;
         return REQ_PROPS_LD_IMAGE;
+
+    case Brig::BRIG_OPCODE_LDQUEUEREADINDEX:
+    case Brig::BRIG_OPCODE_LDQUEUEWRITEINDEX:
+        prm = 2;
+        sec = 6;
+        return REQ_PROPS_LDQ;
 
     case Brig::BRIG_OPCODE_LERP:
         prm = 1;
@@ -7446,16 +8264,16 @@ const unsigned* PropDescImpl::getProps(unsigned opcode, unsigned& prm, unsigned&
         sec = 5;
         return REQ_PROPS_MAD24;
 
-    case Brig::BRIG_OPCODE_MASKLANE:
-        prm = 2;
-        sec = 6;
-        return REQ_PROPS_MASKLANE;
-
     case Brig::BRIG_OPCODE_MAX:
     case Brig::BRIG_OPCODE_MIN:
         prm = 1;
         sec = 8;
         return REQ_PROPS_MAX;
+
+    case Brig::BRIG_OPCODE_MEMFENCE:
+        prm = 2;
+        sec = 7;
+        return REQ_PROPS_MEMFENCE;
 
     case Brig::BRIG_OPCODE_MOV:
         prm = 1;
@@ -7509,7 +8327,7 @@ const unsigned* PropDescImpl::getProps(unsigned opcode, unsigned& prm, unsigned&
         return REQ_PROPS_TRIG;
 
     case Brig::BRIG_OPCODE_NULLPTR:
-        prm = 3;
+        prm = 2;
         sec = 5;
         return REQ_PROPS_NULLPTR;
 
@@ -7522,6 +8340,11 @@ const unsigned* PropDescImpl::getProps(unsigned opcode, unsigned& prm, unsigned&
         prm = 2;
         sec = 5;
         return REQ_PROPS_PACKCVT;
+
+    case Brig::BRIG_OPCODE_PACKETCOMPLETIONSIG:
+        prm = 1;
+        sec = 5;
+        return REQ_PROPS_PACKET;
 
     case Brig::BRIG_OPCODE_POPCOUNT:
         prm = 2;
@@ -7549,16 +8372,16 @@ const unsigned* PropDescImpl::getProps(unsigned opcode, unsigned& prm, unsigned&
         sec = 5;
         return REQ_PROPS_QUERYSAMPLER;
 
+    case Brig::BRIG_OPCODE_QUEUEPTR:
+    case Brig::BRIG_OPCODE_SERVICEQUEUEPTR:
+        prm = 2;
+        sec = 5;
+        return REQ_PROPS_GPTR;
+
     case Brig::BRIG_OPCODE_RDIMAGE:
         prm = 4;
-        sec = 5;
-        return REQ_PROPS_RDIMAGE;
-
-    case Brig::BRIG_OPCODE_RECEIVELANE:
-    case Brig::BRIG_OPCODE_SENDLANE:
-        prm = 2;
         sec = 6;
-        return REQ_PROPS_SENDLANE;
+        return REQ_PROPS_RDIMAGE;
 
     case Brig::BRIG_OPCODE_RET:
         prm = 1;
@@ -7577,7 +8400,7 @@ const unsigned* PropDescImpl::getProps(unsigned opcode, unsigned& prm, unsigned&
 
     case Brig::BRIG_OPCODE_SEGMENTP:
         prm = 3;
-        sec = 5;
+        sec = 6;
         return REQ_PROPS_SEGMENTP;
 
     case Brig::BRIG_OPCODE_SHL:
@@ -7591,6 +8414,16 @@ const unsigned* PropDescImpl::getProps(unsigned opcode, unsigned& prm, unsigned&
         sec = 5;
         return REQ_PROPS_SHUFFLE;
 
+    case Brig::BRIG_OPCODE_SIGNAL:
+        prm = 2;
+        sec = 7;
+        return REQ_PROPS_SIGNAL;
+
+    case Brig::BRIG_OPCODE_SIGNALNORET:
+        prm = 2;
+        sec = 7;
+        return REQ_PROPS_SIGNAL_NORET;
+
     case Brig::BRIG_OPCODE_SQRT:
         prm = 1;
         sec = 8;
@@ -7598,28 +8431,23 @@ const unsigned* PropDescImpl::getProps(unsigned opcode, unsigned& prm, unsigned&
 
     case Brig::BRIG_OPCODE_ST:
         prm = 2;
-        sec = 8;
+        sec = 9;
         return REQ_PROPS_ST;
 
     case Brig::BRIG_OPCODE_STIMAGE:
-        prm = 3;
+        prm = 4;
         sec = 6;
         return REQ_PROPS_ST_IMAGE;
 
     case Brig::BRIG_OPCODE_STOF:
         prm = 3;
-        sec = 5;
+        sec = 6;
         return REQ_PROPS_S2F;
 
-    case Brig::BRIG_OPCODE_SYNC:
-        prm = 1;
-        sec = 9;
-        return REQ_PROPS_SYNC;
-
-    case Brig::BRIG_OPCODE_SYSCALL:
-        prm = 1;
-        sec = 5;
-        return REQ_PROPS_SYSCALL;
+    case Brig::BRIG_OPCODE_STQUEUEWRITEINDEX:
+        prm = 2;
+        sec = 6;
+        return REQ_PROPS_STQ_WRT;
 
     case Brig::BRIG_OPCODE_UNPACK:
         prm = 2;
@@ -7636,6 +8464,11 @@ const unsigned* PropDescImpl::getProps(unsigned opcode, unsigned& prm, unsigned&
         prm = 1;
         sec = 5;
         return REQ_PROPS_UNPACKX;
+
+    case Brig::BRIG_OPCODE_WAVEBARRIER:
+        prm = 1;
+        sec = 6;
+        return REQ_PROPS_WAVEBARRIER;
 
     }
 
@@ -7710,6 +8543,307 @@ unsigned PropDescImpl::REQ_PROP_VALUES_NEG__FTZ[] =
 unsigned PropDescImpl::REQ_PROP_VALUES_NEG__ROUNDING[] =
 {
     Brig::BRIG_ROUND_NONE,
+};
+
+unsigned PropDescImpl::REQ_PROP_VALUES_ACTIVELANECOUNT__STYPE[] =
+{
+    Brig::BRIG_TYPE_B1,
+};
+
+unsigned PropDescImpl::REQ_PROP_VALUES_ACTIVELANECOUNT__TYPE[] =
+{
+    Brig::BRIG_TYPE_U32,
+};
+
+unsigned PropDescImpl::REQ_PROP_VALUES_ACTIVELANECOUNT__D0[] =
+{
+    OPERAND_VAL_REG,
+};
+
+unsigned PropDescImpl::REQ_PROP_VALUES_ACTIVELANECOUNT__S1[] =
+{
+    OPERAND_VAL_IMM,
+    OPERAND_VAL_REG,
+};
+
+unsigned PropDescImpl::REQ_PROP_VALUES_ACTIVELANECOUNT__S2[] =
+{
+    OPERAND_VAL_NULL,
+};
+
+unsigned PropDescImpl::REQ_PROP_VALUES_ACTIVELANECOUNT__S3[] =
+{
+    OPERAND_VAL_NULL,
+};
+
+unsigned PropDescImpl::REQ_PROP_VALUES_ACTIVELANECOUNT__S4[] =
+{
+    OPERAND_VAL_NULL,
+};
+
+unsigned PropDescImpl::REQ_PROP_VALUES_ACTIVELANECOUNT__WIDTH[] =
+{
+    Brig::BRIG_WIDTH_1,
+    Brig::BRIG_WIDTH_1024,
+    Brig::BRIG_WIDTH_1048576,
+    Brig::BRIG_WIDTH_1073741824,
+    Brig::BRIG_WIDTH_128,
+    Brig::BRIG_WIDTH_131072,
+    Brig::BRIG_WIDTH_134217728,
+    Brig::BRIG_WIDTH_16,
+    Brig::BRIG_WIDTH_16384,
+    Brig::BRIG_WIDTH_16777216,
+    Brig::BRIG_WIDTH_2,
+    Brig::BRIG_WIDTH_2048,
+    Brig::BRIG_WIDTH_2097152,
+    Brig::BRIG_WIDTH_2147483648,
+    Brig::BRIG_WIDTH_256,
+    Brig::BRIG_WIDTH_262144,
+    Brig::BRIG_WIDTH_268435456,
+    Brig::BRIG_WIDTH_32,
+    Brig::BRIG_WIDTH_32768,
+    Brig::BRIG_WIDTH_33554432,
+    Brig::BRIG_WIDTH_4,
+    Brig::BRIG_WIDTH_4096,
+    Brig::BRIG_WIDTH_4194304,
+    Brig::BRIG_WIDTH_512,
+    Brig::BRIG_WIDTH_524288,
+    Brig::BRIG_WIDTH_536870912,
+    Brig::BRIG_WIDTH_64,
+    Brig::BRIG_WIDTH_65536,
+    Brig::BRIG_WIDTH_67108864,
+    Brig::BRIG_WIDTH_8,
+    Brig::BRIG_WIDTH_8192,
+    Brig::BRIG_WIDTH_8388608,
+    Brig::BRIG_WIDTH_ALL,
+    Brig::BRIG_WIDTH_WAVESIZE,
+};
+
+unsigned PropDescImpl::REQ_PROP_VALUES_ACTIVELANEID__STYPE[] =
+{
+    Brig::BRIG_TYPE_NONE,
+};
+
+unsigned PropDescImpl::REQ_PROP_VALUES_ACTIVELANEID__TYPE[] =
+{
+    Brig::BRIG_TYPE_U32,
+};
+
+unsigned PropDescImpl::REQ_PROP_VALUES_ACTIVELANEID__D0[] =
+{
+    OPERAND_VAL_REG,
+};
+
+unsigned PropDescImpl::REQ_PROP_VALUES_ACTIVELANEID__S1[] =
+{
+    OPERAND_VAL_NULL,
+};
+
+unsigned PropDescImpl::REQ_PROP_VALUES_ACTIVELANEID__S2[] =
+{
+    OPERAND_VAL_NULL,
+};
+
+unsigned PropDescImpl::REQ_PROP_VALUES_ACTIVELANEID__S3[] =
+{
+    OPERAND_VAL_NULL,
+};
+
+unsigned PropDescImpl::REQ_PROP_VALUES_ACTIVELANEID__S4[] =
+{
+    OPERAND_VAL_NULL,
+};
+
+unsigned PropDescImpl::REQ_PROP_VALUES_ACTIVELANEID__WIDTH[] =
+{
+    Brig::BRIG_WIDTH_1,
+    Brig::BRIG_WIDTH_1024,
+    Brig::BRIG_WIDTH_1048576,
+    Brig::BRIG_WIDTH_1073741824,
+    Brig::BRIG_WIDTH_128,
+    Brig::BRIG_WIDTH_131072,
+    Brig::BRIG_WIDTH_134217728,
+    Brig::BRIG_WIDTH_16,
+    Brig::BRIG_WIDTH_16384,
+    Brig::BRIG_WIDTH_16777216,
+    Brig::BRIG_WIDTH_2,
+    Brig::BRIG_WIDTH_2048,
+    Brig::BRIG_WIDTH_2097152,
+    Brig::BRIG_WIDTH_2147483648,
+    Brig::BRIG_WIDTH_256,
+    Brig::BRIG_WIDTH_262144,
+    Brig::BRIG_WIDTH_268435456,
+    Brig::BRIG_WIDTH_32,
+    Brig::BRIG_WIDTH_32768,
+    Brig::BRIG_WIDTH_33554432,
+    Brig::BRIG_WIDTH_4,
+    Brig::BRIG_WIDTH_4096,
+    Brig::BRIG_WIDTH_4194304,
+    Brig::BRIG_WIDTH_512,
+    Brig::BRIG_WIDTH_524288,
+    Brig::BRIG_WIDTH_536870912,
+    Brig::BRIG_WIDTH_64,
+    Brig::BRIG_WIDTH_65536,
+    Brig::BRIG_WIDTH_67108864,
+    Brig::BRIG_WIDTH_8,
+    Brig::BRIG_WIDTH_8192,
+    Brig::BRIG_WIDTH_8388608,
+    Brig::BRIG_WIDTH_ALL,
+    Brig::BRIG_WIDTH_WAVESIZE,
+};
+
+unsigned PropDescImpl::REQ_PROP_VALUES_ACTIVELANEMASK__STYPE[] =
+{
+    Brig::BRIG_TYPE_B1,
+};
+
+unsigned PropDescImpl::REQ_PROP_VALUES_ACTIVELANEMASK__TYPE[] =
+{
+    Brig::BRIG_TYPE_B64,
+};
+
+unsigned PropDescImpl::REQ_PROP_VALUES_ACTIVELANEMASK__D0[] =
+{
+    OPERAND_VAL_REG,
+};
+
+unsigned PropDescImpl::REQ_PROP_VALUES_ACTIVELANEMASK__S1[] =
+{
+    OPERAND_VAL_IMM,
+    OPERAND_VAL_REG,
+};
+
+unsigned PropDescImpl::REQ_PROP_VALUES_ACTIVELANEMASK__S2[] =
+{
+    OPERAND_VAL_NULL,
+};
+
+unsigned PropDescImpl::REQ_PROP_VALUES_ACTIVELANEMASK__S3[] =
+{
+    OPERAND_VAL_NULL,
+};
+
+unsigned PropDescImpl::REQ_PROP_VALUES_ACTIVELANEMASK__S4[] =
+{
+    OPERAND_VAL_NULL,
+};
+
+unsigned PropDescImpl::REQ_PROP_VALUES_ACTIVELANEMASK__WIDTH[] =
+{
+    Brig::BRIG_WIDTH_1,
+    Brig::BRIG_WIDTH_1024,
+    Brig::BRIG_WIDTH_1048576,
+    Brig::BRIG_WIDTH_1073741824,
+    Brig::BRIG_WIDTH_128,
+    Brig::BRIG_WIDTH_131072,
+    Brig::BRIG_WIDTH_134217728,
+    Brig::BRIG_WIDTH_16,
+    Brig::BRIG_WIDTH_16384,
+    Brig::BRIG_WIDTH_16777216,
+    Brig::BRIG_WIDTH_2,
+    Brig::BRIG_WIDTH_2048,
+    Brig::BRIG_WIDTH_2097152,
+    Brig::BRIG_WIDTH_2147483648,
+    Brig::BRIG_WIDTH_256,
+    Brig::BRIG_WIDTH_262144,
+    Brig::BRIG_WIDTH_268435456,
+    Brig::BRIG_WIDTH_32,
+    Brig::BRIG_WIDTH_32768,
+    Brig::BRIG_WIDTH_33554432,
+    Brig::BRIG_WIDTH_4,
+    Brig::BRIG_WIDTH_4096,
+    Brig::BRIG_WIDTH_4194304,
+    Brig::BRIG_WIDTH_512,
+    Brig::BRIG_WIDTH_524288,
+    Brig::BRIG_WIDTH_536870912,
+    Brig::BRIG_WIDTH_64,
+    Brig::BRIG_WIDTH_65536,
+    Brig::BRIG_WIDTH_67108864,
+    Brig::BRIG_WIDTH_8,
+    Brig::BRIG_WIDTH_8192,
+    Brig::BRIG_WIDTH_8388608,
+    Brig::BRIG_WIDTH_ALL,
+    Brig::BRIG_WIDTH_WAVESIZE,
+};
+
+unsigned PropDescImpl::REQ_PROP_VALUES_ACTIVELANESHUFFLE__STYPE[] =
+{
+    Brig::BRIG_TYPE_NONE,
+};
+
+unsigned PropDescImpl::REQ_PROP_VALUES_ACTIVELANESHUFFLE__TYPE[] =
+{
+    Brig::BRIG_TYPE_B1,
+    Brig::BRIG_TYPE_B128,
+    Brig::BRIG_TYPE_B32,
+    Brig::BRIG_TYPE_B64,
+};
+
+unsigned PropDescImpl::REQ_PROP_VALUES_ACTIVELANESHUFFLE__D0[] =
+{
+    OPERAND_VAL_REG,
+};
+
+unsigned PropDescImpl::REQ_PROP_VALUES_ACTIVELANESHUFFLE__S1[] =
+{
+    OPERAND_VAL_IMM,
+    OPERAND_VAL_REG,
+};
+
+unsigned PropDescImpl::REQ_PROP_VALUES_ACTIVELANESHUFFLE__S2[] =
+{
+    OPERAND_VAL_IMM,
+    OPERAND_VAL_REG,
+};
+
+unsigned PropDescImpl::REQ_PROP_VALUES_ACTIVELANESHUFFLE__S3[] =
+{
+    OPERAND_VAL_IMM,
+    OPERAND_VAL_REG,
+};
+
+unsigned PropDescImpl::REQ_PROP_VALUES_ACTIVELANESHUFFLE__S4[] =
+{
+    OPERAND_VAL_IMM,
+    OPERAND_VAL_REG,
+};
+
+unsigned PropDescImpl::REQ_PROP_VALUES_ACTIVELANESHUFFLE__WIDTH[] =
+{
+    Brig::BRIG_WIDTH_1,
+    Brig::BRIG_WIDTH_1024,
+    Brig::BRIG_WIDTH_1048576,
+    Brig::BRIG_WIDTH_1073741824,
+    Brig::BRIG_WIDTH_128,
+    Brig::BRIG_WIDTH_131072,
+    Brig::BRIG_WIDTH_134217728,
+    Brig::BRIG_WIDTH_16,
+    Brig::BRIG_WIDTH_16384,
+    Brig::BRIG_WIDTH_16777216,
+    Brig::BRIG_WIDTH_2,
+    Brig::BRIG_WIDTH_2048,
+    Brig::BRIG_WIDTH_2097152,
+    Brig::BRIG_WIDTH_2147483648,
+    Brig::BRIG_WIDTH_256,
+    Brig::BRIG_WIDTH_262144,
+    Brig::BRIG_WIDTH_268435456,
+    Brig::BRIG_WIDTH_32,
+    Brig::BRIG_WIDTH_32768,
+    Brig::BRIG_WIDTH_33554432,
+    Brig::BRIG_WIDTH_4,
+    Brig::BRIG_WIDTH_4096,
+    Brig::BRIG_WIDTH_4194304,
+    Brig::BRIG_WIDTH_512,
+    Brig::BRIG_WIDTH_524288,
+    Brig::BRIG_WIDTH_536870912,
+    Brig::BRIG_WIDTH_64,
+    Brig::BRIG_WIDTH_65536,
+    Brig::BRIG_WIDTH_67108864,
+    Brig::BRIG_WIDTH_8,
+    Brig::BRIG_WIDTH_8192,
+    Brig::BRIG_WIDTH_8388608,
+    Brig::BRIG_WIDTH_ALL,
+    Brig::BRIG_WIDTH_WAVESIZE,
 };
 
 unsigned PropDescImpl::REQ_PROP_VALUES_ADD__TYPE[] =
@@ -7802,9 +8936,49 @@ unsigned PropDescImpl::REQ_PROP_VALUES_ADD__S4[] =
     OPERAND_VAL_NULL,
 };
 
-unsigned PropDescImpl::REQ_PROP_VALUES_ALLOCA__STYPE[] =
+unsigned PropDescImpl::REQ_PROP_VALUES_ADDQ_WRT__TYPE[] =
 {
-    Brig::BRIG_TYPE_NONE,
+    Brig::BRIG_TYPE_U64,
+};
+
+unsigned PropDescImpl::REQ_PROP_VALUES_ADDQ_WRT__SEGMENT[] =
+{
+    Brig::BRIG_SEGMENT_FLAT,
+    Brig::BRIG_SEGMENT_GLOBAL,
+};
+
+unsigned PropDescImpl::REQ_PROP_VALUES_ADDQ_WRT__D0[] =
+{
+    OPERAND_VAL_REG,
+};
+
+unsigned PropDescImpl::REQ_PROP_VALUES_ADDQ_WRT__S1[] =
+{
+    OPERAND_VAL_ADDR,
+};
+
+unsigned PropDescImpl::REQ_PROP_VALUES_ADDQ_WRT__S2[] =
+{
+    OPERAND_VAL_IMM,
+    OPERAND_VAL_REG,
+};
+
+unsigned PropDescImpl::REQ_PROP_VALUES_ADDQ_WRT__S3[] =
+{
+    OPERAND_VAL_NULL,
+};
+
+unsigned PropDescImpl::REQ_PROP_VALUES_ADDQ_WRT__S4[] =
+{
+    OPERAND_VAL_NULL,
+};
+
+unsigned PropDescImpl::REQ_PROP_VALUES_ADDQ_WRT__MEMORD[] =
+{
+    Brig::BRIG_MEMORY_ORDER_ACQUIRE,
+    Brig::BRIG_MEMORY_ORDER_ACQUIRE_RELEASE,
+    Brig::BRIG_MEMORY_ORDER_RELAXED,
+    Brig::BRIG_MEMORY_ORDER_RELEASE,
 };
 
 unsigned PropDescImpl::REQ_PROP_VALUES_ALLOCA__TYPE[] =
@@ -7843,6 +9017,33 @@ unsigned PropDescImpl::REQ_PROP_VALUES_ALLOCA__S4[] =
     OPERAND_VAL_NULL,
 };
 
+unsigned PropDescImpl::REQ_PROP_VALUES_ALLOCA__ALIGN[] =
+{
+    Brig::BRIG_ALIGNMENT_1,
+    Brig::BRIG_ALIGNMENT_128,
+    Brig::BRIG_ALIGNMENT_16,
+    Brig::BRIG_ALIGNMENT_2,
+    Brig::BRIG_ALIGNMENT_32,
+    Brig::BRIG_ALIGNMENT_4,
+    Brig::BRIG_ALIGNMENT_64,
+    Brig::BRIG_ALIGNMENT_8,
+};
+
+unsigned PropDescImpl::REQ_PROP_VALUES_ALLOCA__CONST[] =
+{
+    0,
+};
+
+unsigned PropDescImpl::REQ_PROP_VALUES_ALLOCA__EQCLASS[] =
+{
+    EQCLASS_VAL_0,
+};
+
+unsigned PropDescImpl::REQ_PROP_VALUES_ALLOCA__WIDTH[] =
+{
+    Brig::BRIG_WIDTH_NONE,
+};
+
 unsigned PropDescImpl::REQ_PROP_VALUES_AND__TYPE[] =
 {
     Brig::BRIG_TYPE_B1,
@@ -7877,57 +9078,38 @@ unsigned PropDescImpl::REQ_PROP_VALUES_AND__S4[] =
     OPERAND_VAL_NULL,
 };
 
-unsigned PropDescImpl::REQ_PROP_VALUES_FBAR_SYNC_WIDTH__TYPE[] =
+unsigned PropDescImpl::REQ_PROP_VALUES_FBAR_WIDTH__TYPE[] =
 {
     Brig::BRIG_TYPE_NONE,
 };
 
-unsigned PropDescImpl::REQ_PROP_VALUES_FBAR_SYNC_WIDTH__S0[] =
+unsigned PropDescImpl::REQ_PROP_VALUES_FBAR_WIDTH__S0[] =
 {
     OPERAND_VAL_FBARRIER,
-    OPERAND_VAL_REG_32,
+    OPERAND_VAL_REG,
 };
 
-unsigned PropDescImpl::REQ_PROP_VALUES_FBAR_SYNC_WIDTH__S1[] =
+unsigned PropDescImpl::REQ_PROP_VALUES_FBAR_WIDTH__S1[] =
 {
     OPERAND_VAL_NULL,
 };
 
-unsigned PropDescImpl::REQ_PROP_VALUES_FBAR_SYNC_WIDTH__S2[] =
+unsigned PropDescImpl::REQ_PROP_VALUES_FBAR_WIDTH__S2[] =
 {
     OPERAND_VAL_NULL,
 };
 
-unsigned PropDescImpl::REQ_PROP_VALUES_FBAR_SYNC_WIDTH__S3[] =
+unsigned PropDescImpl::REQ_PROP_VALUES_FBAR_WIDTH__S3[] =
 {
     OPERAND_VAL_NULL,
 };
 
-unsigned PropDescImpl::REQ_PROP_VALUES_FBAR_SYNC_WIDTH__S4[] =
+unsigned PropDescImpl::REQ_PROP_VALUES_FBAR_WIDTH__S4[] =
 {
     OPERAND_VAL_NULL,
 };
 
-unsigned PropDescImpl::REQ_PROP_VALUES_FBAR_SYNC_WIDTH__MEMFNC[] =
-{
-    Brig::BRIG_MEMORY_FENCE_BOTH,
-    Brig::BRIG_MEMORY_FENCE_GLOBAL,
-    Brig::BRIG_MEMORY_FENCE_GROUP,
-};
-
-unsigned PropDescImpl::REQ_PROP_VALUES_FBAR_SYNC_WIDTH__MEMORD[] =
-{
-    Brig::BRIG_MEMORY_ORDER_NONE,
-};
-
-unsigned PropDescImpl::REQ_PROP_VALUES_FBAR_SYNC_WIDTH__MEMSCP[] =
-{
-    Brig::BRIG_MEMORY_SCOPE_COMPONENT,
-    Brig::BRIG_MEMORY_SCOPE_SYSTEM,
-    Brig::BRIG_MEMORY_SCOPE_WORKGROUP,
-};
-
-unsigned PropDescImpl::REQ_PROP_VALUES_FBAR_SYNC_WIDTH__WIDTH[] =
+unsigned PropDescImpl::REQ_PROP_VALUES_FBAR_WIDTH__WIDTH[] =
 {
     Brig::BRIG_WIDTH_1,
     Brig::BRIG_WIDTH_1024,
@@ -8004,7 +9186,14 @@ unsigned PropDescImpl::REQ_PROP_VALUES_ATOMIC__MEMORD[] =
     Brig::BRIG_MEMORY_ORDER_ACQUIRE_RELEASE,
     Brig::BRIG_MEMORY_ORDER_RELAXED,
     Brig::BRIG_MEMORY_ORDER_RELEASE,
-    Brig::BRIG_MEMORY_ORDER_SEQUENTIALLY_CONSISTENT,
+};
+
+unsigned PropDescImpl::REQ_PROP_VALUES_ATOMIC__MEMSCP[] =
+{
+    Brig::BRIG_MEMORY_SCOPE_COMPONENT,
+    Brig::BRIG_MEMORY_SCOPE_SYSTEM,
+    Brig::BRIG_MEMORY_SCOPE_WAVEFRONT,
+    Brig::BRIG_MEMORY_SCOPE_WORKGROUP,
 };
 
 unsigned PropDescImpl::REQ_PROP_VALUES_ATOMIC__S2[] =
@@ -8028,7 +9217,7 @@ unsigned PropDescImpl::REQ_PROP_VALUES_ATOMIC__D0[] =
 
 unsigned PropDescImpl::REQ_PROP_VALUES_ATOMIC__S1[] =
 {
-    OPERAND_VAL_ADDR_SEG,
+    OPERAND_VAL_ADDR,
 };
 
 unsigned PropDescImpl::REQ_PROP_VALUES_ATOMIC__S4[] =
@@ -8036,16 +9225,19 @@ unsigned PropDescImpl::REQ_PROP_VALUES_ATOMIC__S4[] =
     OPERAND_VAL_NULL,
 };
 
-unsigned PropDescImpl::REQ_PROP_VALUES_ATOMIC__MEMSCP[] =
+unsigned PropDescImpl::REQ_PROP_VALUES_ATOMIC__EQCLASS[] =
 {
-    Brig::BRIG_MEMORY_SCOPE_COMPONENT,
-    Brig::BRIG_MEMORY_SCOPE_SYSTEM,
-    Brig::BRIG_MEMORY_SCOPE_WORKGROUP,
+    EQCLASS_VAL_ANY,
 };
 
 unsigned PropDescImpl::REQ_PROP_VALUES_ATOMIC_IMAGE__CTYPE[] =
 {
     Brig::BRIG_TYPE_U32,
+};
+
+unsigned PropDescImpl::REQ_PROP_VALUES_ATOMIC_IMAGE__ITYPE[] =
+{
+    Brig::BRIG_TYPE_RWIMG,
 };
 
 unsigned PropDescImpl::REQ_PROP_VALUES_ATOMIC_IMAGE__TYPE[] =
@@ -8104,7 +9296,8 @@ unsigned PropDescImpl::REQ_PROP_VALUES_ATOMIC_IMAGE__D0[] =
 
 unsigned PropDescImpl::REQ_PROP_VALUES_ATOMIC_IMAGE__S1[] =
 {
-    OPERAND_VAL_REG_64,
+    OPERAND_VAL_REG,
+    OPERAND_VAL_ROIMAGE,
     OPERAND_VAL_RWIMAGE,
 };
 
@@ -8114,14 +9307,19 @@ unsigned PropDescImpl::REQ_PROP_VALUES_ATOMIC_IMAGE__S3[] =
     OPERAND_VAL_REG,
 };
 
-unsigned PropDescImpl::REQ_PROP_VALUES_ATOMIC_IMAGE__ITYPE[] =
+unsigned PropDescImpl::REQ_PROP_VALUES_ATOMIC_IMAGE__EQCLASS[] =
 {
-    Brig::BRIG_TYPE_RWIMG,
+    EQCLASS_VAL_ANY,
 };
 
 unsigned PropDescImpl::REQ_PROP_VALUES_ATOMIC_NORET_IMAGE__CTYPE[] =
 {
     Brig::BRIG_TYPE_U32,
+};
+
+unsigned PropDescImpl::REQ_PROP_VALUES_ATOMIC_NORET_IMAGE__ITYPE[] =
+{
+    Brig::BRIG_TYPE_RWIMG,
 };
 
 unsigned PropDescImpl::REQ_PROP_VALUES_ATOMIC_NORET_IMAGE__TYPE[] =
@@ -8174,7 +9372,8 @@ unsigned PropDescImpl::REQ_PROP_VALUES_ATOMIC_NORET_IMAGE__S3[] =
 
 unsigned PropDescImpl::REQ_PROP_VALUES_ATOMIC_NORET_IMAGE__S0[] =
 {
-    OPERAND_VAL_REG_64,
+    OPERAND_VAL_REG,
+    OPERAND_VAL_ROIMAGE,
     OPERAND_VAL_RWIMAGE,
 };
 
@@ -8189,9 +9388,9 @@ unsigned PropDescImpl::REQ_PROP_VALUES_ATOMIC_NORET_IMAGE__S4[] =
     OPERAND_VAL_NULL,
 };
 
-unsigned PropDescImpl::REQ_PROP_VALUES_ATOMIC_NORET_IMAGE__ITYPE[] =
+unsigned PropDescImpl::REQ_PROP_VALUES_ATOMIC_NORET_IMAGE__EQCLASS[] =
 {
-    Brig::BRIG_TYPE_RWIMG,
+    EQCLASS_VAL_ANY,
 };
 
 unsigned PropDescImpl::REQ_PROP_VALUES_ATOMIC_NORET__TYPE[] =
@@ -8232,7 +9431,14 @@ unsigned PropDescImpl::REQ_PROP_VALUES_ATOMIC_NORET__MEMORD[] =
     Brig::BRIG_MEMORY_ORDER_ACQUIRE_RELEASE,
     Brig::BRIG_MEMORY_ORDER_RELAXED,
     Brig::BRIG_MEMORY_ORDER_RELEASE,
-    Brig::BRIG_MEMORY_ORDER_SEQUENTIALLY_CONSISTENT,
+};
+
+unsigned PropDescImpl::REQ_PROP_VALUES_ATOMIC_NORET__MEMSCP[] =
+{
+    Brig::BRIG_MEMORY_SCOPE_COMPONENT,
+    Brig::BRIG_MEMORY_SCOPE_SYSTEM,
+    Brig::BRIG_MEMORY_SCOPE_WAVEFRONT,
+    Brig::BRIG_MEMORY_SCOPE_WORKGROUP,
 };
 
 unsigned PropDescImpl::REQ_PROP_VALUES_ATOMIC_NORET__S2[] =
@@ -8244,7 +9450,7 @@ unsigned PropDescImpl::REQ_PROP_VALUES_ATOMIC_NORET__S2[] =
 
 unsigned PropDescImpl::REQ_PROP_VALUES_ATOMIC_NORET__S0[] =
 {
-    OPERAND_VAL_ADDR_SEG,
+    OPERAND_VAL_ADDR,
 };
 
 unsigned PropDescImpl::REQ_PROP_VALUES_ATOMIC_NORET__S1[] =
@@ -8263,11 +9469,9 @@ unsigned PropDescImpl::REQ_PROP_VALUES_ATOMIC_NORET__S4[] =
     OPERAND_VAL_NULL,
 };
 
-unsigned PropDescImpl::REQ_PROP_VALUES_ATOMIC_NORET__MEMSCP[] =
+unsigned PropDescImpl::REQ_PROP_VALUES_ATOMIC_NORET__EQCLASS[] =
 {
-    Brig::BRIG_MEMORY_SCOPE_COMPONENT,
-    Brig::BRIG_MEMORY_SCOPE_SYSTEM,
-    Brig::BRIG_MEMORY_SCOPE_WORKGROUP,
+    EQCLASS_VAL_ANY,
 };
 
 unsigned PropDescImpl::REQ_PROP_VALUES_BARRIER__TYPE[] =
@@ -8298,25 +9502,6 @@ unsigned PropDescImpl::REQ_PROP_VALUES_BARRIER__S3[] =
 unsigned PropDescImpl::REQ_PROP_VALUES_BARRIER__S4[] =
 {
     OPERAND_VAL_NULL,
-};
-
-unsigned PropDescImpl::REQ_PROP_VALUES_BARRIER__MEMFNC[] =
-{
-    Brig::BRIG_MEMORY_FENCE_BOTH,
-    Brig::BRIG_MEMORY_FENCE_GLOBAL,
-    Brig::BRIG_MEMORY_FENCE_GROUP,
-};
-
-unsigned PropDescImpl::REQ_PROP_VALUES_BARRIER__MEMORD[] =
-{
-    Brig::BRIG_MEMORY_ORDER_NONE,
-};
-
-unsigned PropDescImpl::REQ_PROP_VALUES_BARRIER__MEMSCP[] =
-{
-    Brig::BRIG_MEMORY_SCOPE_COMPONENT,
-    Brig::BRIG_MEMORY_SCOPE_SYSTEM,
-    Brig::BRIG_MEMORY_SCOPE_WORKGROUP,
 };
 
 unsigned PropDescImpl::REQ_PROP_VALUES_BARRIER__WIDTH[] =
@@ -8411,14 +9596,14 @@ unsigned PropDescImpl::REQ_PROP_VALUES_BITEXTRACT__S1[] =
 
 unsigned PropDescImpl::REQ_PROP_VALUES_BITEXTRACT__S2[] =
 {
-    OPERAND_VAL_IMM_32,
-    OPERAND_VAL_REG_32,
+    OPERAND_VAL_IMM,
+    OPERAND_VAL_REG,
 };
 
 unsigned PropDescImpl::REQ_PROP_VALUES_BITEXTRACT__S3[] =
 {
-    OPERAND_VAL_IMM_32,
-    OPERAND_VAL_REG_32,
+    OPERAND_VAL_IMM,
+    OPERAND_VAL_REG,
 };
 
 unsigned PropDescImpl::REQ_PROP_VALUES_BITEXTRACT__S4[] =
@@ -8453,14 +9638,14 @@ unsigned PropDescImpl::REQ_PROP_VALUES_BITINSERT__S2[] =
 
 unsigned PropDescImpl::REQ_PROP_VALUES_BITINSERT__S3[] =
 {
-    OPERAND_VAL_IMM_32,
-    OPERAND_VAL_REG_32,
+    OPERAND_VAL_IMM,
+    OPERAND_VAL_REG,
 };
 
 unsigned PropDescImpl::REQ_PROP_VALUES_BITINSERT__S4[] =
 {
-    OPERAND_VAL_IMM_32,
-    OPERAND_VAL_REG_32,
+    OPERAND_VAL_IMM,
+    OPERAND_VAL_REG,
 };
 
 unsigned PropDescImpl::REQ_PROP_VALUES_BITMASK__TYPE[] =
@@ -8476,14 +9661,14 @@ unsigned PropDescImpl::REQ_PROP_VALUES_BITMASK__D0[] =
 
 unsigned PropDescImpl::REQ_PROP_VALUES_BITMASK__S1[] =
 {
-    OPERAND_VAL_IMM_32,
-    OPERAND_VAL_REG_32,
+    OPERAND_VAL_IMM,
+    OPERAND_VAL_REG,
 };
 
 unsigned PropDescImpl::REQ_PROP_VALUES_BITMASK__S2[] =
 {
-    OPERAND_VAL_IMM_32,
-    OPERAND_VAL_REG_32,
+    OPERAND_VAL_IMM,
+    OPERAND_VAL_REG,
 };
 
 unsigned PropDescImpl::REQ_PROP_VALUES_BITMASK__S3[] =
@@ -8737,6 +9922,52 @@ unsigned PropDescImpl::REQ_PROP_VALUES_CALL__S4[] =
     OPERAND_VAL_NULL,
 };
 
+unsigned PropDescImpl::REQ_PROP_VALUES_CASQ_WRT__TYPE[] =
+{
+    Brig::BRIG_TYPE_U64,
+};
+
+unsigned PropDescImpl::REQ_PROP_VALUES_CASQ_WRT__SEGMENT[] =
+{
+    Brig::BRIG_SEGMENT_FLAT,
+    Brig::BRIG_SEGMENT_GLOBAL,
+};
+
+unsigned PropDescImpl::REQ_PROP_VALUES_CASQ_WRT__D0[] =
+{
+    OPERAND_VAL_REG,
+};
+
+unsigned PropDescImpl::REQ_PROP_VALUES_CASQ_WRT__S1[] =
+{
+    OPERAND_VAL_ADDR,
+};
+
+unsigned PropDescImpl::REQ_PROP_VALUES_CASQ_WRT__S2[] =
+{
+    OPERAND_VAL_IMM,
+    OPERAND_VAL_REG,
+};
+
+unsigned PropDescImpl::REQ_PROP_VALUES_CASQ_WRT__S3[] =
+{
+    OPERAND_VAL_IMM,
+    OPERAND_VAL_REG,
+};
+
+unsigned PropDescImpl::REQ_PROP_VALUES_CASQ_WRT__S4[] =
+{
+    OPERAND_VAL_NULL,
+};
+
+unsigned PropDescImpl::REQ_PROP_VALUES_CASQ_WRT__MEMORD[] =
+{
+    Brig::BRIG_MEMORY_ORDER_ACQUIRE,
+    Brig::BRIG_MEMORY_ORDER_ACQUIRE_RELEASE,
+    Brig::BRIG_MEMORY_ORDER_RELAXED,
+    Brig::BRIG_MEMORY_ORDER_RELEASE,
+};
+
 unsigned PropDescImpl::REQ_PROP_VALUES_CBR__TYPE[] =
 {
     Brig::BRIG_TYPE_NONE,
@@ -8756,7 +9987,7 @@ unsigned PropDescImpl::REQ_PROP_VALUES_CBR__S2[] =
 
 unsigned PropDescImpl::REQ_PROP_VALUES_CBR__S0[] =
 {
-    OPERAND_VAL_REG_1,
+    OPERAND_VAL_REG,
 };
 
 unsigned PropDescImpl::REQ_PROP_VALUES_CBR__S3[] =
@@ -8889,8 +10120,8 @@ unsigned PropDescImpl::REQ_PROP_VALUES_CLASS__S1[] =
 
 unsigned PropDescImpl::REQ_PROP_VALUES_CLASS__S2[] =
 {
-    OPERAND_VAL_IMM_32,
-    OPERAND_VAL_REG_32,
+    OPERAND_VAL_IMM,
+    OPERAND_VAL_REG,
 };
 
 unsigned PropDescImpl::REQ_PROP_VALUES_CLASS__S3[] =
@@ -8996,9 +10227,7 @@ unsigned PropDescImpl::REQ_PROP_VALUES_CMOV__TYPE[] =
 
 unsigned PropDescImpl::REQ_PROP_VALUES_CMOV__S1[] =
 {
-    OPERAND_VAL_IMM_1,
     OPERAND_VAL_IMM,
-    OPERAND_VAL_REG_1,
     OPERAND_VAL_REG,
 };
 
@@ -9286,154 +10515,6 @@ unsigned PropDescImpl::REQ_PROP_VALUES_COPYSIGN__ROUNDING[] =
     Brig::BRIG_ROUND_NONE,
 };
 
-unsigned PropDescImpl::REQ_PROP_VALUES_COUNTLANE__STYPE[] =
-{
-    Brig::BRIG_TYPE_B1,
-    Brig::BRIG_TYPE_U32,
-};
-
-unsigned PropDescImpl::REQ_PROP_VALUES_COUNTLANE__TYPE[] =
-{
-    Brig::BRIG_TYPE_U32,
-};
-
-unsigned PropDescImpl::REQ_PROP_VALUES_COUNTLANE__D0[] =
-{
-    OPERAND_VAL_REG,
-};
-
-unsigned PropDescImpl::REQ_PROP_VALUES_COUNTLANE__S1[] =
-{
-    OPERAND_VAL_IMM,
-    OPERAND_VAL_REG,
-};
-
-unsigned PropDescImpl::REQ_PROP_VALUES_COUNTLANE__S2[] =
-{
-    OPERAND_VAL_NULL,
-};
-
-unsigned PropDescImpl::REQ_PROP_VALUES_COUNTLANE__S3[] =
-{
-    OPERAND_VAL_NULL,
-};
-
-unsigned PropDescImpl::REQ_PROP_VALUES_COUNTLANE__S4[] =
-{
-    OPERAND_VAL_NULL,
-};
-
-unsigned PropDescImpl::REQ_PROP_VALUES_COUNTLANE__WIDTH[] =
-{
-    Brig::BRIG_WIDTH_1,
-    Brig::BRIG_WIDTH_1024,
-    Brig::BRIG_WIDTH_1048576,
-    Brig::BRIG_WIDTH_1073741824,
-    Brig::BRIG_WIDTH_128,
-    Brig::BRIG_WIDTH_131072,
-    Brig::BRIG_WIDTH_134217728,
-    Brig::BRIG_WIDTH_16,
-    Brig::BRIG_WIDTH_16384,
-    Brig::BRIG_WIDTH_16777216,
-    Brig::BRIG_WIDTH_2,
-    Brig::BRIG_WIDTH_2048,
-    Brig::BRIG_WIDTH_2097152,
-    Brig::BRIG_WIDTH_2147483648,
-    Brig::BRIG_WIDTH_256,
-    Brig::BRIG_WIDTH_262144,
-    Brig::BRIG_WIDTH_268435456,
-    Brig::BRIG_WIDTH_32,
-    Brig::BRIG_WIDTH_32768,
-    Brig::BRIG_WIDTH_33554432,
-    Brig::BRIG_WIDTH_4,
-    Brig::BRIG_WIDTH_4096,
-    Brig::BRIG_WIDTH_4194304,
-    Brig::BRIG_WIDTH_512,
-    Brig::BRIG_WIDTH_524288,
-    Brig::BRIG_WIDTH_536870912,
-    Brig::BRIG_WIDTH_64,
-    Brig::BRIG_WIDTH_65536,
-    Brig::BRIG_WIDTH_67108864,
-    Brig::BRIG_WIDTH_8,
-    Brig::BRIG_WIDTH_8192,
-    Brig::BRIG_WIDTH_8388608,
-    Brig::BRIG_WIDTH_ALL,
-    Brig::BRIG_WIDTH_WAVESIZE,
-};
-
-unsigned PropDescImpl::REQ_PROP_VALUES_COUNTUPLANE__STYPE[] =
-{
-    Brig::BRIG_TYPE_NONE,
-};
-
-unsigned PropDescImpl::REQ_PROP_VALUES_COUNTUPLANE__TYPE[] =
-{
-    Brig::BRIG_TYPE_U32,
-};
-
-unsigned PropDescImpl::REQ_PROP_VALUES_COUNTUPLANE__D0[] =
-{
-    OPERAND_VAL_REG,
-};
-
-unsigned PropDescImpl::REQ_PROP_VALUES_COUNTUPLANE__S1[] =
-{
-    OPERAND_VAL_NULL,
-};
-
-unsigned PropDescImpl::REQ_PROP_VALUES_COUNTUPLANE__S2[] =
-{
-    OPERAND_VAL_NULL,
-};
-
-unsigned PropDescImpl::REQ_PROP_VALUES_COUNTUPLANE__S3[] =
-{
-    OPERAND_VAL_NULL,
-};
-
-unsigned PropDescImpl::REQ_PROP_VALUES_COUNTUPLANE__S4[] =
-{
-    OPERAND_VAL_NULL,
-};
-
-unsigned PropDescImpl::REQ_PROP_VALUES_COUNTUPLANE__WIDTH[] =
-{
-    Brig::BRIG_WIDTH_1,
-    Brig::BRIG_WIDTH_1024,
-    Brig::BRIG_WIDTH_1048576,
-    Brig::BRIG_WIDTH_1073741824,
-    Brig::BRIG_WIDTH_128,
-    Brig::BRIG_WIDTH_131072,
-    Brig::BRIG_WIDTH_134217728,
-    Brig::BRIG_WIDTH_16,
-    Brig::BRIG_WIDTH_16384,
-    Brig::BRIG_WIDTH_16777216,
-    Brig::BRIG_WIDTH_2,
-    Brig::BRIG_WIDTH_2048,
-    Brig::BRIG_WIDTH_2097152,
-    Brig::BRIG_WIDTH_2147483648,
-    Brig::BRIG_WIDTH_256,
-    Brig::BRIG_WIDTH_262144,
-    Brig::BRIG_WIDTH_268435456,
-    Brig::BRIG_WIDTH_32,
-    Brig::BRIG_WIDTH_32768,
-    Brig::BRIG_WIDTH_33554432,
-    Brig::BRIG_WIDTH_4,
-    Brig::BRIG_WIDTH_4096,
-    Brig::BRIG_WIDTH_4194304,
-    Brig::BRIG_WIDTH_512,
-    Brig::BRIG_WIDTH_524288,
-    Brig::BRIG_WIDTH_536870912,
-    Brig::BRIG_WIDTH_64,
-    Brig::BRIG_WIDTH_65536,
-    Brig::BRIG_WIDTH_67108864,
-    Brig::BRIG_WIDTH_8,
-    Brig::BRIG_WIDTH_8192,
-    Brig::BRIG_WIDTH_8388608,
-    Brig::BRIG_WIDTH_ALL,
-    Brig::BRIG_WIDTH_WAVESIZE,
-};
-
 unsigned PropDescImpl::REQ_PROP_VALUES_SPEC_REG__TYPE[] =
 {
     Brig::BRIG_TYPE_U32,
@@ -9476,7 +10557,7 @@ unsigned PropDescImpl::REQ_PROP_VALUES_SPEC_REG_DIM__D0[] =
 
 unsigned PropDescImpl::REQ_PROP_VALUES_SPEC_REG_DIM__S1[] =
 {
-    OPERAND_VAL_IMM_0_1_2,
+    OPERAND_VAL_IMM0T2,
 };
 
 unsigned PropDescImpl::REQ_PROP_VALUES_SPEC_REG_DIM__S2[] =
@@ -9583,6 +10664,7 @@ unsigned PropDescImpl::REQ_PROP_VALUES_DEBUGTRAP__TYPE[] =
 unsigned PropDescImpl::REQ_PROP_VALUES_DEBUGTRAP__S0[] =
 {
     OPERAND_VAL_IMM,
+    OPERAND_VAL_REG,
 };
 
 unsigned PropDescImpl::REQ_PROP_VALUES_DEBUGTRAP__S1[] =
@@ -9601,47 +10683,6 @@ unsigned PropDescImpl::REQ_PROP_VALUES_DEBUGTRAP__S3[] =
 };
 
 unsigned PropDescImpl::REQ_PROP_VALUES_DEBUGTRAP__S4[] =
-{
-    OPERAND_VAL_NULL,
-};
-
-unsigned PropDescImpl::REQ_PROP_VALUES_AQLPTR__STYPE[] =
-{
-    Brig::BRIG_TYPE_NONE,
-};
-
-unsigned PropDescImpl::REQ_PROP_VALUES_AQLPTR__TYPE[] =
-{
-    Brig::BRIG_TYPE_U32,
-    Brig::BRIG_TYPE_U64,
-};
-
-unsigned PropDescImpl::REQ_PROP_VALUES_AQLPTR__SEGMENT[] =
-{
-    Brig::BRIG_SEGMENT_GLOBAL,
-};
-
-unsigned PropDescImpl::REQ_PROP_VALUES_AQLPTR__S0[] =
-{
-    OPERAND_VAL_REG,
-};
-
-unsigned PropDescImpl::REQ_PROP_VALUES_AQLPTR__S1[] =
-{
-    OPERAND_VAL_NULL,
-};
-
-unsigned PropDescImpl::REQ_PROP_VALUES_AQLPTR__S2[] =
-{
-    OPERAND_VAL_NULL,
-};
-
-unsigned PropDescImpl::REQ_PROP_VALUES_AQLPTR__S3[] =
-{
-    OPERAND_VAL_NULL,
-};
-
-unsigned PropDescImpl::REQ_PROP_VALUES_AQLPTR__S4[] =
 {
     OPERAND_VAL_NULL,
 };
@@ -9952,6 +10993,12 @@ unsigned PropDescImpl::REQ_PROP_VALUES_F2S__S4[] =
     OPERAND_VAL_NULL,
 };
 
+unsigned PropDescImpl::REQ_PROP_VALUES_F2S__NONULL[] =
+{
+    0,
+    1,
+};
+
 unsigned PropDescImpl::REQ_PROP_VALUES_GCN_APPEND_CONSUME__TYPE[] =
 {
     Brig::BRIG_TYPE_U32,
@@ -9969,7 +11016,7 @@ unsigned PropDescImpl::REQ_PROP_VALUES_GCN_APPEND_CONSUME__D0[] =
 
 unsigned PropDescImpl::REQ_PROP_VALUES_GCN_APPEND_CONSUME__S1[] =
 {
-    OPERAND_VAL_ADDR_SEG,
+    OPERAND_VAL_ADDR,
 };
 
 unsigned PropDescImpl::REQ_PROP_VALUES_GCN_APPEND_CONSUME__S2[] =
@@ -10024,7 +11071,6 @@ unsigned PropDescImpl::REQ_PROP_VALUES_GCN_ATOMIC__MEMORD[] =
     Brig::BRIG_MEMORY_ORDER_ACQUIRE_RELEASE,
     Brig::BRIG_MEMORY_ORDER_RELAXED,
     Brig::BRIG_MEMORY_ORDER_RELEASE,
-    Brig::BRIG_MEMORY_ORDER_SEQUENTIALLY_CONSISTENT,
 };
 
 unsigned PropDescImpl::REQ_PROP_VALUES_GCN_ATOMIC__S2[] =
@@ -10048,7 +11094,7 @@ unsigned PropDescImpl::REQ_PROP_VALUES_GCN_ATOMIC__D0[] =
 
 unsigned PropDescImpl::REQ_PROP_VALUES_GCN_ATOMIC__S1[] =
 {
-    OPERAND_VAL_ADDR_SEG,
+    OPERAND_VAL_ADDR,
 };
 
 unsigned PropDescImpl::REQ_PROP_VALUES_GCN_ATOMIC__S4[] =
@@ -10056,10 +11102,16 @@ unsigned PropDescImpl::REQ_PROP_VALUES_GCN_ATOMIC__S4[] =
     OPERAND_VAL_NULL,
 };
 
+unsigned PropDescImpl::REQ_PROP_VALUES_GCN_ATOMIC__EQCLASS[] =
+{
+    EQCLASS_VAL_ANY,
+};
+
 unsigned PropDescImpl::REQ_PROP_VALUES_GCN_ATOMIC__MEMSCP[] =
 {
     Brig::BRIG_MEMORY_SCOPE_COMPONENT,
     Brig::BRIG_MEMORY_SCOPE_SYSTEM,
+    Brig::BRIG_MEMORY_SCOPE_WAVEFRONT,
     Brig::BRIG_MEMORY_SCOPE_WORKGROUP,
 };
 
@@ -10099,7 +11151,6 @@ unsigned PropDescImpl::REQ_PROP_VALUES_GCN_ATOMIC_NORET__MEMORD[] =
     Brig::BRIG_MEMORY_ORDER_ACQUIRE_RELEASE,
     Brig::BRIG_MEMORY_ORDER_RELAXED,
     Brig::BRIG_MEMORY_ORDER_RELEASE,
-    Brig::BRIG_MEMORY_ORDER_SEQUENTIALLY_CONSISTENT,
 };
 
 unsigned PropDescImpl::REQ_PROP_VALUES_GCN_ATOMIC_NORET__S2[] =
@@ -10111,7 +11162,7 @@ unsigned PropDescImpl::REQ_PROP_VALUES_GCN_ATOMIC_NORET__S2[] =
 
 unsigned PropDescImpl::REQ_PROP_VALUES_GCN_ATOMIC_NORET__S0[] =
 {
-    OPERAND_VAL_ADDR_SEG,
+    OPERAND_VAL_ADDR,
 };
 
 unsigned PropDescImpl::REQ_PROP_VALUES_GCN_ATOMIC_NORET__S1[] =
@@ -10130,10 +11181,16 @@ unsigned PropDescImpl::REQ_PROP_VALUES_GCN_ATOMIC_NORET__S4[] =
     OPERAND_VAL_NULL,
 };
 
+unsigned PropDescImpl::REQ_PROP_VALUES_GCN_ATOMIC_NORET__EQCLASS[] =
+{
+    EQCLASS_VAL_ANY,
+};
+
 unsigned PropDescImpl::REQ_PROP_VALUES_GCN_ATOMIC_NORET__MEMSCP[] =
 {
     Brig::BRIG_MEMORY_SCOPE_COMPONENT,
     Brig::BRIG_MEMORY_SCOPE_SYSTEM,
+    Brig::BRIG_MEMORY_SCOPE_WAVEFRONT,
     Brig::BRIG_MEMORY_SCOPE_WORKGROUP,
 };
 
@@ -10154,7 +11211,7 @@ unsigned PropDescImpl::REQ_PROP_VALUES_GCN_B4XCHG__S1[] =
 
 unsigned PropDescImpl::REQ_PROP_VALUES_GCN_B4XCHG__S2[] =
 {
-    OPERAND_VAL_IMM_32,
+    OPERAND_VAL_IMM,
 };
 
 unsigned PropDescImpl::REQ_PROP_VALUES_GCN_B4XCHG__S3[] =
@@ -10174,7 +11231,7 @@ unsigned PropDescImpl::REQ_PROP_VALUES_GCN_BFM__TYPE[] =
 
 unsigned PropDescImpl::REQ_PROP_VALUES_GCN_BFM__D0[] =
 {
-    OPERAND_VAL_REG_32,
+    OPERAND_VAL_REG,
 };
 
 unsigned PropDescImpl::REQ_PROP_VALUES_GCN_BFM__S1[] =
@@ -10218,8 +11275,8 @@ unsigned PropDescImpl::REQ_PROP_VALUES_GCN_FLDEXP__S1[] =
 
 unsigned PropDescImpl::REQ_PROP_VALUES_GCN_FLDEXP__S2[] =
 {
-    OPERAND_VAL_IMM_32,
-    OPERAND_VAL_REG_32,
+    OPERAND_VAL_IMM,
+    OPERAND_VAL_REG,
 };
 
 unsigned PropDescImpl::REQ_PROP_VALUES_GCN_FLDEXP__S3[] =
@@ -10240,7 +11297,7 @@ unsigned PropDescImpl::REQ_PROP_VALUES_GCN_FREXP_EXP__TYPE[] =
 
 unsigned PropDescImpl::REQ_PROP_VALUES_GCN_FREXP_EXP__D0[] =
 {
-    OPERAND_VAL_REG_32,
+    OPERAND_VAL_REG,
 };
 
 unsigned PropDescImpl::REQ_PROP_VALUES_GCN_FREXP_EXP__S1[] =
@@ -10327,7 +11384,7 @@ unsigned PropDescImpl::REQ_PROP_VALUES_GCN_LD__D0[] =
 
 unsigned PropDescImpl::REQ_PROP_VALUES_GCN_LD__S1[] =
 {
-    OPERAND_VAL_ADDR_TSEG,
+    OPERAND_VAL_ADDR,
 };
 
 unsigned PropDescImpl::REQ_PROP_VALUES_GCN_LD__S2[] =
@@ -10347,8 +11404,19 @@ unsigned PropDescImpl::REQ_PROP_VALUES_GCN_LD__S4[] =
 
 unsigned PropDescImpl::REQ_PROP_VALUES_GCN_LD__ALIGN[] =
 {
+    Brig::BRIG_ALIGNMENT_1,
+    Brig::BRIG_ALIGNMENT_128,
+    Brig::BRIG_ALIGNMENT_16,
+    Brig::BRIG_ALIGNMENT_2,
+    Brig::BRIG_ALIGNMENT_32,
+    Brig::BRIG_ALIGNMENT_4,
+    Brig::BRIG_ALIGNMENT_64,
+    Brig::BRIG_ALIGNMENT_8,
+};
+
+unsigned PropDescImpl::REQ_PROP_VALUES_GCN_LD__CONST[] =
+{
     0,
-    1,
 };
 
 unsigned PropDescImpl::REQ_PROP_VALUES_GCN_LD__EQCLASS[] =
@@ -10394,70 +11462,138 @@ unsigned PropDescImpl::REQ_PROP_VALUES_GCN_LD__WIDTH[] =
     Brig::BRIG_WIDTH_WAVESIZE,
 };
 
-unsigned PropDescImpl::REQ_PROP_VALUES_GCN_MAD__TYPE[] =
+unsigned PropDescImpl::REQ_PROP_VALUES_GCN_MADS__TYPE[] =
 {
     Brig::BRIG_TYPE_B32,
 };
 
-unsigned PropDescImpl::REQ_PROP_VALUES_GCN_MAD__D0[] =
+unsigned PropDescImpl::REQ_PROP_VALUES_GCN_MADS__D0[] =
 {
-    OPERAND_VAL_REG_64,
+    OPERAND_VAL_REG,
 };
 
-unsigned PropDescImpl::REQ_PROP_VALUES_GCN_MAD__S1[] =
+unsigned PropDescImpl::REQ_PROP_VALUES_GCN_MADS__S1[] =
 {
-    OPERAND_VAL_IMM_32,
-    OPERAND_VAL_REG_32,
+    OPERAND_VAL_IMM,
+    OPERAND_VAL_REG,
 };
 
-unsigned PropDescImpl::REQ_PROP_VALUES_GCN_MAD__S2[] =
+unsigned PropDescImpl::REQ_PROP_VALUES_GCN_MADS__S2[] =
 {
-    OPERAND_VAL_IMM_32,
-    OPERAND_VAL_REG_32,
+    OPERAND_VAL_IMM,
+    OPERAND_VAL_REG,
 };
 
-unsigned PropDescImpl::REQ_PROP_VALUES_GCN_MAD__S3[] =
+unsigned PropDescImpl::REQ_PROP_VALUES_GCN_MADS__S3[] =
 {
-    OPERAND_VAL_IMM_64,
-    OPERAND_VAL_REG_64,
+    OPERAND_VAL_IMM,
+    OPERAND_VAL_REG,
 };
 
-unsigned PropDescImpl::REQ_PROP_VALUES_GCN_MAD__S4[] =
+unsigned PropDescImpl::REQ_PROP_VALUES_GCN_MADS__S4[] =
 {
     OPERAND_VAL_NULL,
 };
 
-unsigned PropDescImpl::REQ_PROP_VALUES_GCN_MIN_MAX_MED__TYPE[] =
+unsigned PropDescImpl::REQ_PROP_VALUES_GCN_MADU__TYPE[] =
+{
+    Brig::BRIG_TYPE_B32,
+};
+
+unsigned PropDescImpl::REQ_PROP_VALUES_GCN_MADU__D0[] =
+{
+    OPERAND_VAL_REG,
+};
+
+unsigned PropDescImpl::REQ_PROP_VALUES_GCN_MADU__S1[] =
+{
+    OPERAND_VAL_IMM,
+    OPERAND_VAL_REG,
+};
+
+unsigned PropDescImpl::REQ_PROP_VALUES_GCN_MADU__S2[] =
+{
+    OPERAND_VAL_IMM,
+    OPERAND_VAL_REG,
+};
+
+unsigned PropDescImpl::REQ_PROP_VALUES_GCN_MADU__S3[] =
+{
+    OPERAND_VAL_IMM,
+    OPERAND_VAL_REG,
+};
+
+unsigned PropDescImpl::REQ_PROP_VALUES_GCN_MADU__S4[] =
+{
+    OPERAND_VAL_NULL,
+};
+
+unsigned PropDescImpl::REQ_PROP_VALUES_GCN_MIN_MAX__TYPE[] =
+{
+    Brig::BRIG_TYPE_F32,
+    Brig::BRIG_TYPE_F64,
+    Brig::BRIG_TYPE_S32,
+    Brig::BRIG_TYPE_U32,
+};
+
+unsigned PropDescImpl::REQ_PROP_VALUES_GCN_MIN_MAX__D0[] =
+{
+    OPERAND_VAL_REG,
+};
+
+unsigned PropDescImpl::REQ_PROP_VALUES_GCN_MIN_MAX__S1[] =
+{
+    OPERAND_VAL_IMM,
+    OPERAND_VAL_REG,
+};
+
+unsigned PropDescImpl::REQ_PROP_VALUES_GCN_MIN_MAX__S2[] =
+{
+    OPERAND_VAL_IMM,
+    OPERAND_VAL_REG,
+};
+
+unsigned PropDescImpl::REQ_PROP_VALUES_GCN_MIN_MAX__S3[] =
+{
+    OPERAND_VAL_NULL,
+};
+
+unsigned PropDescImpl::REQ_PROP_VALUES_GCN_MIN_MAX__S4[] =
+{
+    OPERAND_VAL_NULL,
+};
+
+unsigned PropDescImpl::REQ_PROP_VALUES_GCN_MIN_MAX_MED3__TYPE[] =
 {
     Brig::BRIG_TYPE_F32,
     Brig::BRIG_TYPE_S32,
     Brig::BRIG_TYPE_U32,
 };
 
-unsigned PropDescImpl::REQ_PROP_VALUES_GCN_MIN_MAX_MED__D0[] =
+unsigned PropDescImpl::REQ_PROP_VALUES_GCN_MIN_MAX_MED3__D0[] =
 {
-    OPERAND_VAL_REG_32,
+    OPERAND_VAL_REG,
 };
 
-unsigned PropDescImpl::REQ_PROP_VALUES_GCN_MIN_MAX_MED__S1[] =
+unsigned PropDescImpl::REQ_PROP_VALUES_GCN_MIN_MAX_MED3__S1[] =
 {
     OPERAND_VAL_IMM,
     OPERAND_VAL_REG,
 };
 
-unsigned PropDescImpl::REQ_PROP_VALUES_GCN_MIN_MAX_MED__S2[] =
+unsigned PropDescImpl::REQ_PROP_VALUES_GCN_MIN_MAX_MED3__S2[] =
 {
     OPERAND_VAL_IMM,
     OPERAND_VAL_REG,
 };
 
-unsigned PropDescImpl::REQ_PROP_VALUES_GCN_MIN_MAX_MED__S3[] =
+unsigned PropDescImpl::REQ_PROP_VALUES_GCN_MIN_MAX_MED3__S3[] =
 {
     OPERAND_VAL_IMM,
     OPERAND_VAL_REG,
 };
 
-unsigned PropDescImpl::REQ_PROP_VALUES_GCN_MIN_MAX_MED__S4[] =
+unsigned PropDescImpl::REQ_PROP_VALUES_GCN_MIN_MAX_MED3__S4[] =
 {
     OPERAND_VAL_NULL,
 };
@@ -10480,8 +11616,8 @@ unsigned PropDescImpl::REQ_PROP_VALUES_GCN_MQSAD__S1[] =
 
 unsigned PropDescImpl::REQ_PROP_VALUES_GCN_MQSAD__S2[] =
 {
-    OPERAND_VAL_IMM_32,
-    OPERAND_VAL_REG_32,
+    OPERAND_VAL_IMM,
+    OPERAND_VAL_REG,
 };
 
 unsigned PropDescImpl::REQ_PROP_VALUES_GCN_MQSAD__S3[] =
@@ -10501,13 +11637,13 @@ unsigned PropDescImpl::REQ_PROP_VALUES_GCN_MQSAD4__TYPE[] =
 
 unsigned PropDescImpl::REQ_PROP_VALUES_GCN_MQSAD4__D0[] =
 {
-    OPERAND_VAL_REG_V4_32,
+    OPERAND_VAL_REG_V4,
 };
 
 unsigned PropDescImpl::REQ_PROP_VALUES_GCN_MQSAD4__S1[] =
 {
-    OPERAND_VAL_IMM_64,
-    OPERAND_VAL_REG_64,
+    OPERAND_VAL_IMM,
+    OPERAND_VAL_REG,
 };
 
 unsigned PropDescImpl::REQ_PROP_VALUES_GCN_MQSAD4__S2[] =
@@ -10518,7 +11654,7 @@ unsigned PropDescImpl::REQ_PROP_VALUES_GCN_MQSAD4__S2[] =
 
 unsigned PropDescImpl::REQ_PROP_VALUES_GCN_MQSAD4__S3[] =
 {
-    OPERAND_VAL_REG_V4_32,
+    OPERAND_VAL_REG_V4,
 };
 
 unsigned PropDescImpl::REQ_PROP_VALUES_GCN_MQSAD4__S4[] =
@@ -10630,7 +11766,7 @@ unsigned PropDescImpl::REQ_PROP_VALUES_GCN_REGION_ALLOC__TYPE[] =
 
 unsigned PropDescImpl::REQ_PROP_VALUES_GCN_REGION_ALLOC__S0[] =
 {
-    OPERAND_VAL_IMM_32,
+    OPERAND_VAL_IMM,
 };
 
 unsigned PropDescImpl::REQ_PROP_VALUES_GCN_REGION_ALLOC__S1[] =
@@ -10685,7 +11821,7 @@ unsigned PropDescImpl::REQ_PROP_VALUES_GCN_ST__S0[] =
 
 unsigned PropDescImpl::REQ_PROP_VALUES_GCN_ST__S1[] =
 {
-    OPERAND_VAL_ADDR_TSEG,
+    OPERAND_VAL_ADDR,
 };
 
 unsigned PropDescImpl::REQ_PROP_VALUES_GCN_ST__S2[] =
@@ -10705,8 +11841,19 @@ unsigned PropDescImpl::REQ_PROP_VALUES_GCN_ST__S4[] =
 
 unsigned PropDescImpl::REQ_PROP_VALUES_GCN_ST__ALIGN[] =
 {
+    Brig::BRIG_ALIGNMENT_1,
+    Brig::BRIG_ALIGNMENT_128,
+    Brig::BRIG_ALIGNMENT_16,
+    Brig::BRIG_ALIGNMENT_2,
+    Brig::BRIG_ALIGNMENT_32,
+    Brig::BRIG_ALIGNMENT_4,
+    Brig::BRIG_ALIGNMENT_64,
+    Brig::BRIG_ALIGNMENT_8,
+};
+
+unsigned PropDescImpl::REQ_PROP_VALUES_GCN_ST__CONST[] =
+{
     0,
-    1,
 };
 
 unsigned PropDescImpl::REQ_PROP_VALUES_GCN_ST__EQCLASS[] =
@@ -10737,7 +11884,7 @@ unsigned PropDescImpl::REQ_PROP_VALUES_GCN_TRIG_PREOP__S1[] =
 
 unsigned PropDescImpl::REQ_PROP_VALUES_GCN_TRIG_PREOP__S2[] =
 {
-    OPERAND_VAL_IMM_32,
+    OPERAND_VAL_IMM,
 };
 
 unsigned PropDescImpl::REQ_PROP_VALUES_GCN_TRIG_PREOP__S3[] =
@@ -10758,7 +11905,7 @@ unsigned PropDescImpl::REQ_PROP_VALUES_FBAR_NONE__TYPE[] =
 unsigned PropDescImpl::REQ_PROP_VALUES_FBAR_NONE__S0[] =
 {
     OPERAND_VAL_FBARRIER,
-    OPERAND_VAL_REG_32,
+    OPERAND_VAL_REG,
 };
 
 unsigned PropDescImpl::REQ_PROP_VALUES_FBAR_NONE__S1[] =
@@ -10781,110 +11928,6 @@ unsigned PropDescImpl::REQ_PROP_VALUES_FBAR_NONE__S4[] =
     OPERAND_VAL_NULL,
 };
 
-unsigned PropDescImpl::REQ_PROP_VALUES_FBAR_NONE__MEMFNC[] =
-{
-    Brig::BRIG_MEMORY_FENCE_NONE,
-};
-
-unsigned PropDescImpl::REQ_PROP_VALUES_FBAR_NONE__MEMORD[] =
-{
-    Brig::BRIG_MEMORY_ORDER_NONE,
-};
-
-unsigned PropDescImpl::REQ_PROP_VALUES_FBAR_NONE__MEMSCP[] =
-{
-    Brig::BRIG_MEMORY_SCOPE_NONE,
-};
-
-unsigned PropDescImpl::REQ_PROP_VALUES_FBAR_NONE__WIDTH[] =
-{
-    Brig::BRIG_WIDTH_NONE,
-};
-
-unsigned PropDescImpl::REQ_PROP_VALUES_FBAR_WIDTH__TYPE[] =
-{
-    Brig::BRIG_TYPE_NONE,
-};
-
-unsigned PropDescImpl::REQ_PROP_VALUES_FBAR_WIDTH__S0[] =
-{
-    OPERAND_VAL_FBARRIER,
-    OPERAND_VAL_REG_32,
-};
-
-unsigned PropDescImpl::REQ_PROP_VALUES_FBAR_WIDTH__S1[] =
-{
-    OPERAND_VAL_NULL,
-};
-
-unsigned PropDescImpl::REQ_PROP_VALUES_FBAR_WIDTH__S2[] =
-{
-    OPERAND_VAL_NULL,
-};
-
-unsigned PropDescImpl::REQ_PROP_VALUES_FBAR_WIDTH__S3[] =
-{
-    OPERAND_VAL_NULL,
-};
-
-unsigned PropDescImpl::REQ_PROP_VALUES_FBAR_WIDTH__S4[] =
-{
-    OPERAND_VAL_NULL,
-};
-
-unsigned PropDescImpl::REQ_PROP_VALUES_FBAR_WIDTH__MEMFNC[] =
-{
-    Brig::BRIG_MEMORY_FENCE_NONE,
-};
-
-unsigned PropDescImpl::REQ_PROP_VALUES_FBAR_WIDTH__MEMORD[] =
-{
-    Brig::BRIG_MEMORY_ORDER_NONE,
-};
-
-unsigned PropDescImpl::REQ_PROP_VALUES_FBAR_WIDTH__MEMSCP[] =
-{
-    Brig::BRIG_MEMORY_SCOPE_NONE,
-};
-
-unsigned PropDescImpl::REQ_PROP_VALUES_FBAR_WIDTH__WIDTH[] =
-{
-    Brig::BRIG_WIDTH_1,
-    Brig::BRIG_WIDTH_1024,
-    Brig::BRIG_WIDTH_1048576,
-    Brig::BRIG_WIDTH_1073741824,
-    Brig::BRIG_WIDTH_128,
-    Brig::BRIG_WIDTH_131072,
-    Brig::BRIG_WIDTH_134217728,
-    Brig::BRIG_WIDTH_16,
-    Brig::BRIG_WIDTH_16384,
-    Brig::BRIG_WIDTH_16777216,
-    Brig::BRIG_WIDTH_2,
-    Brig::BRIG_WIDTH_2048,
-    Brig::BRIG_WIDTH_2097152,
-    Brig::BRIG_WIDTH_2147483648,
-    Brig::BRIG_WIDTH_256,
-    Brig::BRIG_WIDTH_262144,
-    Brig::BRIG_WIDTH_268435456,
-    Brig::BRIG_WIDTH_32,
-    Brig::BRIG_WIDTH_32768,
-    Brig::BRIG_WIDTH_33554432,
-    Brig::BRIG_WIDTH_4,
-    Brig::BRIG_WIDTH_4096,
-    Brig::BRIG_WIDTH_4194304,
-    Brig::BRIG_WIDTH_512,
-    Brig::BRIG_WIDTH_524288,
-    Brig::BRIG_WIDTH_536870912,
-    Brig::BRIG_WIDTH_64,
-    Brig::BRIG_WIDTH_65536,
-    Brig::BRIG_WIDTH_67108864,
-    Brig::BRIG_WIDTH_8,
-    Brig::BRIG_WIDTH_8192,
-    Brig::BRIG_WIDTH_8388608,
-    Brig::BRIG_WIDTH_ALL,
-    Brig::BRIG_WIDTH_WAVESIZE,
-};
-
 unsigned PropDescImpl::REQ_PROP_VALUES_LD__TYPE[] =
 {
     Brig::BRIG_TYPE_B128,
@@ -10898,6 +11941,8 @@ unsigned PropDescImpl::REQ_PROP_VALUES_LD__TYPE[] =
     Brig::BRIG_TYPE_S64,
     Brig::BRIG_TYPE_S8,
     Brig::BRIG_TYPE_SAMP,
+    Brig::BRIG_TYPE_SIG32,
+    Brig::BRIG_TYPE_SIG64,
     Brig::BRIG_TYPE_U16,
     Brig::BRIG_TYPE_U32,
     Brig::BRIG_TYPE_U64,
@@ -10916,6 +11961,12 @@ unsigned PropDescImpl::REQ_PROP_VALUES_LD__SEGMENT[] =
     Brig::BRIG_SEGMENT_SPILL,
 };
 
+unsigned PropDescImpl::REQ_PROP_VALUES_LD__CONST[] =
+{
+    0,
+    1,
+};
+
 unsigned PropDescImpl::REQ_PROP_VALUES_LD__D0[] =
 {
     OPERAND_VAL_REG,
@@ -10926,7 +11977,7 @@ unsigned PropDescImpl::REQ_PROP_VALUES_LD__D0[] =
 
 unsigned PropDescImpl::REQ_PROP_VALUES_LD__S1[] =
 {
-    OPERAND_VAL_ADDR_TSEG,
+    OPERAND_VAL_ADDR,
 };
 
 unsigned PropDescImpl::REQ_PROP_VALUES_LD__S2[] =
@@ -10946,8 +11997,14 @@ unsigned PropDescImpl::REQ_PROP_VALUES_LD__S4[] =
 
 unsigned PropDescImpl::REQ_PROP_VALUES_LD__ALIGN[] =
 {
-    0,
-    1,
+    Brig::BRIG_ALIGNMENT_1,
+    Brig::BRIG_ALIGNMENT_128,
+    Brig::BRIG_ALIGNMENT_16,
+    Brig::BRIG_ALIGNMENT_2,
+    Brig::BRIG_ALIGNMENT_32,
+    Brig::BRIG_ALIGNMENT_4,
+    Brig::BRIG_ALIGNMENT_64,
+    Brig::BRIG_ALIGNMENT_8,
 };
 
 unsigned PropDescImpl::REQ_PROP_VALUES_LD__EQCLASS[] =
@@ -11018,7 +12075,7 @@ unsigned PropDescImpl::REQ_PROP_VALUES_LDA__D0[] =
 
 unsigned PropDescImpl::REQ_PROP_VALUES_LDA__S1[] =
 {
-    OPERAND_VAL_ADDR_SEG,
+    OPERAND_VAL_ADDR,
 };
 
 unsigned PropDescImpl::REQ_PROP_VALUES_LDA__S2[] =
@@ -11103,6 +12160,12 @@ unsigned PropDescImpl::REQ_PROP_VALUES_LD_IMAGE__CTYPE[] =
     Brig::BRIG_TYPE_U32,
 };
 
+unsigned PropDescImpl::REQ_PROP_VALUES_LD_IMAGE__ITYPE[] =
+{
+    Brig::BRIG_TYPE_ROIMG,
+    Brig::BRIG_TYPE_RWIMG,
+};
+
 unsigned PropDescImpl::REQ_PROP_VALUES_LD_IMAGE__TYPE[] =
 {
     Brig::BRIG_TYPE_F32,
@@ -11120,19 +12183,6 @@ unsigned PropDescImpl::REQ_PROP_VALUES_LD_IMAGE__GEOM[] =
     Brig::BRIG_GEOMETRY_3D,
 };
 
-unsigned PropDescImpl::REQ_PROP_VALUES_LD_IMAGE__ITYPE[] =
-{
-    Brig::BRIG_TYPE_ROIMG,
-    Brig::BRIG_TYPE_RWIMG,
-};
-
-unsigned PropDescImpl::REQ_PROP_VALUES_LD_IMAGE__S1[] =
-{
-    OPERAND_VAL_REG_64,
-    OPERAND_VAL_ROIMAGE,
-    OPERAND_VAL_RWIMAGE,
-};
-
 unsigned PropDescImpl::REQ_PROP_VALUES_LD_IMAGE__S2[] =
 {
     OPERAND_VAL_REG,
@@ -11145,6 +12195,13 @@ unsigned PropDescImpl::REQ_PROP_VALUES_LD_IMAGE__D0[] =
     OPERAND_VAL_REG_V4,
 };
 
+unsigned PropDescImpl::REQ_PROP_VALUES_LD_IMAGE__S1[] =
+{
+    OPERAND_VAL_REG,
+    OPERAND_VAL_ROIMAGE,
+    OPERAND_VAL_RWIMAGE,
+};
+
 unsigned PropDescImpl::REQ_PROP_VALUES_LD_IMAGE__S3[] =
 {
     OPERAND_VAL_NULL,
@@ -11153,6 +12210,53 @@ unsigned PropDescImpl::REQ_PROP_VALUES_LD_IMAGE__S3[] =
 unsigned PropDescImpl::REQ_PROP_VALUES_LD_IMAGE__S4[] =
 {
     OPERAND_VAL_NULL,
+};
+
+unsigned PropDescImpl::REQ_PROP_VALUES_LD_IMAGE__EQCLASS[] =
+{
+    EQCLASS_VAL_ANY,
+};
+
+unsigned PropDescImpl::REQ_PROP_VALUES_LDQ__TYPE[] =
+{
+    Brig::BRIG_TYPE_U64,
+};
+
+unsigned PropDescImpl::REQ_PROP_VALUES_LDQ__SEGMENT[] =
+{
+    Brig::BRIG_SEGMENT_FLAT,
+    Brig::BRIG_SEGMENT_GLOBAL,
+};
+
+unsigned PropDescImpl::REQ_PROP_VALUES_LDQ__D0[] =
+{
+    OPERAND_VAL_REG,
+};
+
+unsigned PropDescImpl::REQ_PROP_VALUES_LDQ__S1[] =
+{
+    OPERAND_VAL_ADDR,
+};
+
+unsigned PropDescImpl::REQ_PROP_VALUES_LDQ__S2[] =
+{
+    OPERAND_VAL_NULL,
+};
+
+unsigned PropDescImpl::REQ_PROP_VALUES_LDQ__S3[] =
+{
+    OPERAND_VAL_NULL,
+};
+
+unsigned PropDescImpl::REQ_PROP_VALUES_LDQ__S4[] =
+{
+    OPERAND_VAL_NULL,
+};
+
+unsigned PropDescImpl::REQ_PROP_VALUES_LDQ__MEMORD[] =
+{
+    Brig::BRIG_MEMORY_ORDER_ACQUIRE,
+    Brig::BRIG_MEMORY_ORDER_RELAXED,
 };
 
 unsigned PropDescImpl::REQ_PROP_VALUES_LERP__TYPE[] =
@@ -11258,81 +12362,6 @@ unsigned PropDescImpl::REQ_PROP_VALUES_MAD24__S4[] =
     OPERAND_VAL_NULL,
 };
 
-unsigned PropDescImpl::REQ_PROP_VALUES_MASKLANE__STYPE[] =
-{
-    Brig::BRIG_TYPE_B1,
-    Brig::BRIG_TYPE_U32,
-};
-
-unsigned PropDescImpl::REQ_PROP_VALUES_MASKLANE__TYPE[] =
-{
-    Brig::BRIG_TYPE_B64,
-};
-
-unsigned PropDescImpl::REQ_PROP_VALUES_MASKLANE__D0[] =
-{
-    OPERAND_VAL_REG,
-};
-
-unsigned PropDescImpl::REQ_PROP_VALUES_MASKLANE__S1[] =
-{
-    OPERAND_VAL_IMM,
-    OPERAND_VAL_REG,
-};
-
-unsigned PropDescImpl::REQ_PROP_VALUES_MASKLANE__S2[] =
-{
-    OPERAND_VAL_NULL,
-};
-
-unsigned PropDescImpl::REQ_PROP_VALUES_MASKLANE__S3[] =
-{
-    OPERAND_VAL_NULL,
-};
-
-unsigned PropDescImpl::REQ_PROP_VALUES_MASKLANE__S4[] =
-{
-    OPERAND_VAL_NULL,
-};
-
-unsigned PropDescImpl::REQ_PROP_VALUES_MASKLANE__WIDTH[] =
-{
-    Brig::BRIG_WIDTH_1,
-    Brig::BRIG_WIDTH_1024,
-    Brig::BRIG_WIDTH_1048576,
-    Brig::BRIG_WIDTH_1073741824,
-    Brig::BRIG_WIDTH_128,
-    Brig::BRIG_WIDTH_131072,
-    Brig::BRIG_WIDTH_134217728,
-    Brig::BRIG_WIDTH_16,
-    Brig::BRIG_WIDTH_16384,
-    Brig::BRIG_WIDTH_16777216,
-    Brig::BRIG_WIDTH_2,
-    Brig::BRIG_WIDTH_2048,
-    Brig::BRIG_WIDTH_2097152,
-    Brig::BRIG_WIDTH_2147483648,
-    Brig::BRIG_WIDTH_256,
-    Brig::BRIG_WIDTH_262144,
-    Brig::BRIG_WIDTH_268435456,
-    Brig::BRIG_WIDTH_32,
-    Brig::BRIG_WIDTH_32768,
-    Brig::BRIG_WIDTH_33554432,
-    Brig::BRIG_WIDTH_4,
-    Brig::BRIG_WIDTH_4096,
-    Brig::BRIG_WIDTH_4194304,
-    Brig::BRIG_WIDTH_512,
-    Brig::BRIG_WIDTH_524288,
-    Brig::BRIG_WIDTH_536870912,
-    Brig::BRIG_WIDTH_64,
-    Brig::BRIG_WIDTH_65536,
-    Brig::BRIG_WIDTH_67108864,
-    Brig::BRIG_WIDTH_8,
-    Brig::BRIG_WIDTH_8192,
-    Brig::BRIG_WIDTH_8388608,
-    Brig::BRIG_WIDTH_ALL,
-    Brig::BRIG_WIDTH_WAVESIZE,
-};
-
 unsigned PropDescImpl::REQ_PROP_VALUES_MAX__TYPE[] =
 {
     Brig::BRIG_TYPE_F16,
@@ -11415,6 +12444,58 @@ unsigned PropDescImpl::REQ_PROP_VALUES_MAX__ROUNDING[] =
     Brig::BRIG_ROUND_NONE,
 };
 
+unsigned PropDescImpl::REQ_PROP_VALUES_MEMFENCE__TYPE[] =
+{
+    Brig::BRIG_TYPE_NONE,
+};
+
+unsigned PropDescImpl::REQ_PROP_VALUES_MEMFENCE__MEMSEG[] =
+{
+    Brig::BRIG_MEMORY_FENCE_BOTH,
+    Brig::BRIG_MEMORY_FENCE_GLOBAL,
+    Brig::BRIG_MEMORY_FENCE_GROUP,
+};
+
+unsigned PropDescImpl::REQ_PROP_VALUES_MEMFENCE__MEMSCP[] =
+{
+    Brig::BRIG_MEMORY_SCOPE_COMPONENT,
+    Brig::BRIG_MEMORY_SCOPE_SYSTEM,
+    Brig::BRIG_MEMORY_SCOPE_WAVEFRONT,
+    Brig::BRIG_MEMORY_SCOPE_WORKGROUP,
+};
+
+unsigned PropDescImpl::REQ_PROP_VALUES_MEMFENCE__S0[] =
+{
+    OPERAND_VAL_NULL,
+};
+
+unsigned PropDescImpl::REQ_PROP_VALUES_MEMFENCE__S1[] =
+{
+    OPERAND_VAL_NULL,
+};
+
+unsigned PropDescImpl::REQ_PROP_VALUES_MEMFENCE__S2[] =
+{
+    OPERAND_VAL_NULL,
+};
+
+unsigned PropDescImpl::REQ_PROP_VALUES_MEMFENCE__S3[] =
+{
+    OPERAND_VAL_NULL,
+};
+
+unsigned PropDescImpl::REQ_PROP_VALUES_MEMFENCE__S4[] =
+{
+    OPERAND_VAL_NULL,
+};
+
+unsigned PropDescImpl::REQ_PROP_VALUES_MEMFENCE__MEMORD[] =
+{
+    Brig::BRIG_MEMORY_ORDER_ACQUIRE,
+    Brig::BRIG_MEMORY_ORDER_ACQUIRE_RELEASE,
+    Brig::BRIG_MEMORY_ORDER_RELEASE,
+};
+
 unsigned PropDescImpl::REQ_PROP_VALUES_MOV__TYPE[] =
 {
     Brig::BRIG_TYPE_B1,
@@ -11429,18 +12510,20 @@ unsigned PropDescImpl::REQ_PROP_VALUES_MOV__TYPE[] =
     Brig::BRIG_TYPE_S32,
     Brig::BRIG_TYPE_S64,
     Brig::BRIG_TYPE_SAMP,
+    Brig::BRIG_TYPE_SIG32,
+    Brig::BRIG_TYPE_SIG64,
     Brig::BRIG_TYPE_U32,
     Brig::BRIG_TYPE_U64,
-};
-
-unsigned PropDescImpl::REQ_PROP_VALUES_MOV__D0[] =
-{
-    OPERAND_VAL_REG,
 };
 
 unsigned PropDescImpl::REQ_PROP_VALUES_MOV__S1[] =
 {
     OPERAND_VAL_IMM,
+    OPERAND_VAL_REG,
+};
+
+unsigned PropDescImpl::REQ_PROP_VALUES_MOV__D0[] =
+{
     OPERAND_VAL_REG,
 };
 
@@ -11816,11 +12899,6 @@ unsigned PropDescImpl::REQ_PROP_VALUES_TRIG__S4[] =
     OPERAND_VAL_NULL,
 };
 
-unsigned PropDescImpl::REQ_PROP_VALUES_NULLPTR__STYPE[] =
-{
-    Brig::BRIG_TYPE_NONE,
-};
-
 unsigned PropDescImpl::REQ_PROP_VALUES_NULLPTR__TYPE[] =
 {
     Brig::BRIG_TYPE_U32,
@@ -11922,8 +13000,8 @@ unsigned PropDescImpl::REQ_PROP_VALUES_PACK__S2[] =
 
 unsigned PropDescImpl::REQ_PROP_VALUES_PACK__S3[] =
 {
-    OPERAND_VAL_IMM_32,
-    OPERAND_VAL_REG_32,
+    OPERAND_VAL_IMM,
+    OPERAND_VAL_REG,
 };
 
 unsigned PropDescImpl::REQ_PROP_VALUES_PACK__S4[] =
@@ -11968,6 +13046,37 @@ unsigned PropDescImpl::REQ_PROP_VALUES_PACKCVT__S4[] =
 {
     OPERAND_VAL_IMM,
     OPERAND_VAL_REG,
+};
+
+unsigned PropDescImpl::REQ_PROP_VALUES_PACKET__TYPE[] =
+{
+    Brig::BRIG_TYPE_SIG32,
+    Brig::BRIG_TYPE_SIG64,
+};
+
+unsigned PropDescImpl::REQ_PROP_VALUES_PACKET__S0[] =
+{
+    OPERAND_VAL_REG,
+};
+
+unsigned PropDescImpl::REQ_PROP_VALUES_PACKET__S1[] =
+{
+    OPERAND_VAL_NULL,
+};
+
+unsigned PropDescImpl::REQ_PROP_VALUES_PACKET__S2[] =
+{
+    OPERAND_VAL_NULL,
+};
+
+unsigned PropDescImpl::REQ_PROP_VALUES_PACKET__S3[] =
+{
+    OPERAND_VAL_NULL,
+};
+
+unsigned PropDescImpl::REQ_PROP_VALUES_PACKET__S4[] =
+{
+    OPERAND_VAL_NULL,
 };
 
 unsigned PropDescImpl::REQ_PROP_VALUES_POPCOUNT__STYPE[] =
@@ -12018,16 +13127,16 @@ unsigned PropDescImpl::REQ_PROP_VALUES_QUERYIMAGE__TYPE[] =
     Brig::BRIG_TYPE_U32,
 };
 
-unsigned PropDescImpl::REQ_PROP_VALUES_QUERYIMAGE__S1[] =
-{
-    OPERAND_VAL_REG_64,
-    OPERAND_VAL_ROIMAGE,
-    OPERAND_VAL_RWIMAGE,
-};
-
 unsigned PropDescImpl::REQ_PROP_VALUES_QUERYIMAGE__D0[] =
 {
     OPERAND_VAL_REG,
+};
+
+unsigned PropDescImpl::REQ_PROP_VALUES_QUERYIMAGE__S1[] =
+{
+    OPERAND_VAL_REG,
+    OPERAND_VAL_ROIMAGE,
+    OPERAND_VAL_RWIMAGE,
 };
 
 unsigned PropDescImpl::REQ_PROP_VALUES_QUERYIMAGE__S2[] =
@@ -12062,13 +13171,13 @@ unsigned PropDescImpl::REQ_PROP_VALUES_QUERYSAMPLERBOUNDARY__D0[] =
 
 unsigned PropDescImpl::REQ_PROP_VALUES_QUERYSAMPLERBOUNDARY__S1[] =
 {
-    OPERAND_VAL_REG_64,
+    OPERAND_VAL_REG,
     OPERAND_VAL_SAMPLER,
 };
 
 unsigned PropDescImpl::REQ_PROP_VALUES_QUERYSAMPLERBOUNDARY__S2[] =
 {
-    OPERAND_VAL_IMM_32,
+    OPERAND_VAL_IMM,
 };
 
 unsigned PropDescImpl::REQ_PROP_VALUES_QUERYSAMPLERBOUNDARY__S3[] =
@@ -12098,7 +13207,7 @@ unsigned PropDescImpl::REQ_PROP_VALUES_QUERYSAMPLER__D0[] =
 
 unsigned PropDescImpl::REQ_PROP_VALUES_QUERYSAMPLER__S1[] =
 {
-    OPERAND_VAL_REG_64,
+    OPERAND_VAL_REG,
     OPERAND_VAL_SAMPLER,
 };
 
@@ -12117,10 +13226,53 @@ unsigned PropDescImpl::REQ_PROP_VALUES_QUERYSAMPLER__S4[] =
     OPERAND_VAL_NULL,
 };
 
+unsigned PropDescImpl::REQ_PROP_VALUES_GPTR__TYPE[] =
+{
+    Brig::BRIG_TYPE_U32,
+    Brig::BRIG_TYPE_U64,
+};
+
+unsigned PropDescImpl::REQ_PROP_VALUES_GPTR__SEGMENT[] =
+{
+    Brig::BRIG_SEGMENT_FLAT,
+    Brig::BRIG_SEGMENT_GLOBAL,
+};
+
+unsigned PropDescImpl::REQ_PROP_VALUES_GPTR__S0[] =
+{
+    OPERAND_VAL_REG,
+};
+
+unsigned PropDescImpl::REQ_PROP_VALUES_GPTR__S1[] =
+{
+    OPERAND_VAL_NULL,
+};
+
+unsigned PropDescImpl::REQ_PROP_VALUES_GPTR__S2[] =
+{
+    OPERAND_VAL_NULL,
+};
+
+unsigned PropDescImpl::REQ_PROP_VALUES_GPTR__S3[] =
+{
+    OPERAND_VAL_NULL,
+};
+
+unsigned PropDescImpl::REQ_PROP_VALUES_GPTR__S4[] =
+{
+    OPERAND_VAL_NULL,
+};
+
 unsigned PropDescImpl::REQ_PROP_VALUES_RDIMAGE__CTYPE[] =
 {
     Brig::BRIG_TYPE_F32,
     Brig::BRIG_TYPE_S32,
+};
+
+unsigned PropDescImpl::REQ_PROP_VALUES_RDIMAGE__ITYPE[] =
+{
+    Brig::BRIG_TYPE_ROIMG,
+    Brig::BRIG_TYPE_RWIMG,
 };
 
 unsigned PropDescImpl::REQ_PROP_VALUES_RDIMAGE__TYPE[] =
@@ -12139,19 +13291,6 @@ unsigned PropDescImpl::REQ_PROP_VALUES_RDIMAGE__GEOM[] =
     Brig::BRIG_GEOMETRY_3D,
 };
 
-unsigned PropDescImpl::REQ_PROP_VALUES_RDIMAGE__ITYPE[] =
-{
-    Brig::BRIG_TYPE_ROIMG,
-    Brig::BRIG_TYPE_RWIMG,
-};
-
-unsigned PropDescImpl::REQ_PROP_VALUES_RDIMAGE__S1[] =
-{
-    OPERAND_VAL_REG_64,
-    OPERAND_VAL_ROIMAGE,
-    OPERAND_VAL_RWIMAGE,
-};
-
 unsigned PropDescImpl::REQ_PROP_VALUES_RDIMAGE__S3[] =
 {
     OPERAND_VAL_REG,
@@ -12164,9 +13303,16 @@ unsigned PropDescImpl::REQ_PROP_VALUES_RDIMAGE__D0[] =
     OPERAND_VAL_REG_V4,
 };
 
+unsigned PropDescImpl::REQ_PROP_VALUES_RDIMAGE__S1[] =
+{
+    OPERAND_VAL_REG,
+    OPERAND_VAL_ROIMAGE,
+    OPERAND_VAL_RWIMAGE,
+};
+
 unsigned PropDescImpl::REQ_PROP_VALUES_RDIMAGE__S2[] =
 {
-    OPERAND_VAL_REG_64,
+    OPERAND_VAL_REG,
     OPERAND_VAL_SAMPLER,
 };
 
@@ -12175,79 +13321,9 @@ unsigned PropDescImpl::REQ_PROP_VALUES_RDIMAGE__S4[] =
     OPERAND_VAL_NULL,
 };
 
-unsigned PropDescImpl::REQ_PROP_VALUES_SENDLANE__STYPE[] =
+unsigned PropDescImpl::REQ_PROP_VALUES_RDIMAGE__EQCLASS[] =
 {
-    Brig::BRIG_TYPE_NONE,
-};
-
-unsigned PropDescImpl::REQ_PROP_VALUES_SENDLANE__TYPE[] =
-{
-    Brig::BRIG_TYPE_B32,
-};
-
-unsigned PropDescImpl::REQ_PROP_VALUES_SENDLANE__D0[] =
-{
-    OPERAND_VAL_REG,
-};
-
-unsigned PropDescImpl::REQ_PROP_VALUES_SENDLANE__S1[] =
-{
-    OPERAND_VAL_IMM,
-    OPERAND_VAL_REG,
-};
-
-unsigned PropDescImpl::REQ_PROP_VALUES_SENDLANE__S2[] =
-{
-    OPERAND_VAL_IMM,
-    OPERAND_VAL_REG,
-};
-
-unsigned PropDescImpl::REQ_PROP_VALUES_SENDLANE__S3[] =
-{
-    OPERAND_VAL_NULL,
-};
-
-unsigned PropDescImpl::REQ_PROP_VALUES_SENDLANE__S4[] =
-{
-    OPERAND_VAL_NULL,
-};
-
-unsigned PropDescImpl::REQ_PROP_VALUES_SENDLANE__WIDTH[] =
-{
-    Brig::BRIG_WIDTH_1,
-    Brig::BRIG_WIDTH_1024,
-    Brig::BRIG_WIDTH_1048576,
-    Brig::BRIG_WIDTH_1073741824,
-    Brig::BRIG_WIDTH_128,
-    Brig::BRIG_WIDTH_131072,
-    Brig::BRIG_WIDTH_134217728,
-    Brig::BRIG_WIDTH_16,
-    Brig::BRIG_WIDTH_16384,
-    Brig::BRIG_WIDTH_16777216,
-    Brig::BRIG_WIDTH_2,
-    Brig::BRIG_WIDTH_2048,
-    Brig::BRIG_WIDTH_2097152,
-    Brig::BRIG_WIDTH_2147483648,
-    Brig::BRIG_WIDTH_256,
-    Brig::BRIG_WIDTH_262144,
-    Brig::BRIG_WIDTH_268435456,
-    Brig::BRIG_WIDTH_32,
-    Brig::BRIG_WIDTH_32768,
-    Brig::BRIG_WIDTH_33554432,
-    Brig::BRIG_WIDTH_4,
-    Brig::BRIG_WIDTH_4096,
-    Brig::BRIG_WIDTH_4194304,
-    Brig::BRIG_WIDTH_512,
-    Brig::BRIG_WIDTH_524288,
-    Brig::BRIG_WIDTH_536870912,
-    Brig::BRIG_WIDTH_64,
-    Brig::BRIG_WIDTH_65536,
-    Brig::BRIG_WIDTH_67108864,
-    Brig::BRIG_WIDTH_8,
-    Brig::BRIG_WIDTH_8192,
-    Brig::BRIG_WIDTH_8388608,
-    Brig::BRIG_WIDTH_ALL,
-    Brig::BRIG_WIDTH_WAVESIZE,
+    EQCLASS_VAL_ANY,
 };
 
 unsigned PropDescImpl::REQ_PROP_VALUES_RET__TYPE[] =
@@ -12311,8 +13387,8 @@ unsigned PropDescImpl::REQ_PROP_VALUES_SAD__S2[] =
 
 unsigned PropDescImpl::REQ_PROP_VALUES_SAD__S3[] =
 {
-    OPERAND_VAL_IMM_32,
-    OPERAND_VAL_REG_32,
+    OPERAND_VAL_IMM,
+    OPERAND_VAL_REG,
 };
 
 unsigned PropDescImpl::REQ_PROP_VALUES_SAD__S4[] =
@@ -12349,8 +13425,8 @@ unsigned PropDescImpl::REQ_PROP_VALUES_SADHI__S2[] =
 
 unsigned PropDescImpl::REQ_PROP_VALUES_SADHI__S3[] =
 {
-    OPERAND_VAL_IMM_32,
-    OPERAND_VAL_REG_32,
+    OPERAND_VAL_IMM,
+    OPERAND_VAL_REG,
 };
 
 unsigned PropDescImpl::REQ_PROP_VALUES_SADHI__S4[] =
@@ -12406,6 +13482,12 @@ unsigned PropDescImpl::REQ_PROP_VALUES_SEGMENTP__S4[] =
     OPERAND_VAL_NULL,
 };
 
+unsigned PropDescImpl::REQ_PROP_VALUES_SEGMENTP__NONULL[] =
+{
+    0,
+    1,
+};
+
 unsigned PropDescImpl::REQ_PROP_VALUES_SHIFT__TYPE[] =
 {
     Brig::BRIG_TYPE_S16X2,
@@ -12445,8 +13527,8 @@ unsigned PropDescImpl::REQ_PROP_VALUES_SHIFT__S1[] =
 
 unsigned PropDescImpl::REQ_PROP_VALUES_SHIFT__S2[] =
 {
-    OPERAND_VAL_IMM_32,
-    OPERAND_VAL_REG_32,
+    OPERAND_VAL_IMM,
+    OPERAND_VAL_REG,
 };
 
 unsigned PropDescImpl::REQ_PROP_VALUES_SHIFT__S3[] =
@@ -12476,6 +13558,11 @@ unsigned PropDescImpl::REQ_PROP_VALUES_SHUFFLE__TYPE[] =
     Brig::BRIG_TYPE_U8X8,
 };
 
+unsigned PropDescImpl::REQ_PROP_VALUES_SHUFFLE__S3[] =
+{
+    OPERAND_VAL_IMM,
+};
+
 unsigned PropDescImpl::REQ_PROP_VALUES_SHUFFLE__D0[] =
 {
     OPERAND_VAL_REG,
@@ -12493,12 +13580,151 @@ unsigned PropDescImpl::REQ_PROP_VALUES_SHUFFLE__S2[] =
     OPERAND_VAL_REG,
 };
 
-unsigned PropDescImpl::REQ_PROP_VALUES_SHUFFLE__S3[] =
+unsigned PropDescImpl::REQ_PROP_VALUES_SHUFFLE__S4[] =
 {
-    OPERAND_VAL_IMM,
+    OPERAND_VAL_NULL,
 };
 
-unsigned PropDescImpl::REQ_PROP_VALUES_SHUFFLE__S4[] =
+unsigned PropDescImpl::REQ_PROP_VALUES_SIGNAL__TYPE[] =
+{
+    Brig::BRIG_TYPE_B32,
+    Brig::BRIG_TYPE_B64,
+    Brig::BRIG_TYPE_S32,
+    Brig::BRIG_TYPE_S64,
+    Brig::BRIG_TYPE_U32,
+    Brig::BRIG_TYPE_U64,
+};
+
+unsigned PropDescImpl::REQ_PROP_VALUES_SIGNAL__SIGOP[] =
+{
+    Brig::BRIG_SIGNAL_ADD,
+    Brig::BRIG_SIGNAL_AND,
+    Brig::BRIG_SIGNAL_CAS,
+    Brig::BRIG_SIGNAL_DEC,
+    Brig::BRIG_SIGNAL_EXCH,
+    Brig::BRIG_SIGNAL_INC,
+    Brig::BRIG_SIGNAL_LD,
+    Brig::BRIG_SIGNAL_MAX,
+    Brig::BRIG_SIGNAL_MIN,
+    Brig::BRIG_SIGNAL_OR,
+    Brig::BRIG_SIGNAL_SUB,
+    Brig::BRIG_SIGNAL_WAIT_EQ,
+    Brig::BRIG_SIGNAL_WAIT_GTE,
+    Brig::BRIG_SIGNAL_WAIT_LT,
+    Brig::BRIG_SIGNAL_WAIT_NE,
+    Brig::BRIG_SIGNAL_WAITTIMEOUT_EQ,
+    Brig::BRIG_SIGNAL_WAITTIMEOUT_GTE,
+    Brig::BRIG_SIGNAL_WAITTIMEOUT_LT,
+    Brig::BRIG_SIGNAL_WAITTIMEOUT_NE,
+    Brig::BRIG_SIGNAL_XOR,
+};
+
+unsigned PropDescImpl::REQ_PROP_VALUES_SIGNAL__MEMORD[] =
+{
+    Brig::BRIG_MEMORY_ORDER_ACQUIRE,
+    Brig::BRIG_MEMORY_ORDER_ACQUIRE_RELEASE,
+    Brig::BRIG_MEMORY_ORDER_RELAXED,
+    Brig::BRIG_MEMORY_ORDER_RELEASE,
+};
+
+unsigned PropDescImpl::REQ_PROP_VALUES_SIGNAL__S1[] =
+{
+    OPERAND_VAL_REG,
+};
+
+unsigned PropDescImpl::REQ_PROP_VALUES_SIGNAL__S2[] =
+{
+    OPERAND_VAL_IMM,
+    OPERAND_VAL_NULL,
+    OPERAND_VAL_REG,
+};
+
+unsigned PropDescImpl::REQ_PROP_VALUES_SIGNAL__S3[] =
+{
+    OPERAND_VAL_IMM,
+    OPERAND_VAL_NULL,
+    OPERAND_VAL_REG,
+};
+
+unsigned PropDescImpl::REQ_PROP_VALUES_SIGNAL__SIGTYPE[] =
+{
+    Brig::BRIG_TYPE_SIG32,
+    Brig::BRIG_TYPE_SIG64,
+};
+
+unsigned PropDescImpl::REQ_PROP_VALUES_SIGNAL__D0[] =
+{
+    OPERAND_VAL_REG,
+};
+
+unsigned PropDescImpl::REQ_PROP_VALUES_SIGNAL__S4[] =
+{
+    OPERAND_VAL_NULL,
+};
+
+unsigned PropDescImpl::REQ_PROP_VALUES_SIGNAL_NORET__TYPE[] =
+{
+    Brig::BRIG_TYPE_B32,
+    Brig::BRIG_TYPE_B64,
+    Brig::BRIG_TYPE_S32,
+    Brig::BRIG_TYPE_S64,
+    Brig::BRIG_TYPE_U32,
+    Brig::BRIG_TYPE_U64,
+};
+
+unsigned PropDescImpl::REQ_PROP_VALUES_SIGNAL_NORET__SIGOP[] =
+{
+    Brig::BRIG_SIGNAL_ADD,
+    Brig::BRIG_SIGNAL_AND,
+    Brig::BRIG_SIGNAL_CAS,
+    Brig::BRIG_SIGNAL_DEC,
+    Brig::BRIG_SIGNAL_INC,
+    Brig::BRIG_SIGNAL_MAX,
+    Brig::BRIG_SIGNAL_MIN,
+    Brig::BRIG_SIGNAL_OR,
+    Brig::BRIG_SIGNAL_ST,
+    Brig::BRIG_SIGNAL_SUB,
+    Brig::BRIG_SIGNAL_XOR,
+};
+
+unsigned PropDescImpl::REQ_PROP_VALUES_SIGNAL_NORET__MEMORD[] =
+{
+    Brig::BRIG_MEMORY_ORDER_ACQUIRE,
+    Brig::BRIG_MEMORY_ORDER_ACQUIRE_RELEASE,
+    Brig::BRIG_MEMORY_ORDER_RELAXED,
+    Brig::BRIG_MEMORY_ORDER_RELEASE,
+};
+
+unsigned PropDescImpl::REQ_PROP_VALUES_SIGNAL_NORET__S0[] =
+{
+    OPERAND_VAL_REG,
+};
+
+unsigned PropDescImpl::REQ_PROP_VALUES_SIGNAL_NORET__S2[] =
+{
+    OPERAND_VAL_IMM,
+    OPERAND_VAL_NULL,
+    OPERAND_VAL_REG,
+};
+
+unsigned PropDescImpl::REQ_PROP_VALUES_SIGNAL_NORET__SIGTYPE[] =
+{
+    Brig::BRIG_TYPE_SIG32,
+    Brig::BRIG_TYPE_SIG64,
+};
+
+unsigned PropDescImpl::REQ_PROP_VALUES_SIGNAL_NORET__S1[] =
+{
+    OPERAND_VAL_IMM,
+    OPERAND_VAL_REG,
+};
+
+unsigned PropDescImpl::REQ_PROP_VALUES_SIGNAL_NORET__S3[] =
+{
+    OPERAND_VAL_NULL,
+};
+
+unsigned PropDescImpl::REQ_PROP_VALUES_SIGNAL_NORET__S4[] =
 {
     OPERAND_VAL_NULL,
 };
@@ -12576,6 +13802,8 @@ unsigned PropDescImpl::REQ_PROP_VALUES_ST__TYPE[] =
     Brig::BRIG_TYPE_S64,
     Brig::BRIG_TYPE_S8,
     Brig::BRIG_TYPE_SAMP,
+    Brig::BRIG_TYPE_SIG32,
+    Brig::BRIG_TYPE_SIG64,
     Brig::BRIG_TYPE_U16,
     Brig::BRIG_TYPE_U32,
     Brig::BRIG_TYPE_U64,
@@ -12603,7 +13831,7 @@ unsigned PropDescImpl::REQ_PROP_VALUES_ST__S0[] =
 
 unsigned PropDescImpl::REQ_PROP_VALUES_ST__S1[] =
 {
-    OPERAND_VAL_ADDR_TSEG,
+    OPERAND_VAL_ADDR,
 };
 
 unsigned PropDescImpl::REQ_PROP_VALUES_ST__S2[] =
@@ -12623,8 +13851,19 @@ unsigned PropDescImpl::REQ_PROP_VALUES_ST__S4[] =
 
 unsigned PropDescImpl::REQ_PROP_VALUES_ST__ALIGN[] =
 {
+    Brig::BRIG_ALIGNMENT_1,
+    Brig::BRIG_ALIGNMENT_128,
+    Brig::BRIG_ALIGNMENT_16,
+    Brig::BRIG_ALIGNMENT_2,
+    Brig::BRIG_ALIGNMENT_32,
+    Brig::BRIG_ALIGNMENT_4,
+    Brig::BRIG_ALIGNMENT_64,
+    Brig::BRIG_ALIGNMENT_8,
+};
+
+unsigned PropDescImpl::REQ_PROP_VALUES_ST__CONST[] =
+{
     0,
-    1,
 };
 
 unsigned PropDescImpl::REQ_PROP_VALUES_ST__EQCLASS[] =
@@ -12640,6 +13879,11 @@ unsigned PropDescImpl::REQ_PROP_VALUES_ST__WIDTH[] =
 unsigned PropDescImpl::REQ_PROP_VALUES_ST_IMAGE__CTYPE[] =
 {
     Brig::BRIG_TYPE_U32,
+};
+
+unsigned PropDescImpl::REQ_PROP_VALUES_ST_IMAGE__ITYPE[] =
+{
+    Brig::BRIG_TYPE_RWIMG,
 };
 
 unsigned PropDescImpl::REQ_PROP_VALUES_ST_IMAGE__TYPE[] =
@@ -12673,7 +13917,8 @@ unsigned PropDescImpl::REQ_PROP_VALUES_ST_IMAGE__S0[] =
 
 unsigned PropDescImpl::REQ_PROP_VALUES_ST_IMAGE__S1[] =
 {
-    OPERAND_VAL_REG_64,
+    OPERAND_VAL_REG,
+    OPERAND_VAL_ROIMAGE,
     OPERAND_VAL_RWIMAGE,
 };
 
@@ -12687,9 +13932,9 @@ unsigned PropDescImpl::REQ_PROP_VALUES_ST_IMAGE__S4[] =
     OPERAND_VAL_NULL,
 };
 
-unsigned PropDescImpl::REQ_PROP_VALUES_ST_IMAGE__ITYPE[] =
+unsigned PropDescImpl::REQ_PROP_VALUES_ST_IMAGE__EQCLASS[] =
 {
-    Brig::BRIG_TYPE_RWIMG,
+    EQCLASS_VAL_ANY,
 };
 
 unsigned PropDescImpl::REQ_PROP_VALUES_S2F__STYPE[] =
@@ -12741,96 +13986,53 @@ unsigned PropDescImpl::REQ_PROP_VALUES_S2F__S4[] =
     OPERAND_VAL_NULL,
 };
 
-unsigned PropDescImpl::REQ_PROP_VALUES_SYNC__TYPE[] =
+unsigned PropDescImpl::REQ_PROP_VALUES_S2F__NONULL[] =
 {
-    Brig::BRIG_TYPE_NONE,
+    0,
+    1,
 };
 
-unsigned PropDescImpl::REQ_PROP_VALUES_SYNC__S0[] =
+unsigned PropDescImpl::REQ_PROP_VALUES_STQ_WRT__TYPE[] =
 {
-    OPERAND_VAL_NULL,
-};
-
-unsigned PropDescImpl::REQ_PROP_VALUES_SYNC__S1[] =
-{
-    OPERAND_VAL_NULL,
-};
-
-unsigned PropDescImpl::REQ_PROP_VALUES_SYNC__S2[] =
-{
-    OPERAND_VAL_NULL,
-};
-
-unsigned PropDescImpl::REQ_PROP_VALUES_SYNC__S3[] =
-{
-    OPERAND_VAL_NULL,
-};
-
-unsigned PropDescImpl::REQ_PROP_VALUES_SYNC__S4[] =
-{
-    OPERAND_VAL_NULL,
-};
-
-unsigned PropDescImpl::REQ_PROP_VALUES_SYNC__MEMFNC[] =
-{
-    Brig::BRIG_MEMORY_FENCE_BOTH,
-    Brig::BRIG_MEMORY_FENCE_GLOBAL,
-    Brig::BRIG_MEMORY_FENCE_GROUP,
-};
-
-unsigned PropDescImpl::REQ_PROP_VALUES_SYNC__MEMORD[] =
-{
-    Brig::BRIG_MEMORY_ORDER_ACQUIRE,
-    Brig::BRIG_MEMORY_ORDER_ACQUIRE_RELEASE,
-    Brig::BRIG_MEMORY_ORDER_RELAXED,
-    Brig::BRIG_MEMORY_ORDER_RELEASE,
-    Brig::BRIG_MEMORY_ORDER_SEQUENTIALLY_CONSISTENT,
-};
-
-unsigned PropDescImpl::REQ_PROP_VALUES_SYNC__MEMSCP[] =
-{
-    Brig::BRIG_MEMORY_SCOPE_COMPONENT,
-    Brig::BRIG_MEMORY_SCOPE_SYSTEM,
-    Brig::BRIG_MEMORY_SCOPE_WORKGROUP,
-};
-
-unsigned PropDescImpl::REQ_PROP_VALUES_SYNC__WIDTH[] =
-{
-    Brig::BRIG_WIDTH_NONE,
-};
-
-unsigned PropDescImpl::REQ_PROP_VALUES_SYSCALL__TYPE[] =
-{
-    Brig::BRIG_TYPE_U32,
     Brig::BRIG_TYPE_U64,
 };
 
-unsigned PropDescImpl::REQ_PROP_VALUES_SYSCALL__S0[] =
+unsigned PropDescImpl::REQ_PROP_VALUES_STQ_WRT__SEGMENT[] =
 {
-    OPERAND_VAL_REG,
+    Brig::BRIG_SEGMENT_FLAT,
+    Brig::BRIG_SEGMENT_GLOBAL,
 };
 
-unsigned PropDescImpl::REQ_PROP_VALUES_SYSCALL__S1[] =
+unsigned PropDescImpl::REQ_PROP_VALUES_STQ_WRT__S0[] =
 {
-    OPERAND_VAL_IMM,
+    OPERAND_VAL_ADDR,
 };
 
-unsigned PropDescImpl::REQ_PROP_VALUES_SYSCALL__S2[] =
-{
-    OPERAND_VAL_IMM,
-    OPERAND_VAL_REG,
-};
-
-unsigned PropDescImpl::REQ_PROP_VALUES_SYSCALL__S3[] =
+unsigned PropDescImpl::REQ_PROP_VALUES_STQ_WRT__S1[] =
 {
     OPERAND_VAL_IMM,
     OPERAND_VAL_REG,
 };
 
-unsigned PropDescImpl::REQ_PROP_VALUES_SYSCALL__S4[] =
+unsigned PropDescImpl::REQ_PROP_VALUES_STQ_WRT__S2[] =
 {
-    OPERAND_VAL_IMM,
-    OPERAND_VAL_REG,
+    OPERAND_VAL_NULL,
+};
+
+unsigned PropDescImpl::REQ_PROP_VALUES_STQ_WRT__S3[] =
+{
+    OPERAND_VAL_NULL,
+};
+
+unsigned PropDescImpl::REQ_PROP_VALUES_STQ_WRT__S4[] =
+{
+    OPERAND_VAL_NULL,
+};
+
+unsigned PropDescImpl::REQ_PROP_VALUES_STQ_WRT__MEMORD[] =
+{
+    Brig::BRIG_MEMORY_ORDER_ACQUIRE,
+    Brig::BRIG_MEMORY_ORDER_RELAXED,
 };
 
 unsigned PropDescImpl::REQ_PROP_VALUES_UNPACK__STYPE[] =
@@ -12885,8 +14087,8 @@ unsigned PropDescImpl::REQ_PROP_VALUES_UNPACK__S1[] =
 
 unsigned PropDescImpl::REQ_PROP_VALUES_UNPACK__S2[] =
 {
-    OPERAND_VAL_IMM_32,
-    OPERAND_VAL_REG_32,
+    OPERAND_VAL_IMM,
+    OPERAND_VAL_REG,
 };
 
 unsigned PropDescImpl::REQ_PROP_VALUES_UNPACK__S3[] =
@@ -12922,7 +14124,7 @@ unsigned PropDescImpl::REQ_PROP_VALUES_UNPACKCVT__S1[] =
 
 unsigned PropDescImpl::REQ_PROP_VALUES_UNPACKCVT__S2[] =
 {
-    OPERAND_VAL_IMM_0_1_2_3,
+    OPERAND_VAL_IMM0T3,
 };
 
 unsigned PropDescImpl::REQ_PROP_VALUES_UNPACKCVT__S3[] =
@@ -12979,6 +14181,41 @@ unsigned PropDescImpl::REQ_PROP_VALUES_UNPACKX__S4[] =
     OPERAND_VAL_NULL,
 };
 
+unsigned PropDescImpl::REQ_PROP_VALUES_WAVEBARRIER__TYPE[] =
+{
+    Brig::BRIG_TYPE_NONE,
+};
+
+unsigned PropDescImpl::REQ_PROP_VALUES_WAVEBARRIER__S0[] =
+{
+    OPERAND_VAL_NULL,
+};
+
+unsigned PropDescImpl::REQ_PROP_VALUES_WAVEBARRIER__S1[] =
+{
+    OPERAND_VAL_NULL,
+};
+
+unsigned PropDescImpl::REQ_PROP_VALUES_WAVEBARRIER__S2[] =
+{
+    OPERAND_VAL_NULL,
+};
+
+unsigned PropDescImpl::REQ_PROP_VALUES_WAVEBARRIER__S3[] =
+{
+    OPERAND_VAL_NULL,
+};
+
+unsigned PropDescImpl::REQ_PROP_VALUES_WAVEBARRIER__S4[] =
+{
+    OPERAND_VAL_NULL,
+};
+
+unsigned PropDescImpl::REQ_PROP_VALUES_WAVEBARRIER__WIDTH[] =
+{
+    Brig::BRIG_WIDTH_WAVESIZE,
+};
+
 const unsigned* PropDescImpl::getPropVals(unsigned opcode, unsigned propId, unsigned& num) 
 {
     switch(opcode)
@@ -13014,6 +14251,134 @@ const unsigned* PropDescImpl::getPropVals(unsigned opcode, unsigned propId, unsi
         case PROP_ROUNDING:
             num = sizeof(REQ_PROP_VALUES_NEG__ROUNDING) / sizeof(unsigned);
             return REQ_PROP_VALUES_NEG__ROUNDING;
+        default: 
+            assert(false);
+            return 0;
+        }
+
+    case Brig::BRIG_OPCODE_ACTIVELANECOUNT:
+        switch(propId)
+        {
+        case PROP_STYPE:
+            num = sizeof(REQ_PROP_VALUES_ACTIVELANECOUNT__STYPE) / sizeof(unsigned);
+            return REQ_PROP_VALUES_ACTIVELANECOUNT__STYPE;
+        case PROP_TYPE:
+            num = sizeof(REQ_PROP_VALUES_ACTIVELANECOUNT__TYPE) / sizeof(unsigned);
+            return REQ_PROP_VALUES_ACTIVELANECOUNT__TYPE;
+        case PROP_D0:
+            num = sizeof(REQ_PROP_VALUES_ACTIVELANECOUNT__D0) / sizeof(unsigned);
+            return REQ_PROP_VALUES_ACTIVELANECOUNT__D0;
+        case PROP_S1:
+            num = sizeof(REQ_PROP_VALUES_ACTIVELANECOUNT__S1) / sizeof(unsigned);
+            return REQ_PROP_VALUES_ACTIVELANECOUNT__S1;
+        case PROP_S2:
+            num = sizeof(REQ_PROP_VALUES_ACTIVELANECOUNT__S2) / sizeof(unsigned);
+            return REQ_PROP_VALUES_ACTIVELANECOUNT__S2;
+        case PROP_S3:
+            num = sizeof(REQ_PROP_VALUES_ACTIVELANECOUNT__S3) / sizeof(unsigned);
+            return REQ_PROP_VALUES_ACTIVELANECOUNT__S3;
+        case PROP_S4:
+            num = sizeof(REQ_PROP_VALUES_ACTIVELANECOUNT__S4) / sizeof(unsigned);
+            return REQ_PROP_VALUES_ACTIVELANECOUNT__S4;
+        case PROP_WIDTH:
+            num = sizeof(REQ_PROP_VALUES_ACTIVELANECOUNT__WIDTH) / sizeof(unsigned);
+            return REQ_PROP_VALUES_ACTIVELANECOUNT__WIDTH;
+        default: 
+            assert(false);
+            return 0;
+        }
+
+    case Brig::BRIG_OPCODE_ACTIVELANEID:
+        switch(propId)
+        {
+        case PROP_STYPE:
+            num = sizeof(REQ_PROP_VALUES_ACTIVELANEID__STYPE) / sizeof(unsigned);
+            return REQ_PROP_VALUES_ACTIVELANEID__STYPE;
+        case PROP_TYPE:
+            num = sizeof(REQ_PROP_VALUES_ACTIVELANEID__TYPE) / sizeof(unsigned);
+            return REQ_PROP_VALUES_ACTIVELANEID__TYPE;
+        case PROP_D0:
+            num = sizeof(REQ_PROP_VALUES_ACTIVELANEID__D0) / sizeof(unsigned);
+            return REQ_PROP_VALUES_ACTIVELANEID__D0;
+        case PROP_S1:
+            num = sizeof(REQ_PROP_VALUES_ACTIVELANEID__S1) / sizeof(unsigned);
+            return REQ_PROP_VALUES_ACTIVELANEID__S1;
+        case PROP_S2:
+            num = sizeof(REQ_PROP_VALUES_ACTIVELANEID__S2) / sizeof(unsigned);
+            return REQ_PROP_VALUES_ACTIVELANEID__S2;
+        case PROP_S3:
+            num = sizeof(REQ_PROP_VALUES_ACTIVELANEID__S3) / sizeof(unsigned);
+            return REQ_PROP_VALUES_ACTIVELANEID__S3;
+        case PROP_S4:
+            num = sizeof(REQ_PROP_VALUES_ACTIVELANEID__S4) / sizeof(unsigned);
+            return REQ_PROP_VALUES_ACTIVELANEID__S4;
+        case PROP_WIDTH:
+            num = sizeof(REQ_PROP_VALUES_ACTIVELANEID__WIDTH) / sizeof(unsigned);
+            return REQ_PROP_VALUES_ACTIVELANEID__WIDTH;
+        default: 
+            assert(false);
+            return 0;
+        }
+
+    case Brig::BRIG_OPCODE_ACTIVELANEMASK:
+        switch(propId)
+        {
+        case PROP_STYPE:
+            num = sizeof(REQ_PROP_VALUES_ACTIVELANEMASK__STYPE) / sizeof(unsigned);
+            return REQ_PROP_VALUES_ACTIVELANEMASK__STYPE;
+        case PROP_TYPE:
+            num = sizeof(REQ_PROP_VALUES_ACTIVELANEMASK__TYPE) / sizeof(unsigned);
+            return REQ_PROP_VALUES_ACTIVELANEMASK__TYPE;
+        case PROP_D0:
+            num = sizeof(REQ_PROP_VALUES_ACTIVELANEMASK__D0) / sizeof(unsigned);
+            return REQ_PROP_VALUES_ACTIVELANEMASK__D0;
+        case PROP_S1:
+            num = sizeof(REQ_PROP_VALUES_ACTIVELANEMASK__S1) / sizeof(unsigned);
+            return REQ_PROP_VALUES_ACTIVELANEMASK__S1;
+        case PROP_S2:
+            num = sizeof(REQ_PROP_VALUES_ACTIVELANEMASK__S2) / sizeof(unsigned);
+            return REQ_PROP_VALUES_ACTIVELANEMASK__S2;
+        case PROP_S3:
+            num = sizeof(REQ_PROP_VALUES_ACTIVELANEMASK__S3) / sizeof(unsigned);
+            return REQ_PROP_VALUES_ACTIVELANEMASK__S3;
+        case PROP_S4:
+            num = sizeof(REQ_PROP_VALUES_ACTIVELANEMASK__S4) / sizeof(unsigned);
+            return REQ_PROP_VALUES_ACTIVELANEMASK__S4;
+        case PROP_WIDTH:
+            num = sizeof(REQ_PROP_VALUES_ACTIVELANEMASK__WIDTH) / sizeof(unsigned);
+            return REQ_PROP_VALUES_ACTIVELANEMASK__WIDTH;
+        default: 
+            assert(false);
+            return 0;
+        }
+
+    case Brig::BRIG_OPCODE_ACTIVELANESHUFFLE:
+        switch(propId)
+        {
+        case PROP_STYPE:
+            num = sizeof(REQ_PROP_VALUES_ACTIVELANESHUFFLE__STYPE) / sizeof(unsigned);
+            return REQ_PROP_VALUES_ACTIVELANESHUFFLE__STYPE;
+        case PROP_TYPE:
+            num = sizeof(REQ_PROP_VALUES_ACTIVELANESHUFFLE__TYPE) / sizeof(unsigned);
+            return REQ_PROP_VALUES_ACTIVELANESHUFFLE__TYPE;
+        case PROP_D0:
+            num = sizeof(REQ_PROP_VALUES_ACTIVELANESHUFFLE__D0) / sizeof(unsigned);
+            return REQ_PROP_VALUES_ACTIVELANESHUFFLE__D0;
+        case PROP_S1:
+            num = sizeof(REQ_PROP_VALUES_ACTIVELANESHUFFLE__S1) / sizeof(unsigned);
+            return REQ_PROP_VALUES_ACTIVELANESHUFFLE__S1;
+        case PROP_S2:
+            num = sizeof(REQ_PROP_VALUES_ACTIVELANESHUFFLE__S2) / sizeof(unsigned);
+            return REQ_PROP_VALUES_ACTIVELANESHUFFLE__S2;
+        case PROP_S3:
+            num = sizeof(REQ_PROP_VALUES_ACTIVELANESHUFFLE__S3) / sizeof(unsigned);
+            return REQ_PROP_VALUES_ACTIVELANESHUFFLE__S3;
+        case PROP_S4:
+            num = sizeof(REQ_PROP_VALUES_ACTIVELANESHUFFLE__S4) / sizeof(unsigned);
+            return REQ_PROP_VALUES_ACTIVELANESHUFFLE__S4;
+        case PROP_WIDTH:
+            num = sizeof(REQ_PROP_VALUES_ACTIVELANESHUFFLE__WIDTH) / sizeof(unsigned);
+            return REQ_PROP_VALUES_ACTIVELANESHUFFLE__WIDTH;
         default: 
             assert(false);
             return 0;
@@ -13055,12 +14420,41 @@ const unsigned* PropDescImpl::getPropVals(unsigned opcode, unsigned propId, unsi
             return 0;
         }
 
+    case Brig::BRIG_OPCODE_ADDQUEUEWRITEINDEX:
+        switch(propId)
+        {
+        case PROP_TYPE:
+            num = sizeof(REQ_PROP_VALUES_ADDQ_WRT__TYPE) / sizeof(unsigned);
+            return REQ_PROP_VALUES_ADDQ_WRT__TYPE;
+        case PROP_SEGMENT:
+            num = sizeof(REQ_PROP_VALUES_ADDQ_WRT__SEGMENT) / sizeof(unsigned);
+            return REQ_PROP_VALUES_ADDQ_WRT__SEGMENT;
+        case PROP_D0:
+            num = sizeof(REQ_PROP_VALUES_ADDQ_WRT__D0) / sizeof(unsigned);
+            return REQ_PROP_VALUES_ADDQ_WRT__D0;
+        case PROP_S1:
+            num = sizeof(REQ_PROP_VALUES_ADDQ_WRT__S1) / sizeof(unsigned);
+            return REQ_PROP_VALUES_ADDQ_WRT__S1;
+        case PROP_S2:
+            num = sizeof(REQ_PROP_VALUES_ADDQ_WRT__S2) / sizeof(unsigned);
+            return REQ_PROP_VALUES_ADDQ_WRT__S2;
+        case PROP_S3:
+            num = sizeof(REQ_PROP_VALUES_ADDQ_WRT__S3) / sizeof(unsigned);
+            return REQ_PROP_VALUES_ADDQ_WRT__S3;
+        case PROP_S4:
+            num = sizeof(REQ_PROP_VALUES_ADDQ_WRT__S4) / sizeof(unsigned);
+            return REQ_PROP_VALUES_ADDQ_WRT__S4;
+        case PROP_MEMORD:
+            num = sizeof(REQ_PROP_VALUES_ADDQ_WRT__MEMORD) / sizeof(unsigned);
+            return REQ_PROP_VALUES_ADDQ_WRT__MEMORD;
+        default: 
+            assert(false);
+            return 0;
+        }
+
     case Brig::BRIG_OPCODE_ALLOCA:
         switch(propId)
         {
-        case PROP_STYPE:
-            num = sizeof(REQ_PROP_VALUES_ALLOCA__STYPE) / sizeof(unsigned);
-            return REQ_PROP_VALUES_ALLOCA__STYPE;
         case PROP_TYPE:
             num = sizeof(REQ_PROP_VALUES_ALLOCA__TYPE) / sizeof(unsigned);
             return REQ_PROP_VALUES_ALLOCA__TYPE;
@@ -13082,6 +14476,18 @@ const unsigned* PropDescImpl::getPropVals(unsigned opcode, unsigned propId, unsi
         case PROP_S4:
             num = sizeof(REQ_PROP_VALUES_ALLOCA__S4) / sizeof(unsigned);
             return REQ_PROP_VALUES_ALLOCA__S4;
+        case PROP_ALIGN:
+            num = sizeof(REQ_PROP_VALUES_ALLOCA__ALIGN) / sizeof(unsigned);
+            return REQ_PROP_VALUES_ALLOCA__ALIGN;
+        case PROP_CONST:
+            num = sizeof(REQ_PROP_VALUES_ALLOCA__CONST) / sizeof(unsigned);
+            return REQ_PROP_VALUES_ALLOCA__CONST;
+        case PROP_EQCLASS:
+            num = sizeof(REQ_PROP_VALUES_ALLOCA__EQCLASS) / sizeof(unsigned);
+            return REQ_PROP_VALUES_ALLOCA__EQCLASS;
+        case PROP_WIDTH:
+            num = sizeof(REQ_PROP_VALUES_ALLOCA__WIDTH) / sizeof(unsigned);
+            return REQ_PROP_VALUES_ALLOCA__WIDTH;
         default: 
             assert(false);
             return 0;
@@ -13116,39 +14522,32 @@ const unsigned* PropDescImpl::getPropVals(unsigned opcode, unsigned propId, unsi
         }
 
     case Brig::BRIG_OPCODE_ARRIVEFBAR:
+    case Brig::BRIG_OPCODE_JOINFBAR:
+    case Brig::BRIG_OPCODE_LEAVEFBAR:
     case Brig::BRIG_OPCODE_WAITFBAR:
         switch(propId)
         {
         case PROP_TYPE:
-            num = sizeof(REQ_PROP_VALUES_FBAR_SYNC_WIDTH__TYPE) / sizeof(unsigned);
-            return REQ_PROP_VALUES_FBAR_SYNC_WIDTH__TYPE;
+            num = sizeof(REQ_PROP_VALUES_FBAR_WIDTH__TYPE) / sizeof(unsigned);
+            return REQ_PROP_VALUES_FBAR_WIDTH__TYPE;
         case PROP_S0:
-            num = sizeof(REQ_PROP_VALUES_FBAR_SYNC_WIDTH__S0) / sizeof(unsigned);
-            return REQ_PROP_VALUES_FBAR_SYNC_WIDTH__S0;
+            num = sizeof(REQ_PROP_VALUES_FBAR_WIDTH__S0) / sizeof(unsigned);
+            return REQ_PROP_VALUES_FBAR_WIDTH__S0;
         case PROP_S1:
-            num = sizeof(REQ_PROP_VALUES_FBAR_SYNC_WIDTH__S1) / sizeof(unsigned);
-            return REQ_PROP_VALUES_FBAR_SYNC_WIDTH__S1;
+            num = sizeof(REQ_PROP_VALUES_FBAR_WIDTH__S1) / sizeof(unsigned);
+            return REQ_PROP_VALUES_FBAR_WIDTH__S1;
         case PROP_S2:
-            num = sizeof(REQ_PROP_VALUES_FBAR_SYNC_WIDTH__S2) / sizeof(unsigned);
-            return REQ_PROP_VALUES_FBAR_SYNC_WIDTH__S2;
+            num = sizeof(REQ_PROP_VALUES_FBAR_WIDTH__S2) / sizeof(unsigned);
+            return REQ_PROP_VALUES_FBAR_WIDTH__S2;
         case PROP_S3:
-            num = sizeof(REQ_PROP_VALUES_FBAR_SYNC_WIDTH__S3) / sizeof(unsigned);
-            return REQ_PROP_VALUES_FBAR_SYNC_WIDTH__S3;
+            num = sizeof(REQ_PROP_VALUES_FBAR_WIDTH__S3) / sizeof(unsigned);
+            return REQ_PROP_VALUES_FBAR_WIDTH__S3;
         case PROP_S4:
-            num = sizeof(REQ_PROP_VALUES_FBAR_SYNC_WIDTH__S4) / sizeof(unsigned);
-            return REQ_PROP_VALUES_FBAR_SYNC_WIDTH__S4;
-        case PROP_MEMFNC:
-            num = sizeof(REQ_PROP_VALUES_FBAR_SYNC_WIDTH__MEMFNC) / sizeof(unsigned);
-            return REQ_PROP_VALUES_FBAR_SYNC_WIDTH__MEMFNC;
-        case PROP_MEMORD:
-            num = sizeof(REQ_PROP_VALUES_FBAR_SYNC_WIDTH__MEMORD) / sizeof(unsigned);
-            return REQ_PROP_VALUES_FBAR_SYNC_WIDTH__MEMORD;
-        case PROP_MEMSCP:
-            num = sizeof(REQ_PROP_VALUES_FBAR_SYNC_WIDTH__MEMSCP) / sizeof(unsigned);
-            return REQ_PROP_VALUES_FBAR_SYNC_WIDTH__MEMSCP;
+            num = sizeof(REQ_PROP_VALUES_FBAR_WIDTH__S4) / sizeof(unsigned);
+            return REQ_PROP_VALUES_FBAR_WIDTH__S4;
         case PROP_WIDTH:
-            num = sizeof(REQ_PROP_VALUES_FBAR_SYNC_WIDTH__WIDTH) / sizeof(unsigned);
-            return REQ_PROP_VALUES_FBAR_SYNC_WIDTH__WIDTH;
+            num = sizeof(REQ_PROP_VALUES_FBAR_WIDTH__WIDTH) / sizeof(unsigned);
+            return REQ_PROP_VALUES_FBAR_WIDTH__WIDTH;
         default: 
             assert(false);
             return 0;
@@ -13169,6 +14568,9 @@ const unsigned* PropDescImpl::getPropVals(unsigned opcode, unsigned propId, unsi
         case PROP_MEMORD:
             num = sizeof(REQ_PROP_VALUES_ATOMIC__MEMORD) / sizeof(unsigned);
             return REQ_PROP_VALUES_ATOMIC__MEMORD;
+        case PROP_MEMSCP:
+            num = sizeof(REQ_PROP_VALUES_ATOMIC__MEMSCP) / sizeof(unsigned);
+            return REQ_PROP_VALUES_ATOMIC__MEMSCP;
         case PROP_S2:
             num = sizeof(REQ_PROP_VALUES_ATOMIC__S2) / sizeof(unsigned);
             return REQ_PROP_VALUES_ATOMIC__S2;
@@ -13184,9 +14586,9 @@ const unsigned* PropDescImpl::getPropVals(unsigned opcode, unsigned propId, unsi
         case PROP_S4:
             num = sizeof(REQ_PROP_VALUES_ATOMIC__S4) / sizeof(unsigned);
             return REQ_PROP_VALUES_ATOMIC__S4;
-        case PROP_MEMSCP:
-            num = sizeof(REQ_PROP_VALUES_ATOMIC__MEMSCP) / sizeof(unsigned);
-            return REQ_PROP_VALUES_ATOMIC__MEMSCP;
+        case PROP_EQCLASS:
+            num = sizeof(REQ_PROP_VALUES_ATOMIC__EQCLASS) / sizeof(unsigned);
+            return REQ_PROP_VALUES_ATOMIC__EQCLASS;
         default: 
             assert(false);
             return 0;
@@ -13198,6 +14600,9 @@ const unsigned* PropDescImpl::getPropVals(unsigned opcode, unsigned propId, unsi
         case PROP_CTYPE:
             num = sizeof(REQ_PROP_VALUES_ATOMIC_IMAGE__CTYPE) / sizeof(unsigned);
             return REQ_PROP_VALUES_ATOMIC_IMAGE__CTYPE;
+        case PROP_ITYPE:
+            num = sizeof(REQ_PROP_VALUES_ATOMIC_IMAGE__ITYPE) / sizeof(unsigned);
+            return REQ_PROP_VALUES_ATOMIC_IMAGE__ITYPE;
         case PROP_TYPE:
             num = sizeof(REQ_PROP_VALUES_ATOMIC_IMAGE__TYPE) / sizeof(unsigned);
             return REQ_PROP_VALUES_ATOMIC_IMAGE__TYPE;
@@ -13222,9 +14627,9 @@ const unsigned* PropDescImpl::getPropVals(unsigned opcode, unsigned propId, unsi
         case PROP_S3:
             num = sizeof(REQ_PROP_VALUES_ATOMIC_IMAGE__S3) / sizeof(unsigned);
             return REQ_PROP_VALUES_ATOMIC_IMAGE__S3;
-        case PROP_ITYPE:
-            num = sizeof(REQ_PROP_VALUES_ATOMIC_IMAGE__ITYPE) / sizeof(unsigned);
-            return REQ_PROP_VALUES_ATOMIC_IMAGE__ITYPE;
+        case PROP_EQCLASS:
+            num = sizeof(REQ_PROP_VALUES_ATOMIC_IMAGE__EQCLASS) / sizeof(unsigned);
+            return REQ_PROP_VALUES_ATOMIC_IMAGE__EQCLASS;
         default: 
             assert(false);
             return 0;
@@ -13236,6 +14641,9 @@ const unsigned* PropDescImpl::getPropVals(unsigned opcode, unsigned propId, unsi
         case PROP_CTYPE:
             num = sizeof(REQ_PROP_VALUES_ATOMIC_NORET_IMAGE__CTYPE) / sizeof(unsigned);
             return REQ_PROP_VALUES_ATOMIC_NORET_IMAGE__CTYPE;
+        case PROP_ITYPE:
+            num = sizeof(REQ_PROP_VALUES_ATOMIC_NORET_IMAGE__ITYPE) / sizeof(unsigned);
+            return REQ_PROP_VALUES_ATOMIC_NORET_IMAGE__ITYPE;
         case PROP_TYPE:
             num = sizeof(REQ_PROP_VALUES_ATOMIC_NORET_IMAGE__TYPE) / sizeof(unsigned);
             return REQ_PROP_VALUES_ATOMIC_NORET_IMAGE__TYPE;
@@ -13260,9 +14668,9 @@ const unsigned* PropDescImpl::getPropVals(unsigned opcode, unsigned propId, unsi
         case PROP_S4:
             num = sizeof(REQ_PROP_VALUES_ATOMIC_NORET_IMAGE__S4) / sizeof(unsigned);
             return REQ_PROP_VALUES_ATOMIC_NORET_IMAGE__S4;
-        case PROP_ITYPE:
-            num = sizeof(REQ_PROP_VALUES_ATOMIC_NORET_IMAGE__ITYPE) / sizeof(unsigned);
-            return REQ_PROP_VALUES_ATOMIC_NORET_IMAGE__ITYPE;
+        case PROP_EQCLASS:
+            num = sizeof(REQ_PROP_VALUES_ATOMIC_NORET_IMAGE__EQCLASS) / sizeof(unsigned);
+            return REQ_PROP_VALUES_ATOMIC_NORET_IMAGE__EQCLASS;
         default: 
             assert(false);
             return 0;
@@ -13283,6 +14691,9 @@ const unsigned* PropDescImpl::getPropVals(unsigned opcode, unsigned propId, unsi
         case PROP_MEMORD:
             num = sizeof(REQ_PROP_VALUES_ATOMIC_NORET__MEMORD) / sizeof(unsigned);
             return REQ_PROP_VALUES_ATOMIC_NORET__MEMORD;
+        case PROP_MEMSCP:
+            num = sizeof(REQ_PROP_VALUES_ATOMIC_NORET__MEMSCP) / sizeof(unsigned);
+            return REQ_PROP_VALUES_ATOMIC_NORET__MEMSCP;
         case PROP_S2:
             num = sizeof(REQ_PROP_VALUES_ATOMIC_NORET__S2) / sizeof(unsigned);
             return REQ_PROP_VALUES_ATOMIC_NORET__S2;
@@ -13298,9 +14709,9 @@ const unsigned* PropDescImpl::getPropVals(unsigned opcode, unsigned propId, unsi
         case PROP_S4:
             num = sizeof(REQ_PROP_VALUES_ATOMIC_NORET__S4) / sizeof(unsigned);
             return REQ_PROP_VALUES_ATOMIC_NORET__S4;
-        case PROP_MEMSCP:
-            num = sizeof(REQ_PROP_VALUES_ATOMIC_NORET__MEMSCP) / sizeof(unsigned);
-            return REQ_PROP_VALUES_ATOMIC_NORET__MEMSCP;
+        case PROP_EQCLASS:
+            num = sizeof(REQ_PROP_VALUES_ATOMIC_NORET__EQCLASS) / sizeof(unsigned);
+            return REQ_PROP_VALUES_ATOMIC_NORET__EQCLASS;
         default: 
             assert(false);
             return 0;
@@ -13327,15 +14738,6 @@ const unsigned* PropDescImpl::getPropVals(unsigned opcode, unsigned propId, unsi
         case PROP_S4:
             num = sizeof(REQ_PROP_VALUES_BARRIER__S4) / sizeof(unsigned);
             return REQ_PROP_VALUES_BARRIER__S4;
-        case PROP_MEMFNC:
-            num = sizeof(REQ_PROP_VALUES_BARRIER__MEMFNC) / sizeof(unsigned);
-            return REQ_PROP_VALUES_BARRIER__MEMFNC;
-        case PROP_MEMORD:
-            num = sizeof(REQ_PROP_VALUES_BARRIER__MEMORD) / sizeof(unsigned);
-            return REQ_PROP_VALUES_BARRIER__MEMORD;
-        case PROP_MEMSCP:
-            num = sizeof(REQ_PROP_VALUES_BARRIER__MEMSCP) / sizeof(unsigned);
-            return REQ_PROP_VALUES_BARRIER__MEMSCP;
         case PROP_WIDTH:
             num = sizeof(REQ_PROP_VALUES_BARRIER__WIDTH) / sizeof(unsigned);
             return REQ_PROP_VALUES_BARRIER__WIDTH;
@@ -13587,6 +14989,38 @@ const unsigned* PropDescImpl::getPropVals(unsigned opcode, unsigned propId, unsi
             return 0;
         }
 
+    case Brig::BRIG_OPCODE_CASQUEUEWRITEINDEX:
+        switch(propId)
+        {
+        case PROP_TYPE:
+            num = sizeof(REQ_PROP_VALUES_CASQ_WRT__TYPE) / sizeof(unsigned);
+            return REQ_PROP_VALUES_CASQ_WRT__TYPE;
+        case PROP_SEGMENT:
+            num = sizeof(REQ_PROP_VALUES_CASQ_WRT__SEGMENT) / sizeof(unsigned);
+            return REQ_PROP_VALUES_CASQ_WRT__SEGMENT;
+        case PROP_D0:
+            num = sizeof(REQ_PROP_VALUES_CASQ_WRT__D0) / sizeof(unsigned);
+            return REQ_PROP_VALUES_CASQ_WRT__D0;
+        case PROP_S1:
+            num = sizeof(REQ_PROP_VALUES_CASQ_WRT__S1) / sizeof(unsigned);
+            return REQ_PROP_VALUES_CASQ_WRT__S1;
+        case PROP_S2:
+            num = sizeof(REQ_PROP_VALUES_CASQ_WRT__S2) / sizeof(unsigned);
+            return REQ_PROP_VALUES_CASQ_WRT__S2;
+        case PROP_S3:
+            num = sizeof(REQ_PROP_VALUES_CASQ_WRT__S3) / sizeof(unsigned);
+            return REQ_PROP_VALUES_CASQ_WRT__S3;
+        case PROP_S4:
+            num = sizeof(REQ_PROP_VALUES_CASQ_WRT__S4) / sizeof(unsigned);
+            return REQ_PROP_VALUES_CASQ_WRT__S4;
+        case PROP_MEMORD:
+            num = sizeof(REQ_PROP_VALUES_CASQ_WRT__MEMORD) / sizeof(unsigned);
+            return REQ_PROP_VALUES_CASQ_WRT__MEMORD;
+        default: 
+            assert(false);
+            return 0;
+        }
+
     case Brig::BRIG_OPCODE_CBR:
         switch(propId)
         {
@@ -13711,7 +15145,7 @@ const unsigned* PropDescImpl::getPropVals(unsigned opcode, unsigned propId, unsi
         }
 
     case Brig::BRIG_OPCODE_CLOCK:
-    case Brig::BRIG_OPCODE_DISPATCHID:
+    case Brig::BRIG_OPCODE_PACKETID:
         switch(propId)
         {
         case PROP_TYPE:
@@ -13894,77 +15328,13 @@ const unsigned* PropDescImpl::getPropVals(unsigned opcode, unsigned propId, unsi
             return 0;
         }
 
-    case Brig::BRIG_OPCODE_COUNTLANE:
-        switch(propId)
-        {
-        case PROP_STYPE:
-            num = sizeof(REQ_PROP_VALUES_COUNTLANE__STYPE) / sizeof(unsigned);
-            return REQ_PROP_VALUES_COUNTLANE__STYPE;
-        case PROP_TYPE:
-            num = sizeof(REQ_PROP_VALUES_COUNTLANE__TYPE) / sizeof(unsigned);
-            return REQ_PROP_VALUES_COUNTLANE__TYPE;
-        case PROP_D0:
-            num = sizeof(REQ_PROP_VALUES_COUNTLANE__D0) / sizeof(unsigned);
-            return REQ_PROP_VALUES_COUNTLANE__D0;
-        case PROP_S1:
-            num = sizeof(REQ_PROP_VALUES_COUNTLANE__S1) / sizeof(unsigned);
-            return REQ_PROP_VALUES_COUNTLANE__S1;
-        case PROP_S2:
-            num = sizeof(REQ_PROP_VALUES_COUNTLANE__S2) / sizeof(unsigned);
-            return REQ_PROP_VALUES_COUNTLANE__S2;
-        case PROP_S3:
-            num = sizeof(REQ_PROP_VALUES_COUNTLANE__S3) / sizeof(unsigned);
-            return REQ_PROP_VALUES_COUNTLANE__S3;
-        case PROP_S4:
-            num = sizeof(REQ_PROP_VALUES_COUNTLANE__S4) / sizeof(unsigned);
-            return REQ_PROP_VALUES_COUNTLANE__S4;
-        case PROP_WIDTH:
-            num = sizeof(REQ_PROP_VALUES_COUNTLANE__WIDTH) / sizeof(unsigned);
-            return REQ_PROP_VALUES_COUNTLANE__WIDTH;
-        default: 
-            assert(false);
-            return 0;
-        }
-
-    case Brig::BRIG_OPCODE_COUNTUPLANE:
-        switch(propId)
-        {
-        case PROP_STYPE:
-            num = sizeof(REQ_PROP_VALUES_COUNTUPLANE__STYPE) / sizeof(unsigned);
-            return REQ_PROP_VALUES_COUNTUPLANE__STYPE;
-        case PROP_TYPE:
-            num = sizeof(REQ_PROP_VALUES_COUNTUPLANE__TYPE) / sizeof(unsigned);
-            return REQ_PROP_VALUES_COUNTUPLANE__TYPE;
-        case PROP_D0:
-            num = sizeof(REQ_PROP_VALUES_COUNTUPLANE__D0) / sizeof(unsigned);
-            return REQ_PROP_VALUES_COUNTUPLANE__D0;
-        case PROP_S1:
-            num = sizeof(REQ_PROP_VALUES_COUNTUPLANE__S1) / sizeof(unsigned);
-            return REQ_PROP_VALUES_COUNTUPLANE__S1;
-        case PROP_S2:
-            num = sizeof(REQ_PROP_VALUES_COUNTUPLANE__S2) / sizeof(unsigned);
-            return REQ_PROP_VALUES_COUNTUPLANE__S2;
-        case PROP_S3:
-            num = sizeof(REQ_PROP_VALUES_COUNTUPLANE__S3) / sizeof(unsigned);
-            return REQ_PROP_VALUES_COUNTUPLANE__S3;
-        case PROP_S4:
-            num = sizeof(REQ_PROP_VALUES_COUNTUPLANE__S4) / sizeof(unsigned);
-            return REQ_PROP_VALUES_COUNTUPLANE__S4;
-        case PROP_WIDTH:
-            num = sizeof(REQ_PROP_VALUES_COUNTUPLANE__WIDTH) / sizeof(unsigned);
-            return REQ_PROP_VALUES_COUNTUPLANE__WIDTH;
-        default: 
-            assert(false);
-            return 0;
-        }
-
     case Brig::BRIG_OPCODE_CUID:
     case Brig::BRIG_OPCODE_DIM:
     case Brig::BRIG_OPCODE_GETDETECTEXCEPT:
     case Brig::BRIG_OPCODE_LANEID:
     case Brig::BRIG_OPCODE_MAXCUID:
     case Brig::BRIG_OPCODE_MAXWAVEID:
-    case Brig::BRIG_OPCODE_QID:
+    case Brig::BRIG_OPCODE_QUEUEID:
     case Brig::BRIG_OPCODE_WAVEID:
     case Brig::BRIG_OPCODE_WORKITEMFLATABSID:
     case Brig::BRIG_OPCODE_WORKITEMFLATID:
@@ -14081,39 +15451,6 @@ const unsigned* PropDescImpl::getPropVals(unsigned opcode, unsigned propId, unsi
         case PROP_S4:
             num = sizeof(REQ_PROP_VALUES_DEBUGTRAP__S4) / sizeof(unsigned);
             return REQ_PROP_VALUES_DEBUGTRAP__S4;
-        default: 
-            assert(false);
-            return 0;
-        }
-
-    case Brig::BRIG_OPCODE_DISPATCHPTR:
-    case Brig::BRIG_OPCODE_QPTR:
-        switch(propId)
-        {
-        case PROP_STYPE:
-            num = sizeof(REQ_PROP_VALUES_AQLPTR__STYPE) / sizeof(unsigned);
-            return REQ_PROP_VALUES_AQLPTR__STYPE;
-        case PROP_TYPE:
-            num = sizeof(REQ_PROP_VALUES_AQLPTR__TYPE) / sizeof(unsigned);
-            return REQ_PROP_VALUES_AQLPTR__TYPE;
-        case PROP_SEGMENT:
-            num = sizeof(REQ_PROP_VALUES_AQLPTR__SEGMENT) / sizeof(unsigned);
-            return REQ_PROP_VALUES_AQLPTR__SEGMENT;
-        case PROP_S0:
-            num = sizeof(REQ_PROP_VALUES_AQLPTR__S0) / sizeof(unsigned);
-            return REQ_PROP_VALUES_AQLPTR__S0;
-        case PROP_S1:
-            num = sizeof(REQ_PROP_VALUES_AQLPTR__S1) / sizeof(unsigned);
-            return REQ_PROP_VALUES_AQLPTR__S1;
-        case PROP_S2:
-            num = sizeof(REQ_PROP_VALUES_AQLPTR__S2) / sizeof(unsigned);
-            return REQ_PROP_VALUES_AQLPTR__S2;
-        case PROP_S3:
-            num = sizeof(REQ_PROP_VALUES_AQLPTR__S3) / sizeof(unsigned);
-            return REQ_PROP_VALUES_AQLPTR__S3;
-        case PROP_S4:
-            num = sizeof(REQ_PROP_VALUES_AQLPTR__S4) / sizeof(unsigned);
-            return REQ_PROP_VALUES_AQLPTR__S4;
         default: 
             assert(false);
             return 0;
@@ -14310,6 +15647,9 @@ const unsigned* PropDescImpl::getPropVals(unsigned opcode, unsigned propId, unsi
         case PROP_S4:
             num = sizeof(REQ_PROP_VALUES_F2S__S4) / sizeof(unsigned);
             return REQ_PROP_VALUES_F2S__S4;
+        case PROP_NONULL:
+            num = sizeof(REQ_PROP_VALUES_F2S__NONULL) / sizeof(unsigned);
+            return REQ_PROP_VALUES_F2S__NONULL;
         default: 
             assert(false);
             return 0;
@@ -14375,6 +15715,9 @@ const unsigned* PropDescImpl::getPropVals(unsigned opcode, unsigned propId, unsi
         case PROP_S4:
             num = sizeof(REQ_PROP_VALUES_GCN_ATOMIC__S4) / sizeof(unsigned);
             return REQ_PROP_VALUES_GCN_ATOMIC__S4;
+        case PROP_EQCLASS:
+            num = sizeof(REQ_PROP_VALUES_GCN_ATOMIC__EQCLASS) / sizeof(unsigned);
+            return REQ_PROP_VALUES_GCN_ATOMIC__EQCLASS;
         case PROP_MEMSCP:
             num = sizeof(REQ_PROP_VALUES_GCN_ATOMIC__MEMSCP) / sizeof(unsigned);
             return REQ_PROP_VALUES_GCN_ATOMIC__MEMSCP;
@@ -14413,6 +15756,9 @@ const unsigned* PropDescImpl::getPropVals(unsigned opcode, unsigned propId, unsi
         case PROP_S4:
             num = sizeof(REQ_PROP_VALUES_GCN_ATOMIC_NORET__S4) / sizeof(unsigned);
             return REQ_PROP_VALUES_GCN_ATOMIC_NORET__S4;
+        case PROP_EQCLASS:
+            num = sizeof(REQ_PROP_VALUES_GCN_ATOMIC_NORET__EQCLASS) / sizeof(unsigned);
+            return REQ_PROP_VALUES_GCN_ATOMIC_NORET__EQCLASS;
         case PROP_MEMSCP:
             num = sizeof(REQ_PROP_VALUES_GCN_ATOMIC_NORET__MEMSCP) / sizeof(unsigned);
             return REQ_PROP_VALUES_GCN_ATOMIC_NORET__MEMSCP;
@@ -14579,6 +15925,9 @@ const unsigned* PropDescImpl::getPropVals(unsigned opcode, unsigned propId, unsi
         case PROP_ALIGN:
             num = sizeof(REQ_PROP_VALUES_GCN_LD__ALIGN) / sizeof(unsigned);
             return REQ_PROP_VALUES_GCN_LD__ALIGN;
+        case PROP_CONST:
+            num = sizeof(REQ_PROP_VALUES_GCN_LD__CONST) / sizeof(unsigned);
+            return REQ_PROP_VALUES_GCN_LD__CONST;
         case PROP_EQCLASS:
             num = sizeof(REQ_PROP_VALUES_GCN_LD__EQCLASS) / sizeof(unsigned);
             return REQ_PROP_VALUES_GCN_LD__EQCLASS;
@@ -14591,27 +15940,79 @@ const unsigned* PropDescImpl::getPropVals(unsigned opcode, unsigned propId, unsi
         }
 
     case Brig::BRIG_OPCODE_GCNMADS:
+        switch(propId)
+        {
+        case PROP_TYPE:
+            num = sizeof(REQ_PROP_VALUES_GCN_MADS__TYPE) / sizeof(unsigned);
+            return REQ_PROP_VALUES_GCN_MADS__TYPE;
+        case PROP_D0:
+            num = sizeof(REQ_PROP_VALUES_GCN_MADS__D0) / sizeof(unsigned);
+            return REQ_PROP_VALUES_GCN_MADS__D0;
+        case PROP_S1:
+            num = sizeof(REQ_PROP_VALUES_GCN_MADS__S1) / sizeof(unsigned);
+            return REQ_PROP_VALUES_GCN_MADS__S1;
+        case PROP_S2:
+            num = sizeof(REQ_PROP_VALUES_GCN_MADS__S2) / sizeof(unsigned);
+            return REQ_PROP_VALUES_GCN_MADS__S2;
+        case PROP_S3:
+            num = sizeof(REQ_PROP_VALUES_GCN_MADS__S3) / sizeof(unsigned);
+            return REQ_PROP_VALUES_GCN_MADS__S3;
+        case PROP_S4:
+            num = sizeof(REQ_PROP_VALUES_GCN_MADS__S4) / sizeof(unsigned);
+            return REQ_PROP_VALUES_GCN_MADS__S4;
+        default: 
+            assert(false);
+            return 0;
+        }
+
     case Brig::BRIG_OPCODE_GCNMADU:
         switch(propId)
         {
         case PROP_TYPE:
-            num = sizeof(REQ_PROP_VALUES_GCN_MAD__TYPE) / sizeof(unsigned);
-            return REQ_PROP_VALUES_GCN_MAD__TYPE;
+            num = sizeof(REQ_PROP_VALUES_GCN_MADU__TYPE) / sizeof(unsigned);
+            return REQ_PROP_VALUES_GCN_MADU__TYPE;
         case PROP_D0:
-            num = sizeof(REQ_PROP_VALUES_GCN_MAD__D0) / sizeof(unsigned);
-            return REQ_PROP_VALUES_GCN_MAD__D0;
+            num = sizeof(REQ_PROP_VALUES_GCN_MADU__D0) / sizeof(unsigned);
+            return REQ_PROP_VALUES_GCN_MADU__D0;
         case PROP_S1:
-            num = sizeof(REQ_PROP_VALUES_GCN_MAD__S1) / sizeof(unsigned);
-            return REQ_PROP_VALUES_GCN_MAD__S1;
+            num = sizeof(REQ_PROP_VALUES_GCN_MADU__S1) / sizeof(unsigned);
+            return REQ_PROP_VALUES_GCN_MADU__S1;
         case PROP_S2:
-            num = sizeof(REQ_PROP_VALUES_GCN_MAD__S2) / sizeof(unsigned);
-            return REQ_PROP_VALUES_GCN_MAD__S2;
+            num = sizeof(REQ_PROP_VALUES_GCN_MADU__S2) / sizeof(unsigned);
+            return REQ_PROP_VALUES_GCN_MADU__S2;
         case PROP_S3:
-            num = sizeof(REQ_PROP_VALUES_GCN_MAD__S3) / sizeof(unsigned);
-            return REQ_PROP_VALUES_GCN_MAD__S3;
+            num = sizeof(REQ_PROP_VALUES_GCN_MADU__S3) / sizeof(unsigned);
+            return REQ_PROP_VALUES_GCN_MADU__S3;
         case PROP_S4:
-            num = sizeof(REQ_PROP_VALUES_GCN_MAD__S4) / sizeof(unsigned);
-            return REQ_PROP_VALUES_GCN_MAD__S4;
+            num = sizeof(REQ_PROP_VALUES_GCN_MADU__S4) / sizeof(unsigned);
+            return REQ_PROP_VALUES_GCN_MADU__S4;
+        default: 
+            assert(false);
+            return 0;
+        }
+
+    case Brig::BRIG_OPCODE_GCNMAX:
+    case Brig::BRIG_OPCODE_GCNMIN:
+        switch(propId)
+        {
+        case PROP_TYPE:
+            num = sizeof(REQ_PROP_VALUES_GCN_MIN_MAX__TYPE) / sizeof(unsigned);
+            return REQ_PROP_VALUES_GCN_MIN_MAX__TYPE;
+        case PROP_D0:
+            num = sizeof(REQ_PROP_VALUES_GCN_MIN_MAX__D0) / sizeof(unsigned);
+            return REQ_PROP_VALUES_GCN_MIN_MAX__D0;
+        case PROP_S1:
+            num = sizeof(REQ_PROP_VALUES_GCN_MIN_MAX__S1) / sizeof(unsigned);
+            return REQ_PROP_VALUES_GCN_MIN_MAX__S1;
+        case PROP_S2:
+            num = sizeof(REQ_PROP_VALUES_GCN_MIN_MAX__S2) / sizeof(unsigned);
+            return REQ_PROP_VALUES_GCN_MIN_MAX__S2;
+        case PROP_S3:
+            num = sizeof(REQ_PROP_VALUES_GCN_MIN_MAX__S3) / sizeof(unsigned);
+            return REQ_PROP_VALUES_GCN_MIN_MAX__S3;
+        case PROP_S4:
+            num = sizeof(REQ_PROP_VALUES_GCN_MIN_MAX__S4) / sizeof(unsigned);
+            return REQ_PROP_VALUES_GCN_MIN_MAX__S4;
         default: 
             assert(false);
             return 0;
@@ -14623,23 +16024,23 @@ const unsigned* PropDescImpl::getPropVals(unsigned opcode, unsigned propId, unsi
         switch(propId)
         {
         case PROP_TYPE:
-            num = sizeof(REQ_PROP_VALUES_GCN_MIN_MAX_MED__TYPE) / sizeof(unsigned);
-            return REQ_PROP_VALUES_GCN_MIN_MAX_MED__TYPE;
+            num = sizeof(REQ_PROP_VALUES_GCN_MIN_MAX_MED3__TYPE) / sizeof(unsigned);
+            return REQ_PROP_VALUES_GCN_MIN_MAX_MED3__TYPE;
         case PROP_D0:
-            num = sizeof(REQ_PROP_VALUES_GCN_MIN_MAX_MED__D0) / sizeof(unsigned);
-            return REQ_PROP_VALUES_GCN_MIN_MAX_MED__D0;
+            num = sizeof(REQ_PROP_VALUES_GCN_MIN_MAX_MED3__D0) / sizeof(unsigned);
+            return REQ_PROP_VALUES_GCN_MIN_MAX_MED3__D0;
         case PROP_S1:
-            num = sizeof(REQ_PROP_VALUES_GCN_MIN_MAX_MED__S1) / sizeof(unsigned);
-            return REQ_PROP_VALUES_GCN_MIN_MAX_MED__S1;
+            num = sizeof(REQ_PROP_VALUES_GCN_MIN_MAX_MED3__S1) / sizeof(unsigned);
+            return REQ_PROP_VALUES_GCN_MIN_MAX_MED3__S1;
         case PROP_S2:
-            num = sizeof(REQ_PROP_VALUES_GCN_MIN_MAX_MED__S2) / sizeof(unsigned);
-            return REQ_PROP_VALUES_GCN_MIN_MAX_MED__S2;
+            num = sizeof(REQ_PROP_VALUES_GCN_MIN_MAX_MED3__S2) / sizeof(unsigned);
+            return REQ_PROP_VALUES_GCN_MIN_MAX_MED3__S2;
         case PROP_S3:
-            num = sizeof(REQ_PROP_VALUES_GCN_MIN_MAX_MED__S3) / sizeof(unsigned);
-            return REQ_PROP_VALUES_GCN_MIN_MAX_MED__S3;
+            num = sizeof(REQ_PROP_VALUES_GCN_MIN_MAX_MED3__S3) / sizeof(unsigned);
+            return REQ_PROP_VALUES_GCN_MIN_MAX_MED3__S3;
         case PROP_S4:
-            num = sizeof(REQ_PROP_VALUES_GCN_MIN_MAX_MED__S4) / sizeof(unsigned);
-            return REQ_PROP_VALUES_GCN_MIN_MAX_MED__S4;
+            num = sizeof(REQ_PROP_VALUES_GCN_MIN_MAX_MED3__S4) / sizeof(unsigned);
+            return REQ_PROP_VALUES_GCN_MIN_MAX_MED3__S4;
         default: 
             assert(false);
             return 0;
@@ -14831,6 +16232,9 @@ const unsigned* PropDescImpl::getPropVals(unsigned opcode, unsigned propId, unsi
         case PROP_ALIGN:
             num = sizeof(REQ_PROP_VALUES_GCN_ST__ALIGN) / sizeof(unsigned);
             return REQ_PROP_VALUES_GCN_ST__ALIGN;
+        case PROP_CONST:
+            num = sizeof(REQ_PROP_VALUES_GCN_ST__CONST) / sizeof(unsigned);
+            return REQ_PROP_VALUES_GCN_ST__CONST;
         case PROP_EQCLASS:
             num = sizeof(REQ_PROP_VALUES_GCN_ST__EQCLASS) / sizeof(unsigned);
             return REQ_PROP_VALUES_GCN_ST__EQCLASS;
@@ -14890,57 +16294,6 @@ const unsigned* PropDescImpl::getPropVals(unsigned opcode, unsigned propId, unsi
         case PROP_S4:
             num = sizeof(REQ_PROP_VALUES_FBAR_NONE__S4) / sizeof(unsigned);
             return REQ_PROP_VALUES_FBAR_NONE__S4;
-        case PROP_MEMFNC:
-            num = sizeof(REQ_PROP_VALUES_FBAR_NONE__MEMFNC) / sizeof(unsigned);
-            return REQ_PROP_VALUES_FBAR_NONE__MEMFNC;
-        case PROP_MEMORD:
-            num = sizeof(REQ_PROP_VALUES_FBAR_NONE__MEMORD) / sizeof(unsigned);
-            return REQ_PROP_VALUES_FBAR_NONE__MEMORD;
-        case PROP_MEMSCP:
-            num = sizeof(REQ_PROP_VALUES_FBAR_NONE__MEMSCP) / sizeof(unsigned);
-            return REQ_PROP_VALUES_FBAR_NONE__MEMSCP;
-        case PROP_WIDTH:
-            num = sizeof(REQ_PROP_VALUES_FBAR_NONE__WIDTH) / sizeof(unsigned);
-            return REQ_PROP_VALUES_FBAR_NONE__WIDTH;
-        default: 
-            assert(false);
-            return 0;
-        }
-
-    case Brig::BRIG_OPCODE_JOINFBAR:
-    case Brig::BRIG_OPCODE_LEAVEFBAR:
-        switch(propId)
-        {
-        case PROP_TYPE:
-            num = sizeof(REQ_PROP_VALUES_FBAR_WIDTH__TYPE) / sizeof(unsigned);
-            return REQ_PROP_VALUES_FBAR_WIDTH__TYPE;
-        case PROP_S0:
-            num = sizeof(REQ_PROP_VALUES_FBAR_WIDTH__S0) / sizeof(unsigned);
-            return REQ_PROP_VALUES_FBAR_WIDTH__S0;
-        case PROP_S1:
-            num = sizeof(REQ_PROP_VALUES_FBAR_WIDTH__S1) / sizeof(unsigned);
-            return REQ_PROP_VALUES_FBAR_WIDTH__S1;
-        case PROP_S2:
-            num = sizeof(REQ_PROP_VALUES_FBAR_WIDTH__S2) / sizeof(unsigned);
-            return REQ_PROP_VALUES_FBAR_WIDTH__S2;
-        case PROP_S3:
-            num = sizeof(REQ_PROP_VALUES_FBAR_WIDTH__S3) / sizeof(unsigned);
-            return REQ_PROP_VALUES_FBAR_WIDTH__S3;
-        case PROP_S4:
-            num = sizeof(REQ_PROP_VALUES_FBAR_WIDTH__S4) / sizeof(unsigned);
-            return REQ_PROP_VALUES_FBAR_WIDTH__S4;
-        case PROP_MEMFNC:
-            num = sizeof(REQ_PROP_VALUES_FBAR_WIDTH__MEMFNC) / sizeof(unsigned);
-            return REQ_PROP_VALUES_FBAR_WIDTH__MEMFNC;
-        case PROP_MEMORD:
-            num = sizeof(REQ_PROP_VALUES_FBAR_WIDTH__MEMORD) / sizeof(unsigned);
-            return REQ_PROP_VALUES_FBAR_WIDTH__MEMORD;
-        case PROP_MEMSCP:
-            num = sizeof(REQ_PROP_VALUES_FBAR_WIDTH__MEMSCP) / sizeof(unsigned);
-            return REQ_PROP_VALUES_FBAR_WIDTH__MEMSCP;
-        case PROP_WIDTH:
-            num = sizeof(REQ_PROP_VALUES_FBAR_WIDTH__WIDTH) / sizeof(unsigned);
-            return REQ_PROP_VALUES_FBAR_WIDTH__WIDTH;
         default: 
             assert(false);
             return 0;
@@ -14955,6 +16308,9 @@ const unsigned* PropDescImpl::getPropVals(unsigned opcode, unsigned propId, unsi
         case PROP_SEGMENT:
             num = sizeof(REQ_PROP_VALUES_LD__SEGMENT) / sizeof(unsigned);
             return REQ_PROP_VALUES_LD__SEGMENT;
+        case PROP_CONST:
+            num = sizeof(REQ_PROP_VALUES_LD__CONST) / sizeof(unsigned);
+            return REQ_PROP_VALUES_LD__CONST;
         case PROP_D0:
             num = sizeof(REQ_PROP_VALUES_LD__D0) / sizeof(unsigned);
             return REQ_PROP_VALUES_LD__D0;
@@ -15071,30 +16427,66 @@ const unsigned* PropDescImpl::getPropVals(unsigned opcode, unsigned propId, unsi
         case PROP_CTYPE:
             num = sizeof(REQ_PROP_VALUES_LD_IMAGE__CTYPE) / sizeof(unsigned);
             return REQ_PROP_VALUES_LD_IMAGE__CTYPE;
+        case PROP_ITYPE:
+            num = sizeof(REQ_PROP_VALUES_LD_IMAGE__ITYPE) / sizeof(unsigned);
+            return REQ_PROP_VALUES_LD_IMAGE__ITYPE;
         case PROP_TYPE:
             num = sizeof(REQ_PROP_VALUES_LD_IMAGE__TYPE) / sizeof(unsigned);
             return REQ_PROP_VALUES_LD_IMAGE__TYPE;
         case PROP_GEOM:
             num = sizeof(REQ_PROP_VALUES_LD_IMAGE__GEOM) / sizeof(unsigned);
             return REQ_PROP_VALUES_LD_IMAGE__GEOM;
-        case PROP_ITYPE:
-            num = sizeof(REQ_PROP_VALUES_LD_IMAGE__ITYPE) / sizeof(unsigned);
-            return REQ_PROP_VALUES_LD_IMAGE__ITYPE;
-        case PROP_S1:
-            num = sizeof(REQ_PROP_VALUES_LD_IMAGE__S1) / sizeof(unsigned);
-            return REQ_PROP_VALUES_LD_IMAGE__S1;
         case PROP_S2:
             num = sizeof(REQ_PROP_VALUES_LD_IMAGE__S2) / sizeof(unsigned);
             return REQ_PROP_VALUES_LD_IMAGE__S2;
         case PROP_D0:
             num = sizeof(REQ_PROP_VALUES_LD_IMAGE__D0) / sizeof(unsigned);
             return REQ_PROP_VALUES_LD_IMAGE__D0;
+        case PROP_S1:
+            num = sizeof(REQ_PROP_VALUES_LD_IMAGE__S1) / sizeof(unsigned);
+            return REQ_PROP_VALUES_LD_IMAGE__S1;
         case PROP_S3:
             num = sizeof(REQ_PROP_VALUES_LD_IMAGE__S3) / sizeof(unsigned);
             return REQ_PROP_VALUES_LD_IMAGE__S3;
         case PROP_S4:
             num = sizeof(REQ_PROP_VALUES_LD_IMAGE__S4) / sizeof(unsigned);
             return REQ_PROP_VALUES_LD_IMAGE__S4;
+        case PROP_EQCLASS:
+            num = sizeof(REQ_PROP_VALUES_LD_IMAGE__EQCLASS) / sizeof(unsigned);
+            return REQ_PROP_VALUES_LD_IMAGE__EQCLASS;
+        default: 
+            assert(false);
+            return 0;
+        }
+
+    case Brig::BRIG_OPCODE_LDQUEUEREADINDEX:
+    case Brig::BRIG_OPCODE_LDQUEUEWRITEINDEX:
+        switch(propId)
+        {
+        case PROP_TYPE:
+            num = sizeof(REQ_PROP_VALUES_LDQ__TYPE) / sizeof(unsigned);
+            return REQ_PROP_VALUES_LDQ__TYPE;
+        case PROP_SEGMENT:
+            num = sizeof(REQ_PROP_VALUES_LDQ__SEGMENT) / sizeof(unsigned);
+            return REQ_PROP_VALUES_LDQ__SEGMENT;
+        case PROP_D0:
+            num = sizeof(REQ_PROP_VALUES_LDQ__D0) / sizeof(unsigned);
+            return REQ_PROP_VALUES_LDQ__D0;
+        case PROP_S1:
+            num = sizeof(REQ_PROP_VALUES_LDQ__S1) / sizeof(unsigned);
+            return REQ_PROP_VALUES_LDQ__S1;
+        case PROP_S2:
+            num = sizeof(REQ_PROP_VALUES_LDQ__S2) / sizeof(unsigned);
+            return REQ_PROP_VALUES_LDQ__S2;
+        case PROP_S3:
+            num = sizeof(REQ_PROP_VALUES_LDQ__S3) / sizeof(unsigned);
+            return REQ_PROP_VALUES_LDQ__S3;
+        case PROP_S4:
+            num = sizeof(REQ_PROP_VALUES_LDQ__S4) / sizeof(unsigned);
+            return REQ_PROP_VALUES_LDQ__S4;
+        case PROP_MEMORD:
+            num = sizeof(REQ_PROP_VALUES_LDQ__MEMORD) / sizeof(unsigned);
+            return REQ_PROP_VALUES_LDQ__MEMORD;
         default: 
             assert(false);
             return 0;
@@ -15179,38 +16571,6 @@ const unsigned* PropDescImpl::getPropVals(unsigned opcode, unsigned propId, unsi
             return 0;
         }
 
-    case Brig::BRIG_OPCODE_MASKLANE:
-        switch(propId)
-        {
-        case PROP_STYPE:
-            num = sizeof(REQ_PROP_VALUES_MASKLANE__STYPE) / sizeof(unsigned);
-            return REQ_PROP_VALUES_MASKLANE__STYPE;
-        case PROP_TYPE:
-            num = sizeof(REQ_PROP_VALUES_MASKLANE__TYPE) / sizeof(unsigned);
-            return REQ_PROP_VALUES_MASKLANE__TYPE;
-        case PROP_D0:
-            num = sizeof(REQ_PROP_VALUES_MASKLANE__D0) / sizeof(unsigned);
-            return REQ_PROP_VALUES_MASKLANE__D0;
-        case PROP_S1:
-            num = sizeof(REQ_PROP_VALUES_MASKLANE__S1) / sizeof(unsigned);
-            return REQ_PROP_VALUES_MASKLANE__S1;
-        case PROP_S2:
-            num = sizeof(REQ_PROP_VALUES_MASKLANE__S2) / sizeof(unsigned);
-            return REQ_PROP_VALUES_MASKLANE__S2;
-        case PROP_S3:
-            num = sizeof(REQ_PROP_VALUES_MASKLANE__S3) / sizeof(unsigned);
-            return REQ_PROP_VALUES_MASKLANE__S3;
-        case PROP_S4:
-            num = sizeof(REQ_PROP_VALUES_MASKLANE__S4) / sizeof(unsigned);
-            return REQ_PROP_VALUES_MASKLANE__S4;
-        case PROP_WIDTH:
-            num = sizeof(REQ_PROP_VALUES_MASKLANE__WIDTH) / sizeof(unsigned);
-            return REQ_PROP_VALUES_MASKLANE__WIDTH;
-        default: 
-            assert(false);
-            return 0;
-        }
-
     case Brig::BRIG_OPCODE_MAX:
     case Brig::BRIG_OPCODE_MIN:
         switch(propId)
@@ -15247,18 +16607,53 @@ const unsigned* PropDescImpl::getPropVals(unsigned opcode, unsigned propId, unsi
             return 0;
         }
 
+    case Brig::BRIG_OPCODE_MEMFENCE:
+        switch(propId)
+        {
+        case PROP_TYPE:
+            num = sizeof(REQ_PROP_VALUES_MEMFENCE__TYPE) / sizeof(unsigned);
+            return REQ_PROP_VALUES_MEMFENCE__TYPE;
+        case PROP_MEMSEG:
+            num = sizeof(REQ_PROP_VALUES_MEMFENCE__MEMSEG) / sizeof(unsigned);
+            return REQ_PROP_VALUES_MEMFENCE__MEMSEG;
+        case PROP_MEMSCP:
+            num = sizeof(REQ_PROP_VALUES_MEMFENCE__MEMSCP) / sizeof(unsigned);
+            return REQ_PROP_VALUES_MEMFENCE__MEMSCP;
+        case PROP_S0:
+            num = sizeof(REQ_PROP_VALUES_MEMFENCE__S0) / sizeof(unsigned);
+            return REQ_PROP_VALUES_MEMFENCE__S0;
+        case PROP_S1:
+            num = sizeof(REQ_PROP_VALUES_MEMFENCE__S1) / sizeof(unsigned);
+            return REQ_PROP_VALUES_MEMFENCE__S1;
+        case PROP_S2:
+            num = sizeof(REQ_PROP_VALUES_MEMFENCE__S2) / sizeof(unsigned);
+            return REQ_PROP_VALUES_MEMFENCE__S2;
+        case PROP_S3:
+            num = sizeof(REQ_PROP_VALUES_MEMFENCE__S3) / sizeof(unsigned);
+            return REQ_PROP_VALUES_MEMFENCE__S3;
+        case PROP_S4:
+            num = sizeof(REQ_PROP_VALUES_MEMFENCE__S4) / sizeof(unsigned);
+            return REQ_PROP_VALUES_MEMFENCE__S4;
+        case PROP_MEMORD:
+            num = sizeof(REQ_PROP_VALUES_MEMFENCE__MEMORD) / sizeof(unsigned);
+            return REQ_PROP_VALUES_MEMFENCE__MEMORD;
+        default: 
+            assert(false);
+            return 0;
+        }
+
     case Brig::BRIG_OPCODE_MOV:
         switch(propId)
         {
         case PROP_TYPE:
             num = sizeof(REQ_PROP_VALUES_MOV__TYPE) / sizeof(unsigned);
             return REQ_PROP_VALUES_MOV__TYPE;
-        case PROP_D0:
-            num = sizeof(REQ_PROP_VALUES_MOV__D0) / sizeof(unsigned);
-            return REQ_PROP_VALUES_MOV__D0;
         case PROP_S1:
             num = sizeof(REQ_PROP_VALUES_MOV__S1) / sizeof(unsigned);
             return REQ_PROP_VALUES_MOV__S1;
+        case PROP_D0:
+            num = sizeof(REQ_PROP_VALUES_MOV__D0) / sizeof(unsigned);
+            return REQ_PROP_VALUES_MOV__D0;
         case PROP_S2:
             num = sizeof(REQ_PROP_VALUES_MOV__S2) / sizeof(unsigned);
             return REQ_PROP_VALUES_MOV__S2;
@@ -15508,9 +16903,6 @@ const unsigned* PropDescImpl::getPropVals(unsigned opcode, unsigned propId, unsi
     case Brig::BRIG_OPCODE_NULLPTR:
         switch(propId)
         {
-        case PROP_STYPE:
-            num = sizeof(REQ_PROP_VALUES_NULLPTR__STYPE) / sizeof(unsigned);
-            return REQ_PROP_VALUES_NULLPTR__STYPE;
         case PROP_TYPE:
             num = sizeof(REQ_PROP_VALUES_NULLPTR__TYPE) / sizeof(unsigned);
             return REQ_PROP_VALUES_NULLPTR__TYPE;
@@ -15595,6 +16987,32 @@ const unsigned* PropDescImpl::getPropVals(unsigned opcode, unsigned propId, unsi
             return 0;
         }
 
+    case Brig::BRIG_OPCODE_PACKETCOMPLETIONSIG:
+        switch(propId)
+        {
+        case PROP_TYPE:
+            num = sizeof(REQ_PROP_VALUES_PACKET__TYPE) / sizeof(unsigned);
+            return REQ_PROP_VALUES_PACKET__TYPE;
+        case PROP_S0:
+            num = sizeof(REQ_PROP_VALUES_PACKET__S0) / sizeof(unsigned);
+            return REQ_PROP_VALUES_PACKET__S0;
+        case PROP_S1:
+            num = sizeof(REQ_PROP_VALUES_PACKET__S1) / sizeof(unsigned);
+            return REQ_PROP_VALUES_PACKET__S1;
+        case PROP_S2:
+            num = sizeof(REQ_PROP_VALUES_PACKET__S2) / sizeof(unsigned);
+            return REQ_PROP_VALUES_PACKET__S2;
+        case PROP_S3:
+            num = sizeof(REQ_PROP_VALUES_PACKET__S3) / sizeof(unsigned);
+            return REQ_PROP_VALUES_PACKET__S3;
+        case PROP_S4:
+            num = sizeof(REQ_PROP_VALUES_PACKET__S4) / sizeof(unsigned);
+            return REQ_PROP_VALUES_PACKET__S4;
+        default: 
+            assert(false);
+            return 0;
+        }
+
     case Brig::BRIG_OPCODE_POPCOUNT:
         switch(propId)
         {
@@ -15638,12 +17056,12 @@ const unsigned* PropDescImpl::getPropVals(unsigned opcode, unsigned propId, unsi
         case PROP_TYPE:
             num = sizeof(REQ_PROP_VALUES_QUERYIMAGE__TYPE) / sizeof(unsigned);
             return REQ_PROP_VALUES_QUERYIMAGE__TYPE;
-        case PROP_S1:
-            num = sizeof(REQ_PROP_VALUES_QUERYIMAGE__S1) / sizeof(unsigned);
-            return REQ_PROP_VALUES_QUERYIMAGE__S1;
         case PROP_D0:
             num = sizeof(REQ_PROP_VALUES_QUERYIMAGE__D0) / sizeof(unsigned);
             return REQ_PROP_VALUES_QUERYIMAGE__D0;
+        case PROP_S1:
+            num = sizeof(REQ_PROP_VALUES_QUERYIMAGE__S1) / sizeof(unsigned);
+            return REQ_PROP_VALUES_QUERYIMAGE__S1;
         case PROP_S2:
             num = sizeof(REQ_PROP_VALUES_QUERYIMAGE__S2) / sizeof(unsigned);
             return REQ_PROP_VALUES_QUERYIMAGE__S2;
@@ -15717,69 +17135,69 @@ const unsigned* PropDescImpl::getPropVals(unsigned opcode, unsigned propId, unsi
             return 0;
         }
 
+    case Brig::BRIG_OPCODE_QUEUEPTR:
+    case Brig::BRIG_OPCODE_SERVICEQUEUEPTR:
+        switch(propId)
+        {
+        case PROP_TYPE:
+            num = sizeof(REQ_PROP_VALUES_GPTR__TYPE) / sizeof(unsigned);
+            return REQ_PROP_VALUES_GPTR__TYPE;
+        case PROP_SEGMENT:
+            num = sizeof(REQ_PROP_VALUES_GPTR__SEGMENT) / sizeof(unsigned);
+            return REQ_PROP_VALUES_GPTR__SEGMENT;
+        case PROP_S0:
+            num = sizeof(REQ_PROP_VALUES_GPTR__S0) / sizeof(unsigned);
+            return REQ_PROP_VALUES_GPTR__S0;
+        case PROP_S1:
+            num = sizeof(REQ_PROP_VALUES_GPTR__S1) / sizeof(unsigned);
+            return REQ_PROP_VALUES_GPTR__S1;
+        case PROP_S2:
+            num = sizeof(REQ_PROP_VALUES_GPTR__S2) / sizeof(unsigned);
+            return REQ_PROP_VALUES_GPTR__S2;
+        case PROP_S3:
+            num = sizeof(REQ_PROP_VALUES_GPTR__S3) / sizeof(unsigned);
+            return REQ_PROP_VALUES_GPTR__S3;
+        case PROP_S4:
+            num = sizeof(REQ_PROP_VALUES_GPTR__S4) / sizeof(unsigned);
+            return REQ_PROP_VALUES_GPTR__S4;
+        default: 
+            assert(false);
+            return 0;
+        }
+
     case Brig::BRIG_OPCODE_RDIMAGE:
         switch(propId)
         {
         case PROP_CTYPE:
             num = sizeof(REQ_PROP_VALUES_RDIMAGE__CTYPE) / sizeof(unsigned);
             return REQ_PROP_VALUES_RDIMAGE__CTYPE;
+        case PROP_ITYPE:
+            num = sizeof(REQ_PROP_VALUES_RDIMAGE__ITYPE) / sizeof(unsigned);
+            return REQ_PROP_VALUES_RDIMAGE__ITYPE;
         case PROP_TYPE:
             num = sizeof(REQ_PROP_VALUES_RDIMAGE__TYPE) / sizeof(unsigned);
             return REQ_PROP_VALUES_RDIMAGE__TYPE;
         case PROP_GEOM:
             num = sizeof(REQ_PROP_VALUES_RDIMAGE__GEOM) / sizeof(unsigned);
             return REQ_PROP_VALUES_RDIMAGE__GEOM;
-        case PROP_ITYPE:
-            num = sizeof(REQ_PROP_VALUES_RDIMAGE__ITYPE) / sizeof(unsigned);
-            return REQ_PROP_VALUES_RDIMAGE__ITYPE;
-        case PROP_S1:
-            num = sizeof(REQ_PROP_VALUES_RDIMAGE__S1) / sizeof(unsigned);
-            return REQ_PROP_VALUES_RDIMAGE__S1;
         case PROP_S3:
             num = sizeof(REQ_PROP_VALUES_RDIMAGE__S3) / sizeof(unsigned);
             return REQ_PROP_VALUES_RDIMAGE__S3;
         case PROP_D0:
             num = sizeof(REQ_PROP_VALUES_RDIMAGE__D0) / sizeof(unsigned);
             return REQ_PROP_VALUES_RDIMAGE__D0;
+        case PROP_S1:
+            num = sizeof(REQ_PROP_VALUES_RDIMAGE__S1) / sizeof(unsigned);
+            return REQ_PROP_VALUES_RDIMAGE__S1;
         case PROP_S2:
             num = sizeof(REQ_PROP_VALUES_RDIMAGE__S2) / sizeof(unsigned);
             return REQ_PROP_VALUES_RDIMAGE__S2;
         case PROP_S4:
             num = sizeof(REQ_PROP_VALUES_RDIMAGE__S4) / sizeof(unsigned);
             return REQ_PROP_VALUES_RDIMAGE__S4;
-        default: 
-            assert(false);
-            return 0;
-        }
-
-    case Brig::BRIG_OPCODE_RECEIVELANE:
-    case Brig::BRIG_OPCODE_SENDLANE:
-        switch(propId)
-        {
-        case PROP_STYPE:
-            num = sizeof(REQ_PROP_VALUES_SENDLANE__STYPE) / sizeof(unsigned);
-            return REQ_PROP_VALUES_SENDLANE__STYPE;
-        case PROP_TYPE:
-            num = sizeof(REQ_PROP_VALUES_SENDLANE__TYPE) / sizeof(unsigned);
-            return REQ_PROP_VALUES_SENDLANE__TYPE;
-        case PROP_D0:
-            num = sizeof(REQ_PROP_VALUES_SENDLANE__D0) / sizeof(unsigned);
-            return REQ_PROP_VALUES_SENDLANE__D0;
-        case PROP_S1:
-            num = sizeof(REQ_PROP_VALUES_SENDLANE__S1) / sizeof(unsigned);
-            return REQ_PROP_VALUES_SENDLANE__S1;
-        case PROP_S2:
-            num = sizeof(REQ_PROP_VALUES_SENDLANE__S2) / sizeof(unsigned);
-            return REQ_PROP_VALUES_SENDLANE__S2;
-        case PROP_S3:
-            num = sizeof(REQ_PROP_VALUES_SENDLANE__S3) / sizeof(unsigned);
-            return REQ_PROP_VALUES_SENDLANE__S3;
-        case PROP_S4:
-            num = sizeof(REQ_PROP_VALUES_SENDLANE__S4) / sizeof(unsigned);
-            return REQ_PROP_VALUES_SENDLANE__S4;
-        case PROP_WIDTH:
-            num = sizeof(REQ_PROP_VALUES_SENDLANE__WIDTH) / sizeof(unsigned);
-            return REQ_PROP_VALUES_SENDLANE__WIDTH;
+        case PROP_EQCLASS:
+            num = sizeof(REQ_PROP_VALUES_RDIMAGE__EQCLASS) / sizeof(unsigned);
+            return REQ_PROP_VALUES_RDIMAGE__EQCLASS;
         default: 
             assert(false);
             return 0;
@@ -15896,6 +17314,9 @@ const unsigned* PropDescImpl::getPropVals(unsigned opcode, unsigned propId, unsi
         case PROP_S4:
             num = sizeof(REQ_PROP_VALUES_SEGMENTP__S4) / sizeof(unsigned);
             return REQ_PROP_VALUES_SEGMENTP__S4;
+        case PROP_NONULL:
+            num = sizeof(REQ_PROP_VALUES_SEGMENTP__NONULL) / sizeof(unsigned);
+            return REQ_PROP_VALUES_SEGMENTP__NONULL;
         default: 
             assert(false);
             return 0;
@@ -15934,6 +17355,9 @@ const unsigned* PropDescImpl::getPropVals(unsigned opcode, unsigned propId, unsi
         case PROP_TYPE:
             num = sizeof(REQ_PROP_VALUES_SHUFFLE__TYPE) / sizeof(unsigned);
             return REQ_PROP_VALUES_SHUFFLE__TYPE;
+        case PROP_S3:
+            num = sizeof(REQ_PROP_VALUES_SHUFFLE__S3) / sizeof(unsigned);
+            return REQ_PROP_VALUES_SHUFFLE__S3;
         case PROP_D0:
             num = sizeof(REQ_PROP_VALUES_SHUFFLE__D0) / sizeof(unsigned);
             return REQ_PROP_VALUES_SHUFFLE__D0;
@@ -15943,12 +17367,79 @@ const unsigned* PropDescImpl::getPropVals(unsigned opcode, unsigned propId, unsi
         case PROP_S2:
             num = sizeof(REQ_PROP_VALUES_SHUFFLE__S2) / sizeof(unsigned);
             return REQ_PROP_VALUES_SHUFFLE__S2;
-        case PROP_S3:
-            num = sizeof(REQ_PROP_VALUES_SHUFFLE__S3) / sizeof(unsigned);
-            return REQ_PROP_VALUES_SHUFFLE__S3;
         case PROP_S4:
             num = sizeof(REQ_PROP_VALUES_SHUFFLE__S4) / sizeof(unsigned);
             return REQ_PROP_VALUES_SHUFFLE__S4;
+        default: 
+            assert(false);
+            return 0;
+        }
+
+    case Brig::BRIG_OPCODE_SIGNAL:
+        switch(propId)
+        {
+        case PROP_TYPE:
+            num = sizeof(REQ_PROP_VALUES_SIGNAL__TYPE) / sizeof(unsigned);
+            return REQ_PROP_VALUES_SIGNAL__TYPE;
+        case PROP_SIGOP:
+            num = sizeof(REQ_PROP_VALUES_SIGNAL__SIGOP) / sizeof(unsigned);
+            return REQ_PROP_VALUES_SIGNAL__SIGOP;
+        case PROP_MEMORD:
+            num = sizeof(REQ_PROP_VALUES_SIGNAL__MEMORD) / sizeof(unsigned);
+            return REQ_PROP_VALUES_SIGNAL__MEMORD;
+        case PROP_S1:
+            num = sizeof(REQ_PROP_VALUES_SIGNAL__S1) / sizeof(unsigned);
+            return REQ_PROP_VALUES_SIGNAL__S1;
+        case PROP_S2:
+            num = sizeof(REQ_PROP_VALUES_SIGNAL__S2) / sizeof(unsigned);
+            return REQ_PROP_VALUES_SIGNAL__S2;
+        case PROP_S3:
+            num = sizeof(REQ_PROP_VALUES_SIGNAL__S3) / sizeof(unsigned);
+            return REQ_PROP_VALUES_SIGNAL__S3;
+        case PROP_SIGTYPE:
+            num = sizeof(REQ_PROP_VALUES_SIGNAL__SIGTYPE) / sizeof(unsigned);
+            return REQ_PROP_VALUES_SIGNAL__SIGTYPE;
+        case PROP_D0:
+            num = sizeof(REQ_PROP_VALUES_SIGNAL__D0) / sizeof(unsigned);
+            return REQ_PROP_VALUES_SIGNAL__D0;
+        case PROP_S4:
+            num = sizeof(REQ_PROP_VALUES_SIGNAL__S4) / sizeof(unsigned);
+            return REQ_PROP_VALUES_SIGNAL__S4;
+        default: 
+            assert(false);
+            return 0;
+        }
+
+    case Brig::BRIG_OPCODE_SIGNALNORET:
+        switch(propId)
+        {
+        case PROP_TYPE:
+            num = sizeof(REQ_PROP_VALUES_SIGNAL_NORET__TYPE) / sizeof(unsigned);
+            return REQ_PROP_VALUES_SIGNAL_NORET__TYPE;
+        case PROP_SIGOP:
+            num = sizeof(REQ_PROP_VALUES_SIGNAL_NORET__SIGOP) / sizeof(unsigned);
+            return REQ_PROP_VALUES_SIGNAL_NORET__SIGOP;
+        case PROP_MEMORD:
+            num = sizeof(REQ_PROP_VALUES_SIGNAL_NORET__MEMORD) / sizeof(unsigned);
+            return REQ_PROP_VALUES_SIGNAL_NORET__MEMORD;
+        case PROP_S0:
+            num = sizeof(REQ_PROP_VALUES_SIGNAL_NORET__S0) / sizeof(unsigned);
+            return REQ_PROP_VALUES_SIGNAL_NORET__S0;
+        case PROP_S2:
+            num = sizeof(REQ_PROP_VALUES_SIGNAL_NORET__S2) / sizeof(unsigned);
+            return REQ_PROP_VALUES_SIGNAL_NORET__S2;
+        case PROP_SIGTYPE:
+            num = sizeof(REQ_PROP_VALUES_SIGNAL_NORET__SIGTYPE) / sizeof(unsigned);
+            return REQ_PROP_VALUES_SIGNAL_NORET__SIGTYPE;
+        case PROP_S1:
+            num = sizeof(REQ_PROP_VALUES_SIGNAL_NORET__S1) / sizeof(unsigned);
+            return REQ_PROP_VALUES_SIGNAL_NORET__S1;
+        case PROP_S3:
+            num = sizeof(REQ_PROP_VALUES_SIGNAL_NORET__S3) / sizeof(unsigned);
+            return REQ_PROP_VALUES_SIGNAL_NORET__S3;
+        case PROP_S4:
+            num = sizeof(REQ_PROP_VALUES_SIGNAL_NORET__S4) / sizeof(unsigned);
+            return REQ_PROP_VALUES_SIGNAL_NORET__S4;
         default: 
             assert(false);
             return 0;
@@ -16016,6 +17507,9 @@ const unsigned* PropDescImpl::getPropVals(unsigned opcode, unsigned propId, unsi
         case PROP_ALIGN:
             num = sizeof(REQ_PROP_VALUES_ST__ALIGN) / sizeof(unsigned);
             return REQ_PROP_VALUES_ST__ALIGN;
+        case PROP_CONST:
+            num = sizeof(REQ_PROP_VALUES_ST__CONST) / sizeof(unsigned);
+            return REQ_PROP_VALUES_ST__CONST;
         case PROP_EQCLASS:
             num = sizeof(REQ_PROP_VALUES_ST__EQCLASS) / sizeof(unsigned);
             return REQ_PROP_VALUES_ST__EQCLASS;
@@ -16033,6 +17527,9 @@ const unsigned* PropDescImpl::getPropVals(unsigned opcode, unsigned propId, unsi
         case PROP_CTYPE:
             num = sizeof(REQ_PROP_VALUES_ST_IMAGE__CTYPE) / sizeof(unsigned);
             return REQ_PROP_VALUES_ST_IMAGE__CTYPE;
+        case PROP_ITYPE:
+            num = sizeof(REQ_PROP_VALUES_ST_IMAGE__ITYPE) / sizeof(unsigned);
+            return REQ_PROP_VALUES_ST_IMAGE__ITYPE;
         case PROP_TYPE:
             num = sizeof(REQ_PROP_VALUES_ST_IMAGE__TYPE) / sizeof(unsigned);
             return REQ_PROP_VALUES_ST_IMAGE__TYPE;
@@ -16054,9 +17551,9 @@ const unsigned* PropDescImpl::getPropVals(unsigned opcode, unsigned propId, unsi
         case PROP_S4:
             num = sizeof(REQ_PROP_VALUES_ST_IMAGE__S4) / sizeof(unsigned);
             return REQ_PROP_VALUES_ST_IMAGE__S4;
-        case PROP_ITYPE:
-            num = sizeof(REQ_PROP_VALUES_ST_IMAGE__ITYPE) / sizeof(unsigned);
-            return REQ_PROP_VALUES_ST_IMAGE__ITYPE;
+        case PROP_EQCLASS:
+            num = sizeof(REQ_PROP_VALUES_ST_IMAGE__EQCLASS) / sizeof(unsigned);
+            return REQ_PROP_VALUES_ST_IMAGE__EQCLASS;
         default: 
             assert(false);
             return 0;
@@ -16089,70 +17586,41 @@ const unsigned* PropDescImpl::getPropVals(unsigned opcode, unsigned propId, unsi
         case PROP_S4:
             num = sizeof(REQ_PROP_VALUES_S2F__S4) / sizeof(unsigned);
             return REQ_PROP_VALUES_S2F__S4;
+        case PROP_NONULL:
+            num = sizeof(REQ_PROP_VALUES_S2F__NONULL) / sizeof(unsigned);
+            return REQ_PROP_VALUES_S2F__NONULL;
         default: 
             assert(false);
             return 0;
         }
 
-    case Brig::BRIG_OPCODE_SYNC:
+    case Brig::BRIG_OPCODE_STQUEUEWRITEINDEX:
         switch(propId)
         {
         case PROP_TYPE:
-            num = sizeof(REQ_PROP_VALUES_SYNC__TYPE) / sizeof(unsigned);
-            return REQ_PROP_VALUES_SYNC__TYPE;
+            num = sizeof(REQ_PROP_VALUES_STQ_WRT__TYPE) / sizeof(unsigned);
+            return REQ_PROP_VALUES_STQ_WRT__TYPE;
+        case PROP_SEGMENT:
+            num = sizeof(REQ_PROP_VALUES_STQ_WRT__SEGMENT) / sizeof(unsigned);
+            return REQ_PROP_VALUES_STQ_WRT__SEGMENT;
         case PROP_S0:
-            num = sizeof(REQ_PROP_VALUES_SYNC__S0) / sizeof(unsigned);
-            return REQ_PROP_VALUES_SYNC__S0;
+            num = sizeof(REQ_PROP_VALUES_STQ_WRT__S0) / sizeof(unsigned);
+            return REQ_PROP_VALUES_STQ_WRT__S0;
         case PROP_S1:
-            num = sizeof(REQ_PROP_VALUES_SYNC__S1) / sizeof(unsigned);
-            return REQ_PROP_VALUES_SYNC__S1;
+            num = sizeof(REQ_PROP_VALUES_STQ_WRT__S1) / sizeof(unsigned);
+            return REQ_PROP_VALUES_STQ_WRT__S1;
         case PROP_S2:
-            num = sizeof(REQ_PROP_VALUES_SYNC__S2) / sizeof(unsigned);
-            return REQ_PROP_VALUES_SYNC__S2;
+            num = sizeof(REQ_PROP_VALUES_STQ_WRT__S2) / sizeof(unsigned);
+            return REQ_PROP_VALUES_STQ_WRT__S2;
         case PROP_S3:
-            num = sizeof(REQ_PROP_VALUES_SYNC__S3) / sizeof(unsigned);
-            return REQ_PROP_VALUES_SYNC__S3;
+            num = sizeof(REQ_PROP_VALUES_STQ_WRT__S3) / sizeof(unsigned);
+            return REQ_PROP_VALUES_STQ_WRT__S3;
         case PROP_S4:
-            num = sizeof(REQ_PROP_VALUES_SYNC__S4) / sizeof(unsigned);
-            return REQ_PROP_VALUES_SYNC__S4;
-        case PROP_MEMFNC:
-            num = sizeof(REQ_PROP_VALUES_SYNC__MEMFNC) / sizeof(unsigned);
-            return REQ_PROP_VALUES_SYNC__MEMFNC;
+            num = sizeof(REQ_PROP_VALUES_STQ_WRT__S4) / sizeof(unsigned);
+            return REQ_PROP_VALUES_STQ_WRT__S4;
         case PROP_MEMORD:
-            num = sizeof(REQ_PROP_VALUES_SYNC__MEMORD) / sizeof(unsigned);
-            return REQ_PROP_VALUES_SYNC__MEMORD;
-        case PROP_MEMSCP:
-            num = sizeof(REQ_PROP_VALUES_SYNC__MEMSCP) / sizeof(unsigned);
-            return REQ_PROP_VALUES_SYNC__MEMSCP;
-        case PROP_WIDTH:
-            num = sizeof(REQ_PROP_VALUES_SYNC__WIDTH) / sizeof(unsigned);
-            return REQ_PROP_VALUES_SYNC__WIDTH;
-        default: 
-            assert(false);
-            return 0;
-        }
-
-    case Brig::BRIG_OPCODE_SYSCALL:
-        switch(propId)
-        {
-        case PROP_TYPE:
-            num = sizeof(REQ_PROP_VALUES_SYSCALL__TYPE) / sizeof(unsigned);
-            return REQ_PROP_VALUES_SYSCALL__TYPE;
-        case PROP_S0:
-            num = sizeof(REQ_PROP_VALUES_SYSCALL__S0) / sizeof(unsigned);
-            return REQ_PROP_VALUES_SYSCALL__S0;
-        case PROP_S1:
-            num = sizeof(REQ_PROP_VALUES_SYSCALL__S1) / sizeof(unsigned);
-            return REQ_PROP_VALUES_SYSCALL__S1;
-        case PROP_S2:
-            num = sizeof(REQ_PROP_VALUES_SYSCALL__S2) / sizeof(unsigned);
-            return REQ_PROP_VALUES_SYSCALL__S2;
-        case PROP_S3:
-            num = sizeof(REQ_PROP_VALUES_SYSCALL__S3) / sizeof(unsigned);
-            return REQ_PROP_VALUES_SYSCALL__S3;
-        case PROP_S4:
-            num = sizeof(REQ_PROP_VALUES_SYSCALL__S4) / sizeof(unsigned);
-            return REQ_PROP_VALUES_SYSCALL__S4;
+            num = sizeof(REQ_PROP_VALUES_STQ_WRT__MEMORD) / sizeof(unsigned);
+            return REQ_PROP_VALUES_STQ_WRT__MEMORD;
         default: 
             assert(false);
             return 0;
@@ -16243,6 +17711,35 @@ const unsigned* PropDescImpl::getPropVals(unsigned opcode, unsigned propId, unsi
             return 0;
         }
 
+    case Brig::BRIG_OPCODE_WAVEBARRIER:
+        switch(propId)
+        {
+        case PROP_TYPE:
+            num = sizeof(REQ_PROP_VALUES_WAVEBARRIER__TYPE) / sizeof(unsigned);
+            return REQ_PROP_VALUES_WAVEBARRIER__TYPE;
+        case PROP_S0:
+            num = sizeof(REQ_PROP_VALUES_WAVEBARRIER__S0) / sizeof(unsigned);
+            return REQ_PROP_VALUES_WAVEBARRIER__S0;
+        case PROP_S1:
+            num = sizeof(REQ_PROP_VALUES_WAVEBARRIER__S1) / sizeof(unsigned);
+            return REQ_PROP_VALUES_WAVEBARRIER__S1;
+        case PROP_S2:
+            num = sizeof(REQ_PROP_VALUES_WAVEBARRIER__S2) / sizeof(unsigned);
+            return REQ_PROP_VALUES_WAVEBARRIER__S2;
+        case PROP_S3:
+            num = sizeof(REQ_PROP_VALUES_WAVEBARRIER__S3) / sizeof(unsigned);
+            return REQ_PROP_VALUES_WAVEBARRIER__S3;
+        case PROP_S4:
+            num = sizeof(REQ_PROP_VALUES_WAVEBARRIER__S4) / sizeof(unsigned);
+            return REQ_PROP_VALUES_WAVEBARRIER__S4;
+        case PROP_WIDTH:
+            num = sizeof(REQ_PROP_VALUES_WAVEBARRIER__WIDTH) / sizeof(unsigned);
+            return REQ_PROP_VALUES_WAVEBARRIER__WIDTH;
+        default: 
+            assert(false);
+            return 0;
+        }
+
     }
 
     assert(false);
@@ -16305,7 +17802,7 @@ template<class T> bool PropDescImpl::chkReqPropNeg(T inst, unsigned propId)
         // Dependent Property
         case PROP_D0:
         {
-            if (!validateOperand(inst, PROP_D0, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
+            if (!validateOperand(inst, PROP_D0, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
 
             return true;
         }
@@ -16313,7 +17810,7 @@ template<class T> bool PropDescImpl::chkReqPropNeg(T inst, unsigned propId)
         // Dependent Property
         case PROP_S1:
         {
-            if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
+            if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
 
             return true;
         }
@@ -16354,6 +17851,302 @@ template<class T> bool PropDescImpl::chkReqPropNeg(T inst, unsigned propId)
         case PROP_ROUNDING:
         {
             if (!check_rounding_values_none(getRounding<T>(inst))) return false;
+
+            return true;
+        }
+
+    default: 
+        assert(false);
+        return false;
+    }
+}
+template<class T> bool PropDescImpl::chkReqPropActivelanecount(T inst, unsigned propId)
+{
+    switch(propId)
+    {
+        // Primary Property
+        case PROP_STYPE:
+        {
+            if (!check_type_values_b1(getStype<T>(inst))) return false;
+
+            return true;
+        }
+
+        // Last Primary Property
+        case PROP_TYPE:
+        {
+            if (!check_type_values_u32(getType<T>(inst))) return false;
+            if (!check_type_values_b1(getStype<T>(inst))) return false;
+
+            return true;
+        }
+
+        // Dependent Property
+        case PROP_D0:
+        {
+            if (!validateOperand(inst, PROP_D0, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
+
+            return true;
+        }
+
+        // Dependent Property
+        case PROP_S1:
+        {
+            if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_STYPE, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
+
+            return true;
+        }
+
+        // Dependent Property
+        case PROP_S2:
+        {
+            if (!validateOperand(inst, PROP_S2, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned), false)) return false;
+
+            return true;
+        }
+
+        // Dependent Property
+        case PROP_S3:
+        {
+            if (!validateOperand(inst, PROP_S3, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned), false)) return false;
+
+            return true;
+        }
+
+        // Dependent Property
+        case PROP_S4:
+        {
+            if (!validateOperand(inst, PROP_S4, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned), false)) return false;
+
+            return true;
+        }
+
+        // Plain Property
+        case PROP_WIDTH:
+        {
+            if (!check_width_values_any(getWidth<T>(inst))) return false;
+
+            return true;
+        }
+
+    default: 
+        assert(false);
+        return false;
+    }
+}
+template<class T> bool PropDescImpl::chkReqPropActivelaneid(T inst, unsigned propId)
+{
+    switch(propId)
+    {
+        // Primary Property
+        case PROP_STYPE:
+        {
+            if (!check_type_values_none(getStype<T>(inst))) return false;
+
+            return true;
+        }
+
+        // Last Primary Property
+        case PROP_TYPE:
+        {
+            if (!check_type_values_u32(getType<T>(inst))) return false;
+            if (!check_type_values_none(getStype<T>(inst))) return false;
+
+            return true;
+        }
+
+        // Dependent Property
+        case PROP_D0:
+        {
+            if (!validateOperand(inst, PROP_D0, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
+
+            return true;
+        }
+
+        // Dependent Property
+        case PROP_S1:
+        {
+            if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned), false)) return false;
+
+            return true;
+        }
+
+        // Dependent Property
+        case PROP_S2:
+        {
+            if (!validateOperand(inst, PROP_S2, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned), false)) return false;
+
+            return true;
+        }
+
+        // Dependent Property
+        case PROP_S3:
+        {
+            if (!validateOperand(inst, PROP_S3, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned), false)) return false;
+
+            return true;
+        }
+
+        // Dependent Property
+        case PROP_S4:
+        {
+            if (!validateOperand(inst, PROP_S4, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned), false)) return false;
+
+            return true;
+        }
+
+        // Plain Property
+        case PROP_WIDTH:
+        {
+            if (!check_width_values_any(getWidth<T>(inst))) return false;
+
+            return true;
+        }
+
+    default: 
+        assert(false);
+        return false;
+    }
+}
+template<class T> bool PropDescImpl::chkReqPropActivelanemask(T inst, unsigned propId)
+{
+    switch(propId)
+    {
+        // Primary Property
+        case PROP_STYPE:
+        {
+            if (!check_type_values_b1(getStype<T>(inst))) return false;
+
+            return true;
+        }
+
+        // Last Primary Property
+        case PROP_TYPE:
+        {
+            if (!check_type_values_b64(getType<T>(inst))) return false;
+            if (!check_type_values_b1(getStype<T>(inst))) return false;
+
+            return true;
+        }
+
+        // Dependent Property
+        case PROP_D0:
+        {
+            if (!validateOperand(inst, PROP_D0, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
+
+            return true;
+        }
+
+        // Dependent Property
+        case PROP_S1:
+        {
+            if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_STYPE, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
+
+            return true;
+        }
+
+        // Dependent Property
+        case PROP_S2:
+        {
+            if (!validateOperand(inst, PROP_S2, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned), false)) return false;
+
+            return true;
+        }
+
+        // Dependent Property
+        case PROP_S3:
+        {
+            if (!validateOperand(inst, PROP_S3, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned), false)) return false;
+
+            return true;
+        }
+
+        // Dependent Property
+        case PROP_S4:
+        {
+            if (!validateOperand(inst, PROP_S4, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned), false)) return false;
+
+            return true;
+        }
+
+        // Plain Property
+        case PROP_WIDTH:
+        {
+            if (!check_width_values_any(getWidth<T>(inst))) return false;
+
+            return true;
+        }
+
+    default: 
+        assert(false);
+        return false;
+    }
+}
+template<class T> bool PropDescImpl::chkReqPropActivelaneshuffle(T inst, unsigned propId)
+{
+    switch(propId)
+    {
+        // Primary Property
+        case PROP_STYPE:
+        {
+            if (!check_type_values_none(getStype<T>(inst))) return false;
+
+            return true;
+        }
+
+        // Last Primary Property
+        case PROP_TYPE:
+        {
+            if (!check_type_values_b1_b32_b64_b128(getType<T>(inst))) return false;
+            if (!check_type_values_none(getStype<T>(inst))) return false;
+
+            return true;
+        }
+
+        // Dependent Property
+        case PROP_D0:
+        {
+            if (!validateOperand(inst, PROP_D0, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
+
+            return true;
+        }
+
+        // Dependent Property
+        case PROP_S1:
+        {
+            if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
+
+            return true;
+        }
+
+        // Dependent Property
+        case PROP_S2:
+        {
+            if (!validateOperand(inst, PROP_S2, OPERAND_ATTR_U32, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
+
+            return true;
+        }
+
+        // Dependent Property
+        case PROP_S3:
+        {
+            if (!validateOperand(inst, PROP_S3, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
+
+            return true;
+        }
+
+        // Dependent Property
+        case PROP_S4:
+        {
+            if (!validateOperand(inst, PROP_S4, OPERAND_ATTR_B1, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
+
+            return true;
+        }
+
+        // Plain Property
+        case PROP_WIDTH:
+        {
+            if (!check_width_values_any(getWidth<T>(inst))) return false;
 
             return true;
         }
@@ -16514,7 +18307,7 @@ template<class T> bool PropDescImpl::chkReqPropAdd(T inst, unsigned propId)
         // Dependent Property
         case PROP_D0:
         {
-            if (!validateOperand(inst, PROP_D0, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
+            if (!validateOperand(inst, PROP_D0, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
 
             return true;
         }
@@ -16522,7 +18315,7 @@ template<class T> bool PropDescImpl::chkReqPropAdd(T inst, unsigned propId)
         // Dependent Property
         case PROP_S1:
         {
-            if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
+            if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
 
             return true;
         }
@@ -16530,7 +18323,7 @@ template<class T> bool PropDescImpl::chkReqPropAdd(T inst, unsigned propId)
         // Dependent Property
         case PROP_S2:
         {
-            if (!validateOperand(inst, PROP_S2, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
+            if (!validateOperand(inst, PROP_S2, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
 
             return true;
         }
@@ -16556,18 +18349,84 @@ template<class T> bool PropDescImpl::chkReqPropAdd(T inst, unsigned propId)
         return false;
     }
 }
-template<class T> bool PropDescImpl::chkReqPropAlloca(T inst, unsigned propId)
+template<class T> bool PropDescImpl::chkReqPropAddq_wrt(T inst, unsigned propId)
 {
     switch(propId)
     {
         // Primary Property
-        case PROP_STYPE:
+        case PROP_TYPE:
         {
-            if (!check_type_values_none(getStype<T>(inst))) return false;
+            if (!check_type_values_u64(getType<T>(inst))) return false;
 
             return true;
         }
 
+        // Last Primary Property
+        case PROP_SEGMENT:
+        {
+            if (!check_type_values_u64(getType<T>(inst))) return false;
+            if (!check_segment_values_flat_global(getSegment<T>(inst))) return false;
+
+            return true;
+        }
+
+        // Dependent Property
+        case PROP_D0:
+        {
+            if (!validateOperand(inst, PROP_D0, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
+
+            return true;
+        }
+
+        // Dependent Property
+        case PROP_S1:
+        {
+            if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_SEG, OPERAND_VALUES_ADDRSEG, sizeof(OPERAND_VALUES_ADDRSEG) / sizeof(unsigned), false)) return false;
+
+            return true;
+        }
+
+        // Dependent Property
+        case PROP_S2:
+        {
+            if (!validateOperand(inst, PROP_S2, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
+
+            return true;
+        }
+
+        // Dependent Property
+        case PROP_S3:
+        {
+            if (!validateOperand(inst, PROP_S3, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned), false)) return false;
+
+            return true;
+        }
+
+        // Dependent Property
+        case PROP_S4:
+        {
+            if (!validateOperand(inst, PROP_S4, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned), false)) return false;
+
+            return true;
+        }
+
+        // Plain Property
+        case PROP_MEMORD:
+        {
+            if (!check_memord_values_any(getMemord<T>(inst))) return false;
+
+            return true;
+        }
+
+    default: 
+        assert(false);
+        return false;
+    }
+}
+template<class T> bool PropDescImpl::chkReqPropAlloca(T inst, unsigned propId)
+{
+    switch(propId)
+    {
         // Primary Property
         case PROP_TYPE:
         {
@@ -16580,7 +18439,6 @@ template<class T> bool PropDescImpl::chkReqPropAlloca(T inst, unsigned propId)
         case PROP_SEGMENT:
         {
             if (!check_type_values_u32(getType<T>(inst))) return false;
-            if (!check_type_values_none(getStype<T>(inst))) return false;
             if (!check_segment_values_private(getSegment<T>(inst))) return false;
 
             return true;
@@ -16589,7 +18447,7 @@ template<class T> bool PropDescImpl::chkReqPropAlloca(T inst, unsigned propId)
         // Dependent Property
         case PROP_S0:
         {
-            if (!validateOperand(inst, PROP_S0, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
+            if (!validateOperand(inst, PROP_S0, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
 
             return true;
         }
@@ -16597,7 +18455,7 @@ template<class T> bool PropDescImpl::chkReqPropAlloca(T inst, unsigned propId)
         // Dependent Property
         case PROP_S1:
         {
-            if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
+            if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
 
             return true;
         }
@@ -16626,6 +18484,38 @@ template<class T> bool PropDescImpl::chkReqPropAlloca(T inst, unsigned propId)
             return true;
         }
 
+        // Plain Property
+        case PROP_ALIGN:
+        {
+            if (!check_align_values_any(getAlign<T>(inst))) return false;
+
+            return true;
+        }
+
+        // Plain Property
+        case PROP_CONST:
+        {
+            if (!check_const_values_none(getConst<T>(inst))) return false;
+
+            return true;
+        }
+
+        // Plain Property
+        case PROP_EQCLASS:
+        {
+            if (!validateEqclass(inst, PROP_EQCLASS, EQCLASS_ATTR_NONE, EQCLASS_VALUES_0, sizeof(EQCLASS_VALUES_0) / sizeof(unsigned), false)) return false;
+
+            return true;
+        }
+
+        // Plain Property
+        case PROP_WIDTH:
+        {
+            if (!check_width_values_none(getWidth<T>(inst))) return false;
+
+            return true;
+        }
+
     default: 
         assert(false);
         return false;
@@ -16646,7 +18536,7 @@ template<class T> bool PropDescImpl::chkReqPropAnd(T inst, unsigned propId)
         // Dependent Property
         case PROP_D0:
         {
-            if (!validateOperand(inst, PROP_D0, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
+            if (!validateOperand(inst, PROP_D0, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
 
             return true;
         }
@@ -16654,7 +18544,7 @@ template<class T> bool PropDescImpl::chkReqPropAnd(T inst, unsigned propId)
         // Dependent Property
         case PROP_S1:
         {
-            if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
+            if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
 
             return true;
         }
@@ -16662,7 +18552,7 @@ template<class T> bool PropDescImpl::chkReqPropAnd(T inst, unsigned propId)
         // Dependent Property
         case PROP_S2:
         {
-            if (!validateOperand(inst, PROP_S2, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
+            if (!validateOperand(inst, PROP_S2, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
 
             return true;
         }
@@ -16688,7 +18578,7 @@ template<class T> bool PropDescImpl::chkReqPropAnd(T inst, unsigned propId)
         return false;
     }
 }
-template<class T> bool PropDescImpl::chkReqPropFbar_sync_width(T inst, unsigned propId)
+template<class T> bool PropDescImpl::chkReqPropFbar_width(T inst, unsigned propId)
 {
     switch(propId)
     {
@@ -16703,7 +18593,7 @@ template<class T> bool PropDescImpl::chkReqPropFbar_sync_width(T inst, unsigned 
         // Dependent Property
         case PROP_S0:
         {
-            if (!validateOperand(inst, PROP_S0, OPERAND_ATTR_NONE, OPERAND_VALUES_REG32_FBARRIER, sizeof(OPERAND_VALUES_REG32_FBARRIER) / sizeof(unsigned), false)) return false;
+            if (!validateOperand(inst, PROP_S0, OPERAND_ATTR_U32, OPERAND_VALUES_REGU32_FBARRIERU32, sizeof(OPERAND_VALUES_REGU32_FBARRIERU32) / sizeof(unsigned), false)) return false;
 
             return true;
         }
@@ -16736,30 +18626,6 @@ template<class T> bool PropDescImpl::chkReqPropFbar_sync_width(T inst, unsigned 
         case PROP_S4:
         {
             if (!validateOperand(inst, PROP_S4, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned), false)) return false;
-
-            return true;
-        }
-
-        // Plain Property
-        case PROP_MEMFNC:
-        {
-            if (!check_memfnc_values_any(getMemfnc<T>(inst))) return false;
-
-            return true;
-        }
-
-        // Plain Property
-        case PROP_MEMORD:
-        {
-            if (!check_memord_values_none(getMemord<T>(inst))) return false;
-
-            return true;
-        }
-
-        // Plain Property
-        case PROP_MEMSCP:
-        {
-            if (!check_memscp_values_any(getMemscp<T>(inst))) return false;
 
             return true;
         }
@@ -16840,6 +18706,21 @@ template<class T> bool PropDescImpl::chkReqPropAtomic(T inst, unsigned propId)
                 return false;
             }
 
+            if (
+                check_segment_values_flat_global(getSegment<T>(inst))
+               )
+            {
+            }
+            else if (
+                check_segment_values_group(getSegment<T>(inst))
+               )
+            {
+            }
+            else
+            {
+                return false;
+            }
+
             return true;
         }
 
@@ -16890,6 +18771,83 @@ template<class T> bool PropDescImpl::chkReqPropAtomic(T inst, unsigned propId)
                 return false;
             }
 
+            if (
+                check_segment_values_flat_global(getSegment<T>(inst))
+               )
+            {
+            }
+            else if (
+                check_segment_values_group(getSegment<T>(inst))
+               )
+            {
+            }
+            else
+            {
+                return false;
+            }
+
+            return true;
+        }
+
+        // Conditional Property
+        case PROP_MEMSCP:
+        {
+            if (!check_type_values_b32_s32_u32_b64_s64_u64(getType<T>(inst))) return false;
+            if (!check_atmop_values_generic_exch_ld(getAtmop<T>(inst))) return false;
+            if (!check_segment_values_global_group_flat(getSegment<T>(inst))) return false;
+
+            if (
+                check_atmop_values_cas(getAtmop<T>(inst))
+               )
+            {
+                if (!check_type_values_b32_b64(getType<T>(inst))) return false;
+            }
+            else if (
+                check_atmop_values_and_or_xor_exch(getAtmop<T>(inst))
+               )
+            {
+                if (!check_type_values_b32_b64(getType<T>(inst))) return false;
+            }
+            else if (
+                check_atmop_values_add_sub_min_max(getAtmop<T>(inst))
+               )
+            {
+                if (!check_type_values_s32_u32_s64_u64(getType<T>(inst))) return false;
+            }
+            else if (
+                check_atmop_values_inc_dec(getAtmop<T>(inst))
+               )
+            {
+                if (!check_type_values_u32_u64(getType<T>(inst))) return false;
+            }
+            else if (
+                check_atmop_values_ld(getAtmop<T>(inst))
+               )
+            {
+                if (!check_type_values_b32_b64(getType<T>(inst))) return false;
+            }
+            else
+            {
+                return false;
+            }
+
+            if (
+                check_segment_values_flat_global(getSegment<T>(inst))
+               )
+            {
+                if (!check_memscp_values_any(getMemscp<T>(inst))) return false;
+            }
+            else if (
+                check_segment_values_group(getSegment<T>(inst))
+               )
+            {
+                if (!check_memscp_values_wv_wg(getMemscp<T>(inst))) return false;
+            }
+            else
+            {
+                return false;
+            }
+
             return true;
         }
 
@@ -16905,28 +18863,28 @@ template<class T> bool PropDescImpl::chkReqPropAtomic(T inst, unsigned propId)
                )
             {
                 if (!check_type_values_b32_b64(getType<T>(inst))) return false;
-                if (!validateOperand(inst, PROP_S2, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
+                if (!validateOperand(inst, PROP_S2, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
             }
             else if (
                 check_atmop_values_and_or_xor_exch(getAtmop<T>(inst))
                )
             {
                 if (!check_type_values_b32_b64(getType<T>(inst))) return false;
-                if (!validateOperand(inst, PROP_S2, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
+                if (!validateOperand(inst, PROP_S2, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
             }
             else if (
                 check_atmop_values_add_sub_min_max(getAtmop<T>(inst))
                )
             {
                 if (!check_type_values_s32_u32_s64_u64(getType<T>(inst))) return false;
-                if (!validateOperand(inst, PROP_S2, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
+                if (!validateOperand(inst, PROP_S2, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
             }
             else if (
                 check_atmop_values_inc_dec(getAtmop<T>(inst))
                )
             {
                 if (!check_type_values_u32_u64(getType<T>(inst))) return false;
-                if (!validateOperand(inst, PROP_S2, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
+                if (!validateOperand(inst, PROP_S2, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
             }
             else if (
                 check_atmop_values_ld(getAtmop<T>(inst))
@@ -16934,6 +18892,21 @@ template<class T> bool PropDescImpl::chkReqPropAtomic(T inst, unsigned propId)
             {
                 if (!check_type_values_b32_b64(getType<T>(inst))) return false;
                 if (!validateOperand(inst, PROP_S2, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned), false)) return false;
+            }
+            else
+            {
+                return false;
+            }
+
+            if (
+                check_segment_values_flat_global(getSegment<T>(inst))
+               )
+            {
+            }
+            else if (
+                check_segment_values_group(getSegment<T>(inst))
+               )
+            {
             }
             else
             {
@@ -16955,7 +18928,7 @@ template<class T> bool PropDescImpl::chkReqPropAtomic(T inst, unsigned propId)
                )
             {
                 if (!check_type_values_b32_b64(getType<T>(inst))) return false;
-                if (!validateOperand(inst, PROP_S3, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
+                if (!validateOperand(inst, PROP_S3, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
             }
             else if (
                 check_atmop_values_and_or_xor_exch(getAtmop<T>(inst))
@@ -16990,13 +18963,28 @@ template<class T> bool PropDescImpl::chkReqPropAtomic(T inst, unsigned propId)
                 return false;
             }
 
+            if (
+                check_segment_values_flat_global(getSegment<T>(inst))
+               )
+            {
+            }
+            else if (
+                check_segment_values_group(getSegment<T>(inst))
+               )
+            {
+            }
+            else
+            {
+                return false;
+            }
+
             return true;
         }
 
         // Dependent Property
         case PROP_D0:
         {
-            if (!validateOperand(inst, PROP_D0, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
+            if (!validateOperand(inst, PROP_D0, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
 
             return true;
         }
@@ -17004,7 +18992,7 @@ template<class T> bool PropDescImpl::chkReqPropAtomic(T inst, unsigned propId)
         // Dependent Property
         case PROP_S1:
         {
-            if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_NONE, OPERAND_VALUES_ADDRSEG, sizeof(OPERAND_VALUES_ADDRSEG) / sizeof(unsigned), false)) return false;
+            if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_SEG, OPERAND_VALUES_ADDRSEG, sizeof(OPERAND_VALUES_ADDRSEG) / sizeof(unsigned), false)) return false;
 
             return true;
         }
@@ -17018,9 +19006,9 @@ template<class T> bool PropDescImpl::chkReqPropAtomic(T inst, unsigned propId)
         }
 
         // Plain Property
-        case PROP_MEMSCP:
+        case PROP_EQCLASS:
         {
-            if (!check_memscp_values_any(getMemscp<T>(inst))) return false;
+            if (!validateEqclass(inst, PROP_EQCLASS, EQCLASS_ATTR_NONE, EQCLASS_VALUES_ANY, sizeof(EQCLASS_VALUES_ANY) / sizeof(unsigned), false)) return false;
 
             return true;
         }
@@ -17038,6 +19026,14 @@ template<class T> bool PropDescImpl::chkReqPropAtomic_image(T inst, unsigned pro
         case PROP_CTYPE:
         {
             if (!check_type_values_u32(getCtype<T>(inst))) return false;
+
+            return true;
+        }
+
+        // Primary Property
+        case PROP_ITYPE:
+        {
+            if (!check_type_values_rwimg(getItype<T>(inst))) return false;
 
             return true;
         }
@@ -17062,6 +19058,7 @@ template<class T> bool PropDescImpl::chkReqPropAtomic_image(T inst, unsigned pro
         case PROP_GEOM:
         {
             if (!check_type_values_b32_s32_u32_b64_s64_u64(getType<T>(inst))) return false;
+            if (!check_type_values_rwimg(getItype<T>(inst))) return false;
             if (!check_type_values_u32(getCtype<T>(inst))) return false;
             if (!check_geom_values_1d_2d_3d_1db_1da_2da(getGeom<T>(inst))) return false;
             if (!check_atmop_values_generic_exch(getAtmop<T>(inst))) return false;
@@ -17123,6 +19120,7 @@ template<class T> bool PropDescImpl::chkReqPropAtomic_image(T inst, unsigned pro
         case PROP_S2:
         {
             if (!check_type_values_b32_s32_u32_b64_s64_u64(getType<T>(inst))) return false;
+            if (!check_type_values_rwimg(getItype<T>(inst))) return false;
             if (!check_type_values_u32(getCtype<T>(inst))) return false;
             if (!check_geom_values_1d_2d_3d_1db_1da_2da(getGeom<T>(inst))) return false;
             if (!check_atmop_values_generic_exch(getAtmop<T>(inst))) return false;
@@ -17186,6 +19184,7 @@ template<class T> bool PropDescImpl::chkReqPropAtomic_image(T inst, unsigned pro
         case PROP_S4:
         {
             if (!check_type_values_b32_s32_u32_b64_s64_u64(getType<T>(inst))) return false;
+            if (!check_type_values_rwimg(getItype<T>(inst))) return false;
             if (!check_type_values_u32(getCtype<T>(inst))) return false;
             if (!check_geom_values_1d_2d_3d_1db_1da_2da(getGeom<T>(inst))) return false;
             if (!check_atmop_values_generic_exch(getAtmop<T>(inst))) return false;
@@ -17195,7 +19194,7 @@ template<class T> bool PropDescImpl::chkReqPropAtomic_image(T inst, unsigned pro
                )
             {
                 if (!check_type_values_b32_b64(getType<T>(inst))) return false;
-                if (!validateOperand(inst, PROP_S4, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
+                if (!validateOperand(inst, PROP_S4, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
             }
             else if (
                 check_atmop_values_and_or_xor_exch(getAtmop<T>(inst))
@@ -17249,7 +19248,7 @@ template<class T> bool PropDescImpl::chkReqPropAtomic_image(T inst, unsigned pro
         // Dependent Property
         case PROP_D0:
         {
-            if (!validateOperand(inst, PROP_D0, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
+            if (!validateOperand(inst, PROP_D0, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
 
             return true;
         }
@@ -17257,7 +19256,7 @@ template<class T> bool PropDescImpl::chkReqPropAtomic_image(T inst, unsigned pro
         // Dependent Property
         case PROP_S1:
         {
-            if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_NONE, OPERAND_VALUES_REG64_RWIMAGE, sizeof(OPERAND_VALUES_REG64_RWIMAGE) / sizeof(unsigned), false)) return false;
+            if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_ITYPE, OPERAND_VALUES_REGSTYPE_IMAGESTYPE, sizeof(OPERAND_VALUES_REGSTYPE_IMAGESTYPE) / sizeof(unsigned), false)) return false;
 
             return true;
         }
@@ -17265,15 +19264,15 @@ template<class T> bool PropDescImpl::chkReqPropAtomic_image(T inst, unsigned pro
         // Dependent Property
         case PROP_S3:
         {
-            if (!validateOperand(inst, PROP_S3, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
+            if (!validateOperand(inst, PROP_S3, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
 
             return true;
         }
 
         // Plain Property
-        case PROP_ITYPE:
+        case PROP_EQCLASS:
         {
-            if (!check_type_values_rwimg(getItype<T>(inst))) return false;
+            if (!validateEqclass(inst, PROP_EQCLASS, EQCLASS_ATTR_NONE, EQCLASS_VALUES_ANY, sizeof(EQCLASS_VALUES_ANY) / sizeof(unsigned), false)) return false;
 
             return true;
         }
@@ -17291,6 +19290,14 @@ template<class T> bool PropDescImpl::chkReqPropAtomic_noret_image(T inst, unsign
         case PROP_CTYPE:
         {
             if (!check_type_values_u32(getCtype<T>(inst))) return false;
+
+            return true;
+        }
+
+        // Primary Property
+        case PROP_ITYPE:
+        {
+            if (!check_type_values_rwimg(getItype<T>(inst))) return false;
 
             return true;
         }
@@ -17315,6 +19322,7 @@ template<class T> bool PropDescImpl::chkReqPropAtomic_noret_image(T inst, unsign
         case PROP_GEOM:
         {
             if (!check_type_values_b32_s32_u32_b64_s64_u64(getType<T>(inst))) return false;
+            if (!check_type_values_rwimg(getItype<T>(inst))) return false;
             if (!check_type_values_u32(getCtype<T>(inst))) return false;
             if (!check_geom_values_1d_2d_3d_1db_1da_2da(getGeom<T>(inst))) return false;
             if (!check_atmop_values_generic(getAtmop<T>(inst))) return false;
@@ -17376,6 +19384,7 @@ template<class T> bool PropDescImpl::chkReqPropAtomic_noret_image(T inst, unsign
         case PROP_S1:
         {
             if (!check_type_values_b32_s32_u32_b64_s64_u64(getType<T>(inst))) return false;
+            if (!check_type_values_rwimg(getItype<T>(inst))) return false;
             if (!check_type_values_u32(getCtype<T>(inst))) return false;
             if (!check_geom_values_1d_2d_3d_1db_1da_2da(getGeom<T>(inst))) return false;
             if (!check_atmop_values_generic(getAtmop<T>(inst))) return false;
@@ -17439,6 +19448,7 @@ template<class T> bool PropDescImpl::chkReqPropAtomic_noret_image(T inst, unsign
         case PROP_S3:
         {
             if (!check_type_values_b32_s32_u32_b64_s64_u64(getType<T>(inst))) return false;
+            if (!check_type_values_rwimg(getItype<T>(inst))) return false;
             if (!check_type_values_u32(getCtype<T>(inst))) return false;
             if (!check_geom_values_1d_2d_3d_1db_1da_2da(getGeom<T>(inst))) return false;
             if (!check_atmop_values_generic(getAtmop<T>(inst))) return false;
@@ -17448,7 +19458,7 @@ template<class T> bool PropDescImpl::chkReqPropAtomic_noret_image(T inst, unsign
                )
             {
                 if (!check_type_values_b32_b64(getType<T>(inst))) return false;
-                if (!validateOperand(inst, PROP_S3, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
+                if (!validateOperand(inst, PROP_S3, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
             }
             else if (
                 check_atmop_values_and_or_xor(getAtmop<T>(inst))
@@ -17502,7 +19512,7 @@ template<class T> bool PropDescImpl::chkReqPropAtomic_noret_image(T inst, unsign
         // Dependent Property
         case PROP_S0:
         {
-            if (!validateOperand(inst, PROP_S0, OPERAND_ATTR_NONE, OPERAND_VALUES_REG64_RWIMAGE, sizeof(OPERAND_VALUES_REG64_RWIMAGE) / sizeof(unsigned), false)) return false;
+            if (!validateOperand(inst, PROP_S0, OPERAND_ATTR_ITYPE, OPERAND_VALUES_REGSTYPE_IMAGESTYPE, sizeof(OPERAND_VALUES_REGSTYPE_IMAGESTYPE) / sizeof(unsigned), false)) return false;
 
             return true;
         }
@@ -17510,7 +19520,7 @@ template<class T> bool PropDescImpl::chkReqPropAtomic_noret_image(T inst, unsign
         // Dependent Property
         case PROP_S2:
         {
-            if (!validateOperand(inst, PROP_S2, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
+            if (!validateOperand(inst, PROP_S2, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
 
             return true;
         }
@@ -17524,9 +19534,9 @@ template<class T> bool PropDescImpl::chkReqPropAtomic_noret_image(T inst, unsign
         }
 
         // Plain Property
-        case PROP_ITYPE:
+        case PROP_EQCLASS:
         {
-            if (!check_type_values_rwimg(getItype<T>(inst))) return false;
+            if (!validateEqclass(inst, PROP_EQCLASS, EQCLASS_ATTR_NONE, EQCLASS_VALUES_ANY, sizeof(EQCLASS_VALUES_ANY) / sizeof(unsigned), false)) return false;
 
             return true;
         }
@@ -17599,6 +19609,21 @@ template<class T> bool PropDescImpl::chkReqPropAtomic_noret(T inst, unsigned pro
                 return false;
             }
 
+            if (
+                check_segment_values_flat_global(getSegment<T>(inst))
+               )
+            {
+            }
+            else if (
+                check_segment_values_group(getSegment<T>(inst))
+               )
+            {
+            }
+            else
+            {
+                return false;
+            }
+
             return true;
         }
 
@@ -17649,6 +19674,83 @@ template<class T> bool PropDescImpl::chkReqPropAtomic_noret(T inst, unsigned pro
                 return false;
             }
 
+            if (
+                check_segment_values_flat_global(getSegment<T>(inst))
+               )
+            {
+            }
+            else if (
+                check_segment_values_group(getSegment<T>(inst))
+               )
+            {
+            }
+            else
+            {
+                return false;
+            }
+
+            return true;
+        }
+
+        // Conditional Property
+        case PROP_MEMSCP:
+        {
+            if (!check_type_values_b32_s32_u32_b64_s64_u64(getType<T>(inst))) return false;
+            if (!check_atmop_values_generic_st(getAtmop<T>(inst))) return false;
+            if (!check_segment_values_global_group_flat(getSegment<T>(inst))) return false;
+
+            if (
+                check_atmop_values_cas(getAtmop<T>(inst))
+               )
+            {
+                if (!check_type_values_b32_b64(getType<T>(inst))) return false;
+            }
+            else if (
+                check_atmop_values_and_or_xor(getAtmop<T>(inst))
+               )
+            {
+                if (!check_type_values_b32_b64(getType<T>(inst))) return false;
+            }
+            else if (
+                check_atmop_values_add_sub_min_max(getAtmop<T>(inst))
+               )
+            {
+                if (!check_type_values_s32_u32_s64_u64(getType<T>(inst))) return false;
+            }
+            else if (
+                check_atmop_values_inc_dec(getAtmop<T>(inst))
+               )
+            {
+                if (!check_type_values_u32_u64(getType<T>(inst))) return false;
+            }
+            else if (
+                check_atmop_values_st(getAtmop<T>(inst))
+               )
+            {
+                if (!check_type_values_b32_b64(getType<T>(inst))) return false;
+            }
+            else
+            {
+                return false;
+            }
+
+            if (
+                check_segment_values_flat_global(getSegment<T>(inst))
+               )
+            {
+                if (!check_memscp_values_any(getMemscp<T>(inst))) return false;
+            }
+            else if (
+                check_segment_values_group(getSegment<T>(inst))
+               )
+            {
+                if (!check_memscp_values_wv_wg(getMemscp<T>(inst))) return false;
+            }
+            else
+            {
+                return false;
+            }
+
             return true;
         }
 
@@ -17664,7 +19766,7 @@ template<class T> bool PropDescImpl::chkReqPropAtomic_noret(T inst, unsigned pro
                )
             {
                 if (!check_type_values_b32_b64(getType<T>(inst))) return false;
-                if (!validateOperand(inst, PROP_S2, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
+                if (!validateOperand(inst, PROP_S2, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
             }
             else if (
                 check_atmop_values_and_or_xor(getAtmop<T>(inst))
@@ -17699,13 +19801,28 @@ template<class T> bool PropDescImpl::chkReqPropAtomic_noret(T inst, unsigned pro
                 return false;
             }
 
+            if (
+                check_segment_values_flat_global(getSegment<T>(inst))
+               )
+            {
+            }
+            else if (
+                check_segment_values_group(getSegment<T>(inst))
+               )
+            {
+            }
+            else
+            {
+                return false;
+            }
+
             return true;
         }
 
         // Dependent Property
         case PROP_S0:
         {
-            if (!validateOperand(inst, PROP_S0, OPERAND_ATTR_NONE, OPERAND_VALUES_ADDRSEG, sizeof(OPERAND_VALUES_ADDRSEG) / sizeof(unsigned), false)) return false;
+            if (!validateOperand(inst, PROP_S0, OPERAND_ATTR_SEG, OPERAND_VALUES_ADDRSEG, sizeof(OPERAND_VALUES_ADDRSEG) / sizeof(unsigned), false)) return false;
 
             return true;
         }
@@ -17713,7 +19830,7 @@ template<class T> bool PropDescImpl::chkReqPropAtomic_noret(T inst, unsigned pro
         // Dependent Property
         case PROP_S1:
         {
-            if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
+            if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
 
             return true;
         }
@@ -17735,9 +19852,9 @@ template<class T> bool PropDescImpl::chkReqPropAtomic_noret(T inst, unsigned pro
         }
 
         // Plain Property
-        case PROP_MEMSCP:
+        case PROP_EQCLASS:
         {
-            if (!check_memscp_values_any(getMemscp<T>(inst))) return false;
+            if (!validateEqclass(inst, PROP_EQCLASS, EQCLASS_ATTR_NONE, EQCLASS_VALUES_ANY, sizeof(EQCLASS_VALUES_ANY) / sizeof(unsigned), false)) return false;
 
             return true;
         }
@@ -17800,30 +19917,6 @@ template<class T> bool PropDescImpl::chkReqPropBarrier(T inst, unsigned propId)
         }
 
         // Plain Property
-        case PROP_MEMFNC:
-        {
-            if (!check_memfnc_values_any(getMemfnc<T>(inst))) return false;
-
-            return true;
-        }
-
-        // Plain Property
-        case PROP_MEMORD:
-        {
-            if (!check_memord_values_none(getMemord<T>(inst))) return false;
-
-            return true;
-        }
-
-        // Plain Property
-        case PROP_MEMSCP:
-        {
-            if (!check_memscp_values_any(getMemscp<T>(inst))) return false;
-
-            return true;
-        }
-
-        // Plain Property
         case PROP_WIDTH:
         {
             if (!check_width_values_any(getWidth<T>(inst))) return false;
@@ -17851,7 +19944,7 @@ template<class T> bool PropDescImpl::chkReqPropAlign(T inst, unsigned propId)
         // Dependent Property
         case PROP_D0:
         {
-            if (!validateOperand(inst, PROP_D0, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
+            if (!validateOperand(inst, PROP_D0, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
 
             return true;
         }
@@ -17859,7 +19952,7 @@ template<class T> bool PropDescImpl::chkReqPropAlign(T inst, unsigned propId)
         // Dependent Property
         case PROP_S1:
         {
-            if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
+            if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
 
             return true;
         }
@@ -17867,7 +19960,7 @@ template<class T> bool PropDescImpl::chkReqPropAlign(T inst, unsigned propId)
         // Dependent Property
         case PROP_S2:
         {
-            if (!validateOperand(inst, PROP_S2, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
+            if (!validateOperand(inst, PROP_S2, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
 
             return true;
         }
@@ -17875,7 +19968,7 @@ template<class T> bool PropDescImpl::chkReqPropAlign(T inst, unsigned propId)
         // Dependent Property
         case PROP_S3:
         {
-            if (!validateOperand(inst, PROP_S3, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
+            if (!validateOperand(inst, PROP_S3, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
 
             return true;
         }
@@ -17908,7 +20001,7 @@ template<class T> bool PropDescImpl::chkReqPropBitextract(T inst, unsigned propI
         // Dependent Property
         case PROP_D0:
         {
-            if (!validateOperand(inst, PROP_D0, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
+            if (!validateOperand(inst, PROP_D0, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
 
             return true;
         }
@@ -17916,7 +20009,7 @@ template<class T> bool PropDescImpl::chkReqPropBitextract(T inst, unsigned propI
         // Dependent Property
         case PROP_S1:
         {
-            if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
+            if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
 
             return true;
         }
@@ -17924,7 +20017,7 @@ template<class T> bool PropDescImpl::chkReqPropBitextract(T inst, unsigned propI
         // Dependent Property
         case PROP_S2:
         {
-            if (!validateOperand(inst, PROP_S2, OPERAND_ATTR_NONE, OPERAND_VALUES_REG32_IMM32, sizeof(OPERAND_VALUES_REG32_IMM32) / sizeof(unsigned), false)) return false;
+            if (!validateOperand(inst, PROP_S2, OPERAND_ATTR_U32, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
 
             return true;
         }
@@ -17932,7 +20025,7 @@ template<class T> bool PropDescImpl::chkReqPropBitextract(T inst, unsigned propI
         // Dependent Property
         case PROP_S3:
         {
-            if (!validateOperand(inst, PROP_S3, OPERAND_ATTR_NONE, OPERAND_VALUES_REG32_IMM32, sizeof(OPERAND_VALUES_REG32_IMM32) / sizeof(unsigned), false)) return false;
+            if (!validateOperand(inst, PROP_S3, OPERAND_ATTR_U32, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
 
             return true;
         }
@@ -17965,7 +20058,7 @@ template<class T> bool PropDescImpl::chkReqPropBitinsert(T inst, unsigned propId
         // Dependent Property
         case PROP_D0:
         {
-            if (!validateOperand(inst, PROP_D0, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
+            if (!validateOperand(inst, PROP_D0, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
 
             return true;
         }
@@ -17973,7 +20066,7 @@ template<class T> bool PropDescImpl::chkReqPropBitinsert(T inst, unsigned propId
         // Dependent Property
         case PROP_S1:
         {
-            if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
+            if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
 
             return true;
         }
@@ -17981,7 +20074,7 @@ template<class T> bool PropDescImpl::chkReqPropBitinsert(T inst, unsigned propId
         // Dependent Property
         case PROP_S2:
         {
-            if (!validateOperand(inst, PROP_S2, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
+            if (!validateOperand(inst, PROP_S2, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
 
             return true;
         }
@@ -17989,7 +20082,7 @@ template<class T> bool PropDescImpl::chkReqPropBitinsert(T inst, unsigned propId
         // Dependent Property
         case PROP_S3:
         {
-            if (!validateOperand(inst, PROP_S3, OPERAND_ATTR_NONE, OPERAND_VALUES_REG32_IMM32, sizeof(OPERAND_VALUES_REG32_IMM32) / sizeof(unsigned), false)) return false;
+            if (!validateOperand(inst, PROP_S3, OPERAND_ATTR_U32, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
 
             return true;
         }
@@ -17997,7 +20090,7 @@ template<class T> bool PropDescImpl::chkReqPropBitinsert(T inst, unsigned propId
         // Dependent Property
         case PROP_S4:
         {
-            if (!validateOperand(inst, PROP_S4, OPERAND_ATTR_NONE, OPERAND_VALUES_REG32_IMM32, sizeof(OPERAND_VALUES_REG32_IMM32) / sizeof(unsigned), false)) return false;
+            if (!validateOperand(inst, PROP_S4, OPERAND_ATTR_U32, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
 
             return true;
         }
@@ -18022,7 +20115,7 @@ template<class T> bool PropDescImpl::chkReqPropBitmask(T inst, unsigned propId)
         // Dependent Property
         case PROP_D0:
         {
-            if (!validateOperand(inst, PROP_D0, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
+            if (!validateOperand(inst, PROP_D0, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
 
             return true;
         }
@@ -18030,7 +20123,7 @@ template<class T> bool PropDescImpl::chkReqPropBitmask(T inst, unsigned propId)
         // Dependent Property
         case PROP_S1:
         {
-            if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_NONE, OPERAND_VALUES_REG32_IMM32, sizeof(OPERAND_VALUES_REG32_IMM32) / sizeof(unsigned), false)) return false;
+            if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_U32, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
 
             return true;
         }
@@ -18038,7 +20131,7 @@ template<class T> bool PropDescImpl::chkReqPropBitmask(T inst, unsigned propId)
         // Dependent Property
         case PROP_S2:
         {
-            if (!validateOperand(inst, PROP_S2, OPERAND_ATTR_NONE, OPERAND_VALUES_REG32_IMM32, sizeof(OPERAND_VALUES_REG32_IMM32) / sizeof(unsigned), false)) return false;
+            if (!validateOperand(inst, PROP_S2, OPERAND_ATTR_U32, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
 
             return true;
         }
@@ -18079,7 +20172,7 @@ template<class T> bool PropDescImpl::chkReqPropBitrev(T inst, unsigned propId)
         // Dependent Property
         case PROP_D0:
         {
-            if (!validateOperand(inst, PROP_D0, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
+            if (!validateOperand(inst, PROP_D0, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
 
             return true;
         }
@@ -18087,7 +20180,7 @@ template<class T> bool PropDescImpl::chkReqPropBitrev(T inst, unsigned propId)
         // Dependent Property
         case PROP_S1:
         {
-            if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
+            if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
 
             return true;
         }
@@ -18136,7 +20229,7 @@ template<class T> bool PropDescImpl::chkReqPropBitselect(T inst, unsigned propId
         // Dependent Property
         case PROP_D0:
         {
-            if (!validateOperand(inst, PROP_D0, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
+            if (!validateOperand(inst, PROP_D0, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
 
             return true;
         }
@@ -18144,7 +20237,7 @@ template<class T> bool PropDescImpl::chkReqPropBitselect(T inst, unsigned propId
         // Dependent Property
         case PROP_S1:
         {
-            if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
+            if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
 
             return true;
         }
@@ -18152,7 +20245,7 @@ template<class T> bool PropDescImpl::chkReqPropBitselect(T inst, unsigned propId
         // Dependent Property
         case PROP_S2:
         {
-            if (!validateOperand(inst, PROP_S2, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
+            if (!validateOperand(inst, PROP_S2, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
 
             return true;
         }
@@ -18160,7 +20253,7 @@ template<class T> bool PropDescImpl::chkReqPropBitselect(T inst, unsigned propId
         // Dependent Property
         case PROP_S3:
         {
-            if (!validateOperand(inst, PROP_S3, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
+            if (!validateOperand(inst, PROP_S3, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
 
             return true;
         }
@@ -18193,7 +20286,7 @@ template<class T> bool PropDescImpl::chkReqPropRem(T inst, unsigned propId)
         // Dependent Property
         case PROP_D0:
         {
-            if (!validateOperand(inst, PROP_D0, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
+            if (!validateOperand(inst, PROP_D0, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
 
             return true;
         }
@@ -18201,7 +20294,7 @@ template<class T> bool PropDescImpl::chkReqPropRem(T inst, unsigned propId)
         // Dependent Property
         case PROP_S1:
         {
-            if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
+            if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
 
             return true;
         }
@@ -18209,7 +20302,7 @@ template<class T> bool PropDescImpl::chkReqPropRem(T inst, unsigned propId)
         // Dependent Property
         case PROP_S2:
         {
-            if (!validateOperand(inst, PROP_S2, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
+            if (!validateOperand(inst, PROP_S2, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
 
             return true;
         }
@@ -18471,6 +20564,80 @@ template<class T> bool PropDescImpl::chkReqPropCall(T inst, unsigned propId)
         return false;
     }
 }
+template<class T> bool PropDescImpl::chkReqPropCasq_wrt(T inst, unsigned propId)
+{
+    switch(propId)
+    {
+        // Primary Property
+        case PROP_TYPE:
+        {
+            if (!check_type_values_u64(getType<T>(inst))) return false;
+
+            return true;
+        }
+
+        // Last Primary Property
+        case PROP_SEGMENT:
+        {
+            if (!check_type_values_u64(getType<T>(inst))) return false;
+            if (!check_segment_values_flat_global(getSegment<T>(inst))) return false;
+
+            return true;
+        }
+
+        // Dependent Property
+        case PROP_D0:
+        {
+            if (!validateOperand(inst, PROP_D0, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
+
+            return true;
+        }
+
+        // Dependent Property
+        case PROP_S1:
+        {
+            if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_SEG, OPERAND_VALUES_ADDRSEG, sizeof(OPERAND_VALUES_ADDRSEG) / sizeof(unsigned), false)) return false;
+
+            return true;
+        }
+
+        // Dependent Property
+        case PROP_S2:
+        {
+            if (!validateOperand(inst, PROP_S2, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
+
+            return true;
+        }
+
+        // Dependent Property
+        case PROP_S3:
+        {
+            if (!validateOperand(inst, PROP_S3, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
+
+            return true;
+        }
+
+        // Dependent Property
+        case PROP_S4:
+        {
+            if (!validateOperand(inst, PROP_S4, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned), false)) return false;
+
+            return true;
+        }
+
+        // Plain Property
+        case PROP_MEMORD:
+        {
+            if (!check_memord_values_any(getMemord<T>(inst))) return false;
+
+            return true;
+        }
+
+    default: 
+        assert(false);
+        return false;
+    }
+}
 template<class T> bool PropDescImpl::chkReqPropCbr(T inst, unsigned propId)
 {
     switch(propId)
@@ -18537,7 +20704,7 @@ template<class T> bool PropDescImpl::chkReqPropCbr(T inst, unsigned propId)
         // Dependent Property
         case PROP_S0:
         {
-            if (!validateOperand(inst, PROP_S0, OPERAND_ATTR_NONE, OPERAND_VALUES_REG1, sizeof(OPERAND_VALUES_REG1) / sizeof(unsigned), false)) return false;
+            if (!validateOperand(inst, PROP_S0, OPERAND_ATTR_B1, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
 
             return true;
         }
@@ -18626,7 +20793,7 @@ template<class T> bool PropDescImpl::chkReqPropCeil(T inst, unsigned propId)
         // Dependent Property
         case PROP_D0:
         {
-            if (!validateOperand(inst, PROP_D0, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
+            if (!validateOperand(inst, PROP_D0, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
 
             return true;
         }
@@ -18634,7 +20801,7 @@ template<class T> bool PropDescImpl::chkReqPropCeil(T inst, unsigned propId)
         // Dependent Property
         case PROP_S1:
         {
-            if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
+            if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
 
             return true;
         }
@@ -18708,7 +20875,7 @@ template<class T> bool PropDescImpl::chkReqPropClass(T inst, unsigned propId)
         // Dependent Property
         case PROP_D0:
         {
-            if (!validateOperand(inst, PROP_D0, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
+            if (!validateOperand(inst, PROP_D0, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
 
             return true;
         }
@@ -18724,7 +20891,7 @@ template<class T> bool PropDescImpl::chkReqPropClass(T inst, unsigned propId)
         // Dependent Property
         case PROP_S2:
         {
-            if (!validateOperand(inst, PROP_S2, OPERAND_ATTR_NONE, OPERAND_VALUES_REG32_IMM32, sizeof(OPERAND_VALUES_REG32_IMM32) / sizeof(unsigned), false)) return false;
+            if (!validateOperand(inst, PROP_S2, OPERAND_ATTR_U32, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
 
             return true;
         }
@@ -18765,7 +20932,7 @@ template<class T> bool PropDescImpl::chkReqPropSpec_except(T inst, unsigned prop
         // Dependent Property
         case PROP_S0:
         {
-            if (!validateOperand(inst, PROP_S0, OPERAND_ATTR_NOEXP, OPERAND_VALUES_IMM, sizeof(OPERAND_VALUES_IMM) / sizeof(unsigned), false)) return false;
+            if (!validateOperand(inst, PROP_S0, OPERAND_ATTR_DTYPE, OPERAND_VALUES_IMM, sizeof(OPERAND_VALUES_IMM) / sizeof(unsigned), false)) return false;
 
             return true;
         }
@@ -18822,7 +20989,7 @@ template<class T> bool PropDescImpl::chkReqPropSpec_clock(T inst, unsigned propI
         // Dependent Property
         case PROP_D0:
         {
-            if (!validateOperand(inst, PROP_D0, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
+            if (!validateOperand(inst, PROP_D0, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
 
             return true;
         }
@@ -18900,13 +21067,13 @@ template<class T> bool PropDescImpl::chkReqPropCmov(T inst, unsigned propId)
                 check_type_values_b1_b32_b64(getType<T>(inst))
                )
             {
-                if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_NONE, OPERAND_VALUES_REG1_IMM1, sizeof(OPERAND_VALUES_REG1_IMM1) / sizeof(unsigned), false)) return false;
+                if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_B1, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
             }
             else if (
                 check_type_values_x(getType<T>(inst))
                )
             {
-                if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
+                if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_P2U, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
             }
             else
             {
@@ -18919,7 +21086,7 @@ template<class T> bool PropDescImpl::chkReqPropCmov(T inst, unsigned propId)
         // Dependent Property
         case PROP_D0:
         {
-            if (!validateOperand(inst, PROP_D0, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
+            if (!validateOperand(inst, PROP_D0, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
 
             return true;
         }
@@ -18927,7 +21094,7 @@ template<class T> bool PropDescImpl::chkReqPropCmov(T inst, unsigned propId)
         // Dependent Property
         case PROP_S2:
         {
-            if (!validateOperand(inst, PROP_S2, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
+            if (!validateOperand(inst, PROP_S2, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
 
             return true;
         }
@@ -18935,7 +21102,7 @@ template<class T> bool PropDescImpl::chkReqPropCmov(T inst, unsigned propId)
         // Dependent Property
         case PROP_S3:
         {
-            if (!validateOperand(inst, PROP_S3, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
+            if (!validateOperand(inst, PROP_S3, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
 
             return true;
         }
@@ -19399,7 +21566,7 @@ template<class T> bool PropDescImpl::chkReqPropCmp(T inst, unsigned propId)
         // Dependent Property
         case PROP_D0:
         {
-            if (!validateOperand(inst, PROP_D0, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
+            if (!validateOperand(inst, PROP_D0, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
 
             return true;
         }
@@ -19588,7 +21755,7 @@ template<class T> bool PropDescImpl::chkReqPropCombine(T inst, unsigned propId)
         // Dependent Property
         case PROP_D0:
         {
-            if (!validateOperand(inst, PROP_D0, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
+            if (!validateOperand(inst, PROP_D0, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
 
             return true;
         }
@@ -19677,7 +21844,7 @@ template<class T> bool PropDescImpl::chkReqPropCopysign(T inst, unsigned propId)
         // Dependent Property
         case PROP_D0:
         {
-            if (!validateOperand(inst, PROP_D0, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
+            if (!validateOperand(inst, PROP_D0, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
 
             return true;
         }
@@ -19685,7 +21852,7 @@ template<class T> bool PropDescImpl::chkReqPropCopysign(T inst, unsigned propId)
         // Dependent Property
         case PROP_S1:
         {
-            if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
+            if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
 
             return true;
         }
@@ -19693,7 +21860,7 @@ template<class T> bool PropDescImpl::chkReqPropCopysign(T inst, unsigned propId)
         // Dependent Property
         case PROP_S2:
         {
-            if (!validateOperand(inst, PROP_S2, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
+            if (!validateOperand(inst, PROP_S2, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
 
             return true;
         }
@@ -19735,154 +21902,6 @@ template<class T> bool PropDescImpl::chkReqPropCopysign(T inst, unsigned propId)
         return false;
     }
 }
-template<class T> bool PropDescImpl::chkReqPropCountlane(T inst, unsigned propId)
-{
-    switch(propId)
-    {
-        // Primary Property
-        case PROP_STYPE:
-        {
-            if (!check_type_values_u32_b1(getStype<T>(inst))) return false;
-
-            return true;
-        }
-
-        // Last Primary Property
-        case PROP_TYPE:
-        {
-            if (!check_type_values_u32(getType<T>(inst))) return false;
-            if (!check_type_values_u32_b1(getStype<T>(inst))) return false;
-
-            return true;
-        }
-
-        // Dependent Property
-        case PROP_D0:
-        {
-            if (!validateOperand(inst, PROP_D0, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
-
-            return true;
-        }
-
-        // Dependent Property
-        case PROP_S1:
-        {
-            if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_STYPE, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
-
-            return true;
-        }
-
-        // Dependent Property
-        case PROP_S2:
-        {
-            if (!validateOperand(inst, PROP_S2, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned), false)) return false;
-
-            return true;
-        }
-
-        // Dependent Property
-        case PROP_S3:
-        {
-            if (!validateOperand(inst, PROP_S3, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned), false)) return false;
-
-            return true;
-        }
-
-        // Dependent Property
-        case PROP_S4:
-        {
-            if (!validateOperand(inst, PROP_S4, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned), false)) return false;
-
-            return true;
-        }
-
-        // Plain Property
-        case PROP_WIDTH:
-        {
-            if (!check_width_values_any(getWidth<T>(inst))) return false;
-
-            return true;
-        }
-
-    default: 
-        assert(false);
-        return false;
-    }
-}
-template<class T> bool PropDescImpl::chkReqPropCountuplane(T inst, unsigned propId)
-{
-    switch(propId)
-    {
-        // Primary Property
-        case PROP_STYPE:
-        {
-            if (!check_type_values_none(getStype<T>(inst))) return false;
-
-            return true;
-        }
-
-        // Last Primary Property
-        case PROP_TYPE:
-        {
-            if (!check_type_values_u32(getType<T>(inst))) return false;
-            if (!check_type_values_none(getStype<T>(inst))) return false;
-
-            return true;
-        }
-
-        // Dependent Property
-        case PROP_D0:
-        {
-            if (!validateOperand(inst, PROP_D0, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
-
-            return true;
-        }
-
-        // Dependent Property
-        case PROP_S1:
-        {
-            if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned), false)) return false;
-
-            return true;
-        }
-
-        // Dependent Property
-        case PROP_S2:
-        {
-            if (!validateOperand(inst, PROP_S2, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned), false)) return false;
-
-            return true;
-        }
-
-        // Dependent Property
-        case PROP_S3:
-        {
-            if (!validateOperand(inst, PROP_S3, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned), false)) return false;
-
-            return true;
-        }
-
-        // Dependent Property
-        case PROP_S4:
-        {
-            if (!validateOperand(inst, PROP_S4, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned), false)) return false;
-
-            return true;
-        }
-
-        // Plain Property
-        case PROP_WIDTH:
-        {
-            if (!check_width_values_any(getWidth<T>(inst))) return false;
-
-            return true;
-        }
-
-    default: 
-        assert(false);
-        return false;
-    }
-}
 template<class T> bool PropDescImpl::chkReqPropSpec_reg(T inst, unsigned propId)
 {
     switch(propId)
@@ -19898,7 +21917,7 @@ template<class T> bool PropDescImpl::chkReqPropSpec_reg(T inst, unsigned propId)
         // Dependent Property
         case PROP_D0:
         {
-            if (!validateOperand(inst, PROP_D0, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
+            if (!validateOperand(inst, PROP_D0, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
 
             return true;
         }
@@ -19955,7 +21974,7 @@ template<class T> bool PropDescImpl::chkReqPropSpec_reg_dim(T inst, unsigned pro
         // Dependent Property
         case PROP_D0:
         {
-            if (!validateOperand(inst, PROP_D0, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
+            if (!validateOperand(inst, PROP_D0, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
 
             return true;
         }
@@ -19963,7 +21982,7 @@ template<class T> bool PropDescImpl::chkReqPropSpec_reg_dim(T inst, unsigned pro
         // Dependent Property
         case PROP_S1:
         {
-            if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_NONE, OPERAND_VALUES_IMM012, sizeof(OPERAND_VALUES_IMM012) / sizeof(unsigned), false)) return false;
+            if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_U32, OPERAND_VALUES_IMM0T2U32, sizeof(OPERAND_VALUES_IMM0T2U32) / sizeof(unsigned), false)) return false;
 
             return true;
         }
@@ -20373,7 +22392,7 @@ template<class T> bool PropDescImpl::chkReqPropCvt(T inst, unsigned propId)
         // Dependent Property
         case PROP_D0:
         {
-            if (!validateOperand(inst, PROP_D0, OPERAND_ATTR_EXP, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
+            if (!validateOperand(inst, PROP_D0, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
 
             return true;
         }
@@ -20381,7 +22400,7 @@ template<class T> bool PropDescImpl::chkReqPropCvt(T inst, unsigned propId)
         // Dependent Property
         case PROP_S1:
         {
-            if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_SEXP, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
+            if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_STYPE, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
 
             return true;
         }
@@ -20430,83 +22449,7 @@ template<class T> bool PropDescImpl::chkReqPropDebugtrap(T inst, unsigned propId
         // Dependent Property
         case PROP_S0:
         {
-            if (!validateOperand(inst, PROP_S0, OPERAND_ATTR_NOEXP, OPERAND_VALUES_IMM, sizeof(OPERAND_VALUES_IMM) / sizeof(unsigned), false)) return false;
-
-            return true;
-        }
-
-        // Dependent Property
-        case PROP_S1:
-        {
-            if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned), false)) return false;
-
-            return true;
-        }
-
-        // Dependent Property
-        case PROP_S2:
-        {
-            if (!validateOperand(inst, PROP_S2, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned), false)) return false;
-
-            return true;
-        }
-
-        // Dependent Property
-        case PROP_S3:
-        {
-            if (!validateOperand(inst, PROP_S3, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned), false)) return false;
-
-            return true;
-        }
-
-        // Dependent Property
-        case PROP_S4:
-        {
-            if (!validateOperand(inst, PROP_S4, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned), false)) return false;
-
-            return true;
-        }
-
-    default: 
-        assert(false);
-        return false;
-    }
-}
-template<class T> bool PropDescImpl::chkReqPropAqlptr(T inst, unsigned propId)
-{
-    switch(propId)
-    {
-        // Primary Property
-        case PROP_STYPE:
-        {
-            if (!check_type_values_none(getStype<T>(inst))) return false;
-
-            return true;
-        }
-
-        // Primary Property
-        case PROP_TYPE:
-        {
-            if (!check_type_values_u32_u64(getType<T>(inst))) return false;
-
-            return true;
-        }
-
-        // Last Primary Property
-        case PROP_SEGMENT:
-        {
-            if (!check_type_values_u32_u64(getType<T>(inst))) return false;
-            if (!check_type_values_none(getStype<T>(inst))) return false;
-            if (!check_segment_values_global(getSegment<T>(inst))) return false;
-            if (!validateTypesize(inst, PROP_TYPESIZE, TYPESIZE_ATTR_NONE, TYPESIZE_VALUES_SEG, sizeof(TYPESIZE_VALUES_SEG) / sizeof(unsigned), false)) return false;
-
-            return true;
-        }
-
-        // Dependent Property
-        case PROP_S0:
-        {
-            if (!validateOperand(inst, PROP_S0, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
+            if (!validateOperand(inst, PROP_S0, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
 
             return true;
         }
@@ -20676,7 +22619,7 @@ template<class T> bool PropDescImpl::chkReqPropDiv(T inst, unsigned propId)
         // Dependent Property
         case PROP_D0:
         {
-            if (!validateOperand(inst, PROP_D0, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
+            if (!validateOperand(inst, PROP_D0, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
 
             return true;
         }
@@ -20684,7 +22627,7 @@ template<class T> bool PropDescImpl::chkReqPropDiv(T inst, unsigned propId)
         // Dependent Property
         case PROP_S1:
         {
-            if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
+            if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
 
             return true;
         }
@@ -20692,7 +22635,7 @@ template<class T> bool PropDescImpl::chkReqPropDiv(T inst, unsigned propId)
         // Dependent Property
         case PROP_S2:
         {
-            if (!validateOperand(inst, PROP_S2, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
+            if (!validateOperand(inst, PROP_S2, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
 
             return true;
         }
@@ -20773,21 +22716,21 @@ template<class T> bool PropDescImpl::chkReqPropExpand(T inst, unsigned propId)
                 check_type_values_b64(getStype<T>(inst))
                )
             {
-                if (!validateOperand(inst, PROP_D0, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REGV2CTYPE, sizeof(OPERAND_VALUES_REGV2CTYPE) / sizeof(unsigned), false)) return false;
+                if (!validateOperand(inst, PROP_D0, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REGV2CTYPE, sizeof(OPERAND_VALUES_REGV2CTYPE) / sizeof(unsigned), false)) return false;
             }
             else if (
                 check_type_values_b32(getType<T>(inst)) &&
                 check_type_values_b128(getStype<T>(inst))
                )
             {
-                if (!validateOperand(inst, PROP_D0, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REGV4, sizeof(OPERAND_VALUES_REGV4) / sizeof(unsigned), false)) return false;
+                if (!validateOperand(inst, PROP_D0, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REGV4, sizeof(OPERAND_VALUES_REGV4) / sizeof(unsigned), false)) return false;
             }
             else if (
                 check_type_values_b64(getType<T>(inst)) &&
                 check_type_values_b128(getStype<T>(inst))
                )
             {
-                if (!validateOperand(inst, PROP_D0, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REGV2CTYPE, sizeof(OPERAND_VALUES_REGV2CTYPE) / sizeof(unsigned), false)) return false;
+                if (!validateOperand(inst, PROP_D0, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REGV2CTYPE, sizeof(OPERAND_VALUES_REGV2CTYPE) / sizeof(unsigned), false)) return false;
             }
             else
             {
@@ -20858,7 +22801,7 @@ template<class T> bool PropDescImpl::chkReqPropFirstbit(T inst, unsigned propId)
         // Dependent Property
         case PROP_D0:
         {
-            if (!validateOperand(inst, PROP_D0, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
+            if (!validateOperand(inst, PROP_D0, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
 
             return true;
         }
@@ -20915,7 +22858,7 @@ template<class T> bool PropDescImpl::chkReqPropFma(T inst, unsigned propId)
         // Dependent Property
         case PROP_D0:
         {
-            if (!validateOperand(inst, PROP_D0, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
+            if (!validateOperand(inst, PROP_D0, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
 
             return true;
         }
@@ -20923,7 +22866,7 @@ template<class T> bool PropDescImpl::chkReqPropFma(T inst, unsigned propId)
         // Dependent Property
         case PROP_S1:
         {
-            if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
+            if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
 
             return true;
         }
@@ -20931,7 +22874,7 @@ template<class T> bool PropDescImpl::chkReqPropFma(T inst, unsigned propId)
         // Dependent Property
         case PROP_S2:
         {
-            if (!validateOperand(inst, PROP_S2, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
+            if (!validateOperand(inst, PROP_S2, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
 
             return true;
         }
@@ -20939,7 +22882,7 @@ template<class T> bool PropDescImpl::chkReqPropFma(T inst, unsigned propId)
         // Dependent Property
         case PROP_S3:
         {
-            if (!validateOperand(inst, PROP_S3, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
+            if (!validateOperand(inst, PROP_S3, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
 
             return true;
         }
@@ -21036,7 +22979,7 @@ template<class T> bool PropDescImpl::chkReqPropFract(T inst, unsigned propId)
         // Dependent Property
         case PROP_D0:
         {
-            if (!validateOperand(inst, PROP_D0, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
+            if (!validateOperand(inst, PROP_D0, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
 
             return true;
         }
@@ -21044,7 +22987,7 @@ template<class T> bool PropDescImpl::chkReqPropFract(T inst, unsigned propId)
         // Dependent Property
         case PROP_S1:
         {
-            if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
+            if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
 
             return true;
         }
@@ -21129,7 +23072,7 @@ template<class T> bool PropDescImpl::chkReqPropF2s(T inst, unsigned propId)
         // Dependent Property
         case PROP_D0:
         {
-            if (!validateOperand(inst, PROP_D0, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
+            if (!validateOperand(inst, PROP_D0, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
 
             return true;
         }
@@ -21166,6 +23109,14 @@ template<class T> bool PropDescImpl::chkReqPropF2s(T inst, unsigned propId)
             return true;
         }
 
+        // Plain Property
+        case PROP_NONULL:
+        {
+            if (!check_nonull_values_any(getNonull<T>(inst))) return false;
+
+            return true;
+        }
+
     default: 
         assert(false);
         return false;
@@ -21195,7 +23146,7 @@ template<class T> bool PropDescImpl::chkReqPropGcn_append_consume(T inst, unsign
         // Dependent Property
         case PROP_D0:
         {
-            if (!validateOperand(inst, PROP_D0, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
+            if (!validateOperand(inst, PROP_D0, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
 
             return true;
         }
@@ -21203,7 +23154,7 @@ template<class T> bool PropDescImpl::chkReqPropGcn_append_consume(T inst, unsign
         // Dependent Property
         case PROP_S1:
         {
-            if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_NONE, OPERAND_VALUES_ADDRSEG, sizeof(OPERAND_VALUES_ADDRSEG) / sizeof(unsigned), false)) return false;
+            if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_SEG, OPERAND_VALUES_ADDRSEG, sizeof(OPERAND_VALUES_ADDRSEG) / sizeof(unsigned), false)) return false;
 
             return true;
         }
@@ -21365,28 +23316,28 @@ template<class T> bool PropDescImpl::chkReqPropGcn_atomic(T inst, unsigned propI
                )
             {
                 if (!check_type_values_b32_b64(getType<T>(inst))) return false;
-                if (!validateOperand(inst, PROP_S2, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
+                if (!validateOperand(inst, PROP_S2, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
             }
             else if (
                 check_atmop_values_and_or_xor_exch(getAtmop<T>(inst))
                )
             {
                 if (!check_type_values_b32_b64(getType<T>(inst))) return false;
-                if (!validateOperand(inst, PROP_S2, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
+                if (!validateOperand(inst, PROP_S2, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
             }
             else if (
                 check_atmop_values_add_sub_min_max(getAtmop<T>(inst))
                )
             {
                 if (!check_type_values_s32_u32_s64_u64(getType<T>(inst))) return false;
-                if (!validateOperand(inst, PROP_S2, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
+                if (!validateOperand(inst, PROP_S2, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
             }
             else if (
                 check_atmop_values_inc_dec(getAtmop<T>(inst))
                )
             {
                 if (!check_type_values_u32_u64(getType<T>(inst))) return false;
-                if (!validateOperand(inst, PROP_S2, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
+                if (!validateOperand(inst, PROP_S2, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
             }
             else if (
                 check_atmop_values_ld(getAtmop<T>(inst))
@@ -21415,7 +23366,7 @@ template<class T> bool PropDescImpl::chkReqPropGcn_atomic(T inst, unsigned propI
                )
             {
                 if (!check_type_values_b32_b64(getType<T>(inst))) return false;
-                if (!validateOperand(inst, PROP_S3, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
+                if (!validateOperand(inst, PROP_S3, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
             }
             else if (
                 check_atmop_values_and_or_xor_exch(getAtmop<T>(inst))
@@ -21456,7 +23407,7 @@ template<class T> bool PropDescImpl::chkReqPropGcn_atomic(T inst, unsigned propI
         // Dependent Property
         case PROP_D0:
         {
-            if (!validateOperand(inst, PROP_D0, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
+            if (!validateOperand(inst, PROP_D0, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
 
             return true;
         }
@@ -21464,7 +23415,7 @@ template<class T> bool PropDescImpl::chkReqPropGcn_atomic(T inst, unsigned propI
         // Dependent Property
         case PROP_S1:
         {
-            if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_NONE, OPERAND_VALUES_ADDRSEG, sizeof(OPERAND_VALUES_ADDRSEG) / sizeof(unsigned), false)) return false;
+            if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_SEG, OPERAND_VALUES_ADDRSEG, sizeof(OPERAND_VALUES_ADDRSEG) / sizeof(unsigned), false)) return false;
 
             return true;
         }
@@ -21473,6 +23424,14 @@ template<class T> bool PropDescImpl::chkReqPropGcn_atomic(T inst, unsigned propI
         case PROP_S4:
         {
             if (!validateOperand(inst, PROP_S4, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned), false)) return false;
+
+            return true;
+        }
+
+        // Plain Property
+        case PROP_EQCLASS:
+        {
+            if (!validateEqclass(inst, PROP_EQCLASS, EQCLASS_ATTR_NONE, EQCLASS_VALUES_ANY, sizeof(EQCLASS_VALUES_ANY) / sizeof(unsigned), false)) return false;
 
             return true;
         }
@@ -21618,7 +23577,7 @@ template<class T> bool PropDescImpl::chkReqPropGcn_atomic_noret(T inst, unsigned
                )
             {
                 if (!check_type_values_b32_b64(getType<T>(inst))) return false;
-                if (!validateOperand(inst, PROP_S2, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
+                if (!validateOperand(inst, PROP_S2, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
             }
             else if (
                 check_atmop_values_and_or_xor(getAtmop<T>(inst))
@@ -21659,7 +23618,7 @@ template<class T> bool PropDescImpl::chkReqPropGcn_atomic_noret(T inst, unsigned
         // Dependent Property
         case PROP_S0:
         {
-            if (!validateOperand(inst, PROP_S0, OPERAND_ATTR_NONE, OPERAND_VALUES_ADDRSEG, sizeof(OPERAND_VALUES_ADDRSEG) / sizeof(unsigned), false)) return false;
+            if (!validateOperand(inst, PROP_S0, OPERAND_ATTR_SEG, OPERAND_VALUES_ADDRSEG, sizeof(OPERAND_VALUES_ADDRSEG) / sizeof(unsigned), false)) return false;
 
             return true;
         }
@@ -21667,7 +23626,7 @@ template<class T> bool PropDescImpl::chkReqPropGcn_atomic_noret(T inst, unsigned
         // Dependent Property
         case PROP_S1:
         {
-            if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
+            if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
 
             return true;
         }
@@ -21684,6 +23643,14 @@ template<class T> bool PropDescImpl::chkReqPropGcn_atomic_noret(T inst, unsigned
         case PROP_S4:
         {
             if (!validateOperand(inst, PROP_S4, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned), false)) return false;
+
+            return true;
+        }
+
+        // Plain Property
+        case PROP_EQCLASS:
+        {
+            if (!validateEqclass(inst, PROP_EQCLASS, EQCLASS_ATTR_NONE, EQCLASS_VALUES_ANY, sizeof(EQCLASS_VALUES_ANY) / sizeof(unsigned), false)) return false;
 
             return true;
         }
@@ -21716,7 +23683,7 @@ template<class T> bool PropDescImpl::chkReqPropGcn_b4xchg(T inst, unsigned propI
         // Dependent Property
         case PROP_D0:
         {
-            if (!validateOperand(inst, PROP_D0, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
+            if (!validateOperand(inst, PROP_D0, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
 
             return true;
         }
@@ -21724,7 +23691,7 @@ template<class T> bool PropDescImpl::chkReqPropGcn_b4xchg(T inst, unsigned propI
         // Dependent Property
         case PROP_S1:
         {
-            if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
+            if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
 
             return true;
         }
@@ -21732,7 +23699,7 @@ template<class T> bool PropDescImpl::chkReqPropGcn_b4xchg(T inst, unsigned propI
         // Dependent Property
         case PROP_S2:
         {
-            if (!validateOperand(inst, PROP_S2, OPERAND_ATTR_NONE, OPERAND_VALUES_IMM32, sizeof(OPERAND_VALUES_IMM32) / sizeof(unsigned), false)) return false;
+            if (!validateOperand(inst, PROP_S2, OPERAND_ATTR_DTYPE, OPERAND_VALUES_IMM, sizeof(OPERAND_VALUES_IMM) / sizeof(unsigned), false)) return false;
 
             return true;
         }
@@ -21773,7 +23740,7 @@ template<class T> bool PropDescImpl::chkReqPropGcn_bfm(T inst, unsigned propId)
         // Dependent Property
         case PROP_D0:
         {
-            if (!validateOperand(inst, PROP_D0, OPERAND_ATTR_NONE, OPERAND_VALUES_REG32, sizeof(OPERAND_VALUES_REG32) / sizeof(unsigned), false)) return false;
+            if (!validateOperand(inst, PROP_D0, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
 
             return true;
         }
@@ -21781,7 +23748,7 @@ template<class T> bool PropDescImpl::chkReqPropGcn_bfm(T inst, unsigned propId)
         // Dependent Property
         case PROP_S1:
         {
-            if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
+            if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
 
             return true;
         }
@@ -21789,7 +23756,7 @@ template<class T> bool PropDescImpl::chkReqPropGcn_bfm(T inst, unsigned propId)
         // Dependent Property
         case PROP_S2:
         {
-            if (!validateOperand(inst, PROP_S2, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
+            if (!validateOperand(inst, PROP_S2, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
 
             return true;
         }
@@ -21830,7 +23797,7 @@ template<class T> bool PropDescImpl::chkReqPropGcn_fldexp(T inst, unsigned propI
         // Dependent Property
         case PROP_D0:
         {
-            if (!validateOperand(inst, PROP_D0, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
+            if (!validateOperand(inst, PROP_D0, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
 
             return true;
         }
@@ -21838,7 +23805,7 @@ template<class T> bool PropDescImpl::chkReqPropGcn_fldexp(T inst, unsigned propI
         // Dependent Property
         case PROP_S1:
         {
-            if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
+            if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
 
             return true;
         }
@@ -21846,7 +23813,7 @@ template<class T> bool PropDescImpl::chkReqPropGcn_fldexp(T inst, unsigned propI
         // Dependent Property
         case PROP_S2:
         {
-            if (!validateOperand(inst, PROP_S2, OPERAND_ATTR_NONE, OPERAND_VALUES_REG32_IMM32, sizeof(OPERAND_VALUES_REG32_IMM32) / sizeof(unsigned), false)) return false;
+            if (!validateOperand(inst, PROP_S2, OPERAND_ATTR_S32, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
 
             return true;
         }
@@ -21887,7 +23854,7 @@ template<class T> bool PropDescImpl::chkReqPropGcn_frexp_exp(T inst, unsigned pr
         // Dependent Property
         case PROP_D0:
         {
-            if (!validateOperand(inst, PROP_D0, OPERAND_ATTR_NONE, OPERAND_VALUES_REG32, sizeof(OPERAND_VALUES_REG32) / sizeof(unsigned), false)) return false;
+            if (!validateOperand(inst, PROP_D0, OPERAND_ATTR_S32, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
 
             return true;
         }
@@ -21895,7 +23862,7 @@ template<class T> bool PropDescImpl::chkReqPropGcn_frexp_exp(T inst, unsigned pr
         // Dependent Property
         case PROP_S1:
         {
-            if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
+            if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
 
             return true;
         }
@@ -21944,7 +23911,7 @@ template<class T> bool PropDescImpl::chkReqPropGcn_frexp_mant(T inst, unsigned p
         // Dependent Property
         case PROP_D0:
         {
-            if (!validateOperand(inst, PROP_D0, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
+            if (!validateOperand(inst, PROP_D0, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
 
             return true;
         }
@@ -21952,7 +23919,7 @@ template<class T> bool PropDescImpl::chkReqPropGcn_frexp_mant(T inst, unsigned p
         // Dependent Property
         case PROP_S1:
         {
-            if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
+            if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
 
             return true;
         }
@@ -22032,13 +23999,13 @@ template<class T> bool PropDescImpl::chkReqPropGcn_ld(T inst, unsigned propId)
                 check_type_values_u_s_f(getType<T>(inst))
                )
             {
-                if (!validateOperand(inst, PROP_D0, OPERAND_ATTR_EXP, OPERAND_VALUES_REGEXP_REGVEXP, sizeof(OPERAND_VALUES_REGEXP_REGVEXP) / sizeof(unsigned), false)) return false;
+                if (!validateOperand(inst, PROP_D0, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG_REGV, sizeof(OPERAND_VALUES_REG_REGV) / sizeof(unsigned), false)) return false;
             }
             else if (
                 check_type_values_b128(getType<T>(inst))
                )
             {
-                if (!validateOperand(inst, PROP_D0, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
+                if (!validateOperand(inst, PROP_D0, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
             }
             else
             {
@@ -22051,7 +24018,7 @@ template<class T> bool PropDescImpl::chkReqPropGcn_ld(T inst, unsigned propId)
         // Dependent Property
         case PROP_S1:
         {
-            if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_NONE, OPERAND_VALUES_ADDRTSEG, sizeof(OPERAND_VALUES_ADDRTSEG) / sizeof(unsigned), false)) return false;
+            if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_TSEG, OPERAND_VALUES_ADDRSEG, sizeof(OPERAND_VALUES_ADDRSEG) / sizeof(unsigned), false)) return false;
 
             return true;
         }
@@ -22089,6 +24056,14 @@ template<class T> bool PropDescImpl::chkReqPropGcn_ld(T inst, unsigned propId)
         }
 
         // Plain Property
+        case PROP_CONST:
+        {
+            if (!check_const_values_none(getConst<T>(inst))) return false;
+
+            return true;
+        }
+
+        // Plain Property
         case PROP_EQCLASS:
         {
             if (!validateEqclass(inst, PROP_EQCLASS, EQCLASS_ATTR_NONE, EQCLASS_VALUES_ANY, sizeof(EQCLASS_VALUES_ANY) / sizeof(unsigned), false)) return false;
@@ -22109,7 +24084,7 @@ template<class T> bool PropDescImpl::chkReqPropGcn_ld(T inst, unsigned propId)
         return false;
     }
 }
-template<class T> bool PropDescImpl::chkReqPropGcn_mad(T inst, unsigned propId)
+template<class T> bool PropDescImpl::chkReqPropGcn_mads(T inst, unsigned propId)
 {
     switch(propId)
     {
@@ -22124,7 +24099,7 @@ template<class T> bool PropDescImpl::chkReqPropGcn_mad(T inst, unsigned propId)
         // Dependent Property
         case PROP_D0:
         {
-            if (!validateOperand(inst, PROP_D0, OPERAND_ATTR_NONE, OPERAND_VALUES_REG64, sizeof(OPERAND_VALUES_REG64) / sizeof(unsigned), false)) return false;
+            if (!validateOperand(inst, PROP_D0, OPERAND_ATTR_S64, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
 
             return true;
         }
@@ -22132,7 +24107,7 @@ template<class T> bool PropDescImpl::chkReqPropGcn_mad(T inst, unsigned propId)
         // Dependent Property
         case PROP_S1:
         {
-            if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_NONE, OPERAND_VALUES_REG32_IMM32, sizeof(OPERAND_VALUES_REG32_IMM32) / sizeof(unsigned), false)) return false;
+            if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_S32, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
 
             return true;
         }
@@ -22140,7 +24115,7 @@ template<class T> bool PropDescImpl::chkReqPropGcn_mad(T inst, unsigned propId)
         // Dependent Property
         case PROP_S2:
         {
-            if (!validateOperand(inst, PROP_S2, OPERAND_ATTR_NONE, OPERAND_VALUES_REG32_IMM32, sizeof(OPERAND_VALUES_REG32_IMM32) / sizeof(unsigned), false)) return false;
+            if (!validateOperand(inst, PROP_S2, OPERAND_ATTR_S32, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
 
             return true;
         }
@@ -22148,7 +24123,7 @@ template<class T> bool PropDescImpl::chkReqPropGcn_mad(T inst, unsigned propId)
         // Dependent Property
         case PROP_S3:
         {
-            if (!validateOperand(inst, PROP_S3, OPERAND_ATTR_NONE, OPERAND_VALUES_REG64_IMM64, sizeof(OPERAND_VALUES_REG64_IMM64) / sizeof(unsigned), false)) return false;
+            if (!validateOperand(inst, PROP_S3, OPERAND_ATTR_S64, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
 
             return true;
         }
@@ -22166,7 +24141,121 @@ template<class T> bool PropDescImpl::chkReqPropGcn_mad(T inst, unsigned propId)
         return false;
     }
 }
-template<class T> bool PropDescImpl::chkReqPropGcn_min_max_med(T inst, unsigned propId)
+template<class T> bool PropDescImpl::chkReqPropGcn_madu(T inst, unsigned propId)
+{
+    switch(propId)
+    {
+        // Last Primary Property
+        case PROP_TYPE:
+        {
+            if (!check_type_values_b32(getType<T>(inst))) return false;
+
+            return true;
+        }
+
+        // Dependent Property
+        case PROP_D0:
+        {
+            if (!validateOperand(inst, PROP_D0, OPERAND_ATTR_U64, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
+
+            return true;
+        }
+
+        // Dependent Property
+        case PROP_S1:
+        {
+            if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_U32, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
+
+            return true;
+        }
+
+        // Dependent Property
+        case PROP_S2:
+        {
+            if (!validateOperand(inst, PROP_S2, OPERAND_ATTR_U32, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
+
+            return true;
+        }
+
+        // Dependent Property
+        case PROP_S3:
+        {
+            if (!validateOperand(inst, PROP_S3, OPERAND_ATTR_U64, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
+
+            return true;
+        }
+
+        // Dependent Property
+        case PROP_S4:
+        {
+            if (!validateOperand(inst, PROP_S4, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned), false)) return false;
+
+            return true;
+        }
+
+    default: 
+        assert(false);
+        return false;
+    }
+}
+template<class T> bool PropDescImpl::chkReqPropGcn_min_max(T inst, unsigned propId)
+{
+    switch(propId)
+    {
+        // Last Primary Property
+        case PROP_TYPE:
+        {
+            if (!check_type_values_s32_u32_f32_f64(getType<T>(inst))) return false;
+
+            return true;
+        }
+
+        // Dependent Property
+        case PROP_D0:
+        {
+            if (!validateOperand(inst, PROP_D0, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
+
+            return true;
+        }
+
+        // Dependent Property
+        case PROP_S1:
+        {
+            if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
+
+            return true;
+        }
+
+        // Dependent Property
+        case PROP_S2:
+        {
+            if (!validateOperand(inst, PROP_S2, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
+
+            return true;
+        }
+
+        // Dependent Property
+        case PROP_S3:
+        {
+            if (!validateOperand(inst, PROP_S3, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned), false)) return false;
+
+            return true;
+        }
+
+        // Dependent Property
+        case PROP_S4:
+        {
+            if (!validateOperand(inst, PROP_S4, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned), false)) return false;
+
+            return true;
+        }
+
+    default: 
+        assert(false);
+        return false;
+    }
+}
+template<class T> bool PropDescImpl::chkReqPropGcn_min_max_med3(T inst, unsigned propId)
 {
     switch(propId)
     {
@@ -22181,7 +24270,7 @@ template<class T> bool PropDescImpl::chkReqPropGcn_min_max_med(T inst, unsigned 
         // Dependent Property
         case PROP_D0:
         {
-            if (!validateOperand(inst, PROP_D0, OPERAND_ATTR_NONE, OPERAND_VALUES_REG32, sizeof(OPERAND_VALUES_REG32) / sizeof(unsigned), false)) return false;
+            if (!validateOperand(inst, PROP_D0, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
 
             return true;
         }
@@ -22189,7 +24278,7 @@ template<class T> bool PropDescImpl::chkReqPropGcn_min_max_med(T inst, unsigned 
         // Dependent Property
         case PROP_S1:
         {
-            if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
+            if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
 
             return true;
         }
@@ -22197,7 +24286,7 @@ template<class T> bool PropDescImpl::chkReqPropGcn_min_max_med(T inst, unsigned 
         // Dependent Property
         case PROP_S2:
         {
-            if (!validateOperand(inst, PROP_S2, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
+            if (!validateOperand(inst, PROP_S2, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
 
             return true;
         }
@@ -22205,7 +24294,7 @@ template<class T> bool PropDescImpl::chkReqPropGcn_min_max_med(T inst, unsigned 
         // Dependent Property
         case PROP_S3:
         {
-            if (!validateOperand(inst, PROP_S3, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
+            if (!validateOperand(inst, PROP_S3, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
 
             return true;
         }
@@ -22238,7 +24327,7 @@ template<class T> bool PropDescImpl::chkReqPropGcn_mqsad(T inst, unsigned propId
         // Dependent Property
         case PROP_D0:
         {
-            if (!validateOperand(inst, PROP_D0, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
+            if (!validateOperand(inst, PROP_D0, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
 
             return true;
         }
@@ -22246,7 +24335,7 @@ template<class T> bool PropDescImpl::chkReqPropGcn_mqsad(T inst, unsigned propId
         // Dependent Property
         case PROP_S1:
         {
-            if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
+            if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
 
             return true;
         }
@@ -22254,7 +24343,7 @@ template<class T> bool PropDescImpl::chkReqPropGcn_mqsad(T inst, unsigned propId
         // Dependent Property
         case PROP_S2:
         {
-            if (!validateOperand(inst, PROP_S2, OPERAND_ATTR_NONE, OPERAND_VALUES_REG32_IMM32, sizeof(OPERAND_VALUES_REG32_IMM32) / sizeof(unsigned), false)) return false;
+            if (!validateOperand(inst, PROP_S2, OPERAND_ATTR_B32, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
 
             return true;
         }
@@ -22262,7 +24351,7 @@ template<class T> bool PropDescImpl::chkReqPropGcn_mqsad(T inst, unsigned propId
         // Dependent Property
         case PROP_S3:
         {
-            if (!validateOperand(inst, PROP_S3, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
+            if (!validateOperand(inst, PROP_S3, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
 
             return true;
         }
@@ -22295,7 +24384,7 @@ template<class T> bool PropDescImpl::chkReqPropGcn_mqsad4(T inst, unsigned propI
         // Dependent Property
         case PROP_D0:
         {
-            if (!validateOperand(inst, PROP_D0, OPERAND_ATTR_NONE, OPERAND_VALUES_REGV432, sizeof(OPERAND_VALUES_REGV432) / sizeof(unsigned), false)) return false;
+            if (!validateOperand(inst, PROP_D0, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REGV4, sizeof(OPERAND_VALUES_REGV4) / sizeof(unsigned), false)) return false;
 
             return true;
         }
@@ -22303,7 +24392,7 @@ template<class T> bool PropDescImpl::chkReqPropGcn_mqsad4(T inst, unsigned propI
         // Dependent Property
         case PROP_S1:
         {
-            if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_NONE, OPERAND_VALUES_REG64_IMM64, sizeof(OPERAND_VALUES_REG64_IMM64) / sizeof(unsigned), false)) return false;
+            if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_B64, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
 
             return true;
         }
@@ -22311,7 +24400,7 @@ template<class T> bool PropDescImpl::chkReqPropGcn_mqsad4(T inst, unsigned propI
         // Dependent Property
         case PROP_S2:
         {
-            if (!validateOperand(inst, PROP_S2, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
+            if (!validateOperand(inst, PROP_S2, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
 
             return true;
         }
@@ -22319,7 +24408,7 @@ template<class T> bool PropDescImpl::chkReqPropGcn_mqsad4(T inst, unsigned propI
         // Dependent Property
         case PROP_S3:
         {
-            if (!validateOperand(inst, PROP_S3, OPERAND_ATTR_NONE, OPERAND_VALUES_REGV432, sizeof(OPERAND_VALUES_REGV432) / sizeof(unsigned), false)) return false;
+            if (!validateOperand(inst, PROP_S3, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REGV4, sizeof(OPERAND_VALUES_REGV4) / sizeof(unsigned), false)) return false;
 
             return true;
         }
@@ -22352,7 +24441,7 @@ template<class T> bool PropDescImpl::chkReqPropGcn_msad(T inst, unsigned propId)
         // Dependent Property
         case PROP_D0:
         {
-            if (!validateOperand(inst, PROP_D0, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
+            if (!validateOperand(inst, PROP_D0, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
 
             return true;
         }
@@ -22360,7 +24449,7 @@ template<class T> bool PropDescImpl::chkReqPropGcn_msad(T inst, unsigned propId)
         // Dependent Property
         case PROP_S1:
         {
-            if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
+            if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
 
             return true;
         }
@@ -22368,7 +24457,7 @@ template<class T> bool PropDescImpl::chkReqPropGcn_msad(T inst, unsigned propId)
         // Dependent Property
         case PROP_S2:
         {
-            if (!validateOperand(inst, PROP_S2, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
+            if (!validateOperand(inst, PROP_S2, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
 
             return true;
         }
@@ -22376,7 +24465,7 @@ template<class T> bool PropDescImpl::chkReqPropGcn_msad(T inst, unsigned propId)
         // Dependent Property
         case PROP_S3:
         {
-            if (!validateOperand(inst, PROP_S3, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
+            if (!validateOperand(inst, PROP_S3, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
 
             return true;
         }
@@ -22409,7 +24498,7 @@ template<class T> bool PropDescImpl::chkReqPropGcn_slp_prt(T inst, unsigned prop
         // Dependent Property
         case PROP_S0:
         {
-            if (!validateOperand(inst, PROP_S0, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
+            if (!validateOperand(inst, PROP_S0, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
 
             return true;
         }
@@ -22466,7 +24555,7 @@ template<class T> bool PropDescImpl::chkReqPropGcn_qsad(T inst, unsigned propId)
         // Dependent Property
         case PROP_D0:
         {
-            if (!validateOperand(inst, PROP_D0, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
+            if (!validateOperand(inst, PROP_D0, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
 
             return true;
         }
@@ -22474,7 +24563,7 @@ template<class T> bool PropDescImpl::chkReqPropGcn_qsad(T inst, unsigned propId)
         // Dependent Property
         case PROP_S1:
         {
-            if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
+            if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
 
             return true;
         }
@@ -22482,7 +24571,7 @@ template<class T> bool PropDescImpl::chkReqPropGcn_qsad(T inst, unsigned propId)
         // Dependent Property
         case PROP_S2:
         {
-            if (!validateOperand(inst, PROP_S2, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
+            if (!validateOperand(inst, PROP_S2, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
 
             return true;
         }
@@ -22490,7 +24579,7 @@ template<class T> bool PropDescImpl::chkReqPropGcn_qsad(T inst, unsigned propId)
         // Dependent Property
         case PROP_S3:
         {
-            if (!validateOperand(inst, PROP_S3, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
+            if (!validateOperand(inst, PROP_S3, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
 
             return true;
         }
@@ -22523,7 +24612,7 @@ template<class T> bool PropDescImpl::chkReqPropGcn_region_alloc(T inst, unsigned
         // Dependent Property
         case PROP_S0:
         {
-            if (!validateOperand(inst, PROP_S0, OPERAND_ATTR_NONE, OPERAND_VALUES_IMM32, sizeof(OPERAND_VALUES_IMM32) / sizeof(unsigned), false)) return false;
+            if (!validateOperand(inst, PROP_S0, OPERAND_ATTR_U32, OPERAND_VALUES_IMM, sizeof(OPERAND_VALUES_IMM) / sizeof(unsigned), false)) return false;
 
             return true;
         }
@@ -22611,13 +24700,13 @@ template<class T> bool PropDescImpl::chkReqPropGcn_st(T inst, unsigned propId)
                 check_type_values_u_s_f(getType<T>(inst))
                )
             {
-                if (!validateOperand(inst, PROP_S0, OPERAND_ATTR_EXP, OPERAND_VALUES_REGEXP_REGVEXP_IMMEXP, sizeof(OPERAND_VALUES_REGEXP_REGVEXP_IMMEXP) / sizeof(unsigned), false)) return false;
+                if (!validateOperand(inst, PROP_S0, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG_REGV_IMM, sizeof(OPERAND_VALUES_REG_REGV_IMM) / sizeof(unsigned), false)) return false;
             }
             else if (
                 check_type_values_b128(getType<T>(inst))
                )
             {
-                if (!validateOperand(inst, PROP_S0, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
+                if (!validateOperand(inst, PROP_S0, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
             }
             else
             {
@@ -22630,7 +24719,7 @@ template<class T> bool PropDescImpl::chkReqPropGcn_st(T inst, unsigned propId)
         // Dependent Property
         case PROP_S1:
         {
-            if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_NONE, OPERAND_VALUES_ADDRTSEG, sizeof(OPERAND_VALUES_ADDRTSEG) / sizeof(unsigned), false)) return false;
+            if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_TSEG, OPERAND_VALUES_ADDRSEG, sizeof(OPERAND_VALUES_ADDRSEG) / sizeof(unsigned), false)) return false;
 
             return true;
         }
@@ -22663,6 +24752,14 @@ template<class T> bool PropDescImpl::chkReqPropGcn_st(T inst, unsigned propId)
         case PROP_ALIGN:
         {
             if (!check_align_values_any(getAlign<T>(inst))) return false;
+
+            return true;
+        }
+
+        // Plain Property
+        case PROP_CONST:
+        {
+            if (!check_const_values_none(getConst<T>(inst))) return false;
 
             return true;
         }
@@ -22703,7 +24800,7 @@ template<class T> bool PropDescImpl::chkReqPropGcn_trig_preop(T inst, unsigned p
         // Dependent Property
         case PROP_D0:
         {
-            if (!validateOperand(inst, PROP_D0, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
+            if (!validateOperand(inst, PROP_D0, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
 
             return true;
         }
@@ -22711,7 +24808,7 @@ template<class T> bool PropDescImpl::chkReqPropGcn_trig_preop(T inst, unsigned p
         // Dependent Property
         case PROP_S1:
         {
-            if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
+            if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
 
             return true;
         }
@@ -22719,7 +24816,7 @@ template<class T> bool PropDescImpl::chkReqPropGcn_trig_preop(T inst, unsigned p
         // Dependent Property
         case PROP_S2:
         {
-            if (!validateOperand(inst, PROP_S2, OPERAND_ATTR_NONE, OPERAND_VALUES_IMM32, sizeof(OPERAND_VALUES_IMM32) / sizeof(unsigned), false)) return false;
+            if (!validateOperand(inst, PROP_S2, OPERAND_ATTR_U32, OPERAND_VALUES_IMM, sizeof(OPERAND_VALUES_IMM) / sizeof(unsigned), false)) return false;
 
             return true;
         }
@@ -22760,7 +24857,7 @@ template<class T> bool PropDescImpl::chkReqPropFbar_none(T inst, unsigned propId
         // Dependent Property
         case PROP_S0:
         {
-            if (!validateOperand(inst, PROP_S0, OPERAND_ATTR_NONE, OPERAND_VALUES_REG32_FBARRIER, sizeof(OPERAND_VALUES_REG32_FBARRIER) / sizeof(unsigned), false)) return false;
+            if (!validateOperand(inst, PROP_S0, OPERAND_ATTR_U32, OPERAND_VALUES_REGU32_FBARRIERU32, sizeof(OPERAND_VALUES_REGU32_FBARRIERU32) / sizeof(unsigned), false)) return false;
 
             return true;
         }
@@ -22793,127 +24890,6 @@ template<class T> bool PropDescImpl::chkReqPropFbar_none(T inst, unsigned propId
         case PROP_S4:
         {
             if (!validateOperand(inst, PROP_S4, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned), false)) return false;
-
-            return true;
-        }
-
-        // Plain Property
-        case PROP_MEMFNC:
-        {
-            if (!check_memfnc_values_none(getMemfnc<T>(inst))) return false;
-
-            return true;
-        }
-
-        // Plain Property
-        case PROP_MEMORD:
-        {
-            if (!check_memord_values_none(getMemord<T>(inst))) return false;
-
-            return true;
-        }
-
-        // Plain Property
-        case PROP_MEMSCP:
-        {
-            if (!check_memscp_values_none(getMemscp<T>(inst))) return false;
-
-            return true;
-        }
-
-        // Plain Property
-        case PROP_WIDTH:
-        {
-            if (!check_width_values_none(getWidth<T>(inst))) return false;
-
-            return true;
-        }
-
-    default: 
-        assert(false);
-        return false;
-    }
-}
-template<class T> bool PropDescImpl::chkReqPropFbar_width(T inst, unsigned propId)
-{
-    switch(propId)
-    {
-        // Last Primary Property
-        case PROP_TYPE:
-        {
-            if (!check_type_values_none(getType<T>(inst))) return false;
-
-            return true;
-        }
-
-        // Dependent Property
-        case PROP_S0:
-        {
-            if (!validateOperand(inst, PROP_S0, OPERAND_ATTR_NONE, OPERAND_VALUES_REG32_FBARRIER, sizeof(OPERAND_VALUES_REG32_FBARRIER) / sizeof(unsigned), false)) return false;
-
-            return true;
-        }
-
-        // Dependent Property
-        case PROP_S1:
-        {
-            if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned), false)) return false;
-
-            return true;
-        }
-
-        // Dependent Property
-        case PROP_S2:
-        {
-            if (!validateOperand(inst, PROP_S2, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned), false)) return false;
-
-            return true;
-        }
-
-        // Dependent Property
-        case PROP_S3:
-        {
-            if (!validateOperand(inst, PROP_S3, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned), false)) return false;
-
-            return true;
-        }
-
-        // Dependent Property
-        case PROP_S4:
-        {
-            if (!validateOperand(inst, PROP_S4, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned), false)) return false;
-
-            return true;
-        }
-
-        // Plain Property
-        case PROP_MEMFNC:
-        {
-            if (!check_memfnc_values_none(getMemfnc<T>(inst))) return false;
-
-            return true;
-        }
-
-        // Plain Property
-        case PROP_MEMORD:
-        {
-            if (!check_memord_values_none(getMemord<T>(inst))) return false;
-
-            return true;
-        }
-
-        // Plain Property
-        case PROP_MEMSCP:
-        {
-            if (!check_memscp_values_none(getMemscp<T>(inst))) return false;
-
-            return true;
-        }
-
-        // Plain Property
-        case PROP_WIDTH:
-        {
-            if (!check_width_values_any(getWidth<T>(inst))) return false;
 
             return true;
         }
@@ -22930,7 +24906,7 @@ template<class T> bool PropDescImpl::chkReqPropLd(T inst, unsigned propId)
         // Primary Property
         case PROP_TYPE:
         {
-            if (!check_type_values_u_s_f_b128_roimg_rwimg_samp(getType<T>(inst))) return false;
+            if (!check_type_values_u_s_f_b128_opaque(getType<T>(inst))) return false;
 
             return true;
         }
@@ -22938,7 +24914,7 @@ template<class T> bool PropDescImpl::chkReqPropLd(T inst, unsigned propId)
         // Last Primary Property
         case PROP_SEGMENT:
         {
-            if (!check_type_values_u_s_f_b128_roimg_rwimg_samp(getType<T>(inst))) return false;
+            if (!check_type_values_u_s_f_b128_opaque(getType<T>(inst))) return false;
             if (!check_segment_values_any(getSegment<T>(inst))) return false;
 
             if (
@@ -22947,7 +24923,22 @@ template<class T> bool PropDescImpl::chkReqPropLd(T inst, unsigned propId)
             {
             }
             else if (
-                check_type_values_b128_roimg_rwimg_samp(getType<T>(inst))
+                check_type_values_b128_opaque(getType<T>(inst))
+               )
+            {
+            }
+            else
+            {
+                return false;
+            }
+
+            if (
+                check_segment_values_global_readonly_kernarg_flat(getSegment<T>(inst))
+               )
+            {
+            }
+            else if (
+                check_segment_values_group_private_spill_arg(getSegment<T>(inst))
                )
             {
             }
@@ -22960,22 +24951,79 @@ template<class T> bool PropDescImpl::chkReqPropLd(T inst, unsigned propId)
         }
 
         // Conditional Property
+        case PROP_CONST:
+        {
+            if (!check_type_values_u_s_f_b128_opaque(getType<T>(inst))) return false;
+            if (!check_segment_values_any(getSegment<T>(inst))) return false;
+            if (!check_const_values_any(getConst<T>(inst))) return false;
+
+            if (
+                check_type_values_u_s_f(getType<T>(inst))
+               )
+            {
+            }
+            else if (
+                check_type_values_b128_opaque(getType<T>(inst))
+               )
+            {
+            }
+            else
+            {
+                return false;
+            }
+
+            if (
+                check_segment_values_global_readonly_kernarg_flat(getSegment<T>(inst))
+               )
+            {
+                if (!check_const_values_any(getConst<T>(inst))) return false;
+            }
+            else if (
+                check_segment_values_group_private_spill_arg(getSegment<T>(inst))
+               )
+            {
+                if (!check_const_values_none(getConst<T>(inst))) return false;
+            }
+            else
+            {
+                return false;
+            }
+
+            return true;
+        }
+
+        // Conditional Property
         case PROP_D0:
         {
-            if (!check_type_values_u_s_f_b128_roimg_rwimg_samp(getType<T>(inst))) return false;
+            if (!check_type_values_u_s_f_b128_opaque(getType<T>(inst))) return false;
             if (!check_segment_values_any(getSegment<T>(inst))) return false;
 
             if (
                 check_type_values_u_s_f(getType<T>(inst))
                )
             {
-                if (!validateOperand(inst, PROP_D0, OPERAND_ATTR_EXP, OPERAND_VALUES_REGEXP_REGVEXP, sizeof(OPERAND_VALUES_REGEXP_REGVEXP) / sizeof(unsigned), false)) return false;
+                if (!validateOperand(inst, PROP_D0, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG_REGV, sizeof(OPERAND_VALUES_REG_REGV) / sizeof(unsigned), false)) return false;
             }
             else if (
-                check_type_values_b128_roimg_rwimg_samp(getType<T>(inst))
+                check_type_values_b128_opaque(getType<T>(inst))
                )
             {
-                if (!validateOperand(inst, PROP_D0, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
+                if (!validateOperand(inst, PROP_D0, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
+            }
+            else
+            {
+                return false;
+            }
+
+            if (
+                check_segment_values_global_readonly_kernarg_flat(getSegment<T>(inst))
+               )
+            {
+            }
+            else if (
+                check_segment_values_group_private_spill_arg(getSegment<T>(inst))
+               )
+            {
             }
             else
             {
@@ -22988,7 +25036,7 @@ template<class T> bool PropDescImpl::chkReqPropLd(T inst, unsigned propId)
         // Dependent Property
         case PROP_S1:
         {
-            if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_NONE, OPERAND_VALUES_ADDRTSEG, sizeof(OPERAND_VALUES_ADDRTSEG) / sizeof(unsigned), false)) return false;
+            if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_TSEG, OPERAND_VALUES_ADDRSEG, sizeof(OPERAND_VALUES_ADDRSEG) / sizeof(unsigned), false)) return false;
 
             return true;
         }
@@ -23071,7 +25119,7 @@ template<class T> bool PropDescImpl::chkReqPropLda(T inst, unsigned propId)
         // Dependent Property
         case PROP_D0:
         {
-            if (!validateOperand(inst, PROP_D0, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
+            if (!validateOperand(inst, PROP_D0, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
 
             return true;
         }
@@ -23079,7 +25127,7 @@ template<class T> bool PropDescImpl::chkReqPropLda(T inst, unsigned propId)
         // Dependent Property
         case PROP_S1:
         {
-            if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_NONE, OPERAND_VALUES_ADDRSEG, sizeof(OPERAND_VALUES_ADDRSEG) / sizeof(unsigned), false)) return false;
+            if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_SEG, OPERAND_VALUES_ADDRSEG, sizeof(OPERAND_VALUES_ADDRSEG) / sizeof(unsigned), false)) return false;
 
             return true;
         }
@@ -23129,7 +25177,7 @@ template<class T> bool PropDescImpl::chkReqPropLdc(T inst, unsigned propId)
         // Dependent Property
         case PROP_D0:
         {
-            if (!validateOperand(inst, PROP_D0, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
+            if (!validateOperand(inst, PROP_D0, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
 
             return true;
         }
@@ -23137,7 +25185,7 @@ template<class T> bool PropDescImpl::chkReqPropLdc(T inst, unsigned propId)
         // Dependent Property
         case PROP_S1:
         {
-            if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_NONE, OPERAND_VALUES_LAB_FUNC, sizeof(OPERAND_VALUES_LAB_FUNC) / sizeof(unsigned), false)) return false;
+            if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_MODEL, OPERAND_VALUES_LABMODEL_FUNCMODEL, sizeof(OPERAND_VALUES_LABMODEL_FUNCMODEL) / sizeof(unsigned), false)) return false;
 
             return true;
         }
@@ -23186,7 +25234,7 @@ template<class T> bool PropDescImpl::chkReqPropLdf(T inst, unsigned propId)
         // Dependent Property
         case PROP_S0:
         {
-            if (!validateOperand(inst, PROP_S0, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
+            if (!validateOperand(inst, PROP_S0, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
 
             return true;
         }
@@ -23194,7 +25242,7 @@ template<class T> bool PropDescImpl::chkReqPropLdf(T inst, unsigned propId)
         // Dependent Property
         case PROP_S1:
         {
-            if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_NONE, OPERAND_VALUES_FBARRIER, sizeof(OPERAND_VALUES_FBARRIER) / sizeof(unsigned), false)) return false;
+            if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_U32, OPERAND_VALUES_FBARRIERU32, sizeof(OPERAND_VALUES_FBARRIERU32) / sizeof(unsigned), false)) return false;
 
             return true;
         }
@@ -23241,6 +25289,14 @@ template<class T> bool PropDescImpl::chkReqPropLd_image(T inst, unsigned propId)
         }
 
         // Primary Property
+        case PROP_ITYPE:
+        {
+            if (!check_type_values_roimg_rwimg(getItype<T>(inst))) return false;
+
+            return true;
+        }
+
+        // Primary Property
         case PROP_TYPE:
         {
             if (!check_type_values_s32_u32_f32(getType<T>(inst))) return false;
@@ -23248,17 +25304,9 @@ template<class T> bool PropDescImpl::chkReqPropLd_image(T inst, unsigned propId)
             return true;
         }
 
-        // Primary Property
+        // Last Primary Property
         case PROP_GEOM:
         {
-            if (!check_geom_values_1d_2d_3d_1db_1da_2da(getGeom<T>(inst))) return false;
-
-            return true;
-        }
-
-        // Last Primary Property
-        case PROP_ITYPE:
-        {
             if (!check_type_values_s32_u32_f32(getType<T>(inst))) return false;
             if (!check_type_values_u32(getCtype<T>(inst))) return false;
             if (!check_geom_values_1d_2d_3d_1db_1da_2da(getGeom<T>(inst))) return false;
@@ -23283,70 +25331,6 @@ template<class T> bool PropDescImpl::chkReqPropLd_image(T inst, unsigned propId)
                 return false;
             }
             if (!check_type_values_roimg_rwimg(getItype<T>(inst))) return false;
-
-            if (
-                check_type_values_roimg(getItype<T>(inst))
-               )
-            {
-            }
-            else if (
-                check_type_values_rwimg(getItype<T>(inst))
-               )
-            {
-            }
-            else
-            {
-                return false;
-            }
-
-            return true;
-        }
-
-        // Conditional Property
-        case PROP_S1:
-        {
-            if (!check_type_values_s32_u32_f32(getType<T>(inst))) return false;
-            if (!check_type_values_u32(getCtype<T>(inst))) return false;
-            if (!check_geom_values_1d_2d_3d_1db_1da_2da(getGeom<T>(inst))) return false;
-
-            if (
-                check_geom_values_1d_1db(getGeom<T>(inst))
-               )
-            {
-            }
-            else if (
-                check_geom_values_2d_1da(getGeom<T>(inst))
-               )
-            {
-            }
-            else if (
-                check_geom_values_3d_2da(getGeom<T>(inst))
-               )
-            {
-            }
-            else
-            {
-                return false;
-            }
-            if (!check_type_values_roimg_rwimg(getItype<T>(inst))) return false;
-            if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_NONE, OPERAND_VALUES_REG64_IMAGE, sizeof(OPERAND_VALUES_REG64_IMAGE) / sizeof(unsigned), false)) return false;
-
-            if (
-                check_type_values_roimg(getItype<T>(inst))
-               )
-            {
-                if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_NONE, OPERAND_VALUES_REG64_ROIMAGE, sizeof(OPERAND_VALUES_REG64_ROIMAGE) / sizeof(unsigned), false)) return false;
-            }
-            else if (
-                check_type_values_rwimg(getItype<T>(inst))
-               )
-            {
-                if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_NONE, OPERAND_VALUES_REG64_RWIMAGE, sizeof(OPERAND_VALUES_REG64_RWIMAGE) / sizeof(unsigned), false)) return false;
-            }
-            else
-            {
-                return false;
-            }
 
             return true;
         }
@@ -23382,28 +25366,21 @@ template<class T> bool PropDescImpl::chkReqPropLd_image(T inst, unsigned propId)
             }
             if (!check_type_values_roimg_rwimg(getItype<T>(inst))) return false;
 
-            if (
-                check_type_values_roimg(getItype<T>(inst))
-               )
-            {
-            }
-            else if (
-                check_type_values_rwimg(getItype<T>(inst))
-               )
-            {
-            }
-            else
-            {
-                return false;
-            }
-
             return true;
         }
 
         // Dependent Property
         case PROP_D0:
         {
-            if (!validateOperand(inst, PROP_D0, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REGV4, sizeof(OPERAND_VALUES_REGV4) / sizeof(unsigned), false)) return false;
+            if (!validateOperand(inst, PROP_D0, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REGV4, sizeof(OPERAND_VALUES_REGV4) / sizeof(unsigned), false)) return false;
+
+            return true;
+        }
+
+        // Dependent Property
+        case PROP_S1:
+        {
+            if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_ITYPE, OPERAND_VALUES_REGSTYPE_IMAGESTYPE, sizeof(OPERAND_VALUES_REGSTYPE_IMAGESTYPE) / sizeof(unsigned), false)) return false;
 
             return true;
         }
@@ -23420,6 +25397,88 @@ template<class T> bool PropDescImpl::chkReqPropLd_image(T inst, unsigned propId)
         case PROP_S4:
         {
             if (!validateOperand(inst, PROP_S4, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned), false)) return false;
+
+            return true;
+        }
+
+        // Plain Property
+        case PROP_EQCLASS:
+        {
+            if (!validateEqclass(inst, PROP_EQCLASS, EQCLASS_ATTR_NONE, EQCLASS_VALUES_ANY, sizeof(EQCLASS_VALUES_ANY) / sizeof(unsigned), false)) return false;
+
+            return true;
+        }
+
+    default: 
+        assert(false);
+        return false;
+    }
+}
+template<class T> bool PropDescImpl::chkReqPropLdq(T inst, unsigned propId)
+{
+    switch(propId)
+    {
+        // Primary Property
+        case PROP_TYPE:
+        {
+            if (!check_type_values_u64(getType<T>(inst))) return false;
+
+            return true;
+        }
+
+        // Last Primary Property
+        case PROP_SEGMENT:
+        {
+            if (!check_type_values_u64(getType<T>(inst))) return false;
+            if (!check_segment_values_flat_global(getSegment<T>(inst))) return false;
+
+            return true;
+        }
+
+        // Dependent Property
+        case PROP_D0:
+        {
+            if (!validateOperand(inst, PROP_D0, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
+
+            return true;
+        }
+
+        // Dependent Property
+        case PROP_S1:
+        {
+            if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_SEG, OPERAND_VALUES_ADDRSEG, sizeof(OPERAND_VALUES_ADDRSEG) / sizeof(unsigned), false)) return false;
+
+            return true;
+        }
+
+        // Dependent Property
+        case PROP_S2:
+        {
+            if (!validateOperand(inst, PROP_S2, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned), false)) return false;
+
+            return true;
+        }
+
+        // Dependent Property
+        case PROP_S3:
+        {
+            if (!validateOperand(inst, PROP_S3, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned), false)) return false;
+
+            return true;
+        }
+
+        // Dependent Property
+        case PROP_S4:
+        {
+            if (!validateOperand(inst, PROP_S4, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned), false)) return false;
+
+            return true;
+        }
+
+        // Plain Property
+        case PROP_MEMORD:
+        {
+            if (!check_memord_values_ld(getMemord<T>(inst))) return false;
 
             return true;
         }
@@ -23444,7 +25503,7 @@ template<class T> bool PropDescImpl::chkReqPropLerp(T inst, unsigned propId)
         // Dependent Property
         case PROP_D0:
         {
-            if (!validateOperand(inst, PROP_D0, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
+            if (!validateOperand(inst, PROP_D0, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
 
             return true;
         }
@@ -23452,7 +25511,7 @@ template<class T> bool PropDescImpl::chkReqPropLerp(T inst, unsigned propId)
         // Dependent Property
         case PROP_S1:
         {
-            if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
+            if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
 
             return true;
         }
@@ -23460,7 +25519,7 @@ template<class T> bool PropDescImpl::chkReqPropLerp(T inst, unsigned propId)
         // Dependent Property
         case PROP_S2:
         {
-            if (!validateOperand(inst, PROP_S2, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
+            if (!validateOperand(inst, PROP_S2, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
 
             return true;
         }
@@ -23468,7 +25527,7 @@ template<class T> bool PropDescImpl::chkReqPropLerp(T inst, unsigned propId)
         // Dependent Property
         case PROP_S3:
         {
-            if (!validateOperand(inst, PROP_S3, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
+            if (!validateOperand(inst, PROP_S3, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
 
             return true;
         }
@@ -23501,7 +25560,7 @@ template<class T> bool PropDescImpl::chkReqPropMad(T inst, unsigned propId)
         // Dependent Property
         case PROP_D0:
         {
-            if (!validateOperand(inst, PROP_D0, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
+            if (!validateOperand(inst, PROP_D0, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
 
             return true;
         }
@@ -23509,7 +25568,7 @@ template<class T> bool PropDescImpl::chkReqPropMad(T inst, unsigned propId)
         // Dependent Property
         case PROP_S1:
         {
-            if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
+            if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
 
             return true;
         }
@@ -23517,7 +25576,7 @@ template<class T> bool PropDescImpl::chkReqPropMad(T inst, unsigned propId)
         // Dependent Property
         case PROP_S2:
         {
-            if (!validateOperand(inst, PROP_S2, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
+            if (!validateOperand(inst, PROP_S2, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
 
             return true;
         }
@@ -23525,7 +25584,7 @@ template<class T> bool PropDescImpl::chkReqPropMad(T inst, unsigned propId)
         // Dependent Property
         case PROP_S3:
         {
-            if (!validateOperand(inst, PROP_S3, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
+            if (!validateOperand(inst, PROP_S3, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
 
             return true;
         }
@@ -23558,7 +25617,7 @@ template<class T> bool PropDescImpl::chkReqPropMad24(T inst, unsigned propId)
         // Dependent Property
         case PROP_D0:
         {
-            if (!validateOperand(inst, PROP_D0, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
+            if (!validateOperand(inst, PROP_D0, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
 
             return true;
         }
@@ -23566,7 +25625,7 @@ template<class T> bool PropDescImpl::chkReqPropMad24(T inst, unsigned propId)
         // Dependent Property
         case PROP_S1:
         {
-            if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
+            if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
 
             return true;
         }
@@ -23574,7 +25633,7 @@ template<class T> bool PropDescImpl::chkReqPropMad24(T inst, unsigned propId)
         // Dependent Property
         case PROP_S2:
         {
-            if (!validateOperand(inst, PROP_S2, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
+            if (!validateOperand(inst, PROP_S2, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
 
             return true;
         }
@@ -23582,7 +25641,7 @@ template<class T> bool PropDescImpl::chkReqPropMad24(T inst, unsigned propId)
         // Dependent Property
         case PROP_S3:
         {
-            if (!validateOperand(inst, PROP_S3, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
+            if (!validateOperand(inst, PROP_S3, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
 
             return true;
         }
@@ -23591,80 +25650,6 @@ template<class T> bool PropDescImpl::chkReqPropMad24(T inst, unsigned propId)
         case PROP_S4:
         {
             if (!validateOperand(inst, PROP_S4, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned), false)) return false;
-
-            return true;
-        }
-
-    default: 
-        assert(false);
-        return false;
-    }
-}
-template<class T> bool PropDescImpl::chkReqPropMasklane(T inst, unsigned propId)
-{
-    switch(propId)
-    {
-        // Primary Property
-        case PROP_STYPE:
-        {
-            if (!check_type_values_u32_b1(getStype<T>(inst))) return false;
-
-            return true;
-        }
-
-        // Last Primary Property
-        case PROP_TYPE:
-        {
-            if (!check_type_values_b64(getType<T>(inst))) return false;
-            if (!check_type_values_u32_b1(getStype<T>(inst))) return false;
-
-            return true;
-        }
-
-        // Dependent Property
-        case PROP_D0:
-        {
-            if (!validateOperand(inst, PROP_D0, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
-
-            return true;
-        }
-
-        // Dependent Property
-        case PROP_S1:
-        {
-            if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_STYPE, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
-
-            return true;
-        }
-
-        // Dependent Property
-        case PROP_S2:
-        {
-            if (!validateOperand(inst, PROP_S2, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned), false)) return false;
-
-            return true;
-        }
-
-        // Dependent Property
-        case PROP_S3:
-        {
-            if (!validateOperand(inst, PROP_S3, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned), false)) return false;
-
-            return true;
-        }
-
-        // Dependent Property
-        case PROP_S4:
-        {
-            if (!validateOperand(inst, PROP_S4, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned), false)) return false;
-
-            return true;
-        }
-
-        // Plain Property
-        case PROP_WIDTH:
-        {
-            if (!check_width_values_any(getWidth<T>(inst))) return false;
 
             return true;
         }
@@ -23789,7 +25774,7 @@ template<class T> bool PropDescImpl::chkReqPropMax(T inst, unsigned propId)
         // Dependent Property
         case PROP_D0:
         {
-            if (!validateOperand(inst, PROP_D0, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
+            if (!validateOperand(inst, PROP_D0, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
 
             return true;
         }
@@ -23797,7 +25782,7 @@ template<class T> bool PropDescImpl::chkReqPropMax(T inst, unsigned propId)
         // Dependent Property
         case PROP_S1:
         {
-            if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
+            if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
 
             return true;
         }
@@ -23805,7 +25790,7 @@ template<class T> bool PropDescImpl::chkReqPropMax(T inst, unsigned propId)
         // Dependent Property
         case PROP_S2:
         {
-            if (!validateOperand(inst, PROP_S2, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
+            if (!validateOperand(inst, PROP_S2, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
 
             return true;
         }
@@ -23839,22 +25824,73 @@ template<class T> bool PropDescImpl::chkReqPropMax(T inst, unsigned propId)
         return false;
     }
 }
-template<class T> bool PropDescImpl::chkReqPropMov(T inst, unsigned propId)
+template<class T> bool PropDescImpl::chkReqPropMemfence(T inst, unsigned propId)
 {
     switch(propId)
     {
-        // Last Primary Property
+        // Primary Property
         case PROP_TYPE:
         {
-            if (!check_type_values_b1_b32_b64_b128_s32_u32_s64_u64_f_roimg_rwimg_samp(getType<T>(inst))) return false;
+            if (!check_type_values_none(getType<T>(inst))) return false;
+
+            return true;
+        }
+
+        // Last Primary Property
+        case PROP_MEMSEG:
+        {
+            if (!check_type_values_none(getType<T>(inst))) return false;
+            if (!check_memseg_values_any(getMemseg<T>(inst))) return false;
+
+            if (
+                check_memseg_values_global_both(getMemseg<T>(inst))
+               )
+            {
+            }
+            else if (
+                check_memseg_values_group(getMemseg<T>(inst))
+               )
+            {
+            }
+            else
+            {
+                return false;
+            }
+
+            return true;
+        }
+
+        // Conditional Property
+        case PROP_MEMSCP:
+        {
+            if (!check_type_values_none(getType<T>(inst))) return false;
+            if (!check_memscp_values_any(getMemscp<T>(inst))) return false;
+            if (!check_memseg_values_any(getMemseg<T>(inst))) return false;
+
+            if (
+                check_memseg_values_global_both(getMemseg<T>(inst))
+               )
+            {
+                if (!check_memscp_values_any(getMemscp<T>(inst))) return false;
+            }
+            else if (
+                check_memseg_values_group(getMemseg<T>(inst))
+               )
+            {
+                if (!check_memscp_values_wv_wg(getMemscp<T>(inst))) return false;
+            }
+            else
+            {
+                return false;
+            }
 
             return true;
         }
 
         // Dependent Property
-        case PROP_D0:
+        case PROP_S0:
         {
-            if (!validateOperand(inst, PROP_D0, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
+            if (!validateOperand(inst, PROP_S0, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned), false)) return false;
 
             return true;
         }
@@ -23862,7 +25898,105 @@ template<class T> bool PropDescImpl::chkReqPropMov(T inst, unsigned propId)
         // Dependent Property
         case PROP_S1:
         {
-            if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
+            if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned), false)) return false;
+
+            return true;
+        }
+
+        // Dependent Property
+        case PROP_S2:
+        {
+            if (!validateOperand(inst, PROP_S2, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned), false)) return false;
+
+            return true;
+        }
+
+        // Dependent Property
+        case PROP_S3:
+        {
+            if (!validateOperand(inst, PROP_S3, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned), false)) return false;
+
+            return true;
+        }
+
+        // Dependent Property
+        case PROP_S4:
+        {
+            if (!validateOperand(inst, PROP_S4, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned), false)) return false;
+
+            return true;
+        }
+
+        // Plain Property
+        case PROP_MEMORD:
+        {
+            if (!check_memord_values_acq_rel_ar(getMemord<T>(inst))) return false;
+
+            return true;
+        }
+
+    default: 
+        assert(false);
+        return false;
+    }
+}
+template<class T> bool PropDescImpl::chkReqPropMov(T inst, unsigned propId)
+{
+    switch(propId)
+    {
+        // Last Primary Property
+        case PROP_TYPE:
+        {
+            if (!check_type_values_b1_b32_b64_b128_s32_u32_s64_u64_f_opaque(getType<T>(inst))) return false;
+
+            if (
+                check_type_values_b1_b32_b64_b128_s32_u32_s64_u64_f(getType<T>(inst))
+               )
+            {
+            }
+            else if (
+                check_type_values_opaque(getType<T>(inst))
+               )
+            {
+            }
+            else
+            {
+                return false;
+            }
+
+            return true;
+        }
+
+        // Conditional Property
+        case PROP_S1:
+        {
+            if (!check_type_values_b1_b32_b64_b128_s32_u32_s64_u64_f_opaque(getType<T>(inst))) return false;
+            if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
+
+            if (
+                check_type_values_b1_b32_b64_b128_s32_u32_s64_u64_f(getType<T>(inst))
+               )
+            {
+                if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
+            }
+            else if (
+                check_type_values_opaque(getType<T>(inst))
+               )
+            {
+                if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
+            }
+            else
+            {
+                return false;
+            }
+
+            return true;
+        }
+
+        // Dependent Property
+        case PROP_D0:
+        {
+            if (!validateOperand(inst, PROP_D0, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
 
             return true;
         }
@@ -24048,7 +26182,7 @@ template<class T> bool PropDescImpl::chkReqPropMul(T inst, unsigned propId)
         // Dependent Property
         case PROP_D0:
         {
-            if (!validateOperand(inst, PROP_D0, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
+            if (!validateOperand(inst, PROP_D0, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
 
             return true;
         }
@@ -24056,7 +26190,7 @@ template<class T> bool PropDescImpl::chkReqPropMul(T inst, unsigned propId)
         // Dependent Property
         case PROP_S1:
         {
-            if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
+            if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
 
             return true;
         }
@@ -24064,7 +26198,7 @@ template<class T> bool PropDescImpl::chkReqPropMul(T inst, unsigned propId)
         // Dependent Property
         case PROP_S2:
         {
-            if (!validateOperand(inst, PROP_S2, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
+            if (!validateOperand(inst, PROP_S2, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
 
             return true;
         }
@@ -24105,7 +26239,7 @@ template<class T> bool PropDescImpl::chkReqPropMul24(T inst, unsigned propId)
         // Dependent Property
         case PROP_D0:
         {
-            if (!validateOperand(inst, PROP_D0, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
+            if (!validateOperand(inst, PROP_D0, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
 
             return true;
         }
@@ -24113,7 +26247,7 @@ template<class T> bool PropDescImpl::chkReqPropMul24(T inst, unsigned propId)
         // Dependent Property
         case PROP_S1:
         {
-            if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
+            if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
 
             return true;
         }
@@ -24121,7 +26255,7 @@ template<class T> bool PropDescImpl::chkReqPropMul24(T inst, unsigned propId)
         // Dependent Property
         case PROP_S2:
         {
-            if (!validateOperand(inst, PROP_S2, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
+            if (!validateOperand(inst, PROP_S2, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
 
             return true;
         }
@@ -24202,7 +26336,7 @@ template<class T> bool PropDescImpl::chkReqPropMulhi(T inst, unsigned propId)
         // Dependent Property
         case PROP_D0:
         {
-            if (!validateOperand(inst, PROP_D0, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
+            if (!validateOperand(inst, PROP_D0, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
 
             return true;
         }
@@ -24210,7 +26344,7 @@ template<class T> bool PropDescImpl::chkReqPropMulhi(T inst, unsigned propId)
         // Dependent Property
         case PROP_S1:
         {
-            if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
+            if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
 
             return true;
         }
@@ -24218,7 +26352,7 @@ template<class T> bool PropDescImpl::chkReqPropMulhi(T inst, unsigned propId)
         // Dependent Property
         case PROP_S2:
         {
-            if (!validateOperand(inst, PROP_S2, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
+            if (!validateOperand(inst, PROP_S2, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
 
             return true;
         }
@@ -24275,7 +26409,7 @@ template<class T> bool PropDescImpl::chkReqPropTrig32(T inst, unsigned propId)
         // Dependent Property
         case PROP_D0:
         {
-            if (!validateOperand(inst, PROP_D0, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
+            if (!validateOperand(inst, PROP_D0, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
 
             return true;
         }
@@ -24283,7 +26417,7 @@ template<class T> bool PropDescImpl::chkReqPropTrig32(T inst, unsigned propId)
         // Dependent Property
         case PROP_S1:
         {
-            if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
+            if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
 
             return true;
         }
@@ -24332,7 +26466,7 @@ template<class T> bool PropDescImpl::chkReqPropNfma(T inst, unsigned propId)
         // Dependent Property
         case PROP_D0:
         {
-            if (!validateOperand(inst, PROP_D0, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
+            if (!validateOperand(inst, PROP_D0, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
 
             return true;
         }
@@ -24340,7 +26474,7 @@ template<class T> bool PropDescImpl::chkReqPropNfma(T inst, unsigned propId)
         // Dependent Property
         case PROP_S1:
         {
-            if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
+            if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
 
             return true;
         }
@@ -24348,7 +26482,7 @@ template<class T> bool PropDescImpl::chkReqPropNfma(T inst, unsigned propId)
         // Dependent Property
         case PROP_S2:
         {
-            if (!validateOperand(inst, PROP_S2, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
+            if (!validateOperand(inst, PROP_S2, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
 
             return true;
         }
@@ -24356,7 +26490,7 @@ template<class T> bool PropDescImpl::chkReqPropNfma(T inst, unsigned propId)
         // Dependent Property
         case PROP_S3:
         {
-            if (!validateOperand(inst, PROP_S3, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
+            if (!validateOperand(inst, PROP_S3, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
 
             return true;
         }
@@ -24446,7 +26580,7 @@ template<class T> bool PropDescImpl::chkReqPropNot(T inst, unsigned propId)
         // Dependent Property
         case PROP_D0:
         {
-            if (!validateOperand(inst, PROP_D0, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
+            if (!validateOperand(inst, PROP_D0, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
 
             return true;
         }
@@ -24454,7 +26588,7 @@ template<class T> bool PropDescImpl::chkReqPropNot(T inst, unsigned propId)
         // Dependent Property
         case PROP_S1:
         {
-            if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
+            if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
 
             return true;
         }
@@ -24503,7 +26637,7 @@ template<class T> bool PropDescImpl::chkReqPropTrig(T inst, unsigned propId)
         // Dependent Property
         case PROP_D0:
         {
-            if (!validateOperand(inst, PROP_D0, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
+            if (!validateOperand(inst, PROP_D0, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
 
             return true;
         }
@@ -24511,7 +26645,7 @@ template<class T> bool PropDescImpl::chkReqPropTrig(T inst, unsigned propId)
         // Dependent Property
         case PROP_S1:
         {
-            if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
+            if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
 
             return true;
         }
@@ -24550,14 +26684,6 @@ template<class T> bool PropDescImpl::chkReqPropNullptr(T inst, unsigned propId)
     switch(propId)
     {
         // Primary Property
-        case PROP_STYPE:
-        {
-            if (!check_type_values_none(getStype<T>(inst))) return false;
-
-            return true;
-        }
-
-        // Primary Property
         case PROP_TYPE:
         {
             if (!check_type_values_u32_u64(getType<T>(inst))) return false;
@@ -24569,7 +26695,6 @@ template<class T> bool PropDescImpl::chkReqPropNullptr(T inst, unsigned propId)
         case PROP_SEGMENT:
         {
             if (!check_type_values_u32_u64(getType<T>(inst))) return false;
-            if (!check_type_values_none(getStype<T>(inst))) return false;
             if (!check_segment_values_any(getSegment<T>(inst))) return false;
             if (!validateTypesize(inst, PROP_TYPESIZE, TYPESIZE_ATTR_NONE, TYPESIZE_VALUES_SEG, sizeof(TYPESIZE_VALUES_SEG) / sizeof(unsigned), false)) return false;
 
@@ -24579,7 +26704,7 @@ template<class T> bool PropDescImpl::chkReqPropNullptr(T inst, unsigned propId)
         // Dependent Property
         case PROP_S0:
         {
-            if (!validateOperand(inst, PROP_S0, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
+            if (!validateOperand(inst, PROP_S0, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
 
             return true;
         }
@@ -24692,7 +26817,7 @@ template<class T> bool PropDescImpl::chkReqPropPack(T inst, unsigned propId)
         // Dependent Property
         case PROP_D0:
         {
-            if (!validateOperand(inst, PROP_D0, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
+            if (!validateOperand(inst, PROP_D0, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
 
             return true;
         }
@@ -24700,7 +26825,7 @@ template<class T> bool PropDescImpl::chkReqPropPack(T inst, unsigned propId)
         // Dependent Property
         case PROP_S1:
         {
-            if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
+            if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
 
             return true;
         }
@@ -24716,7 +26841,7 @@ template<class T> bool PropDescImpl::chkReqPropPack(T inst, unsigned propId)
         // Dependent Property
         case PROP_S3:
         {
-            if (!validateOperand(inst, PROP_S3, OPERAND_ATTR_NONE, OPERAND_VALUES_REG32_IMM32, sizeof(OPERAND_VALUES_REG32_IMM32) / sizeof(unsigned), false)) return false;
+            if (!validateOperand(inst, PROP_S3, OPERAND_ATTR_U32, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
 
             return true;
         }
@@ -24758,7 +26883,7 @@ template<class T> bool PropDescImpl::chkReqPropPackcvt(T inst, unsigned propId)
         // Dependent Property
         case PROP_D0:
         {
-            if (!validateOperand(inst, PROP_D0, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
+            if (!validateOperand(inst, PROP_D0, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
 
             return true;
         }
@@ -24800,6 +26925,64 @@ template<class T> bool PropDescImpl::chkReqPropPackcvt(T inst, unsigned propId)
         return false;
     }
 }
+template<class T> bool PropDescImpl::chkReqPropPacket(T inst, unsigned propId)
+{
+    switch(propId)
+    {
+        // Last Primary Property
+        case PROP_TYPE:
+        {
+            if (!check_type_values_sig32_sig64(getType<T>(inst))) return false;
+            if (!validateTypesize(inst, PROP_TYPESIZE, TYPESIZE_ATTR_NONE, TYPESIZE_VALUES_SIGNAL, sizeof(TYPESIZE_VALUES_SIGNAL) / sizeof(unsigned), false)) return false;
+
+            return true;
+        }
+
+        // Dependent Property
+        case PROP_S0:
+        {
+            if (!validateOperand(inst, PROP_S0, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
+
+            return true;
+        }
+
+        // Dependent Property
+        case PROP_S1:
+        {
+            if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned), false)) return false;
+
+            return true;
+        }
+
+        // Dependent Property
+        case PROP_S2:
+        {
+            if (!validateOperand(inst, PROP_S2, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned), false)) return false;
+
+            return true;
+        }
+
+        // Dependent Property
+        case PROP_S3:
+        {
+            if (!validateOperand(inst, PROP_S3, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned), false)) return false;
+
+            return true;
+        }
+
+        // Dependent Property
+        case PROP_S4:
+        {
+            if (!validateOperand(inst, PROP_S4, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned), false)) return false;
+
+            return true;
+        }
+
+    default: 
+        assert(false);
+        return false;
+    }
+}
 template<class T> bool PropDescImpl::chkReqPropPopcount(T inst, unsigned propId)
 {
     switch(propId)
@@ -24824,7 +27007,7 @@ template<class T> bool PropDescImpl::chkReqPropPopcount(T inst, unsigned propId)
         // Dependent Property
         case PROP_D0:
         {
-            if (!validateOperand(inst, PROP_D0, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
+            if (!validateOperand(inst, PROP_D0, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
 
             return true;
         }
@@ -24884,55 +27067,21 @@ template<class T> bool PropDescImpl::chkReqPropQueryimage(T inst, unsigned propI
             if (!check_type_values_u32(getType<T>(inst))) return false;
             if (!check_type_values_roimg_rwimg(getStype<T>(inst))) return false;
 
-            if (
-                check_type_values_roimg(getStype<T>(inst))
-               )
-            {
-            }
-            else if (
-                check_type_values_rwimg(getStype<T>(inst))
-               )
-            {
-            }
-            else
-            {
-                return false;
-            }
-
-            return true;
-        }
-
-        // Conditional Property
-        case PROP_S1:
-        {
-            if (!check_type_values_u32(getType<T>(inst))) return false;
-            if (!check_type_values_roimg_rwimg(getStype<T>(inst))) return false;
-            if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_NONE, OPERAND_VALUES_REG64_IMAGE, sizeof(OPERAND_VALUES_REG64_IMAGE) / sizeof(unsigned), false)) return false;
-
-            if (
-                check_type_values_roimg(getStype<T>(inst))
-               )
-            {
-                if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_NONE, OPERAND_VALUES_REG64_ROIMAGE, sizeof(OPERAND_VALUES_REG64_ROIMAGE) / sizeof(unsigned), false)) return false;
-            }
-            else if (
-                check_type_values_rwimg(getStype<T>(inst))
-               )
-            {
-                if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_NONE, OPERAND_VALUES_REG64_RWIMAGE, sizeof(OPERAND_VALUES_REG64_RWIMAGE) / sizeof(unsigned), false)) return false;
-            }
-            else
-            {
-                return false;
-            }
-
             return true;
         }
 
         // Dependent Property
         case PROP_D0:
         {
-            if (!validateOperand(inst, PROP_D0, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
+            if (!validateOperand(inst, PROP_D0, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
+
+            return true;
+        }
+
+        // Dependent Property
+        case PROP_S1:
+        {
+            if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_STYPE, OPERAND_VALUES_REGSTYPE_IMAGESTYPE, sizeof(OPERAND_VALUES_REGSTYPE_IMAGESTYPE) / sizeof(unsigned), false)) return false;
 
             return true;
         }
@@ -24990,7 +27139,7 @@ template<class T> bool PropDescImpl::chkReqPropQuerysamplerboundary(T inst, unsi
         // Dependent Property
         case PROP_D0:
         {
-            if (!validateOperand(inst, PROP_D0, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
+            if (!validateOperand(inst, PROP_D0, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
 
             return true;
         }
@@ -24998,7 +27147,7 @@ template<class T> bool PropDescImpl::chkReqPropQuerysamplerboundary(T inst, unsi
         // Dependent Property
         case PROP_S1:
         {
-            if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_NONE, OPERAND_VALUES_REG64_SAMPLER, sizeof(OPERAND_VALUES_REG64_SAMPLER) / sizeof(unsigned), false)) return false;
+            if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_SAMP, OPERAND_VALUES_REGSAMP_SAMPLERSAMP, sizeof(OPERAND_VALUES_REGSAMP_SAMPLERSAMP) / sizeof(unsigned), false)) return false;
 
             return true;
         }
@@ -25006,7 +27155,7 @@ template<class T> bool PropDescImpl::chkReqPropQuerysamplerboundary(T inst, unsi
         // Dependent Property
         case PROP_S2:
         {
-            if (!validateOperand(inst, PROP_S2, OPERAND_ATTR_NONE, OPERAND_VALUES_IMM32, sizeof(OPERAND_VALUES_IMM32) / sizeof(unsigned), false)) return false;
+            if (!validateOperand(inst, PROP_S2, OPERAND_ATTR_U32, OPERAND_VALUES_IMM, sizeof(OPERAND_VALUES_IMM) / sizeof(unsigned), false)) return false;
 
             return true;
         }
@@ -25056,7 +27205,7 @@ template<class T> bool PropDescImpl::chkReqPropQuerysampler(T inst, unsigned pro
         // Dependent Property
         case PROP_D0:
         {
-            if (!validateOperand(inst, PROP_D0, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
+            if (!validateOperand(inst, PROP_D0, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
 
             return true;
         }
@@ -25064,7 +27213,74 @@ template<class T> bool PropDescImpl::chkReqPropQuerysampler(T inst, unsigned pro
         // Dependent Property
         case PROP_S1:
         {
-            if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_NONE, OPERAND_VALUES_REG64_SAMPLER, sizeof(OPERAND_VALUES_REG64_SAMPLER) / sizeof(unsigned), false)) return false;
+            if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_SAMP, OPERAND_VALUES_REGSAMP_SAMPLERSAMP, sizeof(OPERAND_VALUES_REGSAMP_SAMPLERSAMP) / sizeof(unsigned), false)) return false;
+
+            return true;
+        }
+
+        // Dependent Property
+        case PROP_S2:
+        {
+            if (!validateOperand(inst, PROP_S2, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned), false)) return false;
+
+            return true;
+        }
+
+        // Dependent Property
+        case PROP_S3:
+        {
+            if (!validateOperand(inst, PROP_S3, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned), false)) return false;
+
+            return true;
+        }
+
+        // Dependent Property
+        case PROP_S4:
+        {
+            if (!validateOperand(inst, PROP_S4, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned), false)) return false;
+
+            return true;
+        }
+
+    default: 
+        assert(false);
+        return false;
+    }
+}
+template<class T> bool PropDescImpl::chkReqPropGptr(T inst, unsigned propId)
+{
+    switch(propId)
+    {
+        // Primary Property
+        case PROP_TYPE:
+        {
+            if (!check_type_values_u32_u64(getType<T>(inst))) return false;
+
+            return true;
+        }
+
+        // Last Primary Property
+        case PROP_SEGMENT:
+        {
+            if (!check_type_values_u32_u64(getType<T>(inst))) return false;
+            if (!check_segment_values_flat_global(getSegment<T>(inst))) return false;
+            if (!validateTypesize(inst, PROP_TYPESIZE, TYPESIZE_ATTR_NONE, TYPESIZE_VALUES_SEG, sizeof(TYPESIZE_VALUES_SEG) / sizeof(unsigned), false)) return false;
+
+            return true;
+        }
+
+        // Dependent Property
+        case PROP_S0:
+        {
+            if (!validateOperand(inst, PROP_S0, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
+
+            return true;
+        }
+
+        // Dependent Property
+        case PROP_S1:
+        {
+            if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned), false)) return false;
 
             return true;
         }
@@ -25111,6 +27327,14 @@ template<class T> bool PropDescImpl::chkReqPropRdimage(T inst, unsigned propId)
         }
 
         // Primary Property
+        case PROP_ITYPE:
+        {
+            if (!check_type_values_roimg_rwimg(getItype<T>(inst))) return false;
+
+            return true;
+        }
+
+        // Primary Property
         case PROP_TYPE:
         {
             if (!check_type_values_s32_u32_f32(getType<T>(inst))) return false;
@@ -25118,85 +27342,13 @@ template<class T> bool PropDescImpl::chkReqPropRdimage(T inst, unsigned propId)
             return true;
         }
 
-        // Primary Property
+        // Last Primary Property
         case PROP_GEOM:
         {
-            if (!check_geom_values_1d_2d_3d_1da_2da(getGeom<T>(inst))) return false;
-
-            return true;
-        }
-
-        // Last Primary Property
-        case PROP_ITYPE:
-        {
             if (!check_type_values_s32_u32_f32(getType<T>(inst))) return false;
             if (!check_type_values_roimg_rwimg(getItype<T>(inst))) return false;
             if (!check_type_values_s32_f32(getCtype<T>(inst))) return false;
             if (!check_geom_values_1d_2d_3d_1da_2da(getGeom<T>(inst))) return false;
-
-            if (
-                check_type_values_roimg(getItype<T>(inst))
-               )
-            {
-            }
-            else if (
-                check_type_values_rwimg(getItype<T>(inst))
-               )
-            {
-            }
-            else
-            {
-                return false;
-            }
-
-            if (
-                check_geom_values_1d(getGeom<T>(inst))
-               )
-            {
-            }
-            else if (
-                check_geom_values_2d_1da(getGeom<T>(inst))
-               )
-            {
-            }
-            else if (
-                check_geom_values_3d_2da(getGeom<T>(inst))
-               )
-            {
-            }
-            else
-            {
-                return false;
-            }
-
-            return true;
-        }
-
-        // Conditional Property
-        case PROP_S1:
-        {
-            if (!check_type_values_s32_u32_f32(getType<T>(inst))) return false;
-            if (!check_type_values_roimg_rwimg(getItype<T>(inst))) return false;
-            if (!check_type_values_s32_f32(getCtype<T>(inst))) return false;
-            if (!check_geom_values_1d_2d_3d_1da_2da(getGeom<T>(inst))) return false;
-            if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_NONE, OPERAND_VALUES_REG64_IMAGE, sizeof(OPERAND_VALUES_REG64_IMAGE) / sizeof(unsigned), false)) return false;
-
-            if (
-                check_type_values_roimg(getItype<T>(inst))
-               )
-            {
-                if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_NONE, OPERAND_VALUES_REG64_ROIMAGE, sizeof(OPERAND_VALUES_REG64_ROIMAGE) / sizeof(unsigned), false)) return false;
-            }
-            else if (
-                check_type_values_rwimg(getItype<T>(inst))
-               )
-            {
-                if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_NONE, OPERAND_VALUES_REG64_RWIMAGE, sizeof(OPERAND_VALUES_REG64_RWIMAGE) / sizeof(unsigned), false)) return false;
-            }
-            else
-            {
-                return false;
-            }
 
             if (
                 check_geom_values_1d(getGeom<T>(inst))
@@ -25228,21 +27380,6 @@ template<class T> bool PropDescImpl::chkReqPropRdimage(T inst, unsigned propId)
             if (!check_type_values_roimg_rwimg(getItype<T>(inst))) return false;
             if (!check_type_values_s32_f32(getCtype<T>(inst))) return false;
             if (!check_geom_values_1d_2d_3d_1da_2da(getGeom<T>(inst))) return false;
-
-            if (
-                check_type_values_roimg(getItype<T>(inst))
-               )
-            {
-            }
-            else if (
-                check_type_values_rwimg(getItype<T>(inst))
-               )
-            {
-            }
-            else
-            {
-                return false;
-            }
 
             if (
                 check_geom_values_1d(getGeom<T>(inst))
@@ -25273,57 +27410,7 @@ template<class T> bool PropDescImpl::chkReqPropRdimage(T inst, unsigned propId)
         // Dependent Property
         case PROP_D0:
         {
-            if (!validateOperand(inst, PROP_D0, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REGV4, sizeof(OPERAND_VALUES_REGV4) / sizeof(unsigned), false)) return false;
-
-            return true;
-        }
-
-        // Dependent Property
-        case PROP_S2:
-        {
-            if (!validateOperand(inst, PROP_S2, OPERAND_ATTR_NONE, OPERAND_VALUES_REG64_SAMPLER, sizeof(OPERAND_VALUES_REG64_SAMPLER) / sizeof(unsigned), false)) return false;
-
-            return true;
-        }
-
-        // Dependent Property
-        case PROP_S4:
-        {
-            if (!validateOperand(inst, PROP_S4, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned), false)) return false;
-
-            return true;
-        }
-
-    default: 
-        assert(false);
-        return false;
-    }
-}
-template<class T> bool PropDescImpl::chkReqPropSendlane(T inst, unsigned propId)
-{
-    switch(propId)
-    {
-        // Primary Property
-        case PROP_STYPE:
-        {
-            if (!check_type_values_none(getStype<T>(inst))) return false;
-
-            return true;
-        }
-
-        // Last Primary Property
-        case PROP_TYPE:
-        {
-            if (!check_type_values_b32(getType<T>(inst))) return false;
-            if (!check_type_values_none(getStype<T>(inst))) return false;
-
-            return true;
-        }
-
-        // Dependent Property
-        case PROP_D0:
-        {
-            if (!validateOperand(inst, PROP_D0, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
+            if (!validateOperand(inst, PROP_D0, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REGV4, sizeof(OPERAND_VALUES_REGV4) / sizeof(unsigned), false)) return false;
 
             return true;
         }
@@ -25331,7 +27418,7 @@ template<class T> bool PropDescImpl::chkReqPropSendlane(T inst, unsigned propId)
         // Dependent Property
         case PROP_S1:
         {
-            if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
+            if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_ITYPE, OPERAND_VALUES_REGSTYPE_IMAGESTYPE, sizeof(OPERAND_VALUES_REGSTYPE_IMAGESTYPE) / sizeof(unsigned), false)) return false;
 
             return true;
         }
@@ -25339,15 +27426,7 @@ template<class T> bool PropDescImpl::chkReqPropSendlane(T inst, unsigned propId)
         // Dependent Property
         case PROP_S2:
         {
-            if (!validateOperand(inst, PROP_S2, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
-
-            return true;
-        }
-
-        // Dependent Property
-        case PROP_S3:
-        {
-            if (!validateOperand(inst, PROP_S3, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned), false)) return false;
+            if (!validateOperand(inst, PROP_S2, OPERAND_ATTR_SAMP, OPERAND_VALUES_REGSAMP_SAMPLERSAMP, sizeof(OPERAND_VALUES_REGSAMP_SAMPLERSAMP) / sizeof(unsigned), false)) return false;
 
             return true;
         }
@@ -25361,9 +27440,9 @@ template<class T> bool PropDescImpl::chkReqPropSendlane(T inst, unsigned propId)
         }
 
         // Plain Property
-        case PROP_WIDTH:
+        case PROP_EQCLASS:
         {
-            if (!check_width_values_any(getWidth<T>(inst))) return false;
+            if (!validateEqclass(inst, PROP_EQCLASS, EQCLASS_ATTR_NONE, EQCLASS_VALUES_ANY, sizeof(EQCLASS_VALUES_ANY) / sizeof(unsigned), false)) return false;
 
             return true;
         }
@@ -25454,7 +27533,7 @@ template<class T> bool PropDescImpl::chkReqPropSad(T inst, unsigned propId)
         // Dependent Property
         case PROP_D0:
         {
-            if (!validateOperand(inst, PROP_D0, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
+            if (!validateOperand(inst, PROP_D0, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
 
             return true;
         }
@@ -25478,7 +27557,7 @@ template<class T> bool PropDescImpl::chkReqPropSad(T inst, unsigned propId)
         // Dependent Property
         case PROP_S3:
         {
-            if (!validateOperand(inst, PROP_S3, OPERAND_ATTR_NONE, OPERAND_VALUES_REG32_IMM32, sizeof(OPERAND_VALUES_REG32_IMM32) / sizeof(unsigned), false)) return false;
+            if (!validateOperand(inst, PROP_S3, OPERAND_ATTR_U32, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
 
             return true;
         }
@@ -25520,7 +27599,7 @@ template<class T> bool PropDescImpl::chkReqPropSadhi(T inst, unsigned propId)
         // Dependent Property
         case PROP_D0:
         {
-            if (!validateOperand(inst, PROP_D0, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
+            if (!validateOperand(inst, PROP_D0, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
 
             return true;
         }
@@ -25544,7 +27623,7 @@ template<class T> bool PropDescImpl::chkReqPropSadhi(T inst, unsigned propId)
         // Dependent Property
         case PROP_S3:
         {
-            if (!validateOperand(inst, PROP_S3, OPERAND_ATTR_NONE, OPERAND_VALUES_REG32_IMM32, sizeof(OPERAND_VALUES_REG32_IMM32) / sizeof(unsigned), false)) return false;
+            if (!validateOperand(inst, PROP_S3, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
 
             return true;
         }
@@ -25596,7 +27675,7 @@ template<class T> bool PropDescImpl::chkReqPropSegmentp(T inst, unsigned propId)
         // Dependent Property
         case PROP_D0:
         {
-            if (!validateOperand(inst, PROP_D0, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
+            if (!validateOperand(inst, PROP_D0, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
 
             return true;
         }
@@ -25633,6 +27712,14 @@ template<class T> bool PropDescImpl::chkReqPropSegmentp(T inst, unsigned propId)
             return true;
         }
 
+        // Plain Property
+        case PROP_NONULL:
+        {
+            if (!check_nonull_values_any(getNonull<T>(inst))) return false;
+
+            return true;
+        }
+
     default: 
         assert(false);
         return false;
@@ -25653,7 +27740,7 @@ template<class T> bool PropDescImpl::chkReqPropShift(T inst, unsigned propId)
         // Dependent Property
         case PROP_D0:
         {
-            if (!validateOperand(inst, PROP_D0, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
+            if (!validateOperand(inst, PROP_D0, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
 
             return true;
         }
@@ -25661,7 +27748,7 @@ template<class T> bool PropDescImpl::chkReqPropShift(T inst, unsigned propId)
         // Dependent Property
         case PROP_S1:
         {
-            if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
+            if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
 
             return true;
         }
@@ -25669,7 +27756,7 @@ template<class T> bool PropDescImpl::chkReqPropShift(T inst, unsigned propId)
         // Dependent Property
         case PROP_S2:
         {
-            if (!validateOperand(inst, PROP_S2, OPERAND_ATTR_NONE, OPERAND_VALUES_REG32_IMM32, sizeof(OPERAND_VALUES_REG32_IMM32) / sizeof(unsigned), false)) return false;
+            if (!validateOperand(inst, PROP_S2, OPERAND_ATTR_U32, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
 
             return true;
         }
@@ -25704,13 +27791,54 @@ template<class T> bool PropDescImpl::chkReqPropShuffle(T inst, unsigned propId)
         {
             if (!check_type_values_x32_x64(getType<T>(inst))) return false;
 
+            if (
+                check_type_values_x32(getType<T>(inst))
+               )
+            {
+            }
+            else if (
+                check_type_values_x64(getType<T>(inst))
+               )
+            {
+            }
+            else
+            {
+                return false;
+            }
+
+            return true;
+        }
+
+        // Conditional Property
+        case PROP_S3:
+        {
+            if (!check_type_values_x32_x64(getType<T>(inst))) return false;
+            if (!validateOperand(inst, PROP_S3, OPERAND_ATTR_DTYPE, OPERAND_VALUES_IMM, sizeof(OPERAND_VALUES_IMM) / sizeof(unsigned), false)) return false;
+
+            if (
+                check_type_values_x32(getType<T>(inst))
+               )
+            {
+                if (!validateOperand(inst, PROP_S3, OPERAND_ATTR_B32, OPERAND_VALUES_IMM, sizeof(OPERAND_VALUES_IMM) / sizeof(unsigned), false)) return false;
+            }
+            else if (
+                check_type_values_x64(getType<T>(inst))
+               )
+            {
+                if (!validateOperand(inst, PROP_S3, OPERAND_ATTR_B64, OPERAND_VALUES_IMM, sizeof(OPERAND_VALUES_IMM) / sizeof(unsigned), false)) return false;
+            }
+            else
+            {
+                return false;
+            }
+
             return true;
         }
 
         // Dependent Property
         case PROP_D0:
         {
-            if (!validateOperand(inst, PROP_D0, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
+            if (!validateOperand(inst, PROP_D0, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
 
             return true;
         }
@@ -25718,7 +27846,7 @@ template<class T> bool PropDescImpl::chkReqPropShuffle(T inst, unsigned propId)
         // Dependent Property
         case PROP_S1:
         {
-            if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
+            if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
 
             return true;
         }
@@ -25726,7 +27854,828 @@ template<class T> bool PropDescImpl::chkReqPropShuffle(T inst, unsigned propId)
         // Dependent Property
         case PROP_S2:
         {
-            if (!validateOperand(inst, PROP_S2, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
+            if (!validateOperand(inst, PROP_S2, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
+
+            return true;
+        }
+
+        // Dependent Property
+        case PROP_S4:
+        {
+            if (!validateOperand(inst, PROP_S4, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned), false)) return false;
+
+            return true;
+        }
+
+    default: 
+        assert(false);
+        return false;
+    }
+}
+template<class T> bool PropDescImpl::chkReqPropSignal(T inst, unsigned propId)
+{
+    switch(propId)
+    {
+        // Primary Property
+        case PROP_TYPE:
+        {
+            if (!check_type_values_b32_s32_u32_b64_s64_u64(getType<T>(inst))) return false;
+
+            return true;
+        }
+
+        // Last Primary Property
+        case PROP_SIGOP:
+        {
+            if (!check_type_values_b32_s32_u32_b64_s64_u64(getType<T>(inst))) return false;
+            if (!validateTypesize(inst, PROP_TYPESIZE, TYPESIZE_ATTR_NONE, TYPESIZE_VALUES_MODEL, sizeof(TYPESIZE_VALUES_MODEL) / sizeof(unsigned), false)) return false;
+
+            if (
+                check_type_values_b32_s32_u32(getType<T>(inst))
+               )
+            {
+            }
+            else if (
+                check_type_values_b64_s64_u64(getType<T>(inst))
+               )
+            {
+            }
+            else
+            {
+                return false;
+            }
+
+            if (
+                check_sigop_values_ld(getSigop<T>(inst))
+               )
+            {
+                if (!check_type_values_b32_b64(getType<T>(inst))) return false;
+            }
+            else if (
+                check_sigop_values_and_or_xor_exch(getSigop<T>(inst))
+               )
+            {
+                if (!check_type_values_b32_b64(getType<T>(inst))) return false;
+            }
+            else if (
+                check_sigop_values_cas(getSigop<T>(inst))
+               )
+            {
+                if (!check_type_values_b32_b64(getType<T>(inst))) return false;
+            }
+            else if (
+                check_sigop_values_add_sub_min_max(getSigop<T>(inst))
+               )
+            {
+                if (!check_type_values_s32_u32_s64_u64(getType<T>(inst))) return false;
+            }
+            else if (
+                check_sigop_values_inc_dec(getSigop<T>(inst))
+               )
+            {
+                if (!check_type_values_u32_u64(getType<T>(inst))) return false;
+            }
+            else if (
+                check_sigop_values_wait(getSigop<T>(inst))
+               )
+            {
+                if (!check_type_values_s32_s64(getType<T>(inst))) return false;
+            }
+            else if (
+                check_sigop_values_waittimeout(getSigop<T>(inst))
+               )
+            {
+                if (!check_type_values_s32_s64(getType<T>(inst))) return false;
+            }
+            else
+            {
+                return false;
+            }
+
+            return true;
+        }
+
+        // Conditional Property
+        case PROP_MEMORD:
+        {
+            if (!check_type_values_b32_s32_u32_b64_s64_u64(getType<T>(inst))) return false;
+            if (!check_memord_values_any(getMemord<T>(inst))) return false;
+
+            if (
+                check_type_values_b32_s32_u32(getType<T>(inst))
+               )
+            {
+            }
+            else if (
+                check_type_values_b64_s64_u64(getType<T>(inst))
+               )
+            {
+            }
+            else
+            {
+                return false;
+            }
+
+            if (
+                check_sigop_values_ld(getSigop<T>(inst))
+               )
+            {
+                if (!check_type_values_b32_b64(getType<T>(inst))) return false;
+                if (!check_memord_values_ld(getMemord<T>(inst))) return false;
+            }
+            else if (
+                check_sigop_values_and_or_xor_exch(getSigop<T>(inst))
+               )
+            {
+                if (!check_type_values_b32_b64(getType<T>(inst))) return false;
+                if (!check_memord_values_any(getMemord<T>(inst))) return false;
+            }
+            else if (
+                check_sigop_values_cas(getSigop<T>(inst))
+               )
+            {
+                if (!check_type_values_b32_b64(getType<T>(inst))) return false;
+                if (!check_memord_values_any(getMemord<T>(inst))) return false;
+            }
+            else if (
+                check_sigop_values_add_sub_min_max(getSigop<T>(inst))
+               )
+            {
+                if (!check_type_values_s32_u32_s64_u64(getType<T>(inst))) return false;
+                if (!check_memord_values_any(getMemord<T>(inst))) return false;
+            }
+            else if (
+                check_sigop_values_inc_dec(getSigop<T>(inst))
+               )
+            {
+                if (!check_type_values_u32_u64(getType<T>(inst))) return false;
+                if (!check_memord_values_any(getMemord<T>(inst))) return false;
+            }
+            else if (
+                check_sigop_values_wait(getSigop<T>(inst))
+               )
+            {
+                if (!check_type_values_s32_s64(getType<T>(inst))) return false;
+                if (!check_memord_values_ld(getMemord<T>(inst))) return false;
+            }
+            else if (
+                check_sigop_values_waittimeout(getSigop<T>(inst))
+               )
+            {
+                if (!check_type_values_s32_s64(getType<T>(inst))) return false;
+                if (!check_memord_values_ld(getMemord<T>(inst))) return false;
+            }
+            else
+            {
+                return false;
+            }
+
+            return true;
+        }
+
+        // Conditional Property
+        case PROP_S1:
+        {
+            if (!check_type_values_b32_s32_u32_b64_s64_u64(getType<T>(inst))) return false;
+
+            if (
+                check_type_values_b32_s32_u32(getType<T>(inst))
+               )
+            {
+                if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_SIG32, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
+            }
+            else if (
+                check_type_values_b64_s64_u64(getType<T>(inst))
+               )
+            {
+                if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_SIG64, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
+            }
+            else
+            {
+                return false;
+            }
+
+            if (
+                check_sigop_values_ld(getSigop<T>(inst))
+               )
+            {
+                if (!check_type_values_b32_b64(getType<T>(inst))) return false;
+            }
+            else if (
+                check_sigop_values_and_or_xor_exch(getSigop<T>(inst))
+               )
+            {
+                if (!check_type_values_b32_b64(getType<T>(inst))) return false;
+            }
+            else if (
+                check_sigop_values_cas(getSigop<T>(inst))
+               )
+            {
+                if (!check_type_values_b32_b64(getType<T>(inst))) return false;
+            }
+            else if (
+                check_sigop_values_add_sub_min_max(getSigop<T>(inst))
+               )
+            {
+                if (!check_type_values_s32_u32_s64_u64(getType<T>(inst))) return false;
+            }
+            else if (
+                check_sigop_values_inc_dec(getSigop<T>(inst))
+               )
+            {
+                if (!check_type_values_u32_u64(getType<T>(inst))) return false;
+            }
+            else if (
+                check_sigop_values_wait(getSigop<T>(inst))
+               )
+            {
+                if (!check_type_values_s32_s64(getType<T>(inst))) return false;
+            }
+            else if (
+                check_sigop_values_waittimeout(getSigop<T>(inst))
+               )
+            {
+                if (!check_type_values_s32_s64(getType<T>(inst))) return false;
+            }
+            else
+            {
+                return false;
+            }
+
+            return true;
+        }
+
+        // Conditional Property
+        case PROP_S2:
+        {
+            if (!check_type_values_b32_s32_u32_b64_s64_u64(getType<T>(inst))) return false;
+
+            if (
+                check_type_values_b32_s32_u32(getType<T>(inst))
+               )
+            {
+            }
+            else if (
+                check_type_values_b64_s64_u64(getType<T>(inst))
+               )
+            {
+            }
+            else
+            {
+                return false;
+            }
+
+            if (
+                check_sigop_values_ld(getSigop<T>(inst))
+               )
+            {
+                if (!check_type_values_b32_b64(getType<T>(inst))) return false;
+                if (!validateOperand(inst, PROP_S2, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned), false)) return false;
+            }
+            else if (
+                check_sigop_values_and_or_xor_exch(getSigop<T>(inst))
+               )
+            {
+                if (!check_type_values_b32_b64(getType<T>(inst))) return false;
+                if (!validateOperand(inst, PROP_S2, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
+            }
+            else if (
+                check_sigop_values_cas(getSigop<T>(inst))
+               )
+            {
+                if (!check_type_values_b32_b64(getType<T>(inst))) return false;
+                if (!validateOperand(inst, PROP_S2, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
+            }
+            else if (
+                check_sigop_values_add_sub_min_max(getSigop<T>(inst))
+               )
+            {
+                if (!check_type_values_s32_u32_s64_u64(getType<T>(inst))) return false;
+                if (!validateOperand(inst, PROP_S2, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
+            }
+            else if (
+                check_sigop_values_inc_dec(getSigop<T>(inst))
+               )
+            {
+                if (!check_type_values_u32_u64(getType<T>(inst))) return false;
+                if (!validateOperand(inst, PROP_S2, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
+            }
+            else if (
+                check_sigop_values_wait(getSigop<T>(inst))
+               )
+            {
+                if (!check_type_values_s32_s64(getType<T>(inst))) return false;
+                if (!validateOperand(inst, PROP_S2, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
+            }
+            else if (
+                check_sigop_values_waittimeout(getSigop<T>(inst))
+               )
+            {
+                if (!check_type_values_s32_s64(getType<T>(inst))) return false;
+                if (!validateOperand(inst, PROP_S2, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
+            }
+            else
+            {
+                return false;
+            }
+
+            return true;
+        }
+
+        // Conditional Property
+        case PROP_S3:
+        {
+            if (!check_type_values_b32_s32_u32_b64_s64_u64(getType<T>(inst))) return false;
+
+            if (
+                check_type_values_b32_s32_u32(getType<T>(inst))
+               )
+            {
+            }
+            else if (
+                check_type_values_b64_s64_u64(getType<T>(inst))
+               )
+            {
+            }
+            else
+            {
+                return false;
+            }
+
+            if (
+                check_sigop_values_ld(getSigop<T>(inst))
+               )
+            {
+                if (!check_type_values_b32_b64(getType<T>(inst))) return false;
+                if (!validateOperand(inst, PROP_S3, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned), false)) return false;
+            }
+            else if (
+                check_sigop_values_and_or_xor_exch(getSigop<T>(inst))
+               )
+            {
+                if (!check_type_values_b32_b64(getType<T>(inst))) return false;
+                if (!validateOperand(inst, PROP_S3, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned), false)) return false;
+            }
+            else if (
+                check_sigop_values_cas(getSigop<T>(inst))
+               )
+            {
+                if (!check_type_values_b32_b64(getType<T>(inst))) return false;
+                if (!validateOperand(inst, PROP_S3, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
+            }
+            else if (
+                check_sigop_values_add_sub_min_max(getSigop<T>(inst))
+               )
+            {
+                if (!check_type_values_s32_u32_s64_u64(getType<T>(inst))) return false;
+                if (!validateOperand(inst, PROP_S3, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned), false)) return false;
+            }
+            else if (
+                check_sigop_values_inc_dec(getSigop<T>(inst))
+               )
+            {
+                if (!check_type_values_u32_u64(getType<T>(inst))) return false;
+                if (!validateOperand(inst, PROP_S3, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned), false)) return false;
+            }
+            else if (
+                check_sigop_values_wait(getSigop<T>(inst))
+               )
+            {
+                if (!check_type_values_s32_s64(getType<T>(inst))) return false;
+                if (!validateOperand(inst, PROP_S3, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned), false)) return false;
+            }
+            else if (
+                check_sigop_values_waittimeout(getSigop<T>(inst))
+               )
+            {
+                if (!check_type_values_s32_s64(getType<T>(inst))) return false;
+                if (!validateOperand(inst, PROP_S3, OPERAND_ATTR_U64, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
+            }
+            else
+            {
+                return false;
+            }
+
+            return true;
+        }
+
+        // Conditional Property
+        case PROP_SIGTYPE:
+        {
+            if (!check_type_values_b32_s32_u32_b64_s64_u64(getType<T>(inst))) return false;
+            if (!check_type_values_sig32_sig64(getSigtype<T>(inst))) return false;
+
+            if (
+                check_type_values_b32_s32_u32(getType<T>(inst))
+               )
+            {
+                if (!check_type_values_sig32(getSigtype<T>(inst))) return false;
+            }
+            else if (
+                check_type_values_b64_s64_u64(getType<T>(inst))
+               )
+            {
+                if (!check_type_values_sig64(getSigtype<T>(inst))) return false;
+            }
+            else
+            {
+                return false;
+            }
+
+            if (
+                check_sigop_values_ld(getSigop<T>(inst))
+               )
+            {
+                if (!check_type_values_b32_b64(getType<T>(inst))) return false;
+            }
+            else if (
+                check_sigop_values_and_or_xor_exch(getSigop<T>(inst))
+               )
+            {
+                if (!check_type_values_b32_b64(getType<T>(inst))) return false;
+            }
+            else if (
+                check_sigop_values_cas(getSigop<T>(inst))
+               )
+            {
+                if (!check_type_values_b32_b64(getType<T>(inst))) return false;
+            }
+            else if (
+                check_sigop_values_add_sub_min_max(getSigop<T>(inst))
+               )
+            {
+                if (!check_type_values_s32_u32_s64_u64(getType<T>(inst))) return false;
+            }
+            else if (
+                check_sigop_values_inc_dec(getSigop<T>(inst))
+               )
+            {
+                if (!check_type_values_u32_u64(getType<T>(inst))) return false;
+            }
+            else if (
+                check_sigop_values_wait(getSigop<T>(inst))
+               )
+            {
+                if (!check_type_values_s32_s64(getType<T>(inst))) return false;
+            }
+            else if (
+                check_sigop_values_waittimeout(getSigop<T>(inst))
+               )
+            {
+                if (!check_type_values_s32_s64(getType<T>(inst))) return false;
+            }
+            else
+            {
+                return false;
+            }
+
+            return true;
+        }
+
+        // Dependent Property
+        case PROP_D0:
+        {
+            if (!validateOperand(inst, PROP_D0, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
+
+            return true;
+        }
+
+        // Dependent Property
+        case PROP_S4:
+        {
+            if (!validateOperand(inst, PROP_S4, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned), false)) return false;
+
+            return true;
+        }
+
+    default: 
+        assert(false);
+        return false;
+    }
+}
+template<class T> bool PropDescImpl::chkReqPropSignal_noret(T inst, unsigned propId)
+{
+    switch(propId)
+    {
+        // Primary Property
+        case PROP_TYPE:
+        {
+            if (!check_type_values_b32_s32_u32_b64_s64_u64(getType<T>(inst))) return false;
+
+            return true;
+        }
+
+        // Last Primary Property
+        case PROP_SIGOP:
+        {
+            if (!check_type_values_b32_s32_u32_b64_s64_u64(getType<T>(inst))) return false;
+            if (!validateTypesize(inst, PROP_TYPESIZE, TYPESIZE_ATTR_NONE, TYPESIZE_VALUES_MODEL, sizeof(TYPESIZE_VALUES_MODEL) / sizeof(unsigned), false)) return false;
+
+            if (
+                check_type_values_b32_s32_u32(getType<T>(inst))
+               )
+            {
+            }
+            else if (
+                check_type_values_b64_s64_u64(getType<T>(inst))
+               )
+            {
+            }
+            else
+            {
+                return false;
+            }
+
+            if (
+                check_sigop_values_st(getSigop<T>(inst))
+               )
+            {
+                if (!check_type_values_b32_b64(getType<T>(inst))) return false;
+            }
+            else if (
+                check_sigop_values_and_or_xor(getSigop<T>(inst))
+               )
+            {
+                if (!check_type_values_b32_b64(getType<T>(inst))) return false;
+            }
+            else if (
+                check_sigop_values_cas(getSigop<T>(inst))
+               )
+            {
+                if (!check_type_values_b32_b64(getType<T>(inst))) return false;
+            }
+            else if (
+                check_sigop_values_add_sub_min_max(getSigop<T>(inst))
+               )
+            {
+                if (!check_type_values_s32_u32_s64_u64(getType<T>(inst))) return false;
+            }
+            else if (
+                check_sigop_values_inc_dec(getSigop<T>(inst))
+               )
+            {
+                if (!check_type_values_u32_u64(getType<T>(inst))) return false;
+            }
+            else
+            {
+                return false;
+            }
+
+            return true;
+        }
+
+        // Conditional Property
+        case PROP_MEMORD:
+        {
+            if (!check_type_values_b32_s32_u32_b64_s64_u64(getType<T>(inst))) return false;
+            if (!check_memord_values_any(getMemord<T>(inst))) return false;
+
+            if (
+                check_type_values_b32_s32_u32(getType<T>(inst))
+               )
+            {
+            }
+            else if (
+                check_type_values_b64_s64_u64(getType<T>(inst))
+               )
+            {
+            }
+            else
+            {
+                return false;
+            }
+
+            if (
+                check_sigop_values_st(getSigop<T>(inst))
+               )
+            {
+                if (!check_type_values_b32_b64(getType<T>(inst))) return false;
+                if (!check_memord_values_st(getMemord<T>(inst))) return false;
+            }
+            else if (
+                check_sigop_values_and_or_xor(getSigop<T>(inst))
+               )
+            {
+                if (!check_type_values_b32_b64(getType<T>(inst))) return false;
+                if (!check_memord_values_any(getMemord<T>(inst))) return false;
+            }
+            else if (
+                check_sigop_values_cas(getSigop<T>(inst))
+               )
+            {
+                if (!check_type_values_b32_b64(getType<T>(inst))) return false;
+                if (!check_memord_values_any(getMemord<T>(inst))) return false;
+            }
+            else if (
+                check_sigop_values_add_sub_min_max(getSigop<T>(inst))
+               )
+            {
+                if (!check_type_values_s32_u32_s64_u64(getType<T>(inst))) return false;
+                if (!check_memord_values_any(getMemord<T>(inst))) return false;
+            }
+            else if (
+                check_sigop_values_inc_dec(getSigop<T>(inst))
+               )
+            {
+                if (!check_type_values_u32_u64(getType<T>(inst))) return false;
+                if (!check_memord_values_any(getMemord<T>(inst))) return false;
+            }
+            else
+            {
+                return false;
+            }
+
+            return true;
+        }
+
+        // Conditional Property
+        case PROP_S0:
+        {
+            if (!check_type_values_b32_s32_u32_b64_s64_u64(getType<T>(inst))) return false;
+
+            if (
+                check_type_values_b32_s32_u32(getType<T>(inst))
+               )
+            {
+                if (!validateOperand(inst, PROP_S0, OPERAND_ATTR_SIG32, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
+            }
+            else if (
+                check_type_values_b64_s64_u64(getType<T>(inst))
+               )
+            {
+                if (!validateOperand(inst, PROP_S0, OPERAND_ATTR_SIG64, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
+            }
+            else
+            {
+                return false;
+            }
+
+            if (
+                check_sigop_values_st(getSigop<T>(inst))
+               )
+            {
+                if (!check_type_values_b32_b64(getType<T>(inst))) return false;
+            }
+            else if (
+                check_sigop_values_and_or_xor(getSigop<T>(inst))
+               )
+            {
+                if (!check_type_values_b32_b64(getType<T>(inst))) return false;
+            }
+            else if (
+                check_sigop_values_cas(getSigop<T>(inst))
+               )
+            {
+                if (!check_type_values_b32_b64(getType<T>(inst))) return false;
+            }
+            else if (
+                check_sigop_values_add_sub_min_max(getSigop<T>(inst))
+               )
+            {
+                if (!check_type_values_s32_u32_s64_u64(getType<T>(inst))) return false;
+            }
+            else if (
+                check_sigop_values_inc_dec(getSigop<T>(inst))
+               )
+            {
+                if (!check_type_values_u32_u64(getType<T>(inst))) return false;
+            }
+            else
+            {
+                return false;
+            }
+
+            return true;
+        }
+
+        // Conditional Property
+        case PROP_S2:
+        {
+            if (!check_type_values_b32_s32_u32_b64_s64_u64(getType<T>(inst))) return false;
+
+            if (
+                check_type_values_b32_s32_u32(getType<T>(inst))
+               )
+            {
+            }
+            else if (
+                check_type_values_b64_s64_u64(getType<T>(inst))
+               )
+            {
+            }
+            else
+            {
+                return false;
+            }
+
+            if (
+                check_sigop_values_st(getSigop<T>(inst))
+               )
+            {
+                if (!check_type_values_b32_b64(getType<T>(inst))) return false;
+                if (!validateOperand(inst, PROP_S2, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned), false)) return false;
+            }
+            else if (
+                check_sigop_values_and_or_xor(getSigop<T>(inst))
+               )
+            {
+                if (!check_type_values_b32_b64(getType<T>(inst))) return false;
+                if (!validateOperand(inst, PROP_S2, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned), false)) return false;
+            }
+            else if (
+                check_sigop_values_cas(getSigop<T>(inst))
+               )
+            {
+                if (!check_type_values_b32_b64(getType<T>(inst))) return false;
+                if (!validateOperand(inst, PROP_S2, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
+            }
+            else if (
+                check_sigop_values_add_sub_min_max(getSigop<T>(inst))
+               )
+            {
+                if (!check_type_values_s32_u32_s64_u64(getType<T>(inst))) return false;
+                if (!validateOperand(inst, PROP_S2, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned), false)) return false;
+            }
+            else if (
+                check_sigop_values_inc_dec(getSigop<T>(inst))
+               )
+            {
+                if (!check_type_values_u32_u64(getType<T>(inst))) return false;
+                if (!validateOperand(inst, PROP_S2, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned), false)) return false;
+            }
+            else
+            {
+                return false;
+            }
+
+            return true;
+        }
+
+        // Conditional Property
+        case PROP_SIGTYPE:
+        {
+            if (!check_type_values_b32_s32_u32_b64_s64_u64(getType<T>(inst))) return false;
+            if (!check_type_values_sig32_sig64(getSigtype<T>(inst))) return false;
+
+            if (
+                check_type_values_b32_s32_u32(getType<T>(inst))
+               )
+            {
+                if (!check_type_values_sig32(getSigtype<T>(inst))) return false;
+            }
+            else if (
+                check_type_values_b64_s64_u64(getType<T>(inst))
+               )
+            {
+                if (!check_type_values_sig64(getSigtype<T>(inst))) return false;
+            }
+            else
+            {
+                return false;
+            }
+
+            if (
+                check_sigop_values_st(getSigop<T>(inst))
+               )
+            {
+                if (!check_type_values_b32_b64(getType<T>(inst))) return false;
+            }
+            else if (
+                check_sigop_values_and_or_xor(getSigop<T>(inst))
+               )
+            {
+                if (!check_type_values_b32_b64(getType<T>(inst))) return false;
+            }
+            else if (
+                check_sigop_values_cas(getSigop<T>(inst))
+               )
+            {
+                if (!check_type_values_b32_b64(getType<T>(inst))) return false;
+            }
+            else if (
+                check_sigop_values_add_sub_min_max(getSigop<T>(inst))
+               )
+            {
+                if (!check_type_values_s32_u32_s64_u64(getType<T>(inst))) return false;
+            }
+            else if (
+                check_sigop_values_inc_dec(getSigop<T>(inst))
+               )
+            {
+                if (!check_type_values_u32_u64(getType<T>(inst))) return false;
+            }
+            else
+            {
+                return false;
+            }
+
+            return true;
+        }
+
+        // Dependent Property
+        case PROP_S1:
+        {
+            if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
 
             return true;
         }
@@ -25734,7 +28683,7 @@ template<class T> bool PropDescImpl::chkReqPropShuffle(T inst, unsigned propId)
         // Dependent Property
         case PROP_S3:
         {
-            if (!validateOperand(inst, PROP_S3, OPERAND_ATTR_NOEXP, OPERAND_VALUES_IMM, sizeof(OPERAND_VALUES_IMM) / sizeof(unsigned), false)) return false;
+            if (!validateOperand(inst, PROP_S3, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned), false)) return false;
 
             return true;
         }
@@ -25807,7 +28756,7 @@ template<class T> bool PropDescImpl::chkReqPropSqrt(T inst, unsigned propId)
         // Dependent Property
         case PROP_D0:
         {
-            if (!validateOperand(inst, PROP_D0, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
+            if (!validateOperand(inst, PROP_D0, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
 
             return true;
         }
@@ -25815,7 +28764,7 @@ template<class T> bool PropDescImpl::chkReqPropSqrt(T inst, unsigned propId)
         // Dependent Property
         case PROP_S1:
         {
-            if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
+            if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
 
             return true;
         }
@@ -25872,7 +28821,7 @@ template<class T> bool PropDescImpl::chkReqPropSt(T inst, unsigned propId)
         // Primary Property
         case PROP_TYPE:
         {
-            if (!check_type_values_u_s_f_b128_roimg_rwimg_samp(getType<T>(inst))) return false;
+            if (!check_type_values_u_s_f_b128_opaque(getType<T>(inst))) return false;
 
             return true;
         }
@@ -25880,7 +28829,7 @@ template<class T> bool PropDescImpl::chkReqPropSt(T inst, unsigned propId)
         // Last Primary Property
         case PROP_SEGMENT:
         {
-            if (!check_type_values_u_s_f_b128_roimg_rwimg_samp(getType<T>(inst))) return false;
+            if (!check_type_values_u_s_f_b128_opaque(getType<T>(inst))) return false;
             if (!check_segment_values_writable(getSegment<T>(inst))) return false;
 
             if (
@@ -25889,7 +28838,7 @@ template<class T> bool PropDescImpl::chkReqPropSt(T inst, unsigned propId)
             {
             }
             else if (
-                check_type_values_b128_roimg_rwimg_samp(getType<T>(inst))
+                check_type_values_b128_opaque(getType<T>(inst))
                )
             {
             }
@@ -25904,20 +28853,20 @@ template<class T> bool PropDescImpl::chkReqPropSt(T inst, unsigned propId)
         // Conditional Property
         case PROP_S0:
         {
-            if (!check_type_values_u_s_f_b128_roimg_rwimg_samp(getType<T>(inst))) return false;
+            if (!check_type_values_u_s_f_b128_opaque(getType<T>(inst))) return false;
             if (!check_segment_values_writable(getSegment<T>(inst))) return false;
 
             if (
                 check_type_values_u_s_f(getType<T>(inst))
                )
             {
-                if (!validateOperand(inst, PROP_S0, OPERAND_ATTR_EXP, OPERAND_VALUES_REGEXP_REGVEXP_IMMEXP, sizeof(OPERAND_VALUES_REGEXP_REGVEXP_IMMEXP) / sizeof(unsigned), false)) return false;
+                if (!validateOperand(inst, PROP_S0, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG_REGV_IMM, sizeof(OPERAND_VALUES_REG_REGV_IMM) / sizeof(unsigned), false)) return false;
             }
             else if (
-                check_type_values_b128_roimg_rwimg_samp(getType<T>(inst))
+                check_type_values_b128_opaque(getType<T>(inst))
                )
             {
-                if (!validateOperand(inst, PROP_S0, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
+                if (!validateOperand(inst, PROP_S0, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
             }
             else
             {
@@ -25930,7 +28879,7 @@ template<class T> bool PropDescImpl::chkReqPropSt(T inst, unsigned propId)
         // Dependent Property
         case PROP_S1:
         {
-            if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_NONE, OPERAND_VALUES_ADDRTSEG, sizeof(OPERAND_VALUES_ADDRTSEG) / sizeof(unsigned), false)) return false;
+            if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_TSEG, OPERAND_VALUES_ADDRSEG, sizeof(OPERAND_VALUES_ADDRSEG) / sizeof(unsigned), false)) return false;
 
             return true;
         }
@@ -25963,6 +28912,14 @@ template<class T> bool PropDescImpl::chkReqPropSt(T inst, unsigned propId)
         case PROP_ALIGN:
         {
             if (!check_align_values_any(getAlign<T>(inst))) return false;
+
+            return true;
+        }
+
+        // Plain Property
+        case PROP_CONST:
+        {
+            if (!check_const_values_none(getConst<T>(inst))) return false;
 
             return true;
         }
@@ -26001,6 +28958,14 @@ template<class T> bool PropDescImpl::chkReqPropSt_image(T inst, unsigned propId)
         }
 
         // Primary Property
+        case PROP_ITYPE:
+        {
+            if (!check_type_values_rwimg(getItype<T>(inst))) return false;
+
+            return true;
+        }
+
+        // Primary Property
         case PROP_TYPE:
         {
             if (!check_type_values_s32_u32_f32(getType<T>(inst))) return false;
@@ -26034,6 +28999,7 @@ template<class T> bool PropDescImpl::chkReqPropSt_image(T inst, unsigned propId)
             {
                 return false;
             }
+            if (!check_type_values_rwimg(getItype<T>(inst))) return false;
 
             return true;
         }
@@ -26067,6 +29033,7 @@ template<class T> bool PropDescImpl::chkReqPropSt_image(T inst, unsigned propId)
             {
                 return false;
             }
+            if (!check_type_values_rwimg(getItype<T>(inst))) return false;
 
             return true;
         }
@@ -26074,7 +29041,7 @@ template<class T> bool PropDescImpl::chkReqPropSt_image(T inst, unsigned propId)
         // Dependent Property
         case PROP_S0:
         {
-            if (!validateOperand(inst, PROP_S0, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REGV4, sizeof(OPERAND_VALUES_REGV4) / sizeof(unsigned), false)) return false;
+            if (!validateOperand(inst, PROP_S0, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REGV4, sizeof(OPERAND_VALUES_REGV4) / sizeof(unsigned), false)) return false;
 
             return true;
         }
@@ -26082,7 +29049,7 @@ template<class T> bool PropDescImpl::chkReqPropSt_image(T inst, unsigned propId)
         // Dependent Property
         case PROP_S1:
         {
-            if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_NONE, OPERAND_VALUES_REG64_RWIMAGE, sizeof(OPERAND_VALUES_REG64_RWIMAGE) / sizeof(unsigned), false)) return false;
+            if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_ITYPE, OPERAND_VALUES_REGSTYPE_IMAGESTYPE, sizeof(OPERAND_VALUES_REGSTYPE_IMAGESTYPE) / sizeof(unsigned), false)) return false;
 
             return true;
         }
@@ -26104,9 +29071,9 @@ template<class T> bool PropDescImpl::chkReqPropSt_image(T inst, unsigned propId)
         }
 
         // Plain Property
-        case PROP_ITYPE:
+        case PROP_EQCLASS:
         {
-            if (!check_type_values_rwimg(getItype<T>(inst))) return false;
+            if (!validateEqclass(inst, PROP_EQCLASS, EQCLASS_ATTR_NONE, EQCLASS_VALUES_ANY, sizeof(EQCLASS_VALUES_ANY) / sizeof(unsigned), false)) return false;
 
             return true;
         }
@@ -26151,7 +29118,7 @@ template<class T> bool PropDescImpl::chkReqPropS2f(T inst, unsigned propId)
         // Dependent Property
         case PROP_D0:
         {
-            if (!validateOperand(inst, PROP_D0, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
+            if (!validateOperand(inst, PROP_D0, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
 
             return true;
         }
@@ -26188,19 +29155,36 @@ template<class T> bool PropDescImpl::chkReqPropS2f(T inst, unsigned propId)
             return true;
         }
 
+        // Plain Property
+        case PROP_NONULL:
+        {
+            if (!check_nonull_values_any(getNonull<T>(inst))) return false;
+
+            return true;
+        }
+
     default: 
         assert(false);
         return false;
     }
 }
-template<class T> bool PropDescImpl::chkReqPropSync(T inst, unsigned propId)
+template<class T> bool PropDescImpl::chkReqPropStq_wrt(T inst, unsigned propId)
 {
     switch(propId)
     {
-        // Last Primary Property
+        // Primary Property
         case PROP_TYPE:
         {
-            if (!check_type_values_none(getType<T>(inst))) return false;
+            if (!check_type_values_u64(getType<T>(inst))) return false;
+
+            return true;
+        }
+
+        // Last Primary Property
+        case PROP_SEGMENT:
+        {
+            if (!check_type_values_u64(getType<T>(inst))) return false;
+            if (!check_segment_values_flat_global(getSegment<T>(inst))) return false;
 
             return true;
         }
@@ -26208,7 +29192,7 @@ template<class T> bool PropDescImpl::chkReqPropSync(T inst, unsigned propId)
         // Dependent Property
         case PROP_S0:
         {
-            if (!validateOperand(inst, PROP_S0, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned), false)) return false;
+            if (!validateOperand(inst, PROP_S0, OPERAND_ATTR_SEG, OPERAND_VALUES_ADDRSEG, sizeof(OPERAND_VALUES_ADDRSEG) / sizeof(unsigned), false)) return false;
 
             return true;
         }
@@ -26216,7 +29200,7 @@ template<class T> bool PropDescImpl::chkReqPropSync(T inst, unsigned propId)
         // Dependent Property
         case PROP_S1:
         {
-            if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned), false)) return false;
+            if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
 
             return true;
         }
@@ -26246,90 +29230,9 @@ template<class T> bool PropDescImpl::chkReqPropSync(T inst, unsigned propId)
         }
 
         // Plain Property
-        case PROP_MEMFNC:
-        {
-            if (!check_memfnc_values_any(getMemfnc<T>(inst))) return false;
-
-            return true;
-        }
-
-        // Plain Property
         case PROP_MEMORD:
         {
-            if (!check_memord_values_any(getMemord<T>(inst))) return false;
-
-            return true;
-        }
-
-        // Plain Property
-        case PROP_MEMSCP:
-        {
-            if (!check_memscp_values_any(getMemscp<T>(inst))) return false;
-
-            return true;
-        }
-
-        // Plain Property
-        case PROP_WIDTH:
-        {
-            if (!check_width_values_none(getWidth<T>(inst))) return false;
-
-            return true;
-        }
-
-    default: 
-        assert(false);
-        return false;
-    }
-}
-template<class T> bool PropDescImpl::chkReqPropSyscall(T inst, unsigned propId)
-{
-    switch(propId)
-    {
-        // Last Primary Property
-        case PROP_TYPE:
-        {
-            if (!check_type_values_u32_u64(getType<T>(inst))) return false;
-
-            return true;
-        }
-
-        // Dependent Property
-        case PROP_S0:
-        {
-            if (!validateOperand(inst, PROP_S0, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
-
-            return true;
-        }
-
-        // Dependent Property
-        case PROP_S1:
-        {
-            if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_NOEXP, OPERAND_VALUES_IMM, sizeof(OPERAND_VALUES_IMM) / sizeof(unsigned), false)) return false;
-
-            return true;
-        }
-
-        // Dependent Property
-        case PROP_S2:
-        {
-            if (!validateOperand(inst, PROP_S2, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
-
-            return true;
-        }
-
-        // Dependent Property
-        case PROP_S3:
-        {
-            if (!validateOperand(inst, PROP_S3, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
-
-            return true;
-        }
-
-        // Dependent Property
-        case PROP_S4:
-        {
-            if (!validateOperand(inst, PROP_S4, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
+            if (!check_memord_values_ld(getMemord<T>(inst))) return false;
 
             return true;
         }
@@ -26410,7 +29313,7 @@ template<class T> bool PropDescImpl::chkReqPropUnpack(T inst, unsigned propId)
         // Dependent Property
         case PROP_D0:
         {
-            if (!validateOperand(inst, PROP_D0, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
+            if (!validateOperand(inst, PROP_D0, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
 
             return true;
         }
@@ -26426,7 +29329,7 @@ template<class T> bool PropDescImpl::chkReqPropUnpack(T inst, unsigned propId)
         // Dependent Property
         case PROP_S2:
         {
-            if (!validateOperand(inst, PROP_S2, OPERAND_ATTR_NONE, OPERAND_VALUES_REG32_IMM32, sizeof(OPERAND_VALUES_REG32_IMM32) / sizeof(unsigned), false)) return false;
+            if (!validateOperand(inst, PROP_S2, OPERAND_ATTR_U32, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
 
             return true;
         }
@@ -26476,7 +29379,7 @@ template<class T> bool PropDescImpl::chkReqPropUnpackcvt(T inst, unsigned propId
         // Dependent Property
         case PROP_D0:
         {
-            if (!validateOperand(inst, PROP_D0, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
+            if (!validateOperand(inst, PROP_D0, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
 
             return true;
         }
@@ -26492,7 +29395,7 @@ template<class T> bool PropDescImpl::chkReqPropUnpackcvt(T inst, unsigned propId
         // Dependent Property
         case PROP_S2:
         {
-            if (!validateOperand(inst, PROP_S2, OPERAND_ATTR_NONE, OPERAND_VALUES_IMM0123, sizeof(OPERAND_VALUES_IMM0123) / sizeof(unsigned), false)) return false;
+            if (!validateOperand(inst, PROP_S2, OPERAND_ATTR_U32, OPERAND_VALUES_IMM0T3U32, sizeof(OPERAND_VALUES_IMM0T3U32) / sizeof(unsigned), false)) return false;
 
             return true;
         }
@@ -26533,7 +29436,7 @@ template<class T> bool PropDescImpl::chkReqPropUnpackx(T inst, unsigned propId)
         // Dependent Property
         case PROP_D0:
         {
-            if (!validateOperand(inst, PROP_D0, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
+            if (!validateOperand(inst, PROP_D0, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
 
             return true;
         }
@@ -26541,7 +29444,7 @@ template<class T> bool PropDescImpl::chkReqPropUnpackx(T inst, unsigned propId)
         // Dependent Property
         case PROP_S1:
         {
-            if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
+            if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
 
             return true;
         }
@@ -26549,7 +29452,7 @@ template<class T> bool PropDescImpl::chkReqPropUnpackx(T inst, unsigned propId)
         // Dependent Property
         case PROP_S2:
         {
-            if (!validateOperand(inst, PROP_S2, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
+            if (!validateOperand(inst, PROP_S2, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
 
             return true;
         }
@@ -26566,6 +29469,71 @@ template<class T> bool PropDescImpl::chkReqPropUnpackx(T inst, unsigned propId)
         case PROP_S4:
         {
             if (!validateOperand(inst, PROP_S4, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned), false)) return false;
+
+            return true;
+        }
+
+    default: 
+        assert(false);
+        return false;
+    }
+}
+template<class T> bool PropDescImpl::chkReqPropWavebarrier(T inst, unsigned propId)
+{
+    switch(propId)
+    {
+        // Last Primary Property
+        case PROP_TYPE:
+        {
+            if (!check_type_values_none(getType<T>(inst))) return false;
+
+            return true;
+        }
+
+        // Dependent Property
+        case PROP_S0:
+        {
+            if (!validateOperand(inst, PROP_S0, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned), false)) return false;
+
+            return true;
+        }
+
+        // Dependent Property
+        case PROP_S1:
+        {
+            if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned), false)) return false;
+
+            return true;
+        }
+
+        // Dependent Property
+        case PROP_S2:
+        {
+            if (!validateOperand(inst, PROP_S2, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned), false)) return false;
+
+            return true;
+        }
+
+        // Dependent Property
+        case PROP_S3:
+        {
+            if (!validateOperand(inst, PROP_S3, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned), false)) return false;
+
+            return true;
+        }
+
+        // Dependent Property
+        case PROP_S4:
+        {
+            if (!validateOperand(inst, PROP_S4, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned), false)) return false;
+
+            return true;
+        }
+
+        // Plain Property
+        case PROP_WIDTH:
+        {
+            if (!check_width_values_wavesize(getWidth<T>(inst))) return false;
 
             return true;
         }
@@ -26596,6 +29564,34 @@ bool PropDescImpl::isValidProp(Inst inst, unsigned propId)
             }
             break;
         } 
+        case (Brig::BRIG_OPCODE_ACTIVELANECOUNT):
+        {
+            InstLane i = inst;
+            if (!i) { assert(false); return false; }
+            return chkReqPropActivelanecount<InstLane>(i, propId);
+            break;
+        } 
+        case (Brig::BRIG_OPCODE_ACTIVELANEID):
+        {
+            InstLane i = inst;
+            if (!i) { assert(false); return false; }
+            return chkReqPropActivelaneid<InstLane>(i, propId);
+            break;
+        } 
+        case (Brig::BRIG_OPCODE_ACTIVELANEMASK):
+        {
+            InstLane i = inst;
+            if (!i) { assert(false); return false; }
+            return chkReqPropActivelanemask<InstLane>(i, propId);
+            break;
+        } 
+        case (Brig::BRIG_OPCODE_ACTIVELANESHUFFLE):
+        {
+            InstLane i = inst;
+            if (!i) { assert(false); return false; }
+            return chkReqPropActivelaneshuffle<InstLane>(i, propId);
+            break;
+        } 
         case (Brig::BRIG_OPCODE_ADD):
         case (Brig::BRIG_OPCODE_SUB):
         {
@@ -26613,11 +29609,18 @@ bool PropDescImpl::isValidProp(Inst inst, unsigned propId)
             }
             break;
         } 
+        case (Brig::BRIG_OPCODE_ADDQUEUEWRITEINDEX):
+        {
+            InstQueue i = inst;
+            if (!i) { assert(false); return false; }
+            return chkReqPropAddq_wrt<InstQueue>(i, propId);
+            break;
+        } 
         case (Brig::BRIG_OPCODE_ALLOCA):
         {
-            InstSeg i = inst;
+            InstMem i = inst;
             if (!i) { assert(false); return false; }
-            return chkReqPropAlloca<InstSeg>(i, propId);
+            return chkReqPropAlloca<InstMem>(i, propId);
             break;
         } 
         case (Brig::BRIG_OPCODE_AND):
@@ -26630,11 +29633,13 @@ bool PropDescImpl::isValidProp(Inst inst, unsigned propId)
             break;
         } 
         case (Brig::BRIG_OPCODE_ARRIVEFBAR):
+        case (Brig::BRIG_OPCODE_JOINFBAR):
+        case (Brig::BRIG_OPCODE_LEAVEFBAR):
         case (Brig::BRIG_OPCODE_WAITFBAR):
         {
-            InstBar i = inst;
+            InstBr i = inst;
             if (!i) { assert(false); return false; }
-            return chkReqPropFbar_sync_width<InstBar>(i, propId);
+            return chkReqPropFbar_width<InstBr>(i, propId);
             break;
         } 
         case (Brig::BRIG_OPCODE_ATOMIC):
@@ -26667,9 +29672,9 @@ bool PropDescImpl::isValidProp(Inst inst, unsigned propId)
         } 
         case (Brig::BRIG_OPCODE_BARRIER):
         {
-            InstBar i = inst;
+            InstBr i = inst;
             if (!i) { assert(false); return false; }
-            return chkReqPropBarrier<InstBar>(i, propId);
+            return chkReqPropBarrier<InstBr>(i, propId);
             break;
         } 
         case (Brig::BRIG_OPCODE_BITALIGN):
@@ -26738,6 +29743,13 @@ bool PropDescImpl::isValidProp(Inst inst, unsigned propId)
             return chkReqPropCall<InstBr>(i, propId);
             break;
         } 
+        case (Brig::BRIG_OPCODE_CASQUEUEWRITEINDEX):
+        {
+            InstQueue i = inst;
+            if (!i) { assert(false); return false; }
+            return chkReqPropCasq_wrt<InstQueue>(i, propId);
+            break;
+        } 
         case (Brig::BRIG_OPCODE_CBR):
         {
             InstBr i = inst;
@@ -26780,7 +29792,7 @@ bool PropDescImpl::isValidProp(Inst inst, unsigned propId)
             break;
         } 
         case (Brig::BRIG_OPCODE_CLOCK):
-        case (Brig::BRIG_OPCODE_DISPATCHID):
+        case (Brig::BRIG_OPCODE_PACKETID):
         {
             InstBasic i = inst;
             if (!i) { assert(false); return false; }
@@ -26831,27 +29843,13 @@ bool PropDescImpl::isValidProp(Inst inst, unsigned propId)
             }
             break;
         } 
-        case (Brig::BRIG_OPCODE_COUNTLANE):
-        {
-            InstLane i = inst;
-            if (!i) { assert(false); return false; }
-            return chkReqPropCountlane<InstLane>(i, propId);
-            break;
-        } 
-        case (Brig::BRIG_OPCODE_COUNTUPLANE):
-        {
-            InstLane i = inst;
-            if (!i) { assert(false); return false; }
-            return chkReqPropCountuplane<InstLane>(i, propId);
-            break;
-        } 
         case (Brig::BRIG_OPCODE_CUID):
         case (Brig::BRIG_OPCODE_DIM):
         case (Brig::BRIG_OPCODE_GETDETECTEXCEPT):
         case (Brig::BRIG_OPCODE_LANEID):
         case (Brig::BRIG_OPCODE_MAXCUID):
         case (Brig::BRIG_OPCODE_MAXWAVEID):
-        case (Brig::BRIG_OPCODE_QID):
+        case (Brig::BRIG_OPCODE_QUEUEID):
         case (Brig::BRIG_OPCODE_WAVEID):
         case (Brig::BRIG_OPCODE_WORKITEMFLATABSID):
         case (Brig::BRIG_OPCODE_WORKITEMFLATID):
@@ -26886,14 +29884,6 @@ bool PropDescImpl::isValidProp(Inst inst, unsigned propId)
             InstBasic i = inst;
             if (!i) { assert(false); return false; }
             return chkReqPropDebugtrap<InstBasic>(i, propId);
-            break;
-        } 
-        case (Brig::BRIG_OPCODE_DISPATCHPTR):
-        case (Brig::BRIG_OPCODE_QPTR):
-        {
-            InstSeg i = inst;
-            if (!i) { assert(false); return false; }
-            return chkReqPropAqlptr<InstSeg>(i, propId);
             break;
         } 
         case (Brig::BRIG_OPCODE_DIV):
@@ -26961,9 +29951,9 @@ bool PropDescImpl::isValidProp(Inst inst, unsigned propId)
         } 
         case (Brig::BRIG_OPCODE_FTOS):
         {
-            InstSeg i = inst;
+            InstSegCvt i = inst;
             if (!i) { assert(false); return false; }
-            return chkReqPropF2s<InstSeg>(i, propId);
+            return chkReqPropF2s<InstSegCvt>(i, propId);
             break;
         } 
         case (Brig::BRIG_OPCODE_GCNAPPEND):
@@ -27032,11 +30022,25 @@ bool PropDescImpl::isValidProp(Inst inst, unsigned propId)
             break;
         } 
         case (Brig::BRIG_OPCODE_GCNMADS):
+        {
+            InstBasic i = inst;
+            if (!i) { assert(false); return false; }
+            return chkReqPropGcn_mads<InstBasic>(i, propId);
+            break;
+        } 
         case (Brig::BRIG_OPCODE_GCNMADU):
         {
             InstBasic i = inst;
             if (!i) { assert(false); return false; }
-            return chkReqPropGcn_mad<InstBasic>(i, propId);
+            return chkReqPropGcn_madu<InstBasic>(i, propId);
+            break;
+        } 
+        case (Brig::BRIG_OPCODE_GCNMAX):
+        case (Brig::BRIG_OPCODE_GCNMIN):
+        {
+            InstBasic i = inst;
+            if (!i) { assert(false); return false; }
+            return chkReqPropGcn_min_max<InstBasic>(i, propId);
             break;
         } 
         case (Brig::BRIG_OPCODE_GCNMAX3):
@@ -27045,7 +30049,7 @@ bool PropDescImpl::isValidProp(Inst inst, unsigned propId)
         {
             InstBasic i = inst;
             if (!i) { assert(false); return false; }
-            return chkReqPropGcn_min_max_med<InstBasic>(i, propId);
+            return chkReqPropGcn_min_max_med3<InstBasic>(i, propId);
             break;
         } 
         case (Brig::BRIG_OPCODE_GCNMQSAD):
@@ -27110,17 +30114,9 @@ bool PropDescImpl::isValidProp(Inst inst, unsigned propId)
         case (Brig::BRIG_OPCODE_INITFBAR):
         case (Brig::BRIG_OPCODE_RELEASEFBAR):
         {
-            InstBar i = inst;
+            InstBasic i = inst;
             if (!i) { assert(false); return false; }
-            return chkReqPropFbar_none<InstBar>(i, propId);
-            break;
-        } 
-        case (Brig::BRIG_OPCODE_JOINFBAR):
-        case (Brig::BRIG_OPCODE_LEAVEFBAR):
-        {
-            InstBar i = inst;
-            if (!i) { assert(false); return false; }
-            return chkReqPropFbar_width<InstBar>(i, propId);
+            return chkReqPropFbar_none<InstBasic>(i, propId);
             break;
         } 
         case (Brig::BRIG_OPCODE_LD):
@@ -27158,6 +30154,14 @@ bool PropDescImpl::isValidProp(Inst inst, unsigned propId)
             return chkReqPropLd_image<InstImage>(i, propId);
             break;
         } 
+        case (Brig::BRIG_OPCODE_LDQUEUEREADINDEX):
+        case (Brig::BRIG_OPCODE_LDQUEUEWRITEINDEX):
+        {
+            InstQueue i = inst;
+            if (!i) { assert(false); return false; }
+            return chkReqPropLdq<InstQueue>(i, propId);
+            break;
+        } 
         case (Brig::BRIG_OPCODE_LERP):
         {
             InstBasic i = inst;
@@ -27180,13 +30184,6 @@ bool PropDescImpl::isValidProp(Inst inst, unsigned propId)
             return chkReqPropMad24<InstBasic>(i, propId);
             break;
         } 
-        case (Brig::BRIG_OPCODE_MASKLANE):
-        {
-            InstLane i = inst;
-            if (!i) { assert(false); return false; }
-            return chkReqPropMasklane<InstLane>(i, propId);
-            break;
-        } 
         case (Brig::BRIG_OPCODE_MAX):
         case (Brig::BRIG_OPCODE_MIN):
         {
@@ -27202,6 +30199,13 @@ bool PropDescImpl::isValidProp(Inst inst, unsigned propId)
             {
                 assert(false); return false;
             }
+            break;
+        } 
+        case (Brig::BRIG_OPCODE_MEMFENCE):
+        {
+            InstMemFence i = inst;
+            if (!i) { assert(false); return false; }
+            return chkReqPropMemfence<InstMemFence>(i, propId);
             break;
         } 
         case (Brig::BRIG_OPCODE_MOV):
@@ -27312,6 +30316,13 @@ bool PropDescImpl::isValidProp(Inst inst, unsigned propId)
             return chkReqPropPackcvt<InstSourceType>(i, propId);
             break;
         } 
+        case (Brig::BRIG_OPCODE_PACKETCOMPLETIONSIG):
+        {
+            InstBasic i = inst;
+            if (!i) { assert(false); return false; }
+            return chkReqPropPacket<InstBasic>(i, propId);
+            break;
+        } 
         case (Brig::BRIG_OPCODE_POPCOUNT):
         {
             InstSourceType i = inst;
@@ -27346,19 +30357,19 @@ bool PropDescImpl::isValidProp(Inst inst, unsigned propId)
             return chkReqPropQuerysampler<InstSourceType>(i, propId);
             break;
         } 
+        case (Brig::BRIG_OPCODE_QUEUEPTR):
+        case (Brig::BRIG_OPCODE_SERVICEQUEUEPTR):
+        {
+            InstSeg i = inst;
+            if (!i) { assert(false); return false; }
+            return chkReqPropGptr<InstSeg>(i, propId);
+            break;
+        } 
         case (Brig::BRIG_OPCODE_RDIMAGE):
         {
             InstImage i = inst;
             if (!i) { assert(false); return false; }
             return chkReqPropRdimage<InstImage>(i, propId);
-            break;
-        } 
-        case (Brig::BRIG_OPCODE_RECEIVELANE):
-        case (Brig::BRIG_OPCODE_SENDLANE):
-        {
-            InstLane i = inst;
-            if (!i) { assert(false); return false; }
-            return chkReqPropSendlane<InstLane>(i, propId);
             break;
         } 
         case (Brig::BRIG_OPCODE_RET):
@@ -27384,9 +30395,9 @@ bool PropDescImpl::isValidProp(Inst inst, unsigned propId)
         } 
         case (Brig::BRIG_OPCODE_SEGMENTP):
         {
-            InstSeg i = inst;
+            InstSegCvt i = inst;
             if (!i) { assert(false); return false; }
-            return chkReqPropSegmentp<InstSeg>(i, propId);
+            return chkReqPropSegmentp<InstSegCvt>(i, propId);
             break;
         } 
         case (Brig::BRIG_OPCODE_SHL):
@@ -27402,6 +30413,20 @@ bool PropDescImpl::isValidProp(Inst inst, unsigned propId)
             InstBasic i = inst;
             if (!i) { assert(false); return false; }
             return chkReqPropShuffle<InstBasic>(i, propId);
+            break;
+        } 
+        case (Brig::BRIG_OPCODE_SIGNAL):
+        {
+            InstSignal i = inst;
+            if (!i) { assert(false); return false; }
+            return chkReqPropSignal<InstSignal>(i, propId);
+            break;
+        } 
+        case (Brig::BRIG_OPCODE_SIGNALNORET):
+        {
+            InstSignal i = inst;
+            if (!i) { assert(false); return false; }
+            return chkReqPropSignal_noret<InstSignal>(i, propId);
             break;
         } 
         case (Brig::BRIG_OPCODE_SQRT):
@@ -27436,23 +30461,16 @@ bool PropDescImpl::isValidProp(Inst inst, unsigned propId)
         } 
         case (Brig::BRIG_OPCODE_STOF):
         {
-            InstSeg i = inst;
+            InstSegCvt i = inst;
             if (!i) { assert(false); return false; }
-            return chkReqPropS2f<InstSeg>(i, propId);
+            return chkReqPropS2f<InstSegCvt>(i, propId);
             break;
         } 
-        case (Brig::BRIG_OPCODE_SYNC):
+        case (Brig::BRIG_OPCODE_STQUEUEWRITEINDEX):
         {
-            InstBar i = inst;
+            InstQueue i = inst;
             if (!i) { assert(false); return false; }
-            return chkReqPropSync<InstBar>(i, propId);
-            break;
-        } 
-        case (Brig::BRIG_OPCODE_SYSCALL):
-        {
-            InstBasic i = inst;
-            if (!i) { assert(false); return false; }
-            return chkReqPropSyscall<InstBasic>(i, propId);
+            return chkReqPropStq_wrt<InstQueue>(i, propId);
             break;
         } 
         case (Brig::BRIG_OPCODE_UNPACK):
@@ -27475,6 +30493,13 @@ bool PropDescImpl::isValidProp(Inst inst, unsigned propId)
             InstBasic i = inst;
             if (!i) { assert(false); return false; }
             return chkReqPropUnpackx<InstBasic>(i, propId);
+            break;
+        } 
+        case (Brig::BRIG_OPCODE_WAVEBARRIER):
+        {
+            InstBr i = inst;
+            if (!i) { assert(false); return false; }
+            return chkReqPropWavebarrier<InstBr>(i, propId);
             break;
         } 
         default:
@@ -27515,11 +30540,63 @@ template<class T> bool PropDescImpl::validateReqNeg(T inst)
     {
         return false;
     }
-    if (!validateOperand(inst, PROP_D0, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
-    if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
+    if (!validateOperand(inst, PROP_D0, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
+    if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
     if (!validateOperand(inst, PROP_S2, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned), false)) return false;
     if (!validateOperand(inst, PROP_S3, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned), false)) return false;
     if (!validateOperand(inst, PROP_S4, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned), false)) return false;
+    return true;
+}
+
+template<class T> bool PropDescImpl::validateReqActivelanecount(T inst)
+{
+    if (!check_type_values_u32(getType<T>(inst))) return false;
+    if (!check_type_values_b1(getStype<T>(inst))) return false;
+    if (!check_width_values_any(getWidth<T>(inst))) return false;
+    if (!validateOperand(inst, PROP_D0, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
+    if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_STYPE, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
+    if (!validateOperand(inst, PROP_S2, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned), false)) return false;
+    if (!validateOperand(inst, PROP_S3, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned), false)) return false;
+    if (!validateOperand(inst, PROP_S4, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned), false)) return false;
+    return true;
+}
+
+template<class T> bool PropDescImpl::validateReqActivelaneid(T inst)
+{
+    if (!check_type_values_u32(getType<T>(inst))) return false;
+    if (!check_type_values_none(getStype<T>(inst))) return false;
+    if (!check_width_values_any(getWidth<T>(inst))) return false;
+    if (!validateOperand(inst, PROP_D0, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
+    if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned), false)) return false;
+    if (!validateOperand(inst, PROP_S2, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned), false)) return false;
+    if (!validateOperand(inst, PROP_S3, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned), false)) return false;
+    if (!validateOperand(inst, PROP_S4, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned), false)) return false;
+    return true;
+}
+
+template<class T> bool PropDescImpl::validateReqActivelanemask(T inst)
+{
+    if (!check_type_values_b64(getType<T>(inst))) return false;
+    if (!check_type_values_b1(getStype<T>(inst))) return false;
+    if (!check_width_values_any(getWidth<T>(inst))) return false;
+    if (!validateOperand(inst, PROP_D0, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
+    if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_STYPE, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
+    if (!validateOperand(inst, PROP_S2, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned), false)) return false;
+    if (!validateOperand(inst, PROP_S3, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned), false)) return false;
+    if (!validateOperand(inst, PROP_S4, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned), false)) return false;
+    return true;
+}
+
+template<class T> bool PropDescImpl::validateReqActivelaneshuffle(T inst)
+{
+    if (!check_type_values_b1_b32_b64_b128(getType<T>(inst))) return false;
+    if (!check_type_values_none(getStype<T>(inst))) return false;
+    if (!check_width_values_any(getWidth<T>(inst))) return false;
+    if (!validateOperand(inst, PROP_D0, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
+    if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
+    if (!validateOperand(inst, PROP_S2, OPERAND_ATTR_U32, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
+    if (!validateOperand(inst, PROP_S3, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
+    if (!validateOperand(inst, PROP_S4, OPERAND_ATTR_B1, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
     return true;
 }
 
@@ -27563,9 +30640,22 @@ template<class T> bool PropDescImpl::validateReqAdd(T inst)
     {
         return false;
     }
-    if (!validateOperand(inst, PROP_D0, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
-    if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
-    if (!validateOperand(inst, PROP_S2, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
+    if (!validateOperand(inst, PROP_D0, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
+    if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
+    if (!validateOperand(inst, PROP_S2, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
+    if (!validateOperand(inst, PROP_S3, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned), false)) return false;
+    if (!validateOperand(inst, PROP_S4, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned), false)) return false;
+    return true;
+}
+
+template<class T> bool PropDescImpl::validateReqAddq_wrt(T inst)
+{
+    if (!check_type_values_u64(getType<T>(inst))) return false;
+    if (!check_segment_values_flat_global(getSegment<T>(inst))) return false;
+    if (!check_memord_values_any(getMemord<T>(inst))) return false;
+    if (!validateOperand(inst, PROP_D0, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
+    if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_SEG, OPERAND_VALUES_ADDRSEG, sizeof(OPERAND_VALUES_ADDRSEG) / sizeof(unsigned), false)) return false;
+    if (!validateOperand(inst, PROP_S2, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
     if (!validateOperand(inst, PROP_S3, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned), false)) return false;
     if (!validateOperand(inst, PROP_S4, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned), false)) return false;
     return true;
@@ -27574,10 +30664,13 @@ template<class T> bool PropDescImpl::validateReqAdd(T inst)
 template<class T> bool PropDescImpl::validateReqAlloca(T inst)
 {
     if (!check_type_values_u32(getType<T>(inst))) return false;
-    if (!check_type_values_none(getStype<T>(inst))) return false;
     if (!check_segment_values_private(getSegment<T>(inst))) return false;
-    if (!validateOperand(inst, PROP_S0, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
-    if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
+    if (!check_align_values_any(getAlign<T>(inst))) return false;
+    if (!check_const_values_none(getConst<T>(inst))) return false;
+    if (!validateEqclass(inst, PROP_EQCLASS, EQCLASS_ATTR_NONE, EQCLASS_VALUES_0, sizeof(EQCLASS_VALUES_0) / sizeof(unsigned), false)) return false;
+    if (!check_width_values_none(getWidth<T>(inst))) return false;
+    if (!validateOperand(inst, PROP_S0, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
+    if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
     if (!validateOperand(inst, PROP_S2, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned), false)) return false;
     if (!validateOperand(inst, PROP_S3, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned), false)) return false;
     if (!validateOperand(inst, PROP_S4, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned), false)) return false;
@@ -27587,22 +30680,19 @@ template<class T> bool PropDescImpl::validateReqAlloca(T inst)
 template<class T> bool PropDescImpl::validateReqAnd(T inst)
 {
     if (!check_type_values_b1_b32_b64(getType<T>(inst))) return false;
-    if (!validateOperand(inst, PROP_D0, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
-    if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
-    if (!validateOperand(inst, PROP_S2, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
+    if (!validateOperand(inst, PROP_D0, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
+    if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
+    if (!validateOperand(inst, PROP_S2, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
     if (!validateOperand(inst, PROP_S3, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned), false)) return false;
     if (!validateOperand(inst, PROP_S4, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned), false)) return false;
     return true;
 }
 
-template<class T> bool PropDescImpl::validateReqFbar_sync_width(T inst)
+template<class T> bool PropDescImpl::validateReqFbar_width(T inst)
 {
     if (!check_type_values_none(getType<T>(inst))) return false;
-    if (!check_memord_values_none(getMemord<T>(inst))) return false;
-    if (!check_memscp_values_any(getMemscp<T>(inst))) return false;
-    if (!check_memfnc_values_any(getMemfnc<T>(inst))) return false;
     if (!check_width_values_any(getWidth<T>(inst))) return false;
-    if (!validateOperand(inst, PROP_S0, OPERAND_ATTR_NONE, OPERAND_VALUES_REG32_FBARRIER, sizeof(OPERAND_VALUES_REG32_FBARRIER) / sizeof(unsigned), false)) return false;
+    if (!validateOperand(inst, PROP_S0, OPERAND_ATTR_U32, OPERAND_VALUES_REGU32_FBARRIERU32, sizeof(OPERAND_VALUES_REGU32_FBARRIERU32) / sizeof(unsigned), false)) return false;
     if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned), false)) return false;
     if (!validateOperand(inst, PROP_S2, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned), false)) return false;
     if (!validateOperand(inst, PROP_S3, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned), false)) return false;
@@ -27615,7 +30705,7 @@ template<class T> bool PropDescImpl::validateReqAtomic(T inst)
     if (!check_type_values_b32_s32_u32_b64_s64_u64(getType<T>(inst))) return false;
     if (!check_atmop_values_generic_exch_ld(getAtmop<T>(inst))) return false;
     if (!check_segment_values_global_group_flat(getSegment<T>(inst))) return false;
-    if (!check_memscp_values_any(getMemscp<T>(inst))) return false;
+    if (!validateEqclass(inst, PROP_EQCLASS, EQCLASS_ATTR_NONE, EQCLASS_VALUES_ANY, sizeof(EQCLASS_VALUES_ANY) / sizeof(unsigned), false)) return false;
     if (!validateTypesize(inst, PROP_TYPESIZE, TYPESIZE_ATTR_NONE, TYPESIZE_VALUES_ATOMIC, sizeof(TYPESIZE_VALUES_ATOMIC) / sizeof(unsigned), false)) return false;
 
     if (
@@ -27624,8 +30714,8 @@ template<class T> bool PropDescImpl::validateReqAtomic(T inst)
     {
         if (!check_type_values_b32_b64(getType<T>(inst))) return false;
         if (!check_memord_values_any(getMemord<T>(inst))) return false;
-        if (!validateOperand(inst, PROP_S2, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
-        if (!validateOperand(inst, PROP_S3, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
+        if (!validateOperand(inst, PROP_S2, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
+        if (!validateOperand(inst, PROP_S3, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
     }
     else if (
         check_atmop_values_and_or_xor_exch(getAtmop<T>(inst))
@@ -27633,7 +30723,7 @@ template<class T> bool PropDescImpl::validateReqAtomic(T inst)
     {
         if (!check_type_values_b32_b64(getType<T>(inst))) return false;
         if (!check_memord_values_any(getMemord<T>(inst))) return false;
-        if (!validateOperand(inst, PROP_S2, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
+        if (!validateOperand(inst, PROP_S2, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
         if (!validateOperand(inst, PROP_S3, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned), false)) return false;
     }
     else if (
@@ -27642,7 +30732,7 @@ template<class T> bool PropDescImpl::validateReqAtomic(T inst)
     {
         if (!check_type_values_s32_u32_s64_u64(getType<T>(inst))) return false;
         if (!check_memord_values_any(getMemord<T>(inst))) return false;
-        if (!validateOperand(inst, PROP_S2, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
+        if (!validateOperand(inst, PROP_S2, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
         if (!validateOperand(inst, PROP_S3, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned), false)) return false;
     }
     else if (
@@ -27651,7 +30741,7 @@ template<class T> bool PropDescImpl::validateReqAtomic(T inst)
     {
         if (!check_type_values_u32_u64(getType<T>(inst))) return false;
         if (!check_memord_values_any(getMemord<T>(inst))) return false;
-        if (!validateOperand(inst, PROP_S2, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
+        if (!validateOperand(inst, PROP_S2, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
         if (!validateOperand(inst, PROP_S3, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned), false)) return false;
     }
     else if (
@@ -27667,8 +30757,25 @@ template<class T> bool PropDescImpl::validateReqAtomic(T inst)
     {
         return false;
     }
-    if (!validateOperand(inst, PROP_D0, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
-    if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_NONE, OPERAND_VALUES_ADDRSEG, sizeof(OPERAND_VALUES_ADDRSEG) / sizeof(unsigned), false)) return false;
+
+    if (
+        check_segment_values_flat_global(getSegment<T>(inst))
+       )
+    {
+        if (!check_memscp_values_any(getMemscp<T>(inst))) return false;
+    }
+    else if (
+        check_segment_values_group(getSegment<T>(inst))
+       )
+    {
+        if (!check_memscp_values_wv_wg(getMemscp<T>(inst))) return false;
+    }
+    else
+    {
+        return false;
+    }
+    if (!validateOperand(inst, PROP_D0, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
+    if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_SEG, OPERAND_VALUES_ADDRSEG, sizeof(OPERAND_VALUES_ADDRSEG) / sizeof(unsigned), false)) return false;
     if (!validateOperand(inst, PROP_S4, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned), false)) return false;
     return true;
 }
@@ -27680,6 +30787,7 @@ template<class T> bool PropDescImpl::validateReqAtomic_image(T inst)
     if (!check_type_values_u32(getCtype<T>(inst))) return false;
     if (!check_geom_values_1d_2d_3d_1db_1da_2da(getGeom<T>(inst))) return false;
     if (!check_atmop_values_generic_exch(getAtmop<T>(inst))) return false;
+    if (!validateEqclass(inst, PROP_EQCLASS, EQCLASS_ATTR_NONE, EQCLASS_VALUES_ANY, sizeof(EQCLASS_VALUES_ANY) / sizeof(unsigned), false)) return false;
     if (!validateTypesize(inst, PROP_TYPESIZE, TYPESIZE_ATTR_NONE, TYPESIZE_VALUES_ATOMIC, sizeof(TYPESIZE_VALUES_ATOMIC) / sizeof(unsigned), false)) return false;
 
     if (
@@ -27687,7 +30795,7 @@ template<class T> bool PropDescImpl::validateReqAtomic_image(T inst)
        )
     {
         if (!check_type_values_b32_b64(getType<T>(inst))) return false;
-        if (!validateOperand(inst, PROP_S4, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
+        if (!validateOperand(inst, PROP_S4, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
     }
     else if (
         check_atmop_values_and_or_xor_exch(getAtmop<T>(inst))
@@ -27714,9 +30822,9 @@ template<class T> bool PropDescImpl::validateReqAtomic_image(T inst)
     {
         return false;
     }
-    if (!validateOperand(inst, PROP_D0, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
-    if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_NONE, OPERAND_VALUES_REG64_RWIMAGE, sizeof(OPERAND_VALUES_REG64_RWIMAGE) / sizeof(unsigned), false)) return false;
-    if (!validateOperand(inst, PROP_S3, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
+    if (!validateOperand(inst, PROP_D0, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
+    if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_ITYPE, OPERAND_VALUES_REGSTYPE_IMAGESTYPE, sizeof(OPERAND_VALUES_REGSTYPE_IMAGESTYPE) / sizeof(unsigned), false)) return false;
+    if (!validateOperand(inst, PROP_S3, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
 
     if (
         check_geom_values_1d_1db(getGeom<T>(inst))
@@ -27750,6 +30858,7 @@ template<class T> bool PropDescImpl::validateReqAtomic_noret_image(T inst)
     if (!check_type_values_u32(getCtype<T>(inst))) return false;
     if (!check_geom_values_1d_2d_3d_1db_1da_2da(getGeom<T>(inst))) return false;
     if (!check_atmop_values_generic(getAtmop<T>(inst))) return false;
+    if (!validateEqclass(inst, PROP_EQCLASS, EQCLASS_ATTR_NONE, EQCLASS_VALUES_ANY, sizeof(EQCLASS_VALUES_ANY) / sizeof(unsigned), false)) return false;
     if (!validateTypesize(inst, PROP_TYPESIZE, TYPESIZE_ATTR_NONE, TYPESIZE_VALUES_ATOMIC, sizeof(TYPESIZE_VALUES_ATOMIC) / sizeof(unsigned), false)) return false;
 
     if (
@@ -27757,7 +30866,7 @@ template<class T> bool PropDescImpl::validateReqAtomic_noret_image(T inst)
        )
     {
         if (!check_type_values_b32_b64(getType<T>(inst))) return false;
-        if (!validateOperand(inst, PROP_S3, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
+        if (!validateOperand(inst, PROP_S3, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
     }
     else if (
         check_atmop_values_and_or_xor(getAtmop<T>(inst))
@@ -27784,8 +30893,8 @@ template<class T> bool PropDescImpl::validateReqAtomic_noret_image(T inst)
     {
         return false;
     }
-    if (!validateOperand(inst, PROP_S0, OPERAND_ATTR_NONE, OPERAND_VALUES_REG64_RWIMAGE, sizeof(OPERAND_VALUES_REG64_RWIMAGE) / sizeof(unsigned), false)) return false;
-    if (!validateOperand(inst, PROP_S2, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
+    if (!validateOperand(inst, PROP_S0, OPERAND_ATTR_ITYPE, OPERAND_VALUES_REGSTYPE_IMAGESTYPE, sizeof(OPERAND_VALUES_REGSTYPE_IMAGESTYPE) / sizeof(unsigned), false)) return false;
+    if (!validateOperand(inst, PROP_S2, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
     if (!validateOperand(inst, PROP_S4, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned), false)) return false;
 
     if (
@@ -27818,7 +30927,7 @@ template<class T> bool PropDescImpl::validateReqAtomic_noret(T inst)
     if (!check_type_values_b32_s32_u32_b64_s64_u64(getType<T>(inst))) return false;
     if (!check_atmop_values_generic_st(getAtmop<T>(inst))) return false;
     if (!check_segment_values_global_group_flat(getSegment<T>(inst))) return false;
-    if (!check_memscp_values_any(getMemscp<T>(inst))) return false;
+    if (!validateEqclass(inst, PROP_EQCLASS, EQCLASS_ATTR_NONE, EQCLASS_VALUES_ANY, sizeof(EQCLASS_VALUES_ANY) / sizeof(unsigned), false)) return false;
     if (!validateTypesize(inst, PROP_TYPESIZE, TYPESIZE_ATTR_NONE, TYPESIZE_VALUES_ATOMIC, sizeof(TYPESIZE_VALUES_ATOMIC) / sizeof(unsigned), false)) return false;
 
     if (
@@ -27827,7 +30936,7 @@ template<class T> bool PropDescImpl::validateReqAtomic_noret(T inst)
     {
         if (!check_type_values_b32_b64(getType<T>(inst))) return false;
         if (!check_memord_values_any(getMemord<T>(inst))) return false;
-        if (!validateOperand(inst, PROP_S2, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
+        if (!validateOperand(inst, PROP_S2, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
     }
     else if (
         check_atmop_values_and_or_xor(getAtmop<T>(inst))
@@ -27865,8 +30974,25 @@ template<class T> bool PropDescImpl::validateReqAtomic_noret(T inst)
     {
         return false;
     }
-    if (!validateOperand(inst, PROP_S0, OPERAND_ATTR_NONE, OPERAND_VALUES_ADDRSEG, sizeof(OPERAND_VALUES_ADDRSEG) / sizeof(unsigned), false)) return false;
-    if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
+
+    if (
+        check_segment_values_flat_global(getSegment<T>(inst))
+       )
+    {
+        if (!check_memscp_values_any(getMemscp<T>(inst))) return false;
+    }
+    else if (
+        check_segment_values_group(getSegment<T>(inst))
+       )
+    {
+        if (!check_memscp_values_wv_wg(getMemscp<T>(inst))) return false;
+    }
+    else
+    {
+        return false;
+    }
+    if (!validateOperand(inst, PROP_S0, OPERAND_ATTR_SEG, OPERAND_VALUES_ADDRSEG, sizeof(OPERAND_VALUES_ADDRSEG) / sizeof(unsigned), false)) return false;
+    if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
     if (!validateOperand(inst, PROP_S3, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned), false)) return false;
     if (!validateOperand(inst, PROP_S4, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned), false)) return false;
     return true;
@@ -27875,9 +31001,6 @@ template<class T> bool PropDescImpl::validateReqAtomic_noret(T inst)
 template<class T> bool PropDescImpl::validateReqBarrier(T inst)
 {
     if (!check_type_values_none(getType<T>(inst))) return false;
-    if (!check_memord_values_none(getMemord<T>(inst))) return false;
-    if (!check_memscp_values_any(getMemscp<T>(inst))) return false;
-    if (!check_memfnc_values_any(getMemfnc<T>(inst))) return false;
     if (!check_width_values_any(getWidth<T>(inst))) return false;
     if (!validateOperand(inst, PROP_S0, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned), false)) return false;
     if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned), false)) return false;
@@ -27890,10 +31013,10 @@ template<class T> bool PropDescImpl::validateReqBarrier(T inst)
 template<class T> bool PropDescImpl::validateReqAlign(T inst)
 {
     if (!check_type_values_b32(getType<T>(inst))) return false;
-    if (!validateOperand(inst, PROP_D0, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
-    if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
-    if (!validateOperand(inst, PROP_S2, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
-    if (!validateOperand(inst, PROP_S3, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
+    if (!validateOperand(inst, PROP_D0, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
+    if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
+    if (!validateOperand(inst, PROP_S2, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
+    if (!validateOperand(inst, PROP_S3, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
     if (!validateOperand(inst, PROP_S4, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned), false)) return false;
     return true;
 }
@@ -27901,10 +31024,10 @@ template<class T> bool PropDescImpl::validateReqAlign(T inst)
 template<class T> bool PropDescImpl::validateReqBitextract(T inst)
 {
     if (!check_type_values_s32_u32_s64_u64(getType<T>(inst))) return false;
-    if (!validateOperand(inst, PROP_D0, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
-    if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
-    if (!validateOperand(inst, PROP_S2, OPERAND_ATTR_NONE, OPERAND_VALUES_REG32_IMM32, sizeof(OPERAND_VALUES_REG32_IMM32) / sizeof(unsigned), false)) return false;
-    if (!validateOperand(inst, PROP_S3, OPERAND_ATTR_NONE, OPERAND_VALUES_REG32_IMM32, sizeof(OPERAND_VALUES_REG32_IMM32) / sizeof(unsigned), false)) return false;
+    if (!validateOperand(inst, PROP_D0, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
+    if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
+    if (!validateOperand(inst, PROP_S2, OPERAND_ATTR_U32, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
+    if (!validateOperand(inst, PROP_S3, OPERAND_ATTR_U32, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
     if (!validateOperand(inst, PROP_S4, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned), false)) return false;
     return true;
 }
@@ -27912,20 +31035,20 @@ template<class T> bool PropDescImpl::validateReqBitextract(T inst)
 template<class T> bool PropDescImpl::validateReqBitinsert(T inst)
 {
     if (!check_type_values_s32_u32_s64_u64(getType<T>(inst))) return false;
-    if (!validateOperand(inst, PROP_D0, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
-    if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
-    if (!validateOperand(inst, PROP_S2, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
-    if (!validateOperand(inst, PROP_S3, OPERAND_ATTR_NONE, OPERAND_VALUES_REG32_IMM32, sizeof(OPERAND_VALUES_REG32_IMM32) / sizeof(unsigned), false)) return false;
-    if (!validateOperand(inst, PROP_S4, OPERAND_ATTR_NONE, OPERAND_VALUES_REG32_IMM32, sizeof(OPERAND_VALUES_REG32_IMM32) / sizeof(unsigned), false)) return false;
+    if (!validateOperand(inst, PROP_D0, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
+    if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
+    if (!validateOperand(inst, PROP_S2, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
+    if (!validateOperand(inst, PROP_S3, OPERAND_ATTR_U32, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
+    if (!validateOperand(inst, PROP_S4, OPERAND_ATTR_U32, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
     return true;
 }
 
 template<class T> bool PropDescImpl::validateReqBitmask(T inst)
 {
     if (!check_type_values_b32_b64(getType<T>(inst))) return false;
-    if (!validateOperand(inst, PROP_D0, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
-    if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_NONE, OPERAND_VALUES_REG32_IMM32, sizeof(OPERAND_VALUES_REG32_IMM32) / sizeof(unsigned), false)) return false;
-    if (!validateOperand(inst, PROP_S2, OPERAND_ATTR_NONE, OPERAND_VALUES_REG32_IMM32, sizeof(OPERAND_VALUES_REG32_IMM32) / sizeof(unsigned), false)) return false;
+    if (!validateOperand(inst, PROP_D0, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
+    if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_U32, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
+    if (!validateOperand(inst, PROP_S2, OPERAND_ATTR_U32, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
     if (!validateOperand(inst, PROP_S3, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned), false)) return false;
     if (!validateOperand(inst, PROP_S4, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned), false)) return false;
     return true;
@@ -27934,8 +31057,8 @@ template<class T> bool PropDescImpl::validateReqBitmask(T inst)
 template<class T> bool PropDescImpl::validateReqBitrev(T inst)
 {
     if (!check_type_values_b32_b64(getType<T>(inst))) return false;
-    if (!validateOperand(inst, PROP_D0, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
-    if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
+    if (!validateOperand(inst, PROP_D0, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
+    if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
     if (!validateOperand(inst, PROP_S2, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned), false)) return false;
     if (!validateOperand(inst, PROP_S3, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned), false)) return false;
     if (!validateOperand(inst, PROP_S4, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned), false)) return false;
@@ -27945,10 +31068,10 @@ template<class T> bool PropDescImpl::validateReqBitrev(T inst)
 template<class T> bool PropDescImpl::validateReqBitselect(T inst)
 {
     if (!check_type_values_b32_b64(getType<T>(inst))) return false;
-    if (!validateOperand(inst, PROP_D0, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
-    if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
-    if (!validateOperand(inst, PROP_S2, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
-    if (!validateOperand(inst, PROP_S3, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
+    if (!validateOperand(inst, PROP_D0, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
+    if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
+    if (!validateOperand(inst, PROP_S2, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
+    if (!validateOperand(inst, PROP_S3, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
     if (!validateOperand(inst, PROP_S4, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned), false)) return false;
     return true;
 }
@@ -27956,9 +31079,9 @@ template<class T> bool PropDescImpl::validateReqBitselect(T inst)
 template<class T> bool PropDescImpl::validateReqRem(T inst)
 {
     if (!check_type_values_s32_u32_s64_u64(getType<T>(inst))) return false;
-    if (!validateOperand(inst, PROP_D0, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
-    if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
-    if (!validateOperand(inst, PROP_S2, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
+    if (!validateOperand(inst, PROP_D0, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
+    if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
+    if (!validateOperand(inst, PROP_S2, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
     if (!validateOperand(inst, PROP_S3, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned), false)) return false;
     if (!validateOperand(inst, PROP_S4, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned), false)) return false;
     return true;
@@ -28024,10 +31147,23 @@ template<class T> bool PropDescImpl::validateReqCall(T inst)
     return true;
 }
 
+template<class T> bool PropDescImpl::validateReqCasq_wrt(T inst)
+{
+    if (!check_type_values_u64(getType<T>(inst))) return false;
+    if (!check_segment_values_flat_global(getSegment<T>(inst))) return false;
+    if (!check_memord_values_any(getMemord<T>(inst))) return false;
+    if (!validateOperand(inst, PROP_D0, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
+    if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_SEG, OPERAND_VALUES_ADDRSEG, sizeof(OPERAND_VALUES_ADDRSEG) / sizeof(unsigned), false)) return false;
+    if (!validateOperand(inst, PROP_S2, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
+    if (!validateOperand(inst, PROP_S3, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
+    if (!validateOperand(inst, PROP_S4, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned), false)) return false;
+    return true;
+}
+
 template<class T> bool PropDescImpl::validateReqCbr(T inst)
 {
     if (!check_type_values_none(getType<T>(inst))) return false;
-    if (!validateOperand(inst, PROP_S0, OPERAND_ATTR_NONE, OPERAND_VALUES_REG1, sizeof(OPERAND_VALUES_REG1) / sizeof(unsigned), false)) return false;
+    if (!validateOperand(inst, PROP_S0, OPERAND_ATTR_B1, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
     if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_MODEL, OPERAND_VALUES_REGMODEL_LABMODEL, sizeof(OPERAND_VALUES_REGMODEL_LABMODEL) / sizeof(unsigned), false)) return false;
     if (!validateOperand(inst, PROP_S2, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL_JUMPTAB, sizeof(OPERAND_VALUES_NULL_JUMPTAB) / sizeof(unsigned), false)) return false;
     if (!validateOperand(inst, PROP_S3, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned), false)) return false;
@@ -28075,8 +31211,8 @@ template<class T> bool PropDescImpl::validateReqCeil(T inst)
     {
         return false;
     }
-    if (!validateOperand(inst, PROP_D0, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
-    if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
+    if (!validateOperand(inst, PROP_D0, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
+    if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
     if (!validateOperand(inst, PROP_S2, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned), false)) return false;
     if (!validateOperand(inst, PROP_S3, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned), false)) return false;
     if (!validateOperand(inst, PROP_S4, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned), false)) return false;
@@ -28087,9 +31223,9 @@ template<class T> bool PropDescImpl::validateReqClass(T inst)
 {
     if (!check_type_values_b1(getType<T>(inst))) return false;
     if (!check_type_values_f(getStype<T>(inst))) return false;
-    if (!validateOperand(inst, PROP_D0, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
+    if (!validateOperand(inst, PROP_D0, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
     if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_STYPE, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
-    if (!validateOperand(inst, PROP_S2, OPERAND_ATTR_NONE, OPERAND_VALUES_REG32_IMM32, sizeof(OPERAND_VALUES_REG32_IMM32) / sizeof(unsigned), false)) return false;
+    if (!validateOperand(inst, PROP_S2, OPERAND_ATTR_U32, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
     if (!validateOperand(inst, PROP_S3, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned), false)) return false;
     if (!validateOperand(inst, PROP_S4, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned), false)) return false;
     return true;
@@ -28098,7 +31234,7 @@ template<class T> bool PropDescImpl::validateReqClass(T inst)
 template<class T> bool PropDescImpl::validateReqSpec_except(T inst)
 {
     if (!check_type_values_u32(getType<T>(inst))) return false;
-    if (!validateOperand(inst, PROP_S0, OPERAND_ATTR_NOEXP, OPERAND_VALUES_IMM, sizeof(OPERAND_VALUES_IMM) / sizeof(unsigned), false)) return false;
+    if (!validateOperand(inst, PROP_S0, OPERAND_ATTR_DTYPE, OPERAND_VALUES_IMM, sizeof(OPERAND_VALUES_IMM) / sizeof(unsigned), false)) return false;
     if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned), false)) return false;
     if (!validateOperand(inst, PROP_S2, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned), false)) return false;
     if (!validateOperand(inst, PROP_S3, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned), false)) return false;
@@ -28109,7 +31245,7 @@ template<class T> bool PropDescImpl::validateReqSpec_except(T inst)
 template<class T> bool PropDescImpl::validateReqSpec_clock(T inst)
 {
     if (!check_type_values_u64(getType<T>(inst))) return false;
-    if (!validateOperand(inst, PROP_D0, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
+    if (!validateOperand(inst, PROP_D0, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
     if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned), false)) return false;
     if (!validateOperand(inst, PROP_S2, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned), false)) return false;
     if (!validateOperand(inst, PROP_S3, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned), false)) return false;
@@ -28120,22 +31256,22 @@ template<class T> bool PropDescImpl::validateReqSpec_clock(T inst)
 template<class T> bool PropDescImpl::validateReqCmov(T inst)
 {
     if (!check_type_values_b1_b32_b64_x(getType<T>(inst))) return false;
-    if (!validateOperand(inst, PROP_D0, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
-    if (!validateOperand(inst, PROP_S2, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
-    if (!validateOperand(inst, PROP_S3, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
+    if (!validateOperand(inst, PROP_D0, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
+    if (!validateOperand(inst, PROP_S2, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
+    if (!validateOperand(inst, PROP_S3, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
     if (!validateOperand(inst, PROP_S4, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned), false)) return false;
 
     if (
         check_type_values_b1_b32_b64(getType<T>(inst))
        )
     {
-        if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_NONE, OPERAND_VALUES_REG1_IMM1, sizeof(OPERAND_VALUES_REG1_IMM1) / sizeof(unsigned), false)) return false;
+        if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_B1, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
     }
     else if (
         check_type_values_x(getType<T>(inst))
        )
     {
-        if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
+        if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_P2U, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
     }
     else
     {
@@ -28259,7 +31395,7 @@ template<class T> bool PropDescImpl::validateReqCmp(T inst)
     {
         return false;
     }
-    if (!validateOperand(inst, PROP_D0, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
+    if (!validateOperand(inst, PROP_D0, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
     if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_STYPE, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
     if (!validateOperand(inst, PROP_S2, OPERAND_ATTR_STYPE, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
     if (!validateOperand(inst, PROP_S3, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned), false)) return false;
@@ -28308,7 +31444,7 @@ template<class T> bool PropDescImpl::validateReqCombine(T inst)
     {
         return false;
     }
-    if (!validateOperand(inst, PROP_D0, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
+    if (!validateOperand(inst, PROP_D0, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
     if (!validateOperand(inst, PROP_S2, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned), false)) return false;
     if (!validateOperand(inst, PROP_S3, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned), false)) return false;
     if (!validateOperand(inst, PROP_S4, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned), false)) return false;
@@ -28337,35 +31473,9 @@ template<class T> bool PropDescImpl::validateReqCopysign(T inst)
     {
         return false;
     }
-    if (!validateOperand(inst, PROP_D0, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
-    if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
-    if (!validateOperand(inst, PROP_S2, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
-    if (!validateOperand(inst, PROP_S3, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned), false)) return false;
-    if (!validateOperand(inst, PROP_S4, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned), false)) return false;
-    return true;
-}
-
-template<class T> bool PropDescImpl::validateReqCountlane(T inst)
-{
-    if (!check_type_values_u32(getType<T>(inst))) return false;
-    if (!check_type_values_u32_b1(getStype<T>(inst))) return false;
-    if (!check_width_values_any(getWidth<T>(inst))) return false;
-    if (!validateOperand(inst, PROP_D0, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
-    if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_STYPE, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
-    if (!validateOperand(inst, PROP_S2, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned), false)) return false;
-    if (!validateOperand(inst, PROP_S3, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned), false)) return false;
-    if (!validateOperand(inst, PROP_S4, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned), false)) return false;
-    return true;
-}
-
-template<class T> bool PropDescImpl::validateReqCountuplane(T inst)
-{
-    if (!check_type_values_u32(getType<T>(inst))) return false;
-    if (!check_type_values_none(getStype<T>(inst))) return false;
-    if (!check_width_values_any(getWidth<T>(inst))) return false;
-    if (!validateOperand(inst, PROP_D0, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
-    if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned), false)) return false;
-    if (!validateOperand(inst, PROP_S2, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned), false)) return false;
+    if (!validateOperand(inst, PROP_D0, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
+    if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
+    if (!validateOperand(inst, PROP_S2, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
     if (!validateOperand(inst, PROP_S3, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned), false)) return false;
     if (!validateOperand(inst, PROP_S4, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned), false)) return false;
     return true;
@@ -28374,7 +31484,7 @@ template<class T> bool PropDescImpl::validateReqCountuplane(T inst)
 template<class T> bool PropDescImpl::validateReqSpec_reg(T inst)
 {
     if (!check_type_values_u32(getType<T>(inst))) return false;
-    if (!validateOperand(inst, PROP_D0, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
+    if (!validateOperand(inst, PROP_D0, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
     if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned), false)) return false;
     if (!validateOperand(inst, PROP_S2, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned), false)) return false;
     if (!validateOperand(inst, PROP_S3, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned), false)) return false;
@@ -28385,8 +31495,8 @@ template<class T> bool PropDescImpl::validateReqSpec_reg(T inst)
 template<class T> bool PropDescImpl::validateReqSpec_reg_dim(T inst)
 {
     if (!check_type_values_u32(getType<T>(inst))) return false;
-    if (!validateOperand(inst, PROP_D0, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
-    if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_NONE, OPERAND_VALUES_IMM012, sizeof(OPERAND_VALUES_IMM012) / sizeof(unsigned), false)) return false;
+    if (!validateOperand(inst, PROP_D0, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
+    if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_U32, OPERAND_VALUES_IMM0T2U32, sizeof(OPERAND_VALUES_IMM0T2U32) / sizeof(unsigned), false)) return false;
     if (!validateOperand(inst, PROP_S2, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned), false)) return false;
     if (!validateOperand(inst, PROP_S3, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned), false)) return false;
     if (!validateOperand(inst, PROP_S4, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned), false)) return false;
@@ -28519,8 +31629,8 @@ template<class T> bool PropDescImpl::validateReqCvt(T inst)
     {
         return false;
     }
-    if (!validateOperand(inst, PROP_D0, OPERAND_ATTR_EXP, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
-    if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_SEXP, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
+    if (!validateOperand(inst, PROP_D0, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
+    if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_STYPE, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
     if (!validateOperand(inst, PROP_S2, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned), false)) return false;
     if (!validateOperand(inst, PROP_S3, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned), false)) return false;
     if (!validateOperand(inst, PROP_S4, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned), false)) return false;
@@ -28530,21 +31640,7 @@ template<class T> bool PropDescImpl::validateReqCvt(T inst)
 template<class T> bool PropDescImpl::validateReqDebugtrap(T inst)
 {
     if (!check_type_values_u32(getType<T>(inst))) return false;
-    if (!validateOperand(inst, PROP_S0, OPERAND_ATTR_NOEXP, OPERAND_VALUES_IMM, sizeof(OPERAND_VALUES_IMM) / sizeof(unsigned), false)) return false;
-    if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned), false)) return false;
-    if (!validateOperand(inst, PROP_S2, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned), false)) return false;
-    if (!validateOperand(inst, PROP_S3, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned), false)) return false;
-    if (!validateOperand(inst, PROP_S4, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned), false)) return false;
-    return true;
-}
-
-template<class T> bool PropDescImpl::validateReqAqlptr(T inst)
-{
-    if (!check_type_values_u32_u64(getType<T>(inst))) return false;
-    if (!check_type_values_none(getStype<T>(inst))) return false;
-    if (!check_segment_values_global(getSegment<T>(inst))) return false;
-    if (!validateTypesize(inst, PROP_TYPESIZE, TYPESIZE_ATTR_NONE, TYPESIZE_VALUES_SEG, sizeof(TYPESIZE_VALUES_SEG) / sizeof(unsigned), false)) return false;
-    if (!validateOperand(inst, PROP_S0, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
+    if (!validateOperand(inst, PROP_S0, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
     if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned), false)) return false;
     if (!validateOperand(inst, PROP_S2, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned), false)) return false;
     if (!validateOperand(inst, PROP_S3, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned), false)) return false;
@@ -28584,9 +31680,9 @@ template<class T> bool PropDescImpl::validateReqDiv(T inst)
     {
         return false;
     }
-    if (!validateOperand(inst, PROP_D0, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
-    if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
-    if (!validateOperand(inst, PROP_S2, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
+    if (!validateOperand(inst, PROP_D0, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
+    if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
+    if (!validateOperand(inst, PROP_S2, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
     if (!validateOperand(inst, PROP_S3, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned), false)) return false;
     if (!validateOperand(inst, PROP_S4, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned), false)) return false;
     return true;
@@ -28602,21 +31698,21 @@ template<class T> bool PropDescImpl::validateReqExpand(T inst)
         check_type_values_b64(getStype<T>(inst))
        )
     {
-        if (!validateOperand(inst, PROP_D0, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REGV2CTYPE, sizeof(OPERAND_VALUES_REGV2CTYPE) / sizeof(unsigned), false)) return false;
+        if (!validateOperand(inst, PROP_D0, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REGV2CTYPE, sizeof(OPERAND_VALUES_REGV2CTYPE) / sizeof(unsigned), false)) return false;
     }
     else if (
         check_type_values_b32(getType<T>(inst)) &&
         check_type_values_b128(getStype<T>(inst))
        )
     {
-        if (!validateOperand(inst, PROP_D0, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REGV4, sizeof(OPERAND_VALUES_REGV4) / sizeof(unsigned), false)) return false;
+        if (!validateOperand(inst, PROP_D0, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REGV4, sizeof(OPERAND_VALUES_REGV4) / sizeof(unsigned), false)) return false;
     }
     else if (
         check_type_values_b64(getType<T>(inst)) &&
         check_type_values_b128(getStype<T>(inst))
        )
     {
-        if (!validateOperand(inst, PROP_D0, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REGV2CTYPE, sizeof(OPERAND_VALUES_REGV2CTYPE) / sizeof(unsigned), false)) return false;
+        if (!validateOperand(inst, PROP_D0, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REGV2CTYPE, sizeof(OPERAND_VALUES_REGV2CTYPE) / sizeof(unsigned), false)) return false;
     }
     else
     {
@@ -28633,7 +31729,7 @@ template<class T> bool PropDescImpl::validateReqFirstbit(T inst)
 {
     if (!check_type_values_u32(getType<T>(inst))) return false;
     if (!check_type_values_s32_u32_s64_u64(getStype<T>(inst))) return false;
-    if (!validateOperand(inst, PROP_D0, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
+    if (!validateOperand(inst, PROP_D0, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
     if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_STYPE, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
     if (!validateOperand(inst, PROP_S2, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned), false)) return false;
     if (!validateOperand(inst, PROP_S3, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned), false)) return false;
@@ -28647,10 +31743,10 @@ template<class T> bool PropDescImpl::validateReqFma(T inst)
     if (!check_packing_values_none(getPacking<T>(inst))) return false;
     if (!check_rounding_values_float(getRounding<T>(inst))) return false;
     if (!check_ftz_values_any(getFtz<T>(inst))) return false;
-    if (!validateOperand(inst, PROP_D0, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
-    if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
-    if (!validateOperand(inst, PROP_S2, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
-    if (!validateOperand(inst, PROP_S3, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
+    if (!validateOperand(inst, PROP_D0, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
+    if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
+    if (!validateOperand(inst, PROP_S2, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
+    if (!validateOperand(inst, PROP_S3, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
     if (!validateOperand(inst, PROP_S4, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned), false)) return false;
     return true;
 }
@@ -28677,8 +31773,8 @@ template<class T> bool PropDescImpl::validateReqFract(T inst)
     {
         return false;
     }
-    if (!validateOperand(inst, PROP_D0, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
-    if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
+    if (!validateOperand(inst, PROP_D0, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
+    if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
     if (!validateOperand(inst, PROP_S2, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned), false)) return false;
     if (!validateOperand(inst, PROP_S3, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned), false)) return false;
     if (!validateOperand(inst, PROP_S4, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned), false)) return false;
@@ -28690,9 +31786,10 @@ template<class T> bool PropDescImpl::validateReqF2s(T inst)
     if (!check_type_values_u32_u64(getType<T>(inst))) return false;
     if (!check_type_values_u32_u64(getStype<T>(inst))) return false;
     if (!check_segment_values_std(getSegment<T>(inst))) return false;
+    if (!check_nonull_values_any(getNonull<T>(inst))) return false;
     if (!validateTypesize(inst, PROP_TYPESIZE, TYPESIZE_ATTR_NONE, TYPESIZE_VALUES_SEG, sizeof(TYPESIZE_VALUES_SEG) / sizeof(unsigned), false)) return false;
     if (!validateStypesize(inst, PROP_STYPESIZE, STYPESIZE_ATTR_NONE, STYPESIZE_VALUES_MODEL, sizeof(STYPESIZE_VALUES_MODEL) / sizeof(unsigned), false)) return false;
-    if (!validateOperand(inst, PROP_D0, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
+    if (!validateOperand(inst, PROP_D0, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
     if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_STYPE, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
     if (!validateOperand(inst, PROP_S2, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned), false)) return false;
     if (!validateOperand(inst, PROP_S3, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned), false)) return false;
@@ -28704,8 +31801,8 @@ template<class T> bool PropDescImpl::validateReqGcn_append_consume(T inst)
 {
     if (!check_type_values_u32(getType<T>(inst))) return false;
     if (!check_segment_values_gcn(getSegment<T>(inst))) return false;
-    if (!validateOperand(inst, PROP_D0, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
-    if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_NONE, OPERAND_VALUES_ADDRSEG, sizeof(OPERAND_VALUES_ADDRSEG) / sizeof(unsigned), false)) return false;
+    if (!validateOperand(inst, PROP_D0, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
+    if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_SEG, OPERAND_VALUES_ADDRSEG, sizeof(OPERAND_VALUES_ADDRSEG) / sizeof(unsigned), false)) return false;
     if (!validateOperand(inst, PROP_S2, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned), false)) return false;
     if (!validateOperand(inst, PROP_S3, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned), false)) return false;
     if (!validateOperand(inst, PROP_S4, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned), false)) return false;
@@ -28718,6 +31815,7 @@ template<class T> bool PropDescImpl::validateReqGcn_atomic(T inst)
     if (!check_atmop_values_generic_exch_ld(getAtmop<T>(inst))) return false;
     if (!check_segment_values_gcn(getSegment<T>(inst))) return false;
     if (!check_memscp_values_any(getMemscp<T>(inst))) return false;
+    if (!validateEqclass(inst, PROP_EQCLASS, EQCLASS_ATTR_NONE, EQCLASS_VALUES_ANY, sizeof(EQCLASS_VALUES_ANY) / sizeof(unsigned), false)) return false;
     if (!validateTypesize(inst, PROP_TYPESIZE, TYPESIZE_ATTR_NONE, TYPESIZE_VALUES_ATOMIC, sizeof(TYPESIZE_VALUES_ATOMIC) / sizeof(unsigned), false)) return false;
 
     if (
@@ -28726,8 +31824,8 @@ template<class T> bool PropDescImpl::validateReqGcn_atomic(T inst)
     {
         if (!check_type_values_b32_b64(getType<T>(inst))) return false;
         if (!check_memord_values_any(getMemord<T>(inst))) return false;
-        if (!validateOperand(inst, PROP_S2, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
-        if (!validateOperand(inst, PROP_S3, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
+        if (!validateOperand(inst, PROP_S2, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
+        if (!validateOperand(inst, PROP_S3, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
     }
     else if (
         check_atmop_values_and_or_xor_exch(getAtmop<T>(inst))
@@ -28735,7 +31833,7 @@ template<class T> bool PropDescImpl::validateReqGcn_atomic(T inst)
     {
         if (!check_type_values_b32_b64(getType<T>(inst))) return false;
         if (!check_memord_values_any(getMemord<T>(inst))) return false;
-        if (!validateOperand(inst, PROP_S2, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
+        if (!validateOperand(inst, PROP_S2, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
         if (!validateOperand(inst, PROP_S3, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned), false)) return false;
     }
     else if (
@@ -28744,7 +31842,7 @@ template<class T> bool PropDescImpl::validateReqGcn_atomic(T inst)
     {
         if (!check_type_values_s32_u32_s64_u64(getType<T>(inst))) return false;
         if (!check_memord_values_any(getMemord<T>(inst))) return false;
-        if (!validateOperand(inst, PROP_S2, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
+        if (!validateOperand(inst, PROP_S2, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
         if (!validateOperand(inst, PROP_S3, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned), false)) return false;
     }
     else if (
@@ -28753,7 +31851,7 @@ template<class T> bool PropDescImpl::validateReqGcn_atomic(T inst)
     {
         if (!check_type_values_u32_u64(getType<T>(inst))) return false;
         if (!check_memord_values_any(getMemord<T>(inst))) return false;
-        if (!validateOperand(inst, PROP_S2, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
+        if (!validateOperand(inst, PROP_S2, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
         if (!validateOperand(inst, PROP_S3, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned), false)) return false;
     }
     else if (
@@ -28769,8 +31867,8 @@ template<class T> bool PropDescImpl::validateReqGcn_atomic(T inst)
     {
         return false;
     }
-    if (!validateOperand(inst, PROP_D0, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
-    if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_NONE, OPERAND_VALUES_ADDRSEG, sizeof(OPERAND_VALUES_ADDRSEG) / sizeof(unsigned), false)) return false;
+    if (!validateOperand(inst, PROP_D0, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
+    if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_SEG, OPERAND_VALUES_ADDRSEG, sizeof(OPERAND_VALUES_ADDRSEG) / sizeof(unsigned), false)) return false;
     if (!validateOperand(inst, PROP_S4, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned), false)) return false;
     return true;
 }
@@ -28781,6 +31879,7 @@ template<class T> bool PropDescImpl::validateReqGcn_atomic_noret(T inst)
     if (!check_atmop_values_generic_st(getAtmop<T>(inst))) return false;
     if (!check_segment_values_gcn(getSegment<T>(inst))) return false;
     if (!check_memscp_values_any(getMemscp<T>(inst))) return false;
+    if (!validateEqclass(inst, PROP_EQCLASS, EQCLASS_ATTR_NONE, EQCLASS_VALUES_ANY, sizeof(EQCLASS_VALUES_ANY) / sizeof(unsigned), false)) return false;
     if (!validateTypesize(inst, PROP_TYPESIZE, TYPESIZE_ATTR_NONE, TYPESIZE_VALUES_ATOMIC, sizeof(TYPESIZE_VALUES_ATOMIC) / sizeof(unsigned), false)) return false;
 
     if (
@@ -28789,7 +31888,7 @@ template<class T> bool PropDescImpl::validateReqGcn_atomic_noret(T inst)
     {
         if (!check_type_values_b32_b64(getType<T>(inst))) return false;
         if (!check_memord_values_any(getMemord<T>(inst))) return false;
-        if (!validateOperand(inst, PROP_S2, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
+        if (!validateOperand(inst, PROP_S2, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
     }
     else if (
         check_atmop_values_and_or_xor(getAtmop<T>(inst))
@@ -28827,8 +31926,8 @@ template<class T> bool PropDescImpl::validateReqGcn_atomic_noret(T inst)
     {
         return false;
     }
-    if (!validateOperand(inst, PROP_S0, OPERAND_ATTR_NONE, OPERAND_VALUES_ADDRSEG, sizeof(OPERAND_VALUES_ADDRSEG) / sizeof(unsigned), false)) return false;
-    if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
+    if (!validateOperand(inst, PROP_S0, OPERAND_ATTR_SEG, OPERAND_VALUES_ADDRSEG, sizeof(OPERAND_VALUES_ADDRSEG) / sizeof(unsigned), false)) return false;
+    if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
     if (!validateOperand(inst, PROP_S3, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned), false)) return false;
     if (!validateOperand(inst, PROP_S4, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned), false)) return false;
     return true;
@@ -28837,9 +31936,9 @@ template<class T> bool PropDescImpl::validateReqGcn_atomic_noret(T inst)
 template<class T> bool PropDescImpl::validateReqGcn_b4xchg(T inst)
 {
     if (!check_type_values_b32(getType<T>(inst))) return false;
-    if (!validateOperand(inst, PROP_D0, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
-    if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
-    if (!validateOperand(inst, PROP_S2, OPERAND_ATTR_NONE, OPERAND_VALUES_IMM32, sizeof(OPERAND_VALUES_IMM32) / sizeof(unsigned), false)) return false;
+    if (!validateOperand(inst, PROP_D0, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
+    if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
+    if (!validateOperand(inst, PROP_S2, OPERAND_ATTR_DTYPE, OPERAND_VALUES_IMM, sizeof(OPERAND_VALUES_IMM) / sizeof(unsigned), false)) return false;
     if (!validateOperand(inst, PROP_S3, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned), false)) return false;
     if (!validateOperand(inst, PROP_S4, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned), false)) return false;
     return true;
@@ -28848,9 +31947,9 @@ template<class T> bool PropDescImpl::validateReqGcn_b4xchg(T inst)
 template<class T> bool PropDescImpl::validateReqGcn_bfm(T inst)
 {
     if (!check_type_values_b32(getType<T>(inst))) return false;
-    if (!validateOperand(inst, PROP_D0, OPERAND_ATTR_NONE, OPERAND_VALUES_REG32, sizeof(OPERAND_VALUES_REG32) / sizeof(unsigned), false)) return false;
-    if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
-    if (!validateOperand(inst, PROP_S2, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
+    if (!validateOperand(inst, PROP_D0, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
+    if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
+    if (!validateOperand(inst, PROP_S2, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
     if (!validateOperand(inst, PROP_S3, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned), false)) return false;
     if (!validateOperand(inst, PROP_S4, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned), false)) return false;
     return true;
@@ -28859,9 +31958,9 @@ template<class T> bool PropDescImpl::validateReqGcn_bfm(T inst)
 template<class T> bool PropDescImpl::validateReqGcn_fldexp(T inst)
 {
     if (!check_type_values_f32_f64(getType<T>(inst))) return false;
-    if (!validateOperand(inst, PROP_D0, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
-    if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
-    if (!validateOperand(inst, PROP_S2, OPERAND_ATTR_NONE, OPERAND_VALUES_REG32_IMM32, sizeof(OPERAND_VALUES_REG32_IMM32) / sizeof(unsigned), false)) return false;
+    if (!validateOperand(inst, PROP_D0, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
+    if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
+    if (!validateOperand(inst, PROP_S2, OPERAND_ATTR_S32, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
     if (!validateOperand(inst, PROP_S3, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned), false)) return false;
     if (!validateOperand(inst, PROP_S4, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned), false)) return false;
     return true;
@@ -28870,8 +31969,8 @@ template<class T> bool PropDescImpl::validateReqGcn_fldexp(T inst)
 template<class T> bool PropDescImpl::validateReqGcn_frexp_exp(T inst)
 {
     if (!check_type_values_f32_f64(getType<T>(inst))) return false;
-    if (!validateOperand(inst, PROP_D0, OPERAND_ATTR_NONE, OPERAND_VALUES_REG32, sizeof(OPERAND_VALUES_REG32) / sizeof(unsigned), false)) return false;
-    if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
+    if (!validateOperand(inst, PROP_D0, OPERAND_ATTR_S32, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
+    if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
     if (!validateOperand(inst, PROP_S2, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned), false)) return false;
     if (!validateOperand(inst, PROP_S3, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned), false)) return false;
     if (!validateOperand(inst, PROP_S4, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned), false)) return false;
@@ -28881,8 +31980,8 @@ template<class T> bool PropDescImpl::validateReqGcn_frexp_exp(T inst)
 template<class T> bool PropDescImpl::validateReqGcn_frexp_mant(T inst)
 {
     if (!check_type_values_f32_f64(getType<T>(inst))) return false;
-    if (!validateOperand(inst, PROP_D0, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
-    if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
+    if (!validateOperand(inst, PROP_D0, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
+    if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
     if (!validateOperand(inst, PROP_S2, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned), false)) return false;
     if (!validateOperand(inst, PROP_S3, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned), false)) return false;
     if (!validateOperand(inst, PROP_S4, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned), false)) return false;
@@ -28894,50 +31993,73 @@ template<class T> bool PropDescImpl::validateReqGcn_ld(T inst)
     if (!check_type_values_u_s_f_b128(getType<T>(inst))) return false;
     if (!check_segment_values_gcn(getSegment<T>(inst))) return false;
     if (!check_align_values_any(getAlign<T>(inst))) return false;
-    if (!check_width_values_any(getWidth<T>(inst))) return false;
+    if (!check_const_values_none(getConst<T>(inst))) return false;
     if (!validateEqclass(inst, PROP_EQCLASS, EQCLASS_ATTR_NONE, EQCLASS_VALUES_ANY, sizeof(EQCLASS_VALUES_ANY) / sizeof(unsigned), false)) return false;
+    if (!check_width_values_any(getWidth<T>(inst))) return false;
 
     if (
         check_type_values_u_s_f(getType<T>(inst))
        )
     {
-        if (!validateOperand(inst, PROP_D0, OPERAND_ATTR_EXP, OPERAND_VALUES_REGEXP_REGVEXP, sizeof(OPERAND_VALUES_REGEXP_REGVEXP) / sizeof(unsigned), false)) return false;
+        if (!validateOperand(inst, PROP_D0, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG_REGV, sizeof(OPERAND_VALUES_REG_REGV) / sizeof(unsigned), false)) return false;
     }
     else if (
         check_type_values_b128(getType<T>(inst))
        )
     {
-        if (!validateOperand(inst, PROP_D0, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
+        if (!validateOperand(inst, PROP_D0, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
     }
     else
     {
         return false;
     }
-    if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_NONE, OPERAND_VALUES_ADDRTSEG, sizeof(OPERAND_VALUES_ADDRTSEG) / sizeof(unsigned), false)) return false;
+    if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_TSEG, OPERAND_VALUES_ADDRSEG, sizeof(OPERAND_VALUES_ADDRSEG) / sizeof(unsigned), false)) return false;
     if (!validateOperand(inst, PROP_S2, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned), false)) return false;
     if (!validateOperand(inst, PROP_S3, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned), false)) return false;
     if (!validateOperand(inst, PROP_S4, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned), false)) return false;
     return true;
 }
 
-template<class T> bool PropDescImpl::validateReqGcn_mad(T inst)
+template<class T> bool PropDescImpl::validateReqGcn_mads(T inst)
 {
     if (!check_type_values_b32(getType<T>(inst))) return false;
-    if (!validateOperand(inst, PROP_D0, OPERAND_ATTR_NONE, OPERAND_VALUES_REG64, sizeof(OPERAND_VALUES_REG64) / sizeof(unsigned), false)) return false;
-    if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_NONE, OPERAND_VALUES_REG32_IMM32, sizeof(OPERAND_VALUES_REG32_IMM32) / sizeof(unsigned), false)) return false;
-    if (!validateOperand(inst, PROP_S2, OPERAND_ATTR_NONE, OPERAND_VALUES_REG32_IMM32, sizeof(OPERAND_VALUES_REG32_IMM32) / sizeof(unsigned), false)) return false;
-    if (!validateOperand(inst, PROP_S3, OPERAND_ATTR_NONE, OPERAND_VALUES_REG64_IMM64, sizeof(OPERAND_VALUES_REG64_IMM64) / sizeof(unsigned), false)) return false;
+    if (!validateOperand(inst, PROP_D0, OPERAND_ATTR_S64, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
+    if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_S32, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
+    if (!validateOperand(inst, PROP_S2, OPERAND_ATTR_S32, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
+    if (!validateOperand(inst, PROP_S3, OPERAND_ATTR_S64, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
     if (!validateOperand(inst, PROP_S4, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned), false)) return false;
     return true;
 }
 
-template<class T> bool PropDescImpl::validateReqGcn_min_max_med(T inst)
+template<class T> bool PropDescImpl::validateReqGcn_madu(T inst)
+{
+    if (!check_type_values_b32(getType<T>(inst))) return false;
+    if (!validateOperand(inst, PROP_D0, OPERAND_ATTR_U64, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
+    if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_U32, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
+    if (!validateOperand(inst, PROP_S2, OPERAND_ATTR_U32, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
+    if (!validateOperand(inst, PROP_S3, OPERAND_ATTR_U64, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
+    if (!validateOperand(inst, PROP_S4, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned), false)) return false;
+    return true;
+}
+
+template<class T> bool PropDescImpl::validateReqGcn_min_max(T inst)
+{
+    if (!check_type_values_s32_u32_f32_f64(getType<T>(inst))) return false;
+    if (!validateOperand(inst, PROP_D0, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
+    if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
+    if (!validateOperand(inst, PROP_S2, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
+    if (!validateOperand(inst, PROP_S3, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned), false)) return false;
+    if (!validateOperand(inst, PROP_S4, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned), false)) return false;
+    return true;
+}
+
+template<class T> bool PropDescImpl::validateReqGcn_min_max_med3(T inst)
 {
     if (!check_type_values_s32_u32_f32(getType<T>(inst))) return false;
-    if (!validateOperand(inst, PROP_D0, OPERAND_ATTR_NONE, OPERAND_VALUES_REG32, sizeof(OPERAND_VALUES_REG32) / sizeof(unsigned), false)) return false;
-    if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
-    if (!validateOperand(inst, PROP_S2, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
-    if (!validateOperand(inst, PROP_S3, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
+    if (!validateOperand(inst, PROP_D0, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
+    if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
+    if (!validateOperand(inst, PROP_S2, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
+    if (!validateOperand(inst, PROP_S3, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
     if (!validateOperand(inst, PROP_S4, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned), false)) return false;
     return true;
 }
@@ -28945,10 +32067,10 @@ template<class T> bool PropDescImpl::validateReqGcn_min_max_med(T inst)
 template<class T> bool PropDescImpl::validateReqGcn_mqsad(T inst)
 {
     if (!check_type_values_b64(getType<T>(inst))) return false;
-    if (!validateOperand(inst, PROP_D0, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
-    if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
-    if (!validateOperand(inst, PROP_S2, OPERAND_ATTR_NONE, OPERAND_VALUES_REG32_IMM32, sizeof(OPERAND_VALUES_REG32_IMM32) / sizeof(unsigned), false)) return false;
-    if (!validateOperand(inst, PROP_S3, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
+    if (!validateOperand(inst, PROP_D0, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
+    if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
+    if (!validateOperand(inst, PROP_S2, OPERAND_ATTR_B32, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
+    if (!validateOperand(inst, PROP_S3, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
     if (!validateOperand(inst, PROP_S4, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned), false)) return false;
     return true;
 }
@@ -28956,10 +32078,10 @@ template<class T> bool PropDescImpl::validateReqGcn_mqsad(T inst)
 template<class T> bool PropDescImpl::validateReqGcn_mqsad4(T inst)
 {
     if (!check_type_values_b32(getType<T>(inst))) return false;
-    if (!validateOperand(inst, PROP_D0, OPERAND_ATTR_NONE, OPERAND_VALUES_REGV432, sizeof(OPERAND_VALUES_REGV432) / sizeof(unsigned), false)) return false;
-    if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_NONE, OPERAND_VALUES_REG64_IMM64, sizeof(OPERAND_VALUES_REG64_IMM64) / sizeof(unsigned), false)) return false;
-    if (!validateOperand(inst, PROP_S2, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
-    if (!validateOperand(inst, PROP_S3, OPERAND_ATTR_NONE, OPERAND_VALUES_REGV432, sizeof(OPERAND_VALUES_REGV432) / sizeof(unsigned), false)) return false;
+    if (!validateOperand(inst, PROP_D0, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REGV4, sizeof(OPERAND_VALUES_REGV4) / sizeof(unsigned), false)) return false;
+    if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_B64, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
+    if (!validateOperand(inst, PROP_S2, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
+    if (!validateOperand(inst, PROP_S3, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REGV4, sizeof(OPERAND_VALUES_REGV4) / sizeof(unsigned), false)) return false;
     if (!validateOperand(inst, PROP_S4, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned), false)) return false;
     return true;
 }
@@ -28967,10 +32089,10 @@ template<class T> bool PropDescImpl::validateReqGcn_mqsad4(T inst)
 template<class T> bool PropDescImpl::validateReqGcn_msad(T inst)
 {
     if (!check_type_values_b32(getType<T>(inst))) return false;
-    if (!validateOperand(inst, PROP_D0, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
-    if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
-    if (!validateOperand(inst, PROP_S2, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
-    if (!validateOperand(inst, PROP_S3, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
+    if (!validateOperand(inst, PROP_D0, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
+    if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
+    if (!validateOperand(inst, PROP_S2, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
+    if (!validateOperand(inst, PROP_S3, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
     if (!validateOperand(inst, PROP_S4, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned), false)) return false;
     return true;
 }
@@ -28978,7 +32100,7 @@ template<class T> bool PropDescImpl::validateReqGcn_msad(T inst)
 template<class T> bool PropDescImpl::validateReqGcn_slp_prt(T inst)
 {
     if (!check_type_values_u32(getType<T>(inst))) return false;
-    if (!validateOperand(inst, PROP_S0, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
+    if (!validateOperand(inst, PROP_S0, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
     if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned), false)) return false;
     if (!validateOperand(inst, PROP_S2, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned), false)) return false;
     if (!validateOperand(inst, PROP_S3, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned), false)) return false;
@@ -28989,10 +32111,10 @@ template<class T> bool PropDescImpl::validateReqGcn_slp_prt(T inst)
 template<class T> bool PropDescImpl::validateReqGcn_qsad(T inst)
 {
     if (!check_type_values_b64(getType<T>(inst))) return false;
-    if (!validateOperand(inst, PROP_D0, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
-    if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
-    if (!validateOperand(inst, PROP_S2, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
-    if (!validateOperand(inst, PROP_S3, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
+    if (!validateOperand(inst, PROP_D0, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
+    if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
+    if (!validateOperand(inst, PROP_S2, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
+    if (!validateOperand(inst, PROP_S3, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
     if (!validateOperand(inst, PROP_S4, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned), false)) return false;
     return true;
 }
@@ -29000,7 +32122,7 @@ template<class T> bool PropDescImpl::validateReqGcn_qsad(T inst)
 template<class T> bool PropDescImpl::validateReqGcn_region_alloc(T inst)
 {
     if (!check_type_values_b32(getType<T>(inst))) return false;
-    if (!validateOperand(inst, PROP_S0, OPERAND_ATTR_NONE, OPERAND_VALUES_IMM32, sizeof(OPERAND_VALUES_IMM32) / sizeof(unsigned), false)) return false;
+    if (!validateOperand(inst, PROP_S0, OPERAND_ATTR_U32, OPERAND_VALUES_IMM, sizeof(OPERAND_VALUES_IMM) / sizeof(unsigned), false)) return false;
     if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned), false)) return false;
     if (!validateOperand(inst, PROP_S2, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned), false)) return false;
     if (!validateOperand(inst, PROP_S3, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned), false)) return false;
@@ -29013,9 +32135,10 @@ template<class T> bool PropDescImpl::validateReqGcn_st(T inst)
     if (!check_type_values_u_s_f_b128(getType<T>(inst))) return false;
     if (!check_segment_values_gcn(getSegment<T>(inst))) return false;
     if (!check_align_values_any(getAlign<T>(inst))) return false;
-    if (!check_width_values_none(getWidth<T>(inst))) return false;
+    if (!check_const_values_none(getConst<T>(inst))) return false;
     if (!validateEqclass(inst, PROP_EQCLASS, EQCLASS_ATTR_NONE, EQCLASS_VALUES_ANY, sizeof(EQCLASS_VALUES_ANY) / sizeof(unsigned), false)) return false;
-    if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_NONE, OPERAND_VALUES_ADDRTSEG, sizeof(OPERAND_VALUES_ADDRTSEG) / sizeof(unsigned), false)) return false;
+    if (!check_width_values_none(getWidth<T>(inst))) return false;
+    if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_TSEG, OPERAND_VALUES_ADDRSEG, sizeof(OPERAND_VALUES_ADDRSEG) / sizeof(unsigned), false)) return false;
     if (!validateOperand(inst, PROP_S2, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned), false)) return false;
     if (!validateOperand(inst, PROP_S3, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned), false)) return false;
     if (!validateOperand(inst, PROP_S4, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned), false)) return false;
@@ -29024,13 +32147,13 @@ template<class T> bool PropDescImpl::validateReqGcn_st(T inst)
         check_type_values_u_s_f(getType<T>(inst))
        )
     {
-        if (!validateOperand(inst, PROP_S0, OPERAND_ATTR_EXP, OPERAND_VALUES_REGEXP_REGVEXP_IMMEXP, sizeof(OPERAND_VALUES_REGEXP_REGVEXP_IMMEXP) / sizeof(unsigned), false)) return false;
+        if (!validateOperand(inst, PROP_S0, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG_REGV_IMM, sizeof(OPERAND_VALUES_REG_REGV_IMM) / sizeof(unsigned), false)) return false;
     }
     else if (
         check_type_values_b128(getType<T>(inst))
        )
     {
-        if (!validateOperand(inst, PROP_S0, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
+        if (!validateOperand(inst, PROP_S0, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
     }
     else
     {
@@ -29042,9 +32165,9 @@ template<class T> bool PropDescImpl::validateReqGcn_st(T inst)
 template<class T> bool PropDescImpl::validateReqGcn_trig_preop(T inst)
 {
     if (!check_type_values_f64(getType<T>(inst))) return false;
-    if (!validateOperand(inst, PROP_D0, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
-    if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
-    if (!validateOperand(inst, PROP_S2, OPERAND_ATTR_NONE, OPERAND_VALUES_IMM32, sizeof(OPERAND_VALUES_IMM32) / sizeof(unsigned), false)) return false;
+    if (!validateOperand(inst, PROP_D0, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
+    if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
+    if (!validateOperand(inst, PROP_S2, OPERAND_ATTR_U32, OPERAND_VALUES_IMM, sizeof(OPERAND_VALUES_IMM) / sizeof(unsigned), false)) return false;
     if (!validateOperand(inst, PROP_S3, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned), false)) return false;
     if (!validateOperand(inst, PROP_S4, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned), false)) return false;
     return true;
@@ -29053,26 +32176,7 @@ template<class T> bool PropDescImpl::validateReqGcn_trig_preop(T inst)
 template<class T> bool PropDescImpl::validateReqFbar_none(T inst)
 {
     if (!check_type_values_none(getType<T>(inst))) return false;
-    if (!check_memord_values_none(getMemord<T>(inst))) return false;
-    if (!check_memscp_values_none(getMemscp<T>(inst))) return false;
-    if (!check_memfnc_values_none(getMemfnc<T>(inst))) return false;
-    if (!check_width_values_none(getWidth<T>(inst))) return false;
-    if (!validateOperand(inst, PROP_S0, OPERAND_ATTR_NONE, OPERAND_VALUES_REG32_FBARRIER, sizeof(OPERAND_VALUES_REG32_FBARRIER) / sizeof(unsigned), false)) return false;
-    if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned), false)) return false;
-    if (!validateOperand(inst, PROP_S2, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned), false)) return false;
-    if (!validateOperand(inst, PROP_S3, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned), false)) return false;
-    if (!validateOperand(inst, PROP_S4, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned), false)) return false;
-    return true;
-}
-
-template<class T> bool PropDescImpl::validateReqFbar_width(T inst)
-{
-    if (!check_type_values_none(getType<T>(inst))) return false;
-    if (!check_memord_values_none(getMemord<T>(inst))) return false;
-    if (!check_memscp_values_none(getMemscp<T>(inst))) return false;
-    if (!check_memfnc_values_none(getMemfnc<T>(inst))) return false;
-    if (!check_width_values_any(getWidth<T>(inst))) return false;
-    if (!validateOperand(inst, PROP_S0, OPERAND_ATTR_NONE, OPERAND_VALUES_REG32_FBARRIER, sizeof(OPERAND_VALUES_REG32_FBARRIER) / sizeof(unsigned), false)) return false;
+    if (!validateOperand(inst, PROP_S0, OPERAND_ATTR_U32, OPERAND_VALUES_REGU32_FBARRIERU32, sizeof(OPERAND_VALUES_REGU32_FBARRIERU32) / sizeof(unsigned), false)) return false;
     if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned), false)) return false;
     if (!validateOperand(inst, PROP_S2, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned), false)) return false;
     if (!validateOperand(inst, PROP_S3, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned), false)) return false;
@@ -29082,29 +32186,47 @@ template<class T> bool PropDescImpl::validateReqFbar_width(T inst)
 
 template<class T> bool PropDescImpl::validateReqLd(T inst)
 {
-    if (!check_type_values_u_s_f_b128_roimg_rwimg_samp(getType<T>(inst))) return false;
+    if (!check_type_values_u_s_f_b128_opaque(getType<T>(inst))) return false;
     if (!check_segment_values_any(getSegment<T>(inst))) return false;
     if (!check_align_values_any(getAlign<T>(inst))) return false;
-    if (!check_width_values_any(getWidth<T>(inst))) return false;
+    if (!check_const_values_any(getConst<T>(inst))) return false;
     if (!validateEqclass(inst, PROP_EQCLASS, EQCLASS_ATTR_NONE, EQCLASS_VALUES_ANY, sizeof(EQCLASS_VALUES_ANY) / sizeof(unsigned), false)) return false;
+    if (!check_width_values_any(getWidth<T>(inst))) return false;
 
     if (
         check_type_values_u_s_f(getType<T>(inst))
        )
     {
-        if (!validateOperand(inst, PROP_D0, OPERAND_ATTR_EXP, OPERAND_VALUES_REGEXP_REGVEXP, sizeof(OPERAND_VALUES_REGEXP_REGVEXP) / sizeof(unsigned), false)) return false;
+        if (!validateOperand(inst, PROP_D0, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG_REGV, sizeof(OPERAND_VALUES_REG_REGV) / sizeof(unsigned), false)) return false;
     }
     else if (
-        check_type_values_b128_roimg_rwimg_samp(getType<T>(inst))
+        check_type_values_b128_opaque(getType<T>(inst))
        )
     {
-        if (!validateOperand(inst, PROP_D0, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
+        if (!validateOperand(inst, PROP_D0, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
     }
     else
     {
         return false;
     }
-    if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_NONE, OPERAND_VALUES_ADDRTSEG, sizeof(OPERAND_VALUES_ADDRTSEG) / sizeof(unsigned), false)) return false;
+
+    if (
+        check_segment_values_global_readonly_kernarg_flat(getSegment<T>(inst))
+       )
+    {
+        if (!check_const_values_any(getConst<T>(inst))) return false;
+    }
+    else if (
+        check_segment_values_group_private_spill_arg(getSegment<T>(inst))
+       )
+    {
+        if (!check_const_values_none(getConst<T>(inst))) return false;
+    }
+    else
+    {
+        return false;
+    }
+    if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_TSEG, OPERAND_VALUES_ADDRSEG, sizeof(OPERAND_VALUES_ADDRSEG) / sizeof(unsigned), false)) return false;
     if (!validateOperand(inst, PROP_S2, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned), false)) return false;
     if (!validateOperand(inst, PROP_S3, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned), false)) return false;
     if (!validateOperand(inst, PROP_S4, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned), false)) return false;
@@ -29116,8 +32238,8 @@ template<class T> bool PropDescImpl::validateReqLda(T inst)
     if (!check_type_values_u32_u64(getType<T>(inst))) return false;
     if (!check_segment_values_any(getSegment<T>(inst))) return false;
     if (!validateTypesize(inst, PROP_TYPESIZE, TYPESIZE_ATTR_NONE, TYPESIZE_VALUES_SEG, sizeof(TYPESIZE_VALUES_SEG) / sizeof(unsigned), false)) return false;
-    if (!validateOperand(inst, PROP_D0, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
-    if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_NONE, OPERAND_VALUES_ADDRSEG, sizeof(OPERAND_VALUES_ADDRSEG) / sizeof(unsigned), false)) return false;
+    if (!validateOperand(inst, PROP_D0, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
+    if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_SEG, OPERAND_VALUES_ADDRSEG, sizeof(OPERAND_VALUES_ADDRSEG) / sizeof(unsigned), false)) return false;
     if (!validateOperand(inst, PROP_S2, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned), false)) return false;
     if (!validateOperand(inst, PROP_S3, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned), false)) return false;
     if (!validateOperand(inst, PROP_S4, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned), false)) return false;
@@ -29128,8 +32250,8 @@ template<class T> bool PropDescImpl::validateReqLdc(T inst)
 {
     if (!check_type_values_u32_u64(getType<T>(inst))) return false;
     if (!validateTypesize(inst, PROP_TYPESIZE, TYPESIZE_ATTR_NONE, TYPESIZE_VALUES_MODEL, sizeof(TYPESIZE_VALUES_MODEL) / sizeof(unsigned), false)) return false;
-    if (!validateOperand(inst, PROP_D0, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
-    if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_NONE, OPERAND_VALUES_LAB_FUNC, sizeof(OPERAND_VALUES_LAB_FUNC) / sizeof(unsigned), false)) return false;
+    if (!validateOperand(inst, PROP_D0, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
+    if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_MODEL, OPERAND_VALUES_LABMODEL_FUNCMODEL, sizeof(OPERAND_VALUES_LABMODEL_FUNCMODEL) / sizeof(unsigned), false)) return false;
     if (!validateOperand(inst, PROP_S2, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned), false)) return false;
     if (!validateOperand(inst, PROP_S3, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned), false)) return false;
     if (!validateOperand(inst, PROP_S4, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned), false)) return false;
@@ -29139,8 +32261,8 @@ template<class T> bool PropDescImpl::validateReqLdc(T inst)
 template<class T> bool PropDescImpl::validateReqLdf(T inst)
 {
     if (!check_type_values_u32(getType<T>(inst))) return false;
-    if (!validateOperand(inst, PROP_S0, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
-    if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_NONE, OPERAND_VALUES_FBARRIER, sizeof(OPERAND_VALUES_FBARRIER) / sizeof(unsigned), false)) return false;
+    if (!validateOperand(inst, PROP_S0, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
+    if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_U32, OPERAND_VALUES_FBARRIERU32, sizeof(OPERAND_VALUES_FBARRIERU32) / sizeof(unsigned), false)) return false;
     if (!validateOperand(inst, PROP_S2, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned), false)) return false;
     if (!validateOperand(inst, PROP_S3, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned), false)) return false;
     if (!validateOperand(inst, PROP_S4, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned), false)) return false;
@@ -29152,6 +32274,7 @@ template<class T> bool PropDescImpl::validateReqLd_image(T inst)
     if (!check_type_values_s32_u32_f32(getType<T>(inst))) return false;
     if (!check_type_values_u32(getCtype<T>(inst))) return false;
     if (!check_geom_values_1d_2d_3d_1db_1da_2da(getGeom<T>(inst))) return false;
+    if (!validateEqclass(inst, PROP_EQCLASS, EQCLASS_ATTR_NONE, EQCLASS_VALUES_ANY, sizeof(EQCLASS_VALUES_ANY) / sizeof(unsigned), false)) return false;
 
     if (
         check_geom_values_1d_1db(getGeom<T>(inst))
@@ -29176,37 +32299,33 @@ template<class T> bool PropDescImpl::validateReqLd_image(T inst)
         return false;
     }
     if (!check_type_values_roimg_rwimg(getItype<T>(inst))) return false;
-    if (!validateOperand(inst, PROP_D0, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REGV4, sizeof(OPERAND_VALUES_REGV4) / sizeof(unsigned), false)) return false;
-    if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_NONE, OPERAND_VALUES_REG64_IMAGE, sizeof(OPERAND_VALUES_REG64_IMAGE) / sizeof(unsigned), false)) return false;
+    if (!validateOperand(inst, PROP_D0, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REGV4, sizeof(OPERAND_VALUES_REGV4) / sizeof(unsigned), false)) return false;
+    if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_ITYPE, OPERAND_VALUES_REGSTYPE_IMAGESTYPE, sizeof(OPERAND_VALUES_REGSTYPE_IMAGESTYPE) / sizeof(unsigned), false)) return false;
     if (!validateOperand(inst, PROP_S3, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned), false)) return false;
     if (!validateOperand(inst, PROP_S4, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned), false)) return false;
+    return true;
+}
 
-    if (
-        check_type_values_roimg(getItype<T>(inst))
-       )
-    {
-        if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_NONE, OPERAND_VALUES_REG64_ROIMAGE, sizeof(OPERAND_VALUES_REG64_ROIMAGE) / sizeof(unsigned), false)) return false;
-    }
-    else if (
-        check_type_values_rwimg(getItype<T>(inst))
-       )
-    {
-        if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_NONE, OPERAND_VALUES_REG64_RWIMAGE, sizeof(OPERAND_VALUES_REG64_RWIMAGE) / sizeof(unsigned), false)) return false;
-    }
-    else
-    {
-        return false;
-    }
+template<class T> bool PropDescImpl::validateReqLdq(T inst)
+{
+    if (!check_type_values_u64(getType<T>(inst))) return false;
+    if (!check_segment_values_flat_global(getSegment<T>(inst))) return false;
+    if (!check_memord_values_ld(getMemord<T>(inst))) return false;
+    if (!validateOperand(inst, PROP_D0, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
+    if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_SEG, OPERAND_VALUES_ADDRSEG, sizeof(OPERAND_VALUES_ADDRSEG) / sizeof(unsigned), false)) return false;
+    if (!validateOperand(inst, PROP_S2, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned), false)) return false;
+    if (!validateOperand(inst, PROP_S3, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned), false)) return false;
+    if (!validateOperand(inst, PROP_S4, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned), false)) return false;
     return true;
 }
 
 template<class T> bool PropDescImpl::validateReqLerp(T inst)
 {
     if (!check_type_values_u8x4(getType<T>(inst))) return false;
-    if (!validateOperand(inst, PROP_D0, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
-    if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
-    if (!validateOperand(inst, PROP_S2, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
-    if (!validateOperand(inst, PROP_S3, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
+    if (!validateOperand(inst, PROP_D0, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
+    if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
+    if (!validateOperand(inst, PROP_S2, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
+    if (!validateOperand(inst, PROP_S3, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
     if (!validateOperand(inst, PROP_S4, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned), false)) return false;
     return true;
 }
@@ -29214,10 +32333,10 @@ template<class T> bool PropDescImpl::validateReqLerp(T inst)
 template<class T> bool PropDescImpl::validateReqMad(T inst)
 {
     if (!check_type_values_s32_u32_s64_u64(getType<T>(inst))) return false;
-    if (!validateOperand(inst, PROP_D0, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
-    if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
-    if (!validateOperand(inst, PROP_S2, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
-    if (!validateOperand(inst, PROP_S3, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
+    if (!validateOperand(inst, PROP_D0, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
+    if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
+    if (!validateOperand(inst, PROP_S2, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
+    if (!validateOperand(inst, PROP_S3, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
     if (!validateOperand(inst, PROP_S4, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned), false)) return false;
     return true;
 }
@@ -29225,23 +32344,10 @@ template<class T> bool PropDescImpl::validateReqMad(T inst)
 template<class T> bool PropDescImpl::validateReqMad24(T inst)
 {
     if (!check_type_values_s32_u32(getType<T>(inst))) return false;
-    if (!validateOperand(inst, PROP_D0, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
-    if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
-    if (!validateOperand(inst, PROP_S2, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
-    if (!validateOperand(inst, PROP_S3, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
-    if (!validateOperand(inst, PROP_S4, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned), false)) return false;
-    return true;
-}
-
-template<class T> bool PropDescImpl::validateReqMasklane(T inst)
-{
-    if (!check_type_values_b64(getType<T>(inst))) return false;
-    if (!check_type_values_u32_b1(getStype<T>(inst))) return false;
-    if (!check_width_values_any(getWidth<T>(inst))) return false;
-    if (!validateOperand(inst, PROP_D0, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
-    if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_STYPE, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
-    if (!validateOperand(inst, PROP_S2, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned), false)) return false;
-    if (!validateOperand(inst, PROP_S3, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned), false)) return false;
+    if (!validateOperand(inst, PROP_D0, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
+    if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
+    if (!validateOperand(inst, PROP_S2, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
+    if (!validateOperand(inst, PROP_S3, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
     if (!validateOperand(inst, PROP_S4, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned), false)) return false;
     return true;
 }
@@ -29284,9 +32390,40 @@ template<class T> bool PropDescImpl::validateReqMax(T inst)
     {
         return false;
     }
-    if (!validateOperand(inst, PROP_D0, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
-    if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
-    if (!validateOperand(inst, PROP_S2, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
+    if (!validateOperand(inst, PROP_D0, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
+    if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
+    if (!validateOperand(inst, PROP_S2, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
+    if (!validateOperand(inst, PROP_S3, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned), false)) return false;
+    if (!validateOperand(inst, PROP_S4, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned), false)) return false;
+    return true;
+}
+
+template<class T> bool PropDescImpl::validateReqMemfence(T inst)
+{
+    if (!check_type_values_none(getType<T>(inst))) return false;
+    if (!check_memord_values_acq_rel_ar(getMemord<T>(inst))) return false;
+    if (!check_memscp_values_any(getMemscp<T>(inst))) return false;
+    if (!check_memseg_values_any(getMemseg<T>(inst))) return false;
+
+    if (
+        check_memseg_values_global_both(getMemseg<T>(inst))
+       )
+    {
+        if (!check_memscp_values_any(getMemscp<T>(inst))) return false;
+    }
+    else if (
+        check_memseg_values_group(getMemseg<T>(inst))
+       )
+    {
+        if (!check_memscp_values_wv_wg(getMemscp<T>(inst))) return false;
+    }
+    else
+    {
+        return false;
+    }
+    if (!validateOperand(inst, PROP_S0, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned), false)) return false;
+    if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned), false)) return false;
+    if (!validateOperand(inst, PROP_S2, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned), false)) return false;
     if (!validateOperand(inst, PROP_S3, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned), false)) return false;
     if (!validateOperand(inst, PROP_S4, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned), false)) return false;
     return true;
@@ -29294,12 +32431,29 @@ template<class T> bool PropDescImpl::validateReqMax(T inst)
 
 template<class T> bool PropDescImpl::validateReqMov(T inst)
 {
-    if (!check_type_values_b1_b32_b64_b128_s32_u32_s64_u64_f_roimg_rwimg_samp(getType<T>(inst))) return false;
-    if (!validateOperand(inst, PROP_D0, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
-    if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
+    if (!check_type_values_b1_b32_b64_b128_s32_u32_s64_u64_f_opaque(getType<T>(inst))) return false;
+    if (!validateOperand(inst, PROP_D0, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
+    if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
     if (!validateOperand(inst, PROP_S2, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned), false)) return false;
     if (!validateOperand(inst, PROP_S3, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned), false)) return false;
     if (!validateOperand(inst, PROP_S4, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned), false)) return false;
+
+    if (
+        check_type_values_b1_b32_b64_b128_s32_u32_s64_u64_f(getType<T>(inst))
+       )
+    {
+        if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
+    }
+    else if (
+        check_type_values_opaque(getType<T>(inst))
+       )
+    {
+        if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
+    }
+    else
+    {
+        return false;
+    }
     return true;
 }
 
@@ -29344,9 +32498,9 @@ template<class T> bool PropDescImpl::validateReqMul(T inst)
     {
         return false;
     }
-    if (!validateOperand(inst, PROP_D0, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
-    if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
-    if (!validateOperand(inst, PROP_S2, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
+    if (!validateOperand(inst, PROP_D0, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
+    if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
+    if (!validateOperand(inst, PROP_S2, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
     if (!validateOperand(inst, PROP_S3, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned), false)) return false;
     if (!validateOperand(inst, PROP_S4, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned), false)) return false;
     return true;
@@ -29355,9 +32509,9 @@ template<class T> bool PropDescImpl::validateReqMul(T inst)
 template<class T> bool PropDescImpl::validateReqMul24(T inst)
 {
     if (!check_type_values_s32_u32(getType<T>(inst))) return false;
-    if (!validateOperand(inst, PROP_D0, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
-    if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
-    if (!validateOperand(inst, PROP_S2, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
+    if (!validateOperand(inst, PROP_D0, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
+    if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
+    if (!validateOperand(inst, PROP_S2, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
     if (!validateOperand(inst, PROP_S3, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned), false)) return false;
     if (!validateOperand(inst, PROP_S4, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned), false)) return false;
     return true;
@@ -29385,9 +32539,9 @@ template<class T> bool PropDescImpl::validateReqMulhi(T inst)
     {
         return false;
     }
-    if (!validateOperand(inst, PROP_D0, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
-    if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
-    if (!validateOperand(inst, PROP_S2, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
+    if (!validateOperand(inst, PROP_D0, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
+    if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
+    if (!validateOperand(inst, PROP_S2, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
     if (!validateOperand(inst, PROP_S3, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned), false)) return false;
     if (!validateOperand(inst, PROP_S4, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned), false)) return false;
     return true;
@@ -29396,8 +32550,8 @@ template<class T> bool PropDescImpl::validateReqMulhi(T inst)
 template<class T> bool PropDescImpl::validateReqTrig32(T inst)
 {
     if (!check_type_values_f32(getType<T>(inst))) return false;
-    if (!validateOperand(inst, PROP_D0, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
-    if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
+    if (!validateOperand(inst, PROP_D0, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
+    if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
     if (!validateOperand(inst, PROP_S2, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned), false)) return false;
     if (!validateOperand(inst, PROP_S3, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned), false)) return false;
     if (!validateOperand(inst, PROP_S4, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned), false)) return false;
@@ -29407,10 +32561,10 @@ template<class T> bool PropDescImpl::validateReqTrig32(T inst)
 template<class T> bool PropDescImpl::validateReqNfma(T inst)
 {
     if (!check_type_values_f(getType<T>(inst))) return false;
-    if (!validateOperand(inst, PROP_D0, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
-    if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
-    if (!validateOperand(inst, PROP_S2, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
-    if (!validateOperand(inst, PROP_S3, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
+    if (!validateOperand(inst, PROP_D0, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
+    if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
+    if (!validateOperand(inst, PROP_S2, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
+    if (!validateOperand(inst, PROP_S3, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
     if (!validateOperand(inst, PROP_S4, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned), false)) return false;
     return true;
 }
@@ -29429,8 +32583,8 @@ template<class T> bool PropDescImpl::validateReqNop(T inst)
 template<class T> bool PropDescImpl::validateReqNot(T inst)
 {
     if (!check_type_values_b1_b32_b64(getType<T>(inst))) return false;
-    if (!validateOperand(inst, PROP_D0, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
-    if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
+    if (!validateOperand(inst, PROP_D0, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
+    if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
     if (!validateOperand(inst, PROP_S2, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned), false)) return false;
     if (!validateOperand(inst, PROP_S3, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned), false)) return false;
     if (!validateOperand(inst, PROP_S4, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned), false)) return false;
@@ -29440,8 +32594,8 @@ template<class T> bool PropDescImpl::validateReqNot(T inst)
 template<class T> bool PropDescImpl::validateReqTrig(T inst)
 {
     if (!check_type_values_f(getType<T>(inst))) return false;
-    if (!validateOperand(inst, PROP_D0, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
-    if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
+    if (!validateOperand(inst, PROP_D0, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
+    if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
     if (!validateOperand(inst, PROP_S2, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned), false)) return false;
     if (!validateOperand(inst, PROP_S3, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned), false)) return false;
     if (!validateOperand(inst, PROP_S4, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned), false)) return false;
@@ -29451,10 +32605,9 @@ template<class T> bool PropDescImpl::validateReqTrig(T inst)
 template<class T> bool PropDescImpl::validateReqNullptr(T inst)
 {
     if (!check_type_values_u32_u64(getType<T>(inst))) return false;
-    if (!check_type_values_none(getStype<T>(inst))) return false;
     if (!check_segment_values_any(getSegment<T>(inst))) return false;
     if (!validateTypesize(inst, PROP_TYPESIZE, TYPESIZE_ATTR_NONE, TYPESIZE_VALUES_SEG, sizeof(TYPESIZE_VALUES_SEG) / sizeof(unsigned), false)) return false;
-    if (!validateOperand(inst, PROP_S0, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
+    if (!validateOperand(inst, PROP_S0, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
     if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned), false)) return false;
     if (!validateOperand(inst, PROP_S2, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned), false)) return false;
     if (!validateOperand(inst, PROP_S3, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned), false)) return false;
@@ -29513,10 +32666,10 @@ template<class T> bool PropDescImpl::validateReqPack(T inst)
     {
         return false;
     }
-    if (!validateOperand(inst, PROP_D0, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
-    if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
+    if (!validateOperand(inst, PROP_D0, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
+    if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
     if (!validateOperand(inst, PROP_S2, OPERAND_ATTR_STYPE, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
-    if (!validateOperand(inst, PROP_S3, OPERAND_ATTR_NONE, OPERAND_VALUES_REG32_IMM32, sizeof(OPERAND_VALUES_REG32_IMM32) / sizeof(unsigned), false)) return false;
+    if (!validateOperand(inst, PROP_S3, OPERAND_ATTR_U32, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
     if (!validateOperand(inst, PROP_S4, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned), false)) return false;
     return true;
 }
@@ -29525,7 +32678,7 @@ template<class T> bool PropDescImpl::validateReqPackcvt(T inst)
 {
     if (!check_type_values_u8x4(getType<T>(inst))) return false;
     if (!check_type_values_f32(getStype<T>(inst))) return false;
-    if (!validateOperand(inst, PROP_D0, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
+    if (!validateOperand(inst, PROP_D0, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
     if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_STYPE, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
     if (!validateOperand(inst, PROP_S2, OPERAND_ATTR_STYPE, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
     if (!validateOperand(inst, PROP_S3, OPERAND_ATTR_STYPE, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
@@ -29533,11 +32686,23 @@ template<class T> bool PropDescImpl::validateReqPackcvt(T inst)
     return true;
 }
 
+template<class T> bool PropDescImpl::validateReqPacket(T inst)
+{
+    if (!check_type_values_sig32_sig64(getType<T>(inst))) return false;
+    if (!validateTypesize(inst, PROP_TYPESIZE, TYPESIZE_ATTR_NONE, TYPESIZE_VALUES_SIGNAL, sizeof(TYPESIZE_VALUES_SIGNAL) / sizeof(unsigned), false)) return false;
+    if (!validateOperand(inst, PROP_S0, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
+    if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned), false)) return false;
+    if (!validateOperand(inst, PROP_S2, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned), false)) return false;
+    if (!validateOperand(inst, PROP_S3, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned), false)) return false;
+    if (!validateOperand(inst, PROP_S4, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned), false)) return false;
+    return true;
+}
+
 template<class T> bool PropDescImpl::validateReqPopcount(T inst)
 {
     if (!check_type_values_u32(getType<T>(inst))) return false;
     if (!check_type_values_b32_b64(getStype<T>(inst))) return false;
-    if (!validateOperand(inst, PROP_D0, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
+    if (!validateOperand(inst, PROP_D0, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
     if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_STYPE, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
     if (!validateOperand(inst, PROP_S2, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned), false)) return false;
     if (!validateOperand(inst, PROP_S3, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned), false)) return false;
@@ -29549,28 +32714,11 @@ template<class T> bool PropDescImpl::validateReqQueryimage(T inst)
 {
     if (!check_type_values_u32(getType<T>(inst))) return false;
     if (!check_type_values_roimg_rwimg(getStype<T>(inst))) return false;
-    if (!validateOperand(inst, PROP_D0, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
-    if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_NONE, OPERAND_VALUES_REG64_IMAGE, sizeof(OPERAND_VALUES_REG64_IMAGE) / sizeof(unsigned), false)) return false;
+    if (!validateOperand(inst, PROP_D0, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
+    if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_STYPE, OPERAND_VALUES_REGSTYPE_IMAGESTYPE, sizeof(OPERAND_VALUES_REGSTYPE_IMAGESTYPE) / sizeof(unsigned), false)) return false;
     if (!validateOperand(inst, PROP_S2, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned), false)) return false;
     if (!validateOperand(inst, PROP_S3, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned), false)) return false;
     if (!validateOperand(inst, PROP_S4, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned), false)) return false;
-
-    if (
-        check_type_values_roimg(getStype<T>(inst))
-       )
-    {
-        if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_NONE, OPERAND_VALUES_REG64_ROIMAGE, sizeof(OPERAND_VALUES_REG64_ROIMAGE) / sizeof(unsigned), false)) return false;
-    }
-    else if (
-        check_type_values_rwimg(getStype<T>(inst))
-       )
-    {
-        if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_NONE, OPERAND_VALUES_REG64_RWIMAGE, sizeof(OPERAND_VALUES_REG64_RWIMAGE) / sizeof(unsigned), false)) return false;
-    }
-    else
-    {
-        return false;
-    }
     return true;
 }
 
@@ -29578,9 +32726,9 @@ template<class T> bool PropDescImpl::validateReqQuerysamplerboundary(T inst)
 {
     if (!check_type_values_u32(getType<T>(inst))) return false;
     if (!check_type_values_samp(getStype<T>(inst))) return false;
-    if (!validateOperand(inst, PROP_D0, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
-    if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_NONE, OPERAND_VALUES_REG64_SAMPLER, sizeof(OPERAND_VALUES_REG64_SAMPLER) / sizeof(unsigned), false)) return false;
-    if (!validateOperand(inst, PROP_S2, OPERAND_ATTR_NONE, OPERAND_VALUES_IMM32, sizeof(OPERAND_VALUES_IMM32) / sizeof(unsigned), false)) return false;
+    if (!validateOperand(inst, PROP_D0, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
+    if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_SAMP, OPERAND_VALUES_REGSAMP_SAMPLERSAMP, sizeof(OPERAND_VALUES_REGSAMP_SAMPLERSAMP) / sizeof(unsigned), false)) return false;
+    if (!validateOperand(inst, PROP_S2, OPERAND_ATTR_U32, OPERAND_VALUES_IMM, sizeof(OPERAND_VALUES_IMM) / sizeof(unsigned), false)) return false;
     if (!validateOperand(inst, PROP_S3, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned), false)) return false;
     if (!validateOperand(inst, PROP_S4, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned), false)) return false;
     return true;
@@ -29590,8 +32738,21 @@ template<class T> bool PropDescImpl::validateReqQuerysampler(T inst)
 {
     if (!check_type_values_u32(getType<T>(inst))) return false;
     if (!check_type_values_samp(getStype<T>(inst))) return false;
-    if (!validateOperand(inst, PROP_D0, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
-    if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_NONE, OPERAND_VALUES_REG64_SAMPLER, sizeof(OPERAND_VALUES_REG64_SAMPLER) / sizeof(unsigned), false)) return false;
+    if (!validateOperand(inst, PROP_D0, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
+    if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_SAMP, OPERAND_VALUES_REGSAMP_SAMPLERSAMP, sizeof(OPERAND_VALUES_REGSAMP_SAMPLERSAMP) / sizeof(unsigned), false)) return false;
+    if (!validateOperand(inst, PROP_S2, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned), false)) return false;
+    if (!validateOperand(inst, PROP_S3, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned), false)) return false;
+    if (!validateOperand(inst, PROP_S4, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned), false)) return false;
+    return true;
+}
+
+template<class T> bool PropDescImpl::validateReqGptr(T inst)
+{
+    if (!check_type_values_u32_u64(getType<T>(inst))) return false;
+    if (!check_segment_values_flat_global(getSegment<T>(inst))) return false;
+    if (!validateTypesize(inst, PROP_TYPESIZE, TYPESIZE_ATTR_NONE, TYPESIZE_VALUES_SEG, sizeof(TYPESIZE_VALUES_SEG) / sizeof(unsigned), false)) return false;
+    if (!validateOperand(inst, PROP_S0, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
+    if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned), false)) return false;
     if (!validateOperand(inst, PROP_S2, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned), false)) return false;
     if (!validateOperand(inst, PROP_S3, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned), false)) return false;
     if (!validateOperand(inst, PROP_S4, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned), false)) return false;
@@ -29604,27 +32765,11 @@ template<class T> bool PropDescImpl::validateReqRdimage(T inst)
     if (!check_type_values_roimg_rwimg(getItype<T>(inst))) return false;
     if (!check_type_values_s32_f32(getCtype<T>(inst))) return false;
     if (!check_geom_values_1d_2d_3d_1da_2da(getGeom<T>(inst))) return false;
-    if (!validateOperand(inst, PROP_D0, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REGV4, sizeof(OPERAND_VALUES_REGV4) / sizeof(unsigned), false)) return false;
-    if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_NONE, OPERAND_VALUES_REG64_IMAGE, sizeof(OPERAND_VALUES_REG64_IMAGE) / sizeof(unsigned), false)) return false;
-    if (!validateOperand(inst, PROP_S2, OPERAND_ATTR_NONE, OPERAND_VALUES_REG64_SAMPLER, sizeof(OPERAND_VALUES_REG64_SAMPLER) / sizeof(unsigned), false)) return false;
+    if (!validateEqclass(inst, PROP_EQCLASS, EQCLASS_ATTR_NONE, EQCLASS_VALUES_ANY, sizeof(EQCLASS_VALUES_ANY) / sizeof(unsigned), false)) return false;
+    if (!validateOperand(inst, PROP_D0, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REGV4, sizeof(OPERAND_VALUES_REGV4) / sizeof(unsigned), false)) return false;
+    if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_ITYPE, OPERAND_VALUES_REGSTYPE_IMAGESTYPE, sizeof(OPERAND_VALUES_REGSTYPE_IMAGESTYPE) / sizeof(unsigned), false)) return false;
+    if (!validateOperand(inst, PROP_S2, OPERAND_ATTR_SAMP, OPERAND_VALUES_REGSAMP_SAMPLERSAMP, sizeof(OPERAND_VALUES_REGSAMP_SAMPLERSAMP) / sizeof(unsigned), false)) return false;
     if (!validateOperand(inst, PROP_S4, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned), false)) return false;
-
-    if (
-        check_type_values_roimg(getItype<T>(inst))
-       )
-    {
-        if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_NONE, OPERAND_VALUES_REG64_ROIMAGE, sizeof(OPERAND_VALUES_REG64_ROIMAGE) / sizeof(unsigned), false)) return false;
-    }
-    else if (
-        check_type_values_rwimg(getItype<T>(inst))
-       )
-    {
-        if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_NONE, OPERAND_VALUES_REG64_RWIMAGE, sizeof(OPERAND_VALUES_REG64_RWIMAGE) / sizeof(unsigned), false)) return false;
-    }
-    else
-    {
-        return false;
-    }
 
     if (
         check_geom_values_1d(getGeom<T>(inst))
@@ -29651,19 +32796,6 @@ template<class T> bool PropDescImpl::validateReqRdimage(T inst)
     return true;
 }
 
-template<class T> bool PropDescImpl::validateReqSendlane(T inst)
-{
-    if (!check_type_values_b32(getType<T>(inst))) return false;
-    if (!check_type_values_none(getStype<T>(inst))) return false;
-    if (!check_width_values_any(getWidth<T>(inst))) return false;
-    if (!validateOperand(inst, PROP_D0, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
-    if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
-    if (!validateOperand(inst, PROP_S2, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
-    if (!validateOperand(inst, PROP_S3, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned), false)) return false;
-    if (!validateOperand(inst, PROP_S4, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned), false)) return false;
-    return true;
-}
-
 template<class T> bool PropDescImpl::validateReqRet(T inst)
 {
     if (!check_type_values_none(getType<T>(inst))) return false;
@@ -29679,10 +32811,10 @@ template<class T> bool PropDescImpl::validateReqSad(T inst)
 {
     if (!check_type_values_u32(getType<T>(inst))) return false;
     if (!check_type_values_u32_u8x4_u16x2(getStype<T>(inst))) return false;
-    if (!validateOperand(inst, PROP_D0, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
+    if (!validateOperand(inst, PROP_D0, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
     if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_STYPE, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
     if (!validateOperand(inst, PROP_S2, OPERAND_ATTR_STYPE, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
-    if (!validateOperand(inst, PROP_S3, OPERAND_ATTR_NONE, OPERAND_VALUES_REG32_IMM32, sizeof(OPERAND_VALUES_REG32_IMM32) / sizeof(unsigned), false)) return false;
+    if (!validateOperand(inst, PROP_S3, OPERAND_ATTR_U32, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
     if (!validateOperand(inst, PROP_S4, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned), false)) return false;
     return true;
 }
@@ -29691,10 +32823,10 @@ template<class T> bool PropDescImpl::validateReqSadhi(T inst)
 {
     if (!check_type_values_u16x2(getType<T>(inst))) return false;
     if (!check_type_values_u8x4(getStype<T>(inst))) return false;
-    if (!validateOperand(inst, PROP_D0, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
+    if (!validateOperand(inst, PROP_D0, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
     if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_STYPE, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
     if (!validateOperand(inst, PROP_S2, OPERAND_ATTR_STYPE, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
-    if (!validateOperand(inst, PROP_S3, OPERAND_ATTR_NONE, OPERAND_VALUES_REG32_IMM32, sizeof(OPERAND_VALUES_REG32_IMM32) / sizeof(unsigned), false)) return false;
+    if (!validateOperand(inst, PROP_S3, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
     if (!validateOperand(inst, PROP_S4, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned), false)) return false;
     return true;
 }
@@ -29704,8 +32836,9 @@ template<class T> bool PropDescImpl::validateReqSegmentp(T inst)
     if (!check_type_values_b1(getType<T>(inst))) return false;
     if (!check_type_values_u32_u64(getStype<T>(inst))) return false;
     if (!check_segment_values_std(getSegment<T>(inst))) return false;
+    if (!check_nonull_values_any(getNonull<T>(inst))) return false;
     if (!validateStypesize(inst, PROP_STYPESIZE, STYPESIZE_ATTR_NONE, STYPESIZE_VALUES_MODEL, sizeof(STYPESIZE_VALUES_MODEL) / sizeof(unsigned), false)) return false;
-    if (!validateOperand(inst, PROP_D0, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
+    if (!validateOperand(inst, PROP_D0, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
     if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_STYPE, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
     if (!validateOperand(inst, PROP_S2, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned), false)) return false;
     if (!validateOperand(inst, PROP_S3, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned), false)) return false;
@@ -29716,9 +32849,9 @@ template<class T> bool PropDescImpl::validateReqSegmentp(T inst)
 template<class T> bool PropDescImpl::validateReqShift(T inst)
 {
     if (!check_type_values_s32_u32_s64_u64_sx_ux(getType<T>(inst))) return false;
-    if (!validateOperand(inst, PROP_D0, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
-    if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
-    if (!validateOperand(inst, PROP_S2, OPERAND_ATTR_NONE, OPERAND_VALUES_REG32_IMM32, sizeof(OPERAND_VALUES_REG32_IMM32) / sizeof(unsigned), false)) return false;
+    if (!validateOperand(inst, PROP_D0, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
+    if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
+    if (!validateOperand(inst, PROP_S2, OPERAND_ATTR_U32, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
     if (!validateOperand(inst, PROP_S3, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned), false)) return false;
     if (!validateOperand(inst, PROP_S4, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned), false)) return false;
     return true;
@@ -29727,10 +32860,201 @@ template<class T> bool PropDescImpl::validateReqShift(T inst)
 template<class T> bool PropDescImpl::validateReqShuffle(T inst)
 {
     if (!check_type_values_x32_x64(getType<T>(inst))) return false;
-    if (!validateOperand(inst, PROP_D0, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
-    if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
-    if (!validateOperand(inst, PROP_S2, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
-    if (!validateOperand(inst, PROP_S3, OPERAND_ATTR_NOEXP, OPERAND_VALUES_IMM, sizeof(OPERAND_VALUES_IMM) / sizeof(unsigned), false)) return false;
+    if (!validateOperand(inst, PROP_D0, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
+    if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
+    if (!validateOperand(inst, PROP_S2, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
+    if (!validateOperand(inst, PROP_S3, OPERAND_ATTR_DTYPE, OPERAND_VALUES_IMM, sizeof(OPERAND_VALUES_IMM) / sizeof(unsigned), false)) return false;
+    if (!validateOperand(inst, PROP_S4, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned), false)) return false;
+
+    if (
+        check_type_values_x32(getType<T>(inst))
+       )
+    {
+        if (!validateOperand(inst, PROP_S3, OPERAND_ATTR_B32, OPERAND_VALUES_IMM, sizeof(OPERAND_VALUES_IMM) / sizeof(unsigned), false)) return false;
+    }
+    else if (
+        check_type_values_x64(getType<T>(inst))
+       )
+    {
+        if (!validateOperand(inst, PROP_S3, OPERAND_ATTR_B64, OPERAND_VALUES_IMM, sizeof(OPERAND_VALUES_IMM) / sizeof(unsigned), false)) return false;
+    }
+    else
+    {
+        return false;
+    }
+    return true;
+}
+
+template<class T> bool PropDescImpl::validateReqSignal(T inst)
+{
+    if (!check_type_values_b32_s32_u32_b64_s64_u64(getType<T>(inst))) return false;
+    if (!check_type_values_sig32_sig64(getSigtype<T>(inst))) return false;
+    if (!check_memord_values_any(getMemord<T>(inst))) return false;
+    if (!validateTypesize(inst, PROP_TYPESIZE, TYPESIZE_ATTR_NONE, TYPESIZE_VALUES_MODEL, sizeof(TYPESIZE_VALUES_MODEL) / sizeof(unsigned), false)) return false;
+
+    if (
+        check_type_values_b32_s32_u32(getType<T>(inst))
+       )
+    {
+        if (!check_type_values_sig32(getSigtype<T>(inst))) return false;
+        if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_SIG32, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
+    }
+    else if (
+        check_type_values_b64_s64_u64(getType<T>(inst))
+       )
+    {
+        if (!check_type_values_sig64(getSigtype<T>(inst))) return false;
+        if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_SIG64, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
+    }
+    else
+    {
+        return false;
+    }
+
+    if (
+        check_sigop_values_ld(getSigop<T>(inst))
+       )
+    {
+        if (!check_type_values_b32_b64(getType<T>(inst))) return false;
+        if (!check_memord_values_ld(getMemord<T>(inst))) return false;
+        if (!validateOperand(inst, PROP_S2, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned), false)) return false;
+        if (!validateOperand(inst, PROP_S3, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned), false)) return false;
+    }
+    else if (
+        check_sigop_values_and_or_xor_exch(getSigop<T>(inst))
+       )
+    {
+        if (!check_type_values_b32_b64(getType<T>(inst))) return false;
+        if (!check_memord_values_any(getMemord<T>(inst))) return false;
+        if (!validateOperand(inst, PROP_S2, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
+        if (!validateOperand(inst, PROP_S3, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned), false)) return false;
+    }
+    else if (
+        check_sigop_values_cas(getSigop<T>(inst))
+       )
+    {
+        if (!check_type_values_b32_b64(getType<T>(inst))) return false;
+        if (!check_memord_values_any(getMemord<T>(inst))) return false;
+        if (!validateOperand(inst, PROP_S2, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
+        if (!validateOperand(inst, PROP_S3, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
+    }
+    else if (
+        check_sigop_values_add_sub_min_max(getSigop<T>(inst))
+       )
+    {
+        if (!check_type_values_s32_u32_s64_u64(getType<T>(inst))) return false;
+        if (!check_memord_values_any(getMemord<T>(inst))) return false;
+        if (!validateOperand(inst, PROP_S2, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
+        if (!validateOperand(inst, PROP_S3, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned), false)) return false;
+    }
+    else if (
+        check_sigop_values_inc_dec(getSigop<T>(inst))
+       )
+    {
+        if (!check_type_values_u32_u64(getType<T>(inst))) return false;
+        if (!check_memord_values_any(getMemord<T>(inst))) return false;
+        if (!validateOperand(inst, PROP_S2, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
+        if (!validateOperand(inst, PROP_S3, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned), false)) return false;
+    }
+    else if (
+        check_sigop_values_wait(getSigop<T>(inst))
+       )
+    {
+        if (!check_type_values_s32_s64(getType<T>(inst))) return false;
+        if (!check_memord_values_ld(getMemord<T>(inst))) return false;
+        if (!validateOperand(inst, PROP_S2, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
+        if (!validateOperand(inst, PROP_S3, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned), false)) return false;
+    }
+    else if (
+        check_sigop_values_waittimeout(getSigop<T>(inst))
+       )
+    {
+        if (!check_type_values_s32_s64(getType<T>(inst))) return false;
+        if (!check_memord_values_ld(getMemord<T>(inst))) return false;
+        if (!validateOperand(inst, PROP_S2, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
+        if (!validateOperand(inst, PROP_S3, OPERAND_ATTR_U64, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
+    }
+    else
+    {
+        return false;
+    }
+    if (!validateOperand(inst, PROP_D0, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
+    if (!validateOperand(inst, PROP_S4, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned), false)) return false;
+    return true;
+}
+
+template<class T> bool PropDescImpl::validateReqSignal_noret(T inst)
+{
+    if (!check_type_values_b32_s32_u32_b64_s64_u64(getType<T>(inst))) return false;
+    if (!check_type_values_sig32_sig64(getSigtype<T>(inst))) return false;
+    if (!check_memord_values_any(getMemord<T>(inst))) return false;
+    if (!validateTypesize(inst, PROP_TYPESIZE, TYPESIZE_ATTR_NONE, TYPESIZE_VALUES_MODEL, sizeof(TYPESIZE_VALUES_MODEL) / sizeof(unsigned), false)) return false;
+
+    if (
+        check_type_values_b32_s32_u32(getType<T>(inst))
+       )
+    {
+        if (!check_type_values_sig32(getSigtype<T>(inst))) return false;
+        if (!validateOperand(inst, PROP_S0, OPERAND_ATTR_SIG32, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
+    }
+    else if (
+        check_type_values_b64_s64_u64(getType<T>(inst))
+       )
+    {
+        if (!check_type_values_sig64(getSigtype<T>(inst))) return false;
+        if (!validateOperand(inst, PROP_S0, OPERAND_ATTR_SIG64, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
+    }
+    else
+    {
+        return false;
+    }
+
+    if (
+        check_sigop_values_st(getSigop<T>(inst))
+       )
+    {
+        if (!check_type_values_b32_b64(getType<T>(inst))) return false;
+        if (!check_memord_values_st(getMemord<T>(inst))) return false;
+        if (!validateOperand(inst, PROP_S2, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned), false)) return false;
+    }
+    else if (
+        check_sigop_values_and_or_xor(getSigop<T>(inst))
+       )
+    {
+        if (!check_type_values_b32_b64(getType<T>(inst))) return false;
+        if (!check_memord_values_any(getMemord<T>(inst))) return false;
+        if (!validateOperand(inst, PROP_S2, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned), false)) return false;
+    }
+    else if (
+        check_sigop_values_cas(getSigop<T>(inst))
+       )
+    {
+        if (!check_type_values_b32_b64(getType<T>(inst))) return false;
+        if (!check_memord_values_any(getMemord<T>(inst))) return false;
+        if (!validateOperand(inst, PROP_S2, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
+    }
+    else if (
+        check_sigop_values_add_sub_min_max(getSigop<T>(inst))
+       )
+    {
+        if (!check_type_values_s32_u32_s64_u64(getType<T>(inst))) return false;
+        if (!check_memord_values_any(getMemord<T>(inst))) return false;
+        if (!validateOperand(inst, PROP_S2, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned), false)) return false;
+    }
+    else if (
+        check_sigop_values_inc_dec(getSigop<T>(inst))
+       )
+    {
+        if (!check_type_values_u32_u64(getType<T>(inst))) return false;
+        if (!check_memord_values_any(getMemord<T>(inst))) return false;
+        if (!validateOperand(inst, PROP_S2, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned), false)) return false;
+    }
+    else
+    {
+        return false;
+    }
+    if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
+    if (!validateOperand(inst, PROP_S3, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned), false)) return false;
     if (!validateOperand(inst, PROP_S4, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned), false)) return false;
     return true;
 }
@@ -29757,8 +33081,8 @@ template<class T> bool PropDescImpl::validateReqSqrt(T inst)
     {
         return false;
     }
-    if (!validateOperand(inst, PROP_D0, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
-    if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
+    if (!validateOperand(inst, PROP_D0, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
+    if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
     if (!validateOperand(inst, PROP_S2, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned), false)) return false;
     if (!validateOperand(inst, PROP_S3, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned), false)) return false;
     if (!validateOperand(inst, PROP_S4, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned), false)) return false;
@@ -29767,29 +33091,30 @@ template<class T> bool PropDescImpl::validateReqSqrt(T inst)
 
 template<class T> bool PropDescImpl::validateReqSt(T inst)
 {
-    if (!check_type_values_u_s_f_b128_roimg_rwimg_samp(getType<T>(inst))) return false;
+    if (!check_type_values_u_s_f_b128_opaque(getType<T>(inst))) return false;
     if (!check_segment_values_writable(getSegment<T>(inst))) return false;
     if (!check_align_values_any(getAlign<T>(inst))) return false;
-    if (!check_width_values_none(getWidth<T>(inst))) return false;
+    if (!check_const_values_none(getConst<T>(inst))) return false;
     if (!validateEqclass(inst, PROP_EQCLASS, EQCLASS_ATTR_NONE, EQCLASS_VALUES_ANY, sizeof(EQCLASS_VALUES_ANY) / sizeof(unsigned), false)) return false;
+    if (!check_width_values_none(getWidth<T>(inst))) return false;
 
     if (
         check_type_values_u_s_f(getType<T>(inst))
        )
     {
-        if (!validateOperand(inst, PROP_S0, OPERAND_ATTR_EXP, OPERAND_VALUES_REGEXP_REGVEXP_IMMEXP, sizeof(OPERAND_VALUES_REGEXP_REGVEXP_IMMEXP) / sizeof(unsigned), false)) return false;
+        if (!validateOperand(inst, PROP_S0, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG_REGV_IMM, sizeof(OPERAND_VALUES_REG_REGV_IMM) / sizeof(unsigned), false)) return false;
     }
     else if (
-        check_type_values_b128_roimg_rwimg_samp(getType<T>(inst))
+        check_type_values_b128_opaque(getType<T>(inst))
        )
     {
-        if (!validateOperand(inst, PROP_S0, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
+        if (!validateOperand(inst, PROP_S0, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
     }
     else
     {
         return false;
     }
-    if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_NONE, OPERAND_VALUES_ADDRTSEG, sizeof(OPERAND_VALUES_ADDRTSEG) / sizeof(unsigned), false)) return false;
+    if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_TSEG, OPERAND_VALUES_ADDRSEG, sizeof(OPERAND_VALUES_ADDRSEG) / sizeof(unsigned), false)) return false;
     if (!validateOperand(inst, PROP_S2, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned), false)) return false;
     if (!validateOperand(inst, PROP_S3, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned), false)) return false;
     if (!validateOperand(inst, PROP_S4, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned), false)) return false;
@@ -29801,6 +33126,7 @@ template<class T> bool PropDescImpl::validateReqSt_image(T inst)
     if (!check_type_values_s32_u32_f32(getType<T>(inst))) return false;
     if (!check_type_values_u32(getCtype<T>(inst))) return false;
     if (!check_geom_values_1d_2d_3d_1db_1da_2da(getGeom<T>(inst))) return false;
+    if (!validateEqclass(inst, PROP_EQCLASS, EQCLASS_ATTR_NONE, EQCLASS_VALUES_ANY, sizeof(EQCLASS_VALUES_ANY) / sizeof(unsigned), false)) return false;
 
     if (
         check_geom_values_1d_1db(getGeom<T>(inst))
@@ -29825,8 +33151,8 @@ template<class T> bool PropDescImpl::validateReqSt_image(T inst)
         return false;
     }
     if (!check_type_values_rwimg(getItype<T>(inst))) return false;
-    if (!validateOperand(inst, PROP_S0, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REGV4, sizeof(OPERAND_VALUES_REGV4) / sizeof(unsigned), false)) return false;
-    if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_NONE, OPERAND_VALUES_REG64_RWIMAGE, sizeof(OPERAND_VALUES_REG64_RWIMAGE) / sizeof(unsigned), false)) return false;
+    if (!validateOperand(inst, PROP_S0, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REGV4, sizeof(OPERAND_VALUES_REGV4) / sizeof(unsigned), false)) return false;
+    if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_ITYPE, OPERAND_VALUES_REGSTYPE_IMAGESTYPE, sizeof(OPERAND_VALUES_REGSTYPE_IMAGESTYPE) / sizeof(unsigned), false)) return false;
     if (!validateOperand(inst, PROP_S3, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned), false)) return false;
     if (!validateOperand(inst, PROP_S4, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned), false)) return false;
     return true;
@@ -29837,9 +33163,10 @@ template<class T> bool PropDescImpl::validateReqS2f(T inst)
     if (!check_type_values_u32_u64(getType<T>(inst))) return false;
     if (!check_type_values_u32_u64(getStype<T>(inst))) return false;
     if (!check_segment_values_std(getSegment<T>(inst))) return false;
+    if (!check_nonull_values_any(getNonull<T>(inst))) return false;
     if (!validateTypesize(inst, PROP_TYPESIZE, TYPESIZE_ATTR_NONE, TYPESIZE_VALUES_MODEL, sizeof(TYPESIZE_VALUES_MODEL) / sizeof(unsigned), false)) return false;
     if (!validateStypesize(inst, PROP_STYPESIZE, STYPESIZE_ATTR_NONE, STYPESIZE_VALUES_SEG, sizeof(STYPESIZE_VALUES_SEG) / sizeof(unsigned), false)) return false;
-    if (!validateOperand(inst, PROP_D0, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
+    if (!validateOperand(inst, PROP_D0, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
     if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_STYPE, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
     if (!validateOperand(inst, PROP_S2, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned), false)) return false;
     if (!validateOperand(inst, PROP_S3, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned), false)) return false;
@@ -29847,29 +33174,16 @@ template<class T> bool PropDescImpl::validateReqS2f(T inst)
     return true;
 }
 
-template<class T> bool PropDescImpl::validateReqSync(T inst)
+template<class T> bool PropDescImpl::validateReqStq_wrt(T inst)
 {
-    if (!check_type_values_none(getType<T>(inst))) return false;
-    if (!check_memord_values_any(getMemord<T>(inst))) return false;
-    if (!check_memscp_values_any(getMemscp<T>(inst))) return false;
-    if (!check_memfnc_values_any(getMemfnc<T>(inst))) return false;
-    if (!check_width_values_none(getWidth<T>(inst))) return false;
-    if (!validateOperand(inst, PROP_S0, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned), false)) return false;
-    if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned), false)) return false;
+    if (!check_type_values_u64(getType<T>(inst))) return false;
+    if (!check_segment_values_flat_global(getSegment<T>(inst))) return false;
+    if (!check_memord_values_ld(getMemord<T>(inst))) return false;
+    if (!validateOperand(inst, PROP_S0, OPERAND_ATTR_SEG, OPERAND_VALUES_ADDRSEG, sizeof(OPERAND_VALUES_ADDRSEG) / sizeof(unsigned), false)) return false;
+    if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
     if (!validateOperand(inst, PROP_S2, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned), false)) return false;
     if (!validateOperand(inst, PROP_S3, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned), false)) return false;
     if (!validateOperand(inst, PROP_S4, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned), false)) return false;
-    return true;
-}
-
-template<class T> bool PropDescImpl::validateReqSyscall(T inst)
-{
-    if (!check_type_values_u32_u64(getType<T>(inst))) return false;
-    if (!validateOperand(inst, PROP_S0, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
-    if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_NOEXP, OPERAND_VALUES_IMM, sizeof(OPERAND_VALUES_IMM) / sizeof(unsigned), false)) return false;
-    if (!validateOperand(inst, PROP_S2, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
-    if (!validateOperand(inst, PROP_S3, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
-    if (!validateOperand(inst, PROP_S4, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
     return true;
 }
 
@@ -29924,9 +33238,9 @@ template<class T> bool PropDescImpl::validateReqUnpack(T inst)
     {
         return false;
     }
-    if (!validateOperand(inst, PROP_D0, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
+    if (!validateOperand(inst, PROP_D0, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
     if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_STYPE, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
-    if (!validateOperand(inst, PROP_S2, OPERAND_ATTR_NONE, OPERAND_VALUES_REG32_IMM32, sizeof(OPERAND_VALUES_REG32_IMM32) / sizeof(unsigned), false)) return false;
+    if (!validateOperand(inst, PROP_S2, OPERAND_ATTR_U32, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
     if (!validateOperand(inst, PROP_S3, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned), false)) return false;
     if (!validateOperand(inst, PROP_S4, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned), false)) return false;
     return true;
@@ -29936,9 +33250,9 @@ template<class T> bool PropDescImpl::validateReqUnpackcvt(T inst)
 {
     if (!check_type_values_f32(getType<T>(inst))) return false;
     if (!check_type_values_u8x4(getStype<T>(inst))) return false;
-    if (!validateOperand(inst, PROP_D0, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
+    if (!validateOperand(inst, PROP_D0, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
     if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_STYPE, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
-    if (!validateOperand(inst, PROP_S2, OPERAND_ATTR_NONE, OPERAND_VALUES_IMM0123, sizeof(OPERAND_VALUES_IMM0123) / sizeof(unsigned), false)) return false;
+    if (!validateOperand(inst, PROP_S2, OPERAND_ATTR_U32, OPERAND_VALUES_IMM0T3U32, sizeof(OPERAND_VALUES_IMM0T3U32) / sizeof(unsigned), false)) return false;
     if (!validateOperand(inst, PROP_S3, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned), false)) return false;
     if (!validateOperand(inst, PROP_S4, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned), false)) return false;
     return true;
@@ -29947,9 +33261,21 @@ template<class T> bool PropDescImpl::validateReqUnpackcvt(T inst)
 template<class T> bool PropDescImpl::validateReqUnpackx(T inst)
 {
     if (!check_type_values_x32_x64(getType<T>(inst))) return false;
-    if (!validateOperand(inst, PROP_D0, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
-    if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
-    if (!validateOperand(inst, PROP_S2, OPERAND_ATTR_NOEXP, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
+    if (!validateOperand(inst, PROP_D0, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned), false)) return false;
+    if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
+    if (!validateOperand(inst, PROP_S2, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned), false)) return false;
+    if (!validateOperand(inst, PROP_S3, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned), false)) return false;
+    if (!validateOperand(inst, PROP_S4, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned), false)) return false;
+    return true;
+}
+
+template<class T> bool PropDescImpl::validateReqWavebarrier(T inst)
+{
+    if (!check_type_values_none(getType<T>(inst))) return false;
+    if (!check_width_values_wavesize(getWidth<T>(inst))) return false;
+    if (!validateOperand(inst, PROP_S0, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned), false)) return false;
+    if (!validateOperand(inst, PROP_S1, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned), false)) return false;
+    if (!validateOperand(inst, PROP_S2, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned), false)) return false;
     if (!validateOperand(inst, PROP_S3, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned), false)) return false;
     if (!validateOperand(inst, PROP_S4, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned), false)) return false;
     return true;
@@ -29976,6 +33302,34 @@ bool PropDescImpl::isValidInst(Inst inst)
             }
             break;
         } 
+        case (Brig::BRIG_OPCODE_ACTIVELANECOUNT):
+        {
+            InstLane i = inst;
+            if (!i) { assert(false); return false; }
+            return validateReqActivelanecount<InstLane>(i);
+            break;
+        } 
+        case (Brig::BRIG_OPCODE_ACTIVELANEID):
+        {
+            InstLane i = inst;
+            if (!i) { assert(false); return false; }
+            return validateReqActivelaneid<InstLane>(i);
+            break;
+        } 
+        case (Brig::BRIG_OPCODE_ACTIVELANEMASK):
+        {
+            InstLane i = inst;
+            if (!i) { assert(false); return false; }
+            return validateReqActivelanemask<InstLane>(i);
+            break;
+        } 
+        case (Brig::BRIG_OPCODE_ACTIVELANESHUFFLE):
+        {
+            InstLane i = inst;
+            if (!i) { assert(false); return false; }
+            return validateReqActivelaneshuffle<InstLane>(i);
+            break;
+        } 
         case (Brig::BRIG_OPCODE_ADD):
         case (Brig::BRIG_OPCODE_SUB):
         {
@@ -29993,11 +33347,18 @@ bool PropDescImpl::isValidInst(Inst inst)
             }
             break;
         } 
+        case (Brig::BRIG_OPCODE_ADDQUEUEWRITEINDEX):
+        {
+            InstQueue i = inst;
+            if (!i) { assert(false); return false; }
+            return validateReqAddq_wrt<InstQueue>(i);
+            break;
+        } 
         case (Brig::BRIG_OPCODE_ALLOCA):
         {
-            InstSeg i = inst;
+            InstMem i = inst;
             if (!i) { assert(false); return false; }
-            return validateReqAlloca<InstSeg>(i);
+            return validateReqAlloca<InstMem>(i);
             break;
         } 
         case (Brig::BRIG_OPCODE_AND):
@@ -30010,11 +33371,13 @@ bool PropDescImpl::isValidInst(Inst inst)
             break;
         } 
         case (Brig::BRIG_OPCODE_ARRIVEFBAR):
+        case (Brig::BRIG_OPCODE_JOINFBAR):
+        case (Brig::BRIG_OPCODE_LEAVEFBAR):
         case (Brig::BRIG_OPCODE_WAITFBAR):
         {
-            InstBar i = inst;
+            InstBr i = inst;
             if (!i) { assert(false); return false; }
-            return validateReqFbar_sync_width<InstBar>(i);
+            return validateReqFbar_width<InstBr>(i);
             break;
         } 
         case (Brig::BRIG_OPCODE_ATOMIC):
@@ -30047,9 +33410,9 @@ bool PropDescImpl::isValidInst(Inst inst)
         } 
         case (Brig::BRIG_OPCODE_BARRIER):
         {
-            InstBar i = inst;
+            InstBr i = inst;
             if (!i) { assert(false); return false; }
-            return validateReqBarrier<InstBar>(i);
+            return validateReqBarrier<InstBr>(i);
             break;
         } 
         case (Brig::BRIG_OPCODE_BITALIGN):
@@ -30118,6 +33481,13 @@ bool PropDescImpl::isValidInst(Inst inst)
             return validateReqCall<InstBr>(i);
             break;
         } 
+        case (Brig::BRIG_OPCODE_CASQUEUEWRITEINDEX):
+        {
+            InstQueue i = inst;
+            if (!i) { assert(false); return false; }
+            return validateReqCasq_wrt<InstQueue>(i);
+            break;
+        } 
         case (Brig::BRIG_OPCODE_CBR):
         {
             InstBr i = inst;
@@ -30160,7 +33530,7 @@ bool PropDescImpl::isValidInst(Inst inst)
             break;
         } 
         case (Brig::BRIG_OPCODE_CLOCK):
-        case (Brig::BRIG_OPCODE_DISPATCHID):
+        case (Brig::BRIG_OPCODE_PACKETID):
         {
             InstBasic i = inst;
             if (!i) { assert(false); return false; }
@@ -30211,27 +33581,13 @@ bool PropDescImpl::isValidInst(Inst inst)
             }
             break;
         } 
-        case (Brig::BRIG_OPCODE_COUNTLANE):
-        {
-            InstLane i = inst;
-            if (!i) { assert(false); return false; }
-            return validateReqCountlane<InstLane>(i);
-            break;
-        } 
-        case (Brig::BRIG_OPCODE_COUNTUPLANE):
-        {
-            InstLane i = inst;
-            if (!i) { assert(false); return false; }
-            return validateReqCountuplane<InstLane>(i);
-            break;
-        } 
         case (Brig::BRIG_OPCODE_CUID):
         case (Brig::BRIG_OPCODE_DIM):
         case (Brig::BRIG_OPCODE_GETDETECTEXCEPT):
         case (Brig::BRIG_OPCODE_LANEID):
         case (Brig::BRIG_OPCODE_MAXCUID):
         case (Brig::BRIG_OPCODE_MAXWAVEID):
-        case (Brig::BRIG_OPCODE_QID):
+        case (Brig::BRIG_OPCODE_QUEUEID):
         case (Brig::BRIG_OPCODE_WAVEID):
         case (Brig::BRIG_OPCODE_WORKITEMFLATABSID):
         case (Brig::BRIG_OPCODE_WORKITEMFLATID):
@@ -30266,14 +33622,6 @@ bool PropDescImpl::isValidInst(Inst inst)
             InstBasic i = inst;
             if (!i) { assert(false); return false; }
             return validateReqDebugtrap<InstBasic>(i);
-            break;
-        } 
-        case (Brig::BRIG_OPCODE_DISPATCHPTR):
-        case (Brig::BRIG_OPCODE_QPTR):
-        {
-            InstSeg i = inst;
-            if (!i) { assert(false); return false; }
-            return validateReqAqlptr<InstSeg>(i);
             break;
         } 
         case (Brig::BRIG_OPCODE_DIV):
@@ -30341,9 +33689,9 @@ bool PropDescImpl::isValidInst(Inst inst)
         } 
         case (Brig::BRIG_OPCODE_FTOS):
         {
-            InstSeg i = inst;
+            InstSegCvt i = inst;
             if (!i) { assert(false); return false; }
-            return validateReqF2s<InstSeg>(i);
+            return validateReqF2s<InstSegCvt>(i);
             break;
         } 
         case (Brig::BRIG_OPCODE_GCNAPPEND):
@@ -30412,11 +33760,25 @@ bool PropDescImpl::isValidInst(Inst inst)
             break;
         } 
         case (Brig::BRIG_OPCODE_GCNMADS):
+        {
+            InstBasic i = inst;
+            if (!i) { assert(false); return false; }
+            return validateReqGcn_mads<InstBasic>(i);
+            break;
+        } 
         case (Brig::BRIG_OPCODE_GCNMADU):
         {
             InstBasic i = inst;
             if (!i) { assert(false); return false; }
-            return validateReqGcn_mad<InstBasic>(i);
+            return validateReqGcn_madu<InstBasic>(i);
+            break;
+        } 
+        case (Brig::BRIG_OPCODE_GCNMAX):
+        case (Brig::BRIG_OPCODE_GCNMIN):
+        {
+            InstBasic i = inst;
+            if (!i) { assert(false); return false; }
+            return validateReqGcn_min_max<InstBasic>(i);
             break;
         } 
         case (Brig::BRIG_OPCODE_GCNMAX3):
@@ -30425,7 +33787,7 @@ bool PropDescImpl::isValidInst(Inst inst)
         {
             InstBasic i = inst;
             if (!i) { assert(false); return false; }
-            return validateReqGcn_min_max_med<InstBasic>(i);
+            return validateReqGcn_min_max_med3<InstBasic>(i);
             break;
         } 
         case (Brig::BRIG_OPCODE_GCNMQSAD):
@@ -30490,17 +33852,9 @@ bool PropDescImpl::isValidInst(Inst inst)
         case (Brig::BRIG_OPCODE_INITFBAR):
         case (Brig::BRIG_OPCODE_RELEASEFBAR):
         {
-            InstBar i = inst;
+            InstBasic i = inst;
             if (!i) { assert(false); return false; }
-            return validateReqFbar_none<InstBar>(i);
-            break;
-        } 
-        case (Brig::BRIG_OPCODE_JOINFBAR):
-        case (Brig::BRIG_OPCODE_LEAVEFBAR):
-        {
-            InstBar i = inst;
-            if (!i) { assert(false); return false; }
-            return validateReqFbar_width<InstBar>(i);
+            return validateReqFbar_none<InstBasic>(i);
             break;
         } 
         case (Brig::BRIG_OPCODE_LD):
@@ -30538,6 +33892,14 @@ bool PropDescImpl::isValidInst(Inst inst)
             return validateReqLd_image<InstImage>(i);
             break;
         } 
+        case (Brig::BRIG_OPCODE_LDQUEUEREADINDEX):
+        case (Brig::BRIG_OPCODE_LDQUEUEWRITEINDEX):
+        {
+            InstQueue i = inst;
+            if (!i) { assert(false); return false; }
+            return validateReqLdq<InstQueue>(i);
+            break;
+        } 
         case (Brig::BRIG_OPCODE_LERP):
         {
             InstBasic i = inst;
@@ -30560,13 +33922,6 @@ bool PropDescImpl::isValidInst(Inst inst)
             return validateReqMad24<InstBasic>(i);
             break;
         } 
-        case (Brig::BRIG_OPCODE_MASKLANE):
-        {
-            InstLane i = inst;
-            if (!i) { assert(false); return false; }
-            return validateReqMasklane<InstLane>(i);
-            break;
-        } 
         case (Brig::BRIG_OPCODE_MAX):
         case (Brig::BRIG_OPCODE_MIN):
         {
@@ -30582,6 +33937,13 @@ bool PropDescImpl::isValidInst(Inst inst)
             {
                 assert(false); return false;
             }
+            break;
+        } 
+        case (Brig::BRIG_OPCODE_MEMFENCE):
+        {
+            InstMemFence i = inst;
+            if (!i) { assert(false); return false; }
+            return validateReqMemfence<InstMemFence>(i);
             break;
         } 
         case (Brig::BRIG_OPCODE_MOV):
@@ -30692,6 +34054,13 @@ bool PropDescImpl::isValidInst(Inst inst)
             return validateReqPackcvt<InstSourceType>(i);
             break;
         } 
+        case (Brig::BRIG_OPCODE_PACKETCOMPLETIONSIG):
+        {
+            InstBasic i = inst;
+            if (!i) { assert(false); return false; }
+            return validateReqPacket<InstBasic>(i);
+            break;
+        } 
         case (Brig::BRIG_OPCODE_POPCOUNT):
         {
             InstSourceType i = inst;
@@ -30726,19 +34095,19 @@ bool PropDescImpl::isValidInst(Inst inst)
             return validateReqQuerysampler<InstSourceType>(i);
             break;
         } 
+        case (Brig::BRIG_OPCODE_QUEUEPTR):
+        case (Brig::BRIG_OPCODE_SERVICEQUEUEPTR):
+        {
+            InstSeg i = inst;
+            if (!i) { assert(false); return false; }
+            return validateReqGptr<InstSeg>(i);
+            break;
+        } 
         case (Brig::BRIG_OPCODE_RDIMAGE):
         {
             InstImage i = inst;
             if (!i) { assert(false); return false; }
             return validateReqRdimage<InstImage>(i);
-            break;
-        } 
-        case (Brig::BRIG_OPCODE_RECEIVELANE):
-        case (Brig::BRIG_OPCODE_SENDLANE):
-        {
-            InstLane i = inst;
-            if (!i) { assert(false); return false; }
-            return validateReqSendlane<InstLane>(i);
             break;
         } 
         case (Brig::BRIG_OPCODE_RET):
@@ -30764,9 +34133,9 @@ bool PropDescImpl::isValidInst(Inst inst)
         } 
         case (Brig::BRIG_OPCODE_SEGMENTP):
         {
-            InstSeg i = inst;
+            InstSegCvt i = inst;
             if (!i) { assert(false); return false; }
-            return validateReqSegmentp<InstSeg>(i);
+            return validateReqSegmentp<InstSegCvt>(i);
             break;
         } 
         case (Brig::BRIG_OPCODE_SHL):
@@ -30782,6 +34151,20 @@ bool PropDescImpl::isValidInst(Inst inst)
             InstBasic i = inst;
             if (!i) { assert(false); return false; }
             return validateReqShuffle<InstBasic>(i);
+            break;
+        } 
+        case (Brig::BRIG_OPCODE_SIGNAL):
+        {
+            InstSignal i = inst;
+            if (!i) { assert(false); return false; }
+            return validateReqSignal<InstSignal>(i);
+            break;
+        } 
+        case (Brig::BRIG_OPCODE_SIGNALNORET):
+        {
+            InstSignal i = inst;
+            if (!i) { assert(false); return false; }
+            return validateReqSignal_noret<InstSignal>(i);
             break;
         } 
         case (Brig::BRIG_OPCODE_SQRT):
@@ -30816,23 +34199,16 @@ bool PropDescImpl::isValidInst(Inst inst)
         } 
         case (Brig::BRIG_OPCODE_STOF):
         {
-            InstSeg i = inst;
+            InstSegCvt i = inst;
             if (!i) { assert(false); return false; }
-            return validateReqS2f<InstSeg>(i);
+            return validateReqS2f<InstSegCvt>(i);
             break;
         } 
-        case (Brig::BRIG_OPCODE_SYNC):
+        case (Brig::BRIG_OPCODE_STQUEUEWRITEINDEX):
         {
-            InstBar i = inst;
+            InstQueue i = inst;
             if (!i) { assert(false); return false; }
-            return validateReqSync<InstBar>(i);
-            break;
-        } 
-        case (Brig::BRIG_OPCODE_SYSCALL):
-        {
-            InstBasic i = inst;
-            if (!i) { assert(false); return false; }
-            return validateReqSyscall<InstBasic>(i);
+            return validateReqStq_wrt<InstQueue>(i);
             break;
         } 
         case (Brig::BRIG_OPCODE_UNPACK):
@@ -30857,6 +34233,13 @@ bool PropDescImpl::isValidInst(Inst inst)
             return validateReqUnpackx<InstBasic>(i);
             break;
         } 
+        case (Brig::BRIG_OPCODE_WAVEBARRIER):
+        {
+            InstBr i = inst;
+            if (!i) { assert(false); return false; }
+            return validateReqWavebarrier<InstBr>(i);
+            break;
+        } 
         default:
             assert(false); return false;
             break;
@@ -30864,3 +34247,187 @@ bool PropDescImpl::isValidInst(Inst inst)
 } // PropDescImpl::isValidInst 
 
 } // namespace HSAIL_ASM 
+
+#endif // PROPDESC
+
+//================================================================================
+
+#ifdef CATEGORIES
+
+CategoryDesc baseCategories[] =
+{
+    {C_ARITHMETIC, Brig::BRIG_OPCODE_ABS},
+    {C_SYNC, Brig::BRIG_OPCODE_ACTIVELANECOUNT},
+    {C_SYNC, Brig::BRIG_OPCODE_ACTIVELANEID},
+    {C_SYNC, Brig::BRIG_OPCODE_ACTIVELANEMASK},
+    {C_SYNC, Brig::BRIG_OPCODE_ACTIVELANESHUFFLE},
+    {C_ARITHMETIC, Brig::BRIG_OPCODE_ADD},
+    {C_MISC, Brig::BRIG_OPCODE_ADDQUEUEWRITEINDEX},
+    {C_MISC, Brig::BRIG_OPCODE_ALLOCA},
+    {C_ARITHMETIC, Brig::BRIG_OPCODE_AND},
+    {C_SYNC, Brig::BRIG_OPCODE_ARRIVEFBAR},
+    {C_ATOMIC_MEMORY, Brig::BRIG_OPCODE_ATOMIC},
+    {C_ATOMIC_IMAGE, Brig::BRIG_OPCODE_ATOMICIMAGE},
+    {C_ATOMIC_IMAGE, Brig::BRIG_OPCODE_ATOMICIMAGENORET},
+    {C_ATOMIC_MEMORY, Brig::BRIG_OPCODE_ATOMICNORET},
+    {C_SYNC, Brig::BRIG_OPCODE_BARRIER},
+    {C_ARITHMETIC, Brig::BRIG_OPCODE_BITALIGN},
+    {C_ARITHMETIC, Brig::BRIG_OPCODE_BITEXTRACT},
+    {C_ARITHMETIC, Brig::BRIG_OPCODE_BITINSERT},
+    {C_ARITHMETIC, Brig::BRIG_OPCODE_BITMASK},
+    {C_ARITHMETIC, Brig::BRIG_OPCODE_BITREV},
+    {C_ARITHMETIC, Brig::BRIG_OPCODE_BITSELECT},
+    {C_ARITHMETIC, Brig::BRIG_OPCODE_BORROW},
+    {C_BRANCH, Brig::BRIG_OPCODE_BRN},
+    {C_ARITHMETIC, Brig::BRIG_OPCODE_BYTEALIGN},
+    {C_BRANCH, Brig::BRIG_OPCODE_CALL},
+    {C_ARITHMETIC, Brig::BRIG_OPCODE_CARRY},
+    {C_MISC, Brig::BRIG_OPCODE_CASQUEUEWRITEINDEX},
+    {C_BRANCH, Brig::BRIG_OPCODE_CBR},
+    {C_ARITHMETIC, Brig::BRIG_OPCODE_CEIL},
+    {C_ARITHMETIC, Brig::BRIG_OPCODE_CLASS},
+    {C_MISC, Brig::BRIG_OPCODE_CLEARDETECTEXCEPT},
+    {C_MISC, Brig::BRIG_OPCODE_CLOCK},
+    {C_ARITHMETIC, Brig::BRIG_OPCODE_CMOV},
+    {C_ARITHMETIC, Brig::BRIG_OPCODE_CMP},
+    {C_MISC, Brig::BRIG_OPCODE_CODEBLOCKEND},
+    {C_MOVE, Brig::BRIG_OPCODE_COMBINE},
+    {C_ARITHMETIC, Brig::BRIG_OPCODE_COPYSIGN},
+    {C_MISC, Brig::BRIG_OPCODE_CUID},
+    {C_MISC, Brig::BRIG_OPCODE_CURRENTWORKGROUPSIZE},
+    {C_ARITHMETIC, Brig::BRIG_OPCODE_CVT},
+    {C_MISC, Brig::BRIG_OPCODE_DEBUGTRAP},
+    {C_MISC, Brig::BRIG_OPCODE_DIM},
+    {C_ARITHMETIC, Brig::BRIG_OPCODE_DIV},
+    {C_MOVE, Brig::BRIG_OPCODE_EXPAND},
+    {C_ARITHMETIC, Brig::BRIG_OPCODE_FIRSTBIT},
+    {C_ARITHMETIC, Brig::BRIG_OPCODE_FLOOR},
+    {C_ARITHMETIC, Brig::BRIG_OPCODE_FMA},
+    {C_ARITHMETIC, Brig::BRIG_OPCODE_FRACT},
+    {C_ARITHMETIC, Brig::BRIG_OPCODE_FTOS},
+    {C_GCN_ATOMIC_MEMORY, Brig::BRIG_OPCODE_GCNAPPEND},
+    {C_GCN_ATOMIC_MEMORY, Brig::BRIG_OPCODE_GCNATOMIC},
+    {C_GCN_ATOMIC_MEMORY, Brig::BRIG_OPCODE_GCNATOMICNORET},
+    {C_GCN_MISC, Brig::BRIG_OPCODE_GCNB32XCHG},
+    {C_GCN_MISC, Brig::BRIG_OPCODE_GCNB4XCHG},
+    {C_GCN_ARITHMETIC, Brig::BRIG_OPCODE_GCNBFM},
+    {C_GCN_ATOMIC_MEMORY, Brig::BRIG_OPCODE_GCNCONSUME},
+    {C_GCN_ARITHMETIC, Brig::BRIG_OPCODE_GCNFLDEXP},
+    {C_GCN_ARITHMETIC, Brig::BRIG_OPCODE_GCNFREXP_EXP},
+    {C_GCN_ARITHMETIC, Brig::BRIG_OPCODE_GCNFREXP_MANT},
+    {C_GCN_MEMORY, Brig::BRIG_OPCODE_GCNLD},
+    {C_GCN_ARITHMETIC, Brig::BRIG_OPCODE_GCNMADS},
+    {C_GCN_ARITHMETIC, Brig::BRIG_OPCODE_GCNMADU},
+    {C_GCN_ARITHMETIC, Brig::BRIG_OPCODE_GCNMAX},
+    {C_GCN_ARITHMETIC, Brig::BRIG_OPCODE_GCNMAX3},
+    {C_GCN_ARITHMETIC, Brig::BRIG_OPCODE_GCNMED3},
+    {C_GCN_ARITHMETIC, Brig::BRIG_OPCODE_GCNMIN},
+    {C_GCN_ARITHMETIC, Brig::BRIG_OPCODE_GCNMIN3},
+    {C_GCN_MISC, Brig::BRIG_OPCODE_GCNMQSAD},
+    {C_GCN_MISC, Brig::BRIG_OPCODE_GCNMQSAD4},
+    {C_GCN_MISC, Brig::BRIG_OPCODE_GCNMSAD},
+    {C_GCN_MISC, Brig::BRIG_OPCODE_GCNPRIORITY},
+    {C_GCN_MISC, Brig::BRIG_OPCODE_GCNQSAD},
+    {C_GCN_MEMORY, Brig::BRIG_OPCODE_GCNREGIONALLOC},
+    {C_GCN_MISC, Brig::BRIG_OPCODE_GCNSADD},
+    {C_GCN_MISC, Brig::BRIG_OPCODE_GCNSADW},
+    {C_GCN_MISC, Brig::BRIG_OPCODE_GCNSLEEP},
+    {C_GCN_MEMORY, Brig::BRIG_OPCODE_GCNST},
+    {C_GCN_ARITHMETIC, Brig::BRIG_OPCODE_GCNTRIG_PREOP},
+    {C_MISC, Brig::BRIG_OPCODE_GETDETECTEXCEPT},
+    {C_MISC, Brig::BRIG_OPCODE_GRIDGROUPS},
+    {C_MISC, Brig::BRIG_OPCODE_GRIDSIZE},
+    {C_SYNC, Brig::BRIG_OPCODE_INITFBAR},
+    {C_SYNC, Brig::BRIG_OPCODE_JOINFBAR},
+    {C_MISC, Brig::BRIG_OPCODE_LANEID},
+    {C_ARITHMETIC, Brig::BRIG_OPCODE_LASTBIT},
+    {C_MEMORY, Brig::BRIG_OPCODE_LD},
+    {C_ARITHMETIC, Brig::BRIG_OPCODE_LDA},
+    {C_ARITHMETIC, Brig::BRIG_OPCODE_LDC},
+    {C_SYNC, Brig::BRIG_OPCODE_LDF},
+    {C_IMAGE, Brig::BRIG_OPCODE_LDIMAGE},
+    {C_MISC, Brig::BRIG_OPCODE_LDQUEUEREADINDEX},
+    {C_MISC, Brig::BRIG_OPCODE_LDQUEUEWRITEINDEX},
+    {C_SYNC, Brig::BRIG_OPCODE_LEAVEFBAR},
+    {C_ARITHMETIC, Brig::BRIG_OPCODE_LERP},
+    {C_ARITHMETIC, Brig::BRIG_OPCODE_MAD},
+    {C_ARITHMETIC, Brig::BRIG_OPCODE_MAD24},
+    {C_ARITHMETIC, Brig::BRIG_OPCODE_MAD24HI},
+    {C_ARITHMETIC, Brig::BRIG_OPCODE_MAX},
+    {C_MISC, Brig::BRIG_OPCODE_MAXCUID},
+    {C_MISC, Brig::BRIG_OPCODE_MAXWAVEID},
+    {C_SYNC, Brig::BRIG_OPCODE_MEMFENCE},
+    {C_ARITHMETIC, Brig::BRIG_OPCODE_MIN},
+    {C_MOVE, Brig::BRIG_OPCODE_MOV},
+    {C_ARITHMETIC, Brig::BRIG_OPCODE_MUL},
+    {C_ARITHMETIC, Brig::BRIG_OPCODE_MUL24},
+    {C_ARITHMETIC, Brig::BRIG_OPCODE_MUL24HI},
+    {C_ARITHMETIC, Brig::BRIG_OPCODE_MULHI},
+    {C_ARITHMETIC, Brig::BRIG_OPCODE_NCOS},
+    {C_ARITHMETIC, Brig::BRIG_OPCODE_NEG},
+    {C_ARITHMETIC, Brig::BRIG_OPCODE_NEXP2},
+    {C_ARITHMETIC, Brig::BRIG_OPCODE_NFMA},
+    {C_ARITHMETIC, Brig::BRIG_OPCODE_NLOG2},
+    {C_MISC, Brig::BRIG_OPCODE_NOP},
+    {C_ARITHMETIC, Brig::BRIG_OPCODE_NOT},
+    {C_ARITHMETIC, Brig::BRIG_OPCODE_NRCP},
+    {C_ARITHMETIC, Brig::BRIG_OPCODE_NRSQRT},
+    {C_ARITHMETIC, Brig::BRIG_OPCODE_NSIN},
+    {C_ARITHMETIC, Brig::BRIG_OPCODE_NSQRT},
+    {C_MISC, Brig::BRIG_OPCODE_NULLPTR},
+    {C_ARITHMETIC, Brig::BRIG_OPCODE_OR},
+    {C_ARITHMETIC, Brig::BRIG_OPCODE_PACK},
+    {C_ARITHMETIC, Brig::BRIG_OPCODE_PACKCVT},
+    {C_MISC, Brig::BRIG_OPCODE_PACKETCOMPLETIONSIG},
+    {C_MISC, Brig::BRIG_OPCODE_PACKETID},
+    {C_ARITHMETIC, Brig::BRIG_OPCODE_POPCOUNT},
+    {C_IMAGE, Brig::BRIG_OPCODE_QUERYIMAGEARRAY},
+    {C_IMAGE, Brig::BRIG_OPCODE_QUERYIMAGEDEPTH},
+    {C_IMAGE, Brig::BRIG_OPCODE_QUERYIMAGEFORMAT},
+    {C_IMAGE, Brig::BRIG_OPCODE_QUERYIMAGEHEIGHT},
+    {C_IMAGE, Brig::BRIG_OPCODE_QUERYIMAGEORDER},
+    {C_IMAGE, Brig::BRIG_OPCODE_QUERYIMAGEWIDTH},
+    {C_IMAGE, Brig::BRIG_OPCODE_QUERYSAMPLERBOUNDARY},
+    {C_IMAGE, Brig::BRIG_OPCODE_QUERYSAMPLERCOORD},
+    {C_IMAGE, Brig::BRIG_OPCODE_QUERYSAMPLERFILTER},
+    {C_MISC, Brig::BRIG_OPCODE_QUEUEID},
+    {C_MISC, Brig::BRIG_OPCODE_QUEUEPTR},
+    {C_IMAGE, Brig::BRIG_OPCODE_RDIMAGE},
+    {C_SYNC, Brig::BRIG_OPCODE_RELEASEFBAR},
+    {C_ARITHMETIC, Brig::BRIG_OPCODE_REM},
+    {C_BRANCH, Brig::BRIG_OPCODE_RET},
+    {C_ARITHMETIC, Brig::BRIG_OPCODE_RINT},
+    {C_ARITHMETIC, Brig::BRIG_OPCODE_SAD},
+    {C_ARITHMETIC, Brig::BRIG_OPCODE_SADHI},
+    {C_ARITHMETIC, Brig::BRIG_OPCODE_SEGMENTP},
+    {C_MISC, Brig::BRIG_OPCODE_SERVICEQUEUEPTR},
+    {C_MISC, Brig::BRIG_OPCODE_SETDETECTEXCEPT},
+    {C_ARITHMETIC, Brig::BRIG_OPCODE_SHL},
+    {C_ARITHMETIC, Brig::BRIG_OPCODE_SHR},
+    {C_ARITHMETIC, Brig::BRIG_OPCODE_SHUFFLE},
+    {C_SYNC, Brig::BRIG_OPCODE_SIGNAL},
+    {C_SYNC, Brig::BRIG_OPCODE_SIGNALNORET},
+    {C_ARITHMETIC, Brig::BRIG_OPCODE_SQRT},
+    {C_MEMORY, Brig::BRIG_OPCODE_ST},
+    {C_IMAGE, Brig::BRIG_OPCODE_STIMAGE},
+    {C_ARITHMETIC, Brig::BRIG_OPCODE_STOF},
+    {C_MISC, Brig::BRIG_OPCODE_STQUEUEWRITEINDEX},
+    {C_ARITHMETIC, Brig::BRIG_OPCODE_SUB},
+    {C_ARITHMETIC, Brig::BRIG_OPCODE_TRUNC},
+    {C_ARITHMETIC, Brig::BRIG_OPCODE_UNPACK},
+    {C_ARITHMETIC, Brig::BRIG_OPCODE_UNPACKCVT},
+    {C_ARITHMETIC, Brig::BRIG_OPCODE_UNPACKHI},
+    {C_ARITHMETIC, Brig::BRIG_OPCODE_UNPACKLO},
+    {C_SYNC, Brig::BRIG_OPCODE_WAITFBAR},
+    {C_SYNC, Brig::BRIG_OPCODE_WAVEBARRIER},
+    {C_MISC, Brig::BRIG_OPCODE_WAVEID},
+    {C_MISC, Brig::BRIG_OPCODE_WORKGROUPID},
+    {C_MISC, Brig::BRIG_OPCODE_WORKGROUPSIZE},
+    {C_MISC, Brig::BRIG_OPCODE_WORKITEMABSID},
+    {C_MISC, Brig::BRIG_OPCODE_WORKITEMFLATABSID},
+    {C_MISC, Brig::BRIG_OPCODE_WORKITEMFLATID},
+    {C_MISC, Brig::BRIG_OPCODE_WORKITEMID},
+    {C_ARITHMETIC, Brig::BRIG_OPCODE_XOR},
+}; // baseCategories
+
+#endif // CATEGORIES

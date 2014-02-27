@@ -64,10 +64,6 @@ using namespace llvm::ELF;
 namespace HSAIL_ASM {
 
 enum {
-    EM_HSAIL_ = 0xAF5A
-};
-
-enum {
     ELF_SECTION_STRTAB = -1,
     ELF_SECTION_SYMTAB = -2,
     ELF_SECTION_SHSTRTAB = -3
@@ -87,7 +83,7 @@ struct SectionDesc {
     { BRIG_SECTION_DIRECTIVES, ".directives", ".brig_directives", "__BRIG__directives",   SHT_PROGBITS, 0,           4 },
     { BRIG_SECTION_CODE,       ".code",       ".brig_code",       "__BRIG__code",         SHT_PROGBITS, 0,           4 },
     { BRIG_SECTION_OPERANDS,   ".operands",   ".brig_operands",   "__BRIG__operands",     SHT_PROGBITS, 0,           4 },
-    { BRIG_SECTION_DEBUG,      ".debug",      ".brig_debug",      0,                      SHT_PROGBITS, 0,           4 },
+    { BRIG_SECTION_DEBUG,      ".debug",      ".debug_hsa",       "__debug_brig__",       SHT_PROGBITS, 0,           4 },
     { BRIG_SECTION_STRINGS,    ".strtab",     ".brig_strtab",     "__BRIG__strtab",       SHT_PROGBITS, 0,           1 },
     { ELF_SECTION_STRTAB,      0,             ".strtab",          0,                      SHT_STRTAB,   SHF_STRINGS, 1 },
     { ELF_SECTION_SYMTAB,      0,             ".symtab",          0,                      SHT_SYMTAB,   0,           8 },
@@ -136,7 +132,7 @@ struct Elf32Policy {
     typedef Elf32_Word ElfWord;
     typedef Elf32_Half ElfHalf;
 
-    enum { ELFCLASS = ELFCLASS32 };
+    enum { ELFCLASS = ELFCLASS32, EM_HSAIL_ = 0xAF5A};
 };
 
 struct Elf64Policy {
@@ -146,7 +142,7 @@ struct Elf64Policy {
     typedef Elf64_Word ElfWord;
     typedef Elf64_Half ElfHalf;
 
-    enum { ELFCLASS = ELFCLASS64 };
+    enum { ELFCLASS = ELFCLASS64, EM_HSAIL_ = 0xAF5B};
 };
 
 template<typename Policy>
@@ -182,7 +178,7 @@ public:
             return 1;
         }
         if (fmt == FILE_FORMAT_AUTO) {
-            if (elfHeader.e_type == ET_REL && elfHeader.e_machine == EM_HSAIL_) {
+            if (elfHeader.e_type != ET_NONE && elfHeader.e_machine == Policy::EM_HSAIL_) {
                 fmt = FILE_FORMAT_BIF;
             } else if (elfHeader.e_type == ET_NONE && elfHeader.e_machine == EM_NONE) {
                 fmt = FILE_FORMAT_BRIG;
@@ -411,7 +407,7 @@ private:
         elfHeader.e_version = EV_CURRENT;
         if (fmt == FILE_FORMAT_BIF) {
             elfHeader.e_type = ET_REL;
-            elfHeader.e_machine = EM_HSAIL_;
+            elfHeader.e_machine = Policy::EM_HSAIL_;
             elfHeader.e_flags = 0x16; // mimic objgen
         }
 

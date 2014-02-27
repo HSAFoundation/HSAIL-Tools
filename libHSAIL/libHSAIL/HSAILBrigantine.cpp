@@ -97,8 +97,8 @@ void Brigantine::endProgram()
 }
 
 DirectiveVersion Brigantine::version(
-    unsigned short  major,
-    unsigned short  minor,
+    Brig::BrigVersion32_t major,
+    Brig::BrigVersion32_t minor,
     Brig::BrigMachineModel8_t machineModel,
     Brig::BrigProfile8_t profile,
     const SourceInfo* srcInfo)
@@ -509,7 +509,6 @@ OperandReg Brigantine::createOperandReg(const SRef& name,const SourceInfo* srcIn
     OperandReg operand = m_container.append<OperandReg>();
     annotate(operand,srcInfo);
     operand.reg() = name;
-    operand.type() = getRegisterType(name);
     return operand;
 }
 
@@ -524,7 +523,6 @@ OperandRegVector Brigantine::createOperandRegVec(
     annotate(operand,srcInfo);
     for(unsigned i=0; i<num; ++i)
         operand.regs().push_back(o[i]);
-    operand.type() = getRegisterType(SRef(o[0]));
     return operand;
 }
 
@@ -560,9 +558,8 @@ OperandSignatureRef Brigantine::createSigRef(const SRef& fnName, const SourceInf
     return createSigRef(sig);
 }
 
-OperandWavesize Brigantine::createWaveSz(Brig::BrigType16_t type, const SourceInfo* srcInfo) {
+OperandWavesize Brigantine::createWaveSz(const SourceInfo* srcInfo) {
     OperandWavesize res = m_container.append<OperandWavesize>();
-    res.type() = convType2BitType(type);
     annotate(res,srcInfo);
     return res;
 }
@@ -627,10 +624,6 @@ OperandImmed Brigantine::createImmed(const SourceInfo* srcInfo) {
     return operand;
 }
 
-unsigned Brigantine::getMachineType() const {
-    return (m_machine == Brig::BRIG_MACHINE_SMALL)? Brig::BRIG_TYPE_B32 : Brig::BRIG_TYPE_B64;
-}
-
 OperandAddress Brigantine::createRef(
     const SRef& symName,
     const SRef& reg,
@@ -651,31 +644,7 @@ OperandAddress Brigantine::createRef(
     if (!reg.empty()) {
         operand.reg() = reg;
     }
-    if (m_machine == Brig::BRIG_MACHINE_LARGE) {
       operand.offset() = (uint64_t)offset;
-    } else {
-      // os: it would be nice to have a range check here, but it is not quite 
-      // clear if the user is supposed to provide signed or unsigned offsets,
-      // so the range is unclear, too. So we are just going to discard the 
-      // upper word.
-      operand.offset() = (uint64_t)(offset & 0xFFFFFFFF);
-    }
-
-    //dp operand.type()   = getMachineType();
-    //dp: this is a patch; operand type may depend on instruction as well!
-    //dp start ----------------------------
-    if (reg.length() > 1) {
-        std::string name = reg;
-        operand.type() = (name[1] == 'd')? Brig::BRIG_TYPE_B64 : Brig::BRIG_TYPE_B32;
-    } else if (!symName.empty()) {
-        operand.type() =
-            getSegAddrSize(operand.symbol().segment(), m_machine == Brig::BRIG_MACHINE_LARGE) == 32?
-                Brig::BRIG_TYPE_B32 :
-                Brig::BRIG_TYPE_B64;
-    } else {
-        operand.type() = getMachineType(); //dp: actually type depends on context
-    }
-    //dp end ----------------------------
     return operand;
 }
 
@@ -810,21 +779,6 @@ void Brigantine::setOperand(Inst inst, int oprIdx, Operand opnd)
                 (opcode == Brig::BRIG_OPCODE_CALL && oprIdx == 1)) {
                  br.width() = getDefWidth(br);
             }
-        }
-    }
-
-    if (OperandAddress addr = opnd) {
-        if (!addr.symbol() && !addr.reg()) {
-            // Set size of address operands which have neither symbol no register.
-            // Size of these operands should be set based on segment in instruction which uses them.
-            if (getSegAddrSize(getSegment(inst), m_machine == Brig::BRIG_MACHINE_LARGE) == 32) {
-                addr.type() = Brig::BRIG_TYPE_B32;
-            } else {
-                addr.type() = Brig::BRIG_TYPE_B64;
-            }
-        } else if (!addr.reg() && addr.symbol() && m_machine == Brig::BRIG_MACHINE_LARGE && getSegAddrSize(addr.symbol().segment(), true) == 32) {
-            //FIXME: this is a temporary patch (currently, LLVM cannot generate 32-bit addresses for large model)
-            addr.type() = Brig::BRIG_TYPE_B64;
         }
     }
 }

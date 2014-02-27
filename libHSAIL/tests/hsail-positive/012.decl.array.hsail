@@ -1,0 +1,19 @@
+// If the object is an array, the size of the array must be specified in the
+// definition but can be omitted in the declaration.
+
+version 0:96:$full:$large;
+
+extern global_u32        &not_flexible1[];
+
+extern const global_u32  &not_flexible2[];
+
+extern global_u32        &not_flexible3[];
+global_u32               &not_flexible3[4];
+
+
+
+version 0:96:$full:$large;
+
+global_u32               &not_flexible1[3];
+
+const global_u32         &not_flexible2[] = {1, 2, 3};

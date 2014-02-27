@@ -1,0 +1,24 @@
+version 0:96:$full:$large;
+
+loc 1 "SomeFileName";  // This directive is allowed before extension
+
+extension "abc";
+
+loc 2 "SomeOtherFileName";  // This directive is allowed before extension
+
+extension "def";
+
+extension"";
+extension "";
+extension"\"";
+
+extension//*pragma"";*/"";
+"";
+extension/*extension"";*/"";
+extension"\?";
+extension"\t\012\x0a";
+
+function &TestFunc()()
+{
+	ret;
+};

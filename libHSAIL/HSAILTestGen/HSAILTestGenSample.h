@@ -24,7 +24,6 @@ using HSAIL_ASM::InstBasic;
 using HSAIL_ASM::InstAddr;
 using HSAIL_ASM::InstAtomic;
 using HSAIL_ASM::InstAtomicImage;
-using HSAIL_ASM::InstBar;
 using HSAIL_ASM::InstLane;
 using HSAIL_ASM::InstCmp;
 using HSAIL_ASM::InstCvt;
@@ -34,6 +33,10 @@ using HSAIL_ASM::InstMod;
 using HSAIL_ASM::InstBr;
 using HSAIL_ASM::InstSeg;
 using HSAIL_ASM::InstSourceType;
+using HSAIL_ASM::InstMemFence;
+using HSAIL_ASM::InstSegCvt;
+using HSAIL_ASM::InstSignal;
+using HSAIL_ASM::InstQueue;
 
 using namespace HSAIL_PROPS;
 
@@ -107,38 +110,6 @@ public:
     void     copyFrom(const Sample s);
 
     //==========================================================================
-
-private:
-    unsigned get(InstBasic       i, unsigned propId) const;
-    unsigned get(InstAddr        i, unsigned propId) const;
-    unsigned get(InstAtomic      i, unsigned propId) const;
-    unsigned get(InstAtomicImage i, unsigned propId) const;
-    unsigned get(InstBar         i, unsigned propId) const;
-    unsigned get(InstBr          i, unsigned propId) const;
-    unsigned get(InstCmp         i, unsigned propId) const;
-    unsigned get(InstCvt         i, unsigned propId) const;
-    unsigned get(InstLane        i, unsigned propId) const;
-    unsigned get(InstImage       i, unsigned propId) const;
-    unsigned get(InstMem         i, unsigned propId) const;
-    unsigned get(InstMod         i, unsigned propId) const;
-    unsigned get(InstSeg         i, unsigned propId) const;
-    unsigned get(InstSourceType  i, unsigned propId) const;
-
-private:
-    void set(InstBasic       i, unsigned propId, unsigned val);
-    void set(InstAddr        i, unsigned propId, unsigned val);
-    void set(InstAtomic      i, unsigned propId, unsigned val);
-    void set(InstAtomicImage i, unsigned propId, unsigned val);
-    void set(InstBar         i, unsigned propId, unsigned val);
-    void set(InstBr          i, unsigned propId, unsigned val);
-    void set(InstCmp         i, unsigned propId, unsigned val);
-    void set(InstCvt         i, unsigned propId, unsigned val);
-    void set(InstLane        i, unsigned propId, unsigned val);
-    void set(InstImage       i, unsigned propId, unsigned val);
-    void set(InstMem         i, unsigned propId, unsigned val);
-    void set(InstMod         i, unsigned propId, unsigned val);
-    void set(InstSeg         i, unsigned propId, unsigned val);
-    void set(InstSourceType  i, unsigned propId, unsigned val);
 };
 
 //==============================================================================

@@ -37,12 +37,12 @@ cl::opt<SearchType>
                        clEnumValN(SEARCH_EXHAUSTIVE, "exhaustive", "Maximum number of tests generated using exhaustive search"),
                        clEnumValEnd));
 
-cl::opt<MachineModelType>
+cl::opt<BrigMachineModel>
     machineModel("model",
             cl::desc("Machine model"),
-            cl::init(MODEL_LARGE),
-            cl::values(clEnumValN(MODEL_LARGE, "large", "Large model (default)"),
-                       clEnumValN(MODEL_SMALL, "small", "Small model"),
+            cl::init(BRIG_MACHINE_LARGE),
+            cl::values(clEnumValN(BRIG_MACHINE_LARGE, "large", "Large model (default)"),
+                       clEnumValN(BRIG_MACHINE_SMALL, "small", "Small model"),
                        clEnumValEnd));
 
 cl::bits<InstSubsetType> 
@@ -51,6 +51,15 @@ cl::bits<InstSubsetType>
                        clEnumValN(SUBSET_GCN,   "gcn",   "GCN extension"),
                        clEnumValN(SUBSET_IMAGE, "image", "IMAGE extension"),
                        clEnumValEnd));
+
+cl::opt<DataType> 
+    dataType("dataType", 
+             cl::desc("Subset of HSAIL data types (all types by default)"),
+             cl::init(DATA_TYPE_ALL),
+             cl::values(clEnumValN(DATA_TYPE_REGULAR, "regular", "Regular (non-packed) types"),
+                        clEnumValN(DATA_TYPE_PACKED,  "packed",  "Packed types"),
+                        clEnumValN(DATA_TYPE_ALL,     "all",     "All types (default)"),
+                        clEnumValEnd));
 
 cl::opt<InstVariantsType> 
     instVariants("variants", 
@@ -77,14 +86,15 @@ cl::opt<bool>
             cl::init(true));
 
 cl::opt<bool>
-    expandRegs("expandRegs", 
-            cl::desc("Enable registers expansion for instructions CVT, LD and ST (default)"), 
-            cl::init(true));
-
-cl::opt<bool>
     dumpTestProps("dumpTestProps", 
             cl::desc("Dump test properties into testlist.txt (default); dump list of supported instructions if disabled"), 
             cl::init(true));
+
+cl::opt<bool>
+    enableImmOperands("enableImmOperands", 
+            cl::desc("Enable tests with immediate operands (default); disabling immediate operands may be useful for LUA extension"), 
+            cl::init(true),
+            cl::Hidden);
 
 cl::opt<std::string>
     extension("extension", 
@@ -93,11 +103,16 @@ cl::opt<std::string>
             cl::init(""));
 
 cl::opt<unsigned>
+    wavesize("wavesize", 
+            cl::desc("Set wavesize value for LUA tests (64 by default, 0 to disable)"), 
+            cl::value_desc("Wavesize value"), 
+            cl::init(64));
+
+cl::opt<unsigned>
     rndTestNum("random", 
             cl::desc("Number of additional random values generated for each operand (0 by default)"), 
             cl::value_desc("number of random values"), 
-            cl::init(0), 
-            cl::Hidden);
+            cl::init(0));
 
 cl::opt<string>
     outputDirName(

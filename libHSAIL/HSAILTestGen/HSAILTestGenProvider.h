@@ -50,7 +50,7 @@ namespace TESTGEN {
 // with manually-written TestGen. However it required tricky implementation due to
 // the following reasons:
 //
-// 1. HidelProcessor had to analyze instructions requirements and identify primary 
+// 1. HDLProcessor had to analyze instructions requirements and identify primary 
 //    properties (which might affect values of other properties) and secondary 
 //    properties (which do not affect values of other properties). This was implemented
 //    by analyzing conditionals in requirements: 
@@ -64,7 +64,7 @@ namespace TESTGEN {
 //    When property A depends on property B, B must be assigned before A.
 //    This is important because validation of A may check value of B.
 //
-// 4. HidelProcessor had to generate independent validation code for each property by 
+// 4. HDLProcessor had to generate independent validation code for each property by 
 //    selecting only relevant checks from requirements. This validation includes
 //    only basic conditions required to filter out invalid combinations quickly.
 //    It was decided to perform complete validation of all primary properties 
@@ -429,9 +429,9 @@ private:
     {
         assert(isBasicVariant());
 
-        return PropDesc::isValidProp(positiveSample.getInst(), PROP_FTZ)      &&
-               PropDesc::isValidProp(positiveSample.getInst(), PROP_ROUNDING) &&
-               PropDesc::isValidProp(positiveSample.getInst(), PROP_PACKING);
+        return PropDesc::isValidProp(positiveSample.getInst(), PROP_FTZ)   &&
+               PropDesc::isValidProp(positiveSample.getInst(), PROP_ROUND) &&
+               PropDesc::isValidProp(positiveSample.getInst(), PROP_PACK);
     }
 
     // Remove InstMod-specific properties which are not present in instBasic format.
@@ -440,7 +440,7 @@ private:
     {
         assert(isBasicVariant());
 
-        bool res = removeProp(PROP_FTZ) && removeProp(PROP_ROUNDING) && removeProp(PROP_PACKING);
+        bool res = removeProp(PROP_FTZ) && removeProp(PROP_ROUND) && removeProp(PROP_PACK);
         assert(res);
     }
 

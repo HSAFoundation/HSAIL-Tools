@@ -1,0 +1,27 @@
+// Img & Samp: may be defined only in global or readonly segments or as a kernel argument
+
+version 0:96:$full:$large;
+
+// All values specified in the initializer are required and cannot be omitted
+
+align 8
+global_samp &y1 = {coord = unnormalized, filter = nearest, boundaryu = clamp, boundaryv = clamp, boundaryw = clamp};
+
+align 16
+global_samp &y2 = {coord = normalized, filter = linear, boundaryu = wrap, boundaryv = wrap, boundaryw = wrap};
+
+readonly_samp &y3 = {coord = normalized, filter = linear, boundaryu = mirror, boundaryv = mirror, boundaryw = mirror};
+
+readonly_samp &y4 = {coord = normalized, filter = linear, boundaryu = mirroronce, boundaryv = mirroronce, boundaryw = mirroronce};
+
+global_samp &y5 = {coord = unnormalized, filter = linear, boundaryu = border, boundaryv = border, boundaryw = clamp};
+
+global_samp &arr1[]  = {coord = unnormalized, filter = linear, boundaryu = clamp, boundaryv = border, boundaryw = border};
+global_samp &arr2[1] = {coord = unnormalized, filter = linear, boundaryu = border, boundaryv = undefined, boundaryw = border};
+
+
+kernel &TestKernel(kernarg_samp %x, kernarg_samp %y[3])
+{
+
+	ret;
+};

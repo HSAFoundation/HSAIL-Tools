@@ -1,0 +1,29 @@
+version 0:96:$full:$large;
+
+signature &TestSignature0(arg_b32 %y[])();
+
+signature &TestSignature2a(arg_b32)(arg_s32 %x[1], arg_u32 %y[]);
+
+function &TestCalls()(arg_b64 %addr0, arg_b64 %addr1, arg_b64 %addr2)
+{
+	{
+		arg_b32 %oarg0[3];
+
+		ld_arg_u64 $d1, [%addr0];
+		call  $d1 (%oarg0) () &TestSignature0;
+	}       		
+	{
+		arg_b32 %oarg0;
+		arg_s32 %iarg0[1];
+		arg_u32 %iarg1[1];
+
+		st_arg_s32	0, [%iarg0][0];
+		st_arg_u32	0, [%iarg1][0];
+
+		ld_arg_u64 $d1, [%addr1];
+		call  $d1 (%oarg0) (%iarg0, %iarg1) &TestSignature2a;
+	}       		
+
+	ret;
+};
+

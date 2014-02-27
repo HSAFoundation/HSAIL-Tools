@@ -1,0 +1,58 @@
+version 0:96:$full:$large;
+
+block"rti"
+blockstring "this is a string";
+endblock;
+
+function &TestFunc()()
+{
+	ret;
+
+	block "rti"
+
+	blocknumeric_b8  0, 127, 255;
+	blocknumeric_b16  0, 32767, 65535;
+	blocknumeric_b32 0, 127, 255, 256, 12345, 2147483647;
+	blocknumeric_b64 0, 127, 255, 256, 12345, 2147483647;
+	
+	blocknumeric_u8  0, 127, 255;
+	blocknumeric_u16  0, 32767, 65535;
+	blocknumeric_u32 0, 127, 255, 256, 12345, 2147483647;
+	blocknumeric_u64 0, 127, 255, 256, 12345, 2147483647;
+
+	blocknumeric_s8  0, 127, 255;
+	blocknumeric_s16  0, 32767, 65535;
+	blocknumeric_s32 0, 127, 255, 256, 12345, 2147483647;
+	blocknumeric_s64 0, 127, 255, 256, 12345, 2147483647;
+
+	blocknumeric_f16  0.0, 0.1;
+	blocknumeric_f32  0.0f, 0.1f;
+	blocknumeric_f64  0.0, 0.1;
+
+	blocknumeric_u8x4  _u8x4(1, 2, 3, 4);
+	blocknumeric_u16x2 _u16x2(1111, 2222);
+	blocknumeric_u8x8  _u8x8 (1, 2, 3, 4, 5, 6, 7, 8);
+	blocknumeric_u16x4 _u16x4(1111, 2222, 3333, 4444);
+	blocknumeric_u32x2 _u32x2(12345678, 87654321);
+	blocknumeric_u8x16 _u8x16(1, 2, 3, 4, 5, 6, 7, 8, 11, 22, 33, 44, 55, 66, 77, 88);
+	blocknumeric_u16x8 _u16x8(1111, 2222, 3333, 4444, 5555, 6666, 7777, 8888);
+	blocknumeric_u32x4 _u32x4(11111111, 22222222, 33333333, 44444444);
+	blocknumeric_u64x2 _u64x2(1, 2);
+
+	blocknumeric_s8x4  _s8x4(1, 2, 3, 4);
+	blocknumeric_s16x2 _s16x2(1111, 2222);
+	blocknumeric_s8x8  _s8x8 (1, 2, 3, 4, 5, 6, 7, 8);
+	blocknumeric_s16x4 _s16x4(1111, 2222, 3333, 4444);
+	blocknumeric_s32x2 _s32x2(12345678, 87654321);
+	blocknumeric_s8x16 _s8x16(-1,  2,  3,  4,  5, -6,  7, 8, -11, 22, 33, -44, 55, -66, 77, 88);
+	blocknumeric_s16x8 _s16x8(-1111, -2222, -3333, -4444, 5555, 6666, 7777, 8888);
+	blocknumeric_s32x4 _s32x4(-11111111, -22222222, 33333333, 44444444);
+	blocknumeric_s64x2 _s64x2(-1, -2);
+
+//F	blocknumeric_f16x8 _f32x4(1.0f, 2.0f, -3.0f, -4.0f, -5.0f, -6.0f, -7.0f, -8.0f);
+	blocknumeric_f32x4 _f32x4(1.0f, 2.0f, -3.0f, -4.0f);
+	blocknumeric_f64x2 _f64x2(-1.0, -2.0);
+
+	endblock;
+
+};

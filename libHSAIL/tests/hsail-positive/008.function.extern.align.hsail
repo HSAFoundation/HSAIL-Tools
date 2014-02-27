@@ -1,0 +1,26 @@
+version 0:96:$full:$large;
+
+function &TestFunc()(align 4 arg_s32 %arg[]); // align 4 = none = default
+
+function &TestCalls_01()()
+{
+	{
+		arg_s32 %x[1];
+		call	&TestFunc () (%x);
+	}
+	ret;
+};
+
+version 0:96:$full:$large;
+
+extern function &TestFunc()(arg_s32 %arg[]);
+
+function &TestCalls_02()()
+{
+	{
+		align 4 arg_s32 %x[1];
+		call	&TestFunc () (%x);
+	}
+	ret;
+};
+

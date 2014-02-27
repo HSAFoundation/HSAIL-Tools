@@ -1,0 +1,63 @@
+//-----------------------------------------
+version 0:96:$full:$large;
+
+global_u32 &global_var; 
+
+
+
+//-----------------------------------------
+version 0:96:$full:$large;
+
+static global_u32 &global_var_00;
+
+function &test2()() 
+{ 
+	ld_global_u32 $s1,[&global_var_00]; 
+	ret; 
+};
+
+
+
+//-----------------------------------------
+version 0:96:$full:$large;
+
+extern global_u32 &global_var; 
+
+function &test3()() 
+{ 
+	global_u32 %x;
+	ld_global_u32 $s1,[%x]; 
+	ret; 
+};
+
+function &test4(arg_u32 %a)(
+                arg_u32 %b,
+                arg_b32 %in_arg1)
+{
+	ld_arg_u32 $s1,[%b]; 
+	ret;
+};
+
+
+//-----------------------------------------
+version 0:96:$full:$large;
+
+extern group_u32 &read_kernel_cllocal_lcount[1];
+
+function &test5()() 
+{ 
+	ld_group_u32 $s1,[&read_kernel_cllocal_lcount]; 
+	ret; 
+};
+
+//-----------------------------------------
+version 0:96:$full:$large;
+
+group_u32 &read_kernel_cllocal_lcount[1];
+
+function &test6()() 
+{ 
+	ld_group_u32 $s1,[&read_kernel_cllocal_lcount]; 
+	ret; 
+};
+

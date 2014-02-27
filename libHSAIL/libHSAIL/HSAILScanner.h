@@ -168,13 +168,14 @@ enum ETokens
     EKWConst,
     EKWAlign,
     EKWExtension,
-    EKWFile,
 
     EKWImageWidth,
     EKWImageHeight,
     EKWImageDepth,
     EKWImageFormat,
     EKWImageOrder,
+    EKWImageGeometry,
+    EKWImageArray,
 
     ESamplerFirstProp,
     EKWSamplerBoundaryU = ESamplerFirstProp,
@@ -261,7 +262,10 @@ enum ETokens
     EMMemoryScope,
     EMAtomicOp,
     EMSegment,
+    EMSignalOp,
+    EMNoNull,
     EMWidth,
+    EMAlign,
     EMVector,
     EMEquiv,
     EMRound,
@@ -271,8 +275,8 @@ enum ETokens
     EMGeom,
     EMImageModifier,
     EMFBar,
-    EMAligned,
-    EMMemoryFence,
+    EMConst,
+    EMMemoryFenceSegments,
     EMSkip, // TBD remove
     EMNone
 };
@@ -287,12 +291,14 @@ public:
     ETokens            token()  const { return m_token; }
     int                brigId() const { return m_brigId; }
     SRef               stringValue() const { return SRef(m_tokStart,m_curPos); }
+    void               setContext(Brig::BrigInstKinds contextId) { m_contextId = contextId; }
 
     ETokens                   scan();
     ETokens                   scanTargetOption();
     ETokens                   scanModifier();
     Brig::BrigImageOrder8_t  scanImageOrder();
     Brig::BrigImageFormat8_t scanImageFormat();
+    Brig::BrigImageGeometry8_t scanImageGeometry();
 
     void readSingleStringLiteral(std::string *outString);
 
@@ -388,6 +394,8 @@ private:
     bool        m_disableComments;
     ETokens     m_token;
     int         m_brigId;
+    // tbd: using BrigInstKinds for context id is convenient for now, but it can be changed if necessary
+    Brig::BrigInstKinds m_contextId;
 
     int            m_lineNum;
     std::streamoff m_lineStart;

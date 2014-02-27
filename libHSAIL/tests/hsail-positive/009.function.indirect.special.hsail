@@ -1,0 +1,24 @@
+version 0:96:$full:$large;
+
+function &TestFunc12a(arg_b32 %out_arg0)(arg_s32 %in_arg0, arg_u32 %in_arg1)
+{
+	ret;
+};
+
+function &TestCalls()(arg_u32 %in_arg0)
+{
+	ldc_u64 $d1, &TestFunc12a;
+
+	{
+		arg_b32 %oarg0;
+		arg_s32 %iarg0;
+		arg_u32 %iarg1;
+
+		st_arg_s32	0, [%iarg0];
+		st_arg_u32	0, [%iarg1];
+
+		call  $d1 (%oarg0) (%iarg0, %iarg1); // List of targets is optional
+	}       		
+
+	ret;
+};

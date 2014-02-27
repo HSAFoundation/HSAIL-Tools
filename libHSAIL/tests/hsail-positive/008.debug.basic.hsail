@@ -1,0 +1,27 @@
+version 0:96:$full:$large;
+
+block "debug"
+blockstring "this is a string";
+endblock;
+
+function &TestFunc()()
+{
+	ret;
+
+	block "debug"
+
+	blocknumeric_b8  0, 127;
+	blocknumeric_b16  0, 32767, 65535;
+	blocknumeric_b32 0, 127, 255, 256, 12345, 2147483647;
+	blocknumeric_b64 0, 127, 255, 256, 12345, 2147483647;
+
+	blockstring "this is a string";
+	blockstring "";
+
+	endblock;
+
+};
+
+block "debug"
+blockstring "this is a string";
+endblock;

@@ -194,13 +194,13 @@ public:
     int getFirstSrcOperandIdx();                // Return index of first src operand
     int getDstOperandIdx();                     // Return index of dst operand (-1) if none
 
-    int getFirstOperandIdx();                   // Get index of the first operand (hiden operands are excluded)
-    int getLastOperandIdx();                    // Get index of the last operand (hiden operands are excluded)
+    int getFirstOperandIdx();                   // Get index of the first operand
+    int getLastOperandIdx();                    // Get index of the last operand
 
     //==========================================================================
 public:
 
-    static TestDataProvider* getProvider(unsigned opcode, unsigned type, unsigned srcNum = 0);
+    static TestDataProvider* getProvider(unsigned opcode, unsigned dstType, unsigned srcType, unsigned srcNum = 0);
 
     static void init();
     static void clean();

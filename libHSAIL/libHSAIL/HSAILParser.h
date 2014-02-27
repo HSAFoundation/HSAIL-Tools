@@ -61,9 +61,10 @@ public:
     void parseSource();
 
 private:
-    Scanner&   m_scanner;
-    Brigantine m_bw;
-    bool       m_gcnEnabled;   
+    Scanner&    m_scanner;
+    Brigantine  m_bw;
+    bool        m_gcnEnabled;   
+    std::string m_srcFileName;
 
     Parser& operator=(const Parser&);
 

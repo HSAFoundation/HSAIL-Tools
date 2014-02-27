@@ -1,0 +1,110 @@
+version 0:96:$full:$large;
+
+// Natural alignment
+
+align 1  global_s8         &x1001;
+align 1  global_u8         &x1002;
+align 1  global_b8         &x1003;
+
+align 2  global_s16        &x2001;
+align 2  global_u16        &x2002;
+align 2  global_f16        &x2003;
+align 2  global_b16        &x2004;
+
+align 4  global_s32        &x3001;
+align 4  global_u32        &x3002;
+align 4  global_f32        &x3003;
+align 4  global_b32        &x3004;
+align 4  global_u8x4       &x3005;
+align 4  global_s8x4       &x3006;
+align 4  global_u16x2      &x3007;
+align 4  global_s16x2      &x3008;
+align 4  global_f16x2      &x3009;
+
+align 8  global_s64        &x4001;
+align 8  global_u64        &x4002;
+align 8  global_f64        &x4003;
+align 8  global_b64        &x4004;
+align 8  global_u8x8       &x4005;
+align 8  global_s8x8       &x4006;
+align 8  global_u16x4      &x4007;
+align 8  global_s16x4      &x4008;
+align 8  global_f16x4      &x4009;
+align 8  global_u32x2      &x4010;
+align 8  global_s32x2      &x4011;
+align 8  global_f32x2      &x4012;
+
+align 8  global_rwimg      &x5001;
+align 8  global_roimg      &x5002;
+align 8  global_samp       &x5003;
+
+align 16  global_b128      &x6001;
+align 16  global_u16x8     &x6002;
+align 16  global_s16x8     &x6003;
+align 16  global_f16x8     &x6004;
+align 16  global_u32x4     &x6005;
+align 16  global_s32x4     &x6006;
+align 16  global_f32x4     &x6007;
+
+
+// Greater alignment
+
+align 2  global_s8     &x0101;
+align 2  global_u8     &x0102;
+align 2  global_b8     &x0103;
+
+align 4  global_s8     &x0201;
+align 4  global_u8     &x0202;
+align 4  global_b8     &x0203;
+
+align 8  global_s8     &x0301;
+align 8  global_u8     &x0302;
+align 8  global_b8     &x0303;
+
+align 4  global_s16    &x0401;
+align 4  global_u16    &x0402;
+align 4  global_f16    &x0403;
+align 4  global_b16    &x0404;
+
+align 8  global_s16    &x0501;
+align 8  global_u16    &x0502;
+align 8  global_f16    &x0503;
+align 8  global_b16    &x0504;
+
+align 8  global_s32    &x0601;
+align 8  global_u32    &x0602;
+align 8  global_f32    &x0603;
+align 8  global_b32    &x0604;
+align 8  global_u8x4   &x0605;
+align 8  global_s8x4   &x0606;
+align 8  global_u16x2  &x0607;
+align 8  global_s16x2  &x0608;
+align 8  global_f16x2  &x0609;
+
+align 16  global_s32    &x0701;
+align 16  global_u32    &x0702;
+align 16  global_f32    &x0703;
+align 16  global_b32    &x0704;
+align 16  global_u8x4   &x0705;
+align 16  global_s8x4   &x0706;
+align 16  global_u16x2  &x0707;
+align 16  global_s16x2  &x0708;
+align 16  global_f16x2  &x0709;
+
+align 16  global_rwimg  &x0801;
+align 16  global_roimg  &x0802;
+align 16  global_samp   &x0803;
+
+align 32  global_s32    &x0901;
+align 32  global_u32    &x0902;
+align 64  global_f32    &x0903;
+align 64  global_b32    &x0904;
+align 128 global_u8x4   &x0905;
+align 128 global_s8x4   &x0906;
+align 32  global_u16x2  &x0907;
+align 64  global_s16x2  &x0908;
+align 128 global_f16x2  &x0909;
+
+align 32  global_rwimg  &x0911;
+align 64  global_roimg  &x0912;
+align 128 global_samp   &x0913;

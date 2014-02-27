@@ -1,36 +1,36 @@
 # University of Illinois/NCSA
 # Open Source License
-# 
+#
 # Copyright (c) 2013, Advanced Micro Devices, Inc.
 # All rights reserved.
-# 
+#
 # Developed by:
-# 
+#
 #     HSA Team
-# 
+#
 #     Advanced Micro Devices, Inc
-# 
+#
 #     www.amd.com
-# 
+#
 # Permission is hereby granted, free of charge, to any person obtaining a copy of
 # this software and associated documentation files (the "Software"), to deal with
 # the Software without restriction, including without limitation the rights to
 # use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies
 # of the Software, and to permit persons to whom the Software is furnished to do
 # so, subject to the following conditions:
-# 
+#
 #     * Redistributions of source code must retain the above copyright notice,
 #       this list of conditions and the following disclaimers.
-# 
+#
 #     * Redistributions in binary form must reproduce the above copyright notice,
 #       this list of conditions and the following disclaimers in the
 #       documentation and/or other materials provided with the distribution.
-# 
+#
 #     * Neither the names of the LLVM Team, University of Illinois at
 #       Urbana-Champaign, nor the names of its contributors may be used to
 #       endorse or promote products derived from this Software without specific
 #       prior written permission.
-# 
+#
 # THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 # IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
 # FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SHALL THE
@@ -306,7 +306,7 @@ sub makeHSAILInitBrig {
 			}
 
 			my $rhs;
-			$rhs //= "sizeof(Brig::".$s->{name}.")" 
+			$rhs //= "sizeof(Brig::".$s->{name}.")"
 							if ($fname eq "size");
 			$rhs //= "Brig::".$s->{enum}    if ($fname eq "kind");
 			$rhs //= $f->{defValue}         if (exists $f->{defValue});
@@ -331,6 +331,7 @@ sub makeSwitch($$%) {
 	my $fn = $options{fn} // ($ename =~ /^(?:Brig)?(.)(.*)/ and lc($1).$2."2str");
 	my $proto = $options{proto} // "const char* $fn(unsigned arg)";
 	my $arg = $options{arg} // "arg";
+	my $context = $options{context};
 	my $defaultCode = $options{default} // "return NULL";
 	my $text = \$utilities->{$options{incfile} // "BrigUtilities"};
 	$wrapperImpls .= "$proto;\n" unless $options{incfile};
@@ -349,18 +350,23 @@ sub makeSwitch($$%) {
 		my $scanner = $options{scanner} || $options{token};
 		my $token = $entry->{$options{tokenpfx}."token"} || $options{token};
 		if ($scanner && $attrValue ne '""') {
+			my $tokenText = $attrValue;
+			my $block;
 			if ($token) {
-				my $tokenText = $attrValue;
 				# HACK: modifier token ids have an underscore as prefix.
 				# This underscore is stripped from token id and added to token text.
-				if ($token=~s/^_//) { $tokenText =~ s/^"/"_/; }
-				$scanner{$scanner} .= sprintf "    %-20s  { %-40s %-30s }\n",
-					$tokenText, "m_brigId = Brig::$entryName;", "return m_token = $token;";
+				if ($token=~s/^_//) { $tokenText =~ s/^"/"_/; $scanner = "_mods_"; }
+				$block = sprintf "%-40s %-30s", "m_brigId = Brig::$entryName;", "return m_token = $token; ";
+				if ($context) {
+					$scanner{$scanner}->{$tokenText}->{$context} = $block;
+				} else {
+					$scanner{$scanner}->{$tokenText} = $block;
+				}
 			} else {
-				$scanner{$scanner} .= sprintf "    %-20s  { %-40s }\n",
-					$attrValue, "return Brig::$entryName;";
-
+				$block = sprintf "%-40s", "return Brig::$entryName; ";
+				$scanner{$scanner}->{$tokenText} = $block;
 			}
+			
 		}
 		if (defined($attrCode) && $attrCode ne $defaultCode) {
 			$$text .= sprintf "    case %-30s : %s;\n", $entryName, $attrCode;
@@ -547,6 +553,36 @@ sub makeDispatchByItem {
 	}
 }
 
+sub makePropAccessors {
+	printf $textLicense;
+	my @roots = grep { $_->{isroot} } @sortedStructs;
+	my %tns = ();
+	for my $s (@sortedStructs) {
+		for my $f (@{$s->{fields}}) {
+			next if $f->{name} =~ /^(kind|operands|reserved|opcode|type|size)$/;
+			my $tn = "$f->{type} $f->{name}";
+                        $tns{$tn} = 1;
+		}
+	}
+	for my $tn (keys %tns) {
+		print "## tn: $tn\n";
+		for my $root (@roots) {
+			next if $root->{standalone};
+			next unless $root->{name} eq "BrigInst"; ##
+#			print "## root: $root->{name}\n";
+			for my $s (@sortedStructs) {
+				next unless grep { $_ eq $s->{name} } @{$root->{children}};
+				my $n = 0;
+				for my $f (@{$s->{fields}}) {
+					my $ftn = "$f->{type} $f->{name}";
+					next unless $ftn eq $tn;
+					printf "[%d] %s %s::%s\n", $n++, $f->{type}, $s->{name},$f->{name};
+				}
+			}
+	        }
+	}
+}
+
 sub makeEnumFlds {
 	my $pfx = "";
 	for my $s (@sortedStructs) {
@@ -573,6 +609,405 @@ sub makeEnumFlds {
 		print "}\n\n";
 	}
 }
+
+sub makeStaticChecks {
+	printf $textLicense;
+	for my $s (@sortedStructs) {
+		my $sn = "Brig::".$s->{name};
+		my @fields = grep { !exists $_->{phantomof} } @{$s->{fields}};
+		my $n = @fields;
+		for(my $i = 0; $i < $n; ++$i) {
+			last if $fields[$i]->{noaligncheck};
+			my $fn = $fields[$i]->{name};
+			my $err = "\"bad alignment in $sn\"";
+			if ($i == 0) {
+				print "static_assert(offsetof($sn, $fn) == 0, $err);\n";
+			}
+			if ($i > 1) {
+				my $pfn = $fields[$i-1]->{name};
+				print "static_assert(offsetof($sn, $pfn)+sizeof((($sn","*)0)->$pfn) == offsetof($sn,$fn), $err);\n";
+			}
+			if ($i == $n - 1) {
+				print "static_assert(offsetof($sn, $fn)+sizeof((($sn","*)0)->$fn) == sizeof($sn), $err);\n";
+			}
+		}
+		print "\n";
+	}
+}
+
+################################################################################
+################################################################################
+################################################################################
+# Generation of low-level BRIG validator (a part of Validator component)
+
+sub cpp
+{
+    my $txt = shift;
+    $txt =~ s/^\s+\|//gm;
+    return $txt;
+}
+
+sub makeValidatorFunc {
+    my ($name, $type) = @_;
+    $type //= $name;
+
+    print cpp(<<"EOT");
+        |
+        |
+        |bool ValidatorImpl::ValidateBrig${name}Fields($type item) const
+        |{
+        |    using namespace Brig;
+        |
+        |    unsigned kind = item.kind();
+        |
+        |    switch (kind)
+        |    {
+EOT
+
+    for my $s (@sortedStructs) {
+
+        my $structName = $s->{name};
+
+        next if $s->{generic};
+        next if $s->{standalone};
+        next unless $structName =~ /^Brig$name/;
+
+        $structName =~ s/^Brig//;
+        my $enumName = $s->{enum};
+
+        print cpp(<<"EOT");
+            |       case $enumName:
+            |       {
+            |           $structName it = item;
+            |
+EOT
+
+        for my $f (@{$s->{fields}}) {
+            next if $f->{phantomof};
+            next if $f->{name} =~ /^(size|kind|operands)$/;
+            next if $f->{wspecial}; # variable-size arrays should be validated separately
+
+            my $fieldType = $f->{type};
+
+            if ($fieldType =~ /^Brig/) {
+                $fieldType =~ s/^(.*?)[0-9]+_t$/$1/;
+            } else {
+                $fieldType = "fld_" . ucfirst($f->{name});
+            }
+
+            if ($f->{size} && $f->{size} > 1) {
+                print  "           for (unsigned i = 0; i < $f->{size}; i++) {\n";
+                printf "               validate_%s(item, it.brig()->%s[i], \"%s\", \"%s\");\n", $fieldType, $f->{name}, $structName, $f->{name};
+                print  "           }\n"
+            } else {
+                printf "           validate_%s(item, it.brig()->%s, \"%s\", \"%s\");\n", $fieldType, $f->{name}, $structName, $f->{name};
+            }
+        }
+
+        print cpp(<<"EOT");
+            |       }
+            |       break;
+            |
+EOT
+
+    }
+
+    print cpp(<<"EOT");
+        |    default:
+        |        return false; // not found
+        |
+        |    } // switch
+        |
+        |    return true; // found and validated
+        |}
+EOT
+
+}
+
+sub makeBrigValidator {
+    printf $textLicense;
+
+    makeValidatorFunc("Directive");
+    makeValidatorFunc("Block", "Directive");
+    makeValidatorFunc("Inst");
+    makeValidatorFunc("Operand");
+};
+
+################################################################################
+################################################################################
+################################################################################
+# Generation of code to enumerate/read/write/print instruction properties
+# Generated code is a part of Validator and TestGen components
+
+my %brigInst;
+my %brigProps;
+
+sub getPropName {
+    return "PROP_" . uc(shift());
+}
+
+sub registerInst {
+    my ($inst, $enum) = @_;
+
+    die "Brig instruction redefinition" if (%brigInst && $brigInst{$inst});
+
+    $brigInst{$inst} = {'id' => $enum, 'props' => ()};
+}
+
+sub registerProp {
+    my ($inst, $prop, $type, $acc) = @_;
+
+    push @{$brigInst{$inst}{'props'}}, $prop;
+
+    if ($brigProps{$prop}) {
+        my ($t, $a) = @{$brigProps{$prop}};
+        die "Instruction '$inst': property '$prop' type mismatch: defined as '$type' and '$t'" if $t ne $type;
+        die "Instruction '$inst': property '$prop' struct mismatch: defined in '$acc' and '$a'" if $a ne $acc;
+        return;
+    }
+    $brigProps{$prop} = [$type, $acc];
+}
+
+sub registerSubItemProps {
+
+    my ($inst, $name, $type) = @_;
+
+    for my $s (@sortedStructs) {
+
+        next if $s->{generic};
+        next unless $s->{name} =~ /^$type/;
+
+        for my $f (@{$s->{fields}}) {
+            next if $f->{name} =~ /^allBits$/;
+
+            die "unexpected array" if $f->{size};
+            registerProp($inst, $f->{name}, $f->{type}, $name . "()." . $f->{name} . '()');
+        }
+    }
+}
+
+sub registerInstProps {
+
+    for my $s (@sortedStructs) {
+
+        next if $s->{generic};
+        next if $s->{standalone};
+        next unless $s->{name} =~ /^BrigInst/;
+
+        my $inst = $s->{name};
+        my $enum = $s->{enum};
+
+        registerInst($inst, $enum);
+
+        for my $f (@{$s->{fields}}) {
+            next if $f->{name} =~ /^(size|kind|operands|reserved)$/;
+
+            die "unexpected array" if $f->{size};
+
+            if ($f->{prop}) { # This is a special case: ".prop=..." may be used to resolve conflicts
+                registerProp($inst, $f->{prop}, $f->{type}, $f->{name} . '()');
+            } elsif ($f->{acc} =~ /^subItem</) {
+                registerSubItemProps($inst, $f->{name}, $f->{type});
+            } else {
+                registerProp($inst, $f->{name}, $f->{type}, $f->{name} . '()');
+            }
+        }
+    }
+}
+
+sub makeBrigProps {
+	printf $textLicense . "\n";
+
+    registerInstProps();
+
+    print cpp(<<"EOT");
+        |enum 
+        |{
+        |    BRIG_PROP_MIN_ID = 0,
+        |
+        |    // Brig instruction properties
+        |
+EOT
+
+    for my $prop (sort keys %brigProps) {
+        my ($type, $acc) = @{$brigProps{$prop}};
+        print "    " . getPropName($prop) . ",";
+        print " " x (20 - length($prop));
+        print "// type = " . $type . ",";
+        print " " x (30 - length($type));
+        print " acc = " . $acc . "\n";
+    }
+
+    print cpp(<<"EOT");
+        |
+        |    EXT_PROP_MIN_ID
+        |};
+EOT
+
+
+    for my $inst (sort keys %brigInst) {
+        my $id = $brigInst{$inst}{'id'};
+        print cpp(<<"EOT");
+            |
+            |//enum ${inst}Props // $id
+            |//{
+EOT
+        for my $prop (@{$brigInst{$inst}{'props'}}) {
+            print "//    " . getPropName($prop) . ",\n";
+        }
+
+        print cpp(<<"EOT");
+            |//};
+            |
+EOT
+    }
+}
+
+sub genPropVisitor {
+    my ($generator, $visitAll) = @_;
+
+    print cpp(<<"EOT");
+        |{
+        |    using namespace Brig;
+        |
+        |    switch(inst.kind())
+        |    {
+EOT
+
+    for my $inst (sort keys %brigInst) {
+        my $id = $brigInst{$inst}{'id'};
+        my $name = $inst;
+        $name =~ s/^Brig//;
+
+        print cpp(<<"EOT");
+            |        case $id:
+            |        {
+            |            $name it = inst;
+            |        
+EOT
+
+        if (!$visitAll) {
+            print cpp(<<"EOT");
+                |            switch(propId)
+                |            {
+EOT
+        }
+
+        for my $prop (@{$brigInst{$inst}{'props'}}) {
+            my ($type, $acc) = @{$brigProps{$prop}};
+            my $propName     = getPropName($prop);
+
+            $generator->($prop);
+        }
+
+        if (!$visitAll) {
+            print cpp(<<"EOT");
+                |            default:
+                |                assert(false);
+                |                break;
+                |            }
+EOT
+        }
+
+        print cpp(<<"EOT");
+            |        }
+            |        break;
+            |
+EOT
+
+    }        
+
+    print cpp(<<"EOT");
+        |        default:
+        |            assert(false);
+        |            break;
+        |    }
+EOT
+}
+
+sub makeBrigPropsFastAcc {
+	printf $textLicense . "\n";
+    for my $prop (sort keys %brigProps) {
+        my ($type, $acc) = @{$brigProps{$prop}};
+        my $propGetter = 'get' . ucfirst($prop);
+
+        print "template<class T> static unsigned $propGetter(T inst) { assert(inst); return inst.$acc; }\n";
+    }
+}
+
+sub genPropGetter {
+    my $prop = shift;
+    my ($type, $acc) = @{$brigProps{$prop}};
+    my $propName     = getPropName($prop);
+    print "            case $propName: return it.$acc;\n";
+}
+
+sub genPropSetter {
+    my $prop = shift;
+    my ($type, $acc) = @{$brigProps{$prop}};
+    my $propName     = getPropName($prop);
+    if ($type eq 'bool') {
+        print "            case $propName: it.$acc = (val != 0); break;\n";
+    } else {
+        print "            case $propName: it.$acc = val; break;\n";
+    }
+}
+
+sub makeBrigPropsAcc {
+	printf $textLicense . "\n";
+
+    print "static void setBrigProp(Inst inst, unsigned propId, unsigned val)\n";
+    genPropVisitor(\&genPropSetter, 0);
+    print "}\n\n";
+
+    print "static unsigned getBrigProp(Inst inst, unsigned propId)\n";
+    genPropVisitor(\&genPropGetter, 0);
+    print "    assert(false);\n    return (unsigned)-1;\n}\n";
+}
+
+sub genPropLogger {
+    my $prop = shift;
+    my ($type, $acc) = @{$brigProps{$prop}};
+    my $propName     = getPropName($prop);
+    print "            addProp(inst, $propName, it.$acc);\n";
+}
+
+sub makeBrigPropsReg {
+	printf $textLicense . "\n";
+
+    print "void registerBrigProps(Inst inst)\n";
+    genPropVisitor(\&genPropLogger, 1);
+    print "}\n\n";
+}
+
+sub makeBrigPropsName {
+	printf $textLicense . "\n";
+
+    print cpp(<<"EOT");
+        |static const char* getBrigPropName(unsigned prop)
+        |{
+        |    switch(prop)
+        |    {
+EOT
+
+    for my $prop (sort keys %brigProps) {
+        my $propName     = getPropName($prop);
+        print "    case $propName: return \"$prop\";\n";
+    }
+
+    print cpp(<<"EOT");
+        |    default: 
+        |        assert(false);
+        |        return "";
+        |    }
+        |}
+EOT
+
+}
+
+################################################################################
+################################################################################
+################################################################################
 
 sub makeHSAILBrigInitializers {
 	printf $textLicense;
@@ -623,7 +1058,27 @@ make "HSAILItems_gen.hpp", \&makeWrappers;
 make "HSAILItemImpls_gen.hpp", \&makePrint, $wrapperImpls;
 make "HSAILVisitItems_gen.hpp", \&makeDispatchByItem;
 make ">>HSAILVisitItems_gen.hpp", \&makeEnumFlds;
-make "HSAILBrigStaticChecks_gen.hpp", \&makePrint, "";
+make "HSAILBrigStaticChecks_gen.hpp", \&makeStaticChecks;
+make "HSAILBrigValidation_gen.hpp", \&makeBrigValidator;
+make "HSAILBrigProps_gen.hpp", \&makeBrigProps;
+make "HSAILBrigPropsAcc_gen.hpp", \&makeBrigPropsAcc;
+make "HSAILBrigPropsFastAcc_gen.hpp", \&makeBrigPropsFastAcc;
+make "HSAILBrigPropsReg_gen.hpp", \&makeBrigPropsReg;
+make "HSAILBrigPropsName_gen.hpp", \&makeBrigPropsName;
+
+for my $s (values %scanner) {
+	my $text;
+	for my $tt (keys %$s) {
+		my $v = $s->{$tt};
+		if (ref $v) {
+			$v = join("", map { "if (m_contextId == $_) { $v->{$_} } " } keys %$v) .
+				"return m_token = EEmpty;";
+		}
+		$text .= sprintf "    %-20s  { %-40s }\n", $tt, $v;
+	}
+	$s = $text;
+}
+
 make "HSAILScannerRules_gen.re2c", \&makePreprocess, "$indir/HSAILScannerRules.re2c";
 
 sub runTool {
@@ -634,12 +1089,14 @@ sub runTool {
 	system($cl)==0 or die "running $tool failed";
 }
 
-runTool("$^X $indir/HidelProcessor.pl -target=validator", "<$indir/HSAILBrigInstr.hdl", "$outdir/HSAILInstValidation_gen.hpp");
+runTool("$^X -I \"@INC[0]\" $indir/HDLProcessor.pl -target=validator", "<$indir/HSAILBrigInstr.hdl", "$outdir/HSAILInstValidation_gen.hpp");
 runTool($re2c_path, "-i --no-generation-date $outdir/HSAILScannerRules_gen.re2c.tmp", "$outdir/HSAILScannerRules_gen_re2c.hpp");
 
 for my $s (values %$structs) {
 	if ($s->{children}) { $s->{children} = [ keys %{$s->{children}} ] }
 }
+
+make "HSAILPropAccessors_gen.hpp", \&makePropAccessors;
 
 make "enums_dump.pl", \&makePrint, Data::Dumper->Dump([$enums], ["enums"]);
 make "structs_dump.pl", \&makePrint, Data::Dumper->Dump([$structs], ["structs"]);

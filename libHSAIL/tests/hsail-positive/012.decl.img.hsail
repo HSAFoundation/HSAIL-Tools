@@ -1,0 +1,66 @@
+// Img & samp may be defined in three places:
+// - As a global or readonly variable outside of a function or kernel
+// - As a type in an arg definition
+// - As a type in a kernarg definition
+
+version 0:96:$full:$large;
+
+// All values specified in image initializers are optional 
+
+align 8  global_roimg   &ro_img000 = {geometry = 3d, width = 5, height = 4, depth = 6, format = unorm_short_101010, order = rgbx};
+align 16 readonly_roimg &ro_img001 = {geometry = 3d, width = 5, height = 4, depth = 6, format = unorm_short_101010, order = rgbx};
+
+global_roimg &ro_img1   = {geometry = 1d,  width = 5,                                  format = unorm_short_101010, order = rgbx};
+global_roimg &ro_img2   = {geometry = 2d,  width = 5, height = 4,                      format = unorm_short_101010, order = rgbx};
+readonly_roimg &ro_img3 = {geometry = 3d,  width = 5, height = 4, depth = 6,           format = unorm_short_101010, order = rgbx};
+readonly_roimg &ro_img4 = {geometry = 1da, width = 5,                       array = 4, format = unorm_short_101010, order = rgbx};
+readonly_roimg &ro_img5 = {geometry = 2da, width = 5, height = 4,           array = 4, format = unorm_short_101010, order = rgbx};
+readonly_roimg &ro_img6 = {geometry = 1db, width = 5,                                  format = unorm_short_101010, order = rgbx};
+
+global_rwimg &rw_img0    = {geometry = 3d, width = 5, height = 4, depth = 6, order = rgbx, format = float};
+global_rwimg &rw_img1    = {geometry = 3d, width = 5, height = 4, depth = 6, order = rgbx, format = half_float};
+global_rwimg &rw_img2    = {geometry = 3d, width = 5, height = 4, depth = 6, order = rgbx, format = signed_int16};
+global_rwimg &rw_img3    = {geometry = 3d, width = 5, height = 4, depth = 6, order = rgbx, format = signed_int32};
+global_rwimg &rw_img4    = {geometry = 3d, width = 5, height = 4, depth = 6, order = rgbx, format = signed_int8};
+global_rwimg &rw_img5    = {geometry = 3d, width = 5, height = 4, depth = 6, order = rgbx, format = snorm_int16};
+readonly_rwimg &rw_img6  = {geometry = 3d, width = 5, height = 4, depth = 6, order = rgbx, format = snorm_int8};
+readonly_rwimg &rw_img7  = {geometry = 3d, width = 5, height = 4, depth = 6, order = rgbx, format = unorm_int24};
+readonly_rwimg &rw_img8  = {geometry = 3d, width = 5, height = 4, depth = 6, order = rgbx, format = unorm_int16};
+readonly_rwimg &rw_img9  = {geometry = 3d, width = 5, height = 4, depth = 6, order = rgbx, format = unorm_int8};
+readonly_rwimg &rw_img10 = {geometry = 3d, width = 5, height = 4, depth = 6, order = rgbx, format = unorm_short_101010};
+readonly_rwimg &rw_img11 = {geometry = 3d, width = 5, height = 4, depth = 6, order = rgbx, format = unorm_short_555};
+readonly_rwimg &rw_img12 = {geometry = 3d, width = 5, height = 4, depth = 6, order = rgbx, format = unorm_short_565};
+readonly_rwimg &rw_img13 = {geometry = 3d, width = 5, height = 4, depth = 6, order = rgbx, format = unsigned_int16};
+readonly_rwimg &rw_img14 = {geometry = 3d, width = 5, height = 4, depth = 6, order = rgbx, format = unsigned_int32};
+readonly_rwimg &rw_img15 = {geometry = 3d, width = 5, height = 4, depth = 6, order = rgbx, format = unsigned_int8};
+
+readonly_rwimg &rw_img1151 = {geometry = 3d, width = 5, height = 4, depth = 6, format = unorm_short_101010, order = r};
+global_rwimg &rw_img110   =  {geometry = 3d, width = 5, height = 4, depth = 6, format = unorm_short_101010, order = a};
+readonly_rwimg &rw_img1222 = {geometry = 3d, width = 5, height = 4, depth = 6, format = unorm_short_101010, order = rx};
+readonly_rwimg &rw_img1173 = {geometry = 3d, width = 5, height = 4, depth = 6, format = unorm_short_101010, order = rg};
+readonly_rwimg &rw_img1214 = {geometry = 3d, width = 5, height = 4, depth = 6, format = unorm_short_101010, order = rgx};
+readonly_rwimg &rw_img1165 = {geometry = 3d, width = 5, height = 4, depth = 6, format = unorm_short_101010, order = ra};
+readonly_rwimg &rw_img1186 = {geometry = 3d, width = 5, height = 4, depth = 6, format = unorm_short_101010, order = rgb};
+readonly_rwimg &rw_img1197 = {geometry = 3d, width = 5, height = 4, depth = 6, format = unorm_short_101010, order = srgb};
+readonly_rwimg &rw_img1208 = {geometry = 3d, width = 5, height = 4, depth = 6, format = unorm_short_101010, order = srgbx};
+readonly_rwimg &rw_img1219 = {geometry = 3d, width = 5, height = 4, depth = 6, format = unorm_short_101010, order = rgbx};
+readonly_rwimg &rw_img1220 = {geometry = 3d, width = 5, height = 4, depth = 6, format = unorm_short_101010, order = rgba};
+global_rwimg &rw_img111a   = {geometry = 3d, width = 5, height = 4, depth = 6, format = unorm_short_101010, order = argb};
+global_rwimg &rw_img112s   = {geometry = 3d, width = 5, height = 4, depth = 6, format = unorm_short_101010, order = bgra};
+global_rwimg &rw_img111d   = {geometry = 3d, width = 5, height = 4, depth = 6, format = unorm_short_101010, order = srgba};
+global_rwimg &rw_img112f   = {geometry = 3d, width = 5, height = 4, depth = 6, format = unorm_short_101010, order = sbgra};
+global_rwimg &rw_img113g   = {geometry = 3d, width = 5, height = 4, depth = 6, format = unorm_short_101010, order = intensity};
+global_rwimg &rw_img114h   = {geometry = 3d, width = 5, height = 4, depth = 6, format = unorm_short_101010, order = luminance};
+
+extern global_roimg &ArrayOfroimgs[10];
+extern global_rwimg &ArrayOfrwimgs[10];
+extern global_samp  &ArrayOfsamp[10];
+
+readonly_roimg &ro_img_arr1[]  = {geometry = 3d, width = 5, height = 4, depth = 6, format = unorm_short_101010, order = r};
+readonly_roimg &ro_img_arr2[1] = {geometry = 3d, width = 5, height = 4, depth = 6, format = unorm_short_101010, order = r};
+
+kernel &TestKernel(kernarg_rwimg %x, kernarg_roimg %y[3])
+{
+};
+
+

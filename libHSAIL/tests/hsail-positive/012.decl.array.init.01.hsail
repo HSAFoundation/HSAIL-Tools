@@ -1,0 +1,9 @@
+version 0:96:$full:$large;
+
+// HSAIL spec has the following req:
+// If there is an initialization (d_init not zero), the value of dim must be the same as the length of the initializer.
+// So 3d element must be initialized by 0 
+const global_u32   &global_const33[3]    = {1, 2}; 
+const global_u32   &global_const34[3]    = {1, 2, 3}; 
+
+static const align 8 global_u32   &globalConst0[]   = {1, 2, 3};

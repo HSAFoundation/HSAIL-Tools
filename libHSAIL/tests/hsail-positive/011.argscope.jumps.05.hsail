@@ -1,0 +1,65 @@
+// It is not valid to branch into or out of an argument scope.
+
+version 0:96:$full:$large;
+
+function &TestFunc12(arg_s32x2 %out_arg0)(
+	arg_u32 %in_arg0,
+	arg_u32 %in_arg1)
+{
+	ret;
+};
+
+function &TestFunc()()
+{
+
+	cbr     $c1, @lab_out1x;
+	cbr     $c1, @lab_out;
+	cbr     $c1, @lab_out2x;
+
+	{
+		arg_s32x2 %oarg;
+		arg_u32 %iarg0;
+		arg_u32 %iarg1;
+
+@lab_in1:
+		st_arg_u32	0, [%iarg0];
+		st_arg_u32	0, [%iarg1];
+		call  	&TestFunc12 (%oarg) (%iarg0, %iarg1);
+		ld_arg_u64    $d0, [%oarg];
+		cbr     $c1, @lab_in1x;
+		cbr     $c0, @lab_in1;
+		cbr     $c1, @lab_in2x;
+
+@lab_in1x: 
+@lab_in2x: 
+	}
+@lab_out1x: 
+@lab_out2x: 
+	{
+@l01:
+		global_u32 %y1 = 1;
+
+@lab_in1y: 
+@lab_in2y: 
+
+		global_u32 %y2;
+@l02:
+
+
+		arg_u32 %x;                // hidden
+@lab_in2:
+		st_arg_u32	0, [%x];
+		call  	&TestFunc12 () (%x, %x);
+		cbr     $c1, @lab_in1y;
+		cbr     $c0, @lab_in2;
+		cbr     $c1, @lab_in2y;
+	}
+	
+	ret;
+
+@lab_out:
+
+	cbr     $c1, @lab_out1x;
+
+	ret;
+};

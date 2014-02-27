@@ -142,9 +142,9 @@ int Disassembler::run(const char* path) const
     return hasError() || os.bad(); //TBD
 }
 
-string Disassembler::get(Directive d)  const { return getImpl(d); }
-string Disassembler::get(Inst i)       const { return getImpl(i); }
-string Disassembler::get(Operand i)    const { return getImpl(i); }
+string Disassembler::get(Directive d, unsigned model)  { machineModel = model; return getImpl(d); }
+string Disassembler::get(Inst i, unsigned model)       { machineModel = model; return getImpl(i); }
+string Disassembler::get(Operand i, unsigned model)    { machineModel = model; return getImpl(i); }
 
 void Disassembler::log(std::ostream &s) { err = &s; }
 
@@ -200,7 +200,6 @@ void Disassembler::printDirective(Directive d) const
     case BRIG_DIRECTIVE_COMMENT:         printDirective(DirectiveComment(d));   break;
     case BRIG_DIRECTIVE_CONTROL:         printDirective(DirectiveControl(d));   break;
     case BRIG_DIRECTIVE_EXTENSION:       printDirective(DirectiveExtension(d)); break;
-    case BRIG_DIRECTIVE_FILE:            printDirective(DirectiveFile(d));      break;
     case BRIG_DIRECTIVE_LOC:             printDirective(DirectiveLoc(d));       break;
     case BRIG_DIRECTIVE_PRAGMA:          printDirective(DirectivePragma(d));    break;
     case BRIG_DIRECTIVE_SIGNATURE:       printDirective(DirectiveSignature(d)); break;
@@ -231,7 +230,6 @@ void Disassembler::printDirective(DirectiveVersion d) const
     print(d.hsailMinor(), ':');
     print(profile2str(d.profile()), ':');
     print(machineModel2str(d.machineModel()), ';');
-    print(" // BRIG Object Format Version ", d.brigMajor(), ':', d.brigMinor());
 }
 
 void Disassembler::printDirective(DirectiveComment d) const
@@ -254,14 +252,6 @@ void Disassembler::printDirective(DirectiveControl d) const
         else                                error(opr, "Unsupported Operand Kind", opr.kind());
     }
 
-    print(';');
-}
-
-void Disassembler::printDirective(DirectiveFile d) const
-{
-    print("file ");
-    print(d.fileid(), ' ');
-    printStringLiteral(d.filename());
     print(';');
 }
 
@@ -294,8 +284,10 @@ void Disassembler::printDirective(BlockEnd d) const
 void Disassembler::printDirective(DirectiveLoc d) const
 {
     print("loc ");
-    print(d.fileid(), ' ', d.line());
-    printq(d.column() != 0, ' ', d.column());
+    print(d.line());
+    printq(d.column() != 1, ' ', d.column());
+    print(' ');
+    printStringLiteral(d.filename());
     print(';');
 }
 
@@ -370,11 +362,13 @@ void Disassembler::printDirective(DirectiveLabelInit d) const
 void Disassembler::printDirective(DirectiveImageInit d) const
 {
     string valList;
-    add2ValList(valList, "width",  d.width());
-    add2ValList(valList, "height", d.height());
-    add2ValList(valList, "depth",  d.depth());
-    add2ValList(valList, "format", imageFormat2str(d.format()));
-    add2ValList(valList, "order",  imageOrder2str(d.order()));
+    add2ValList(valList, "geometry",  imageGeometry2str(d.geometry()));
+    add2ValList(valList, "width",     d.width());
+    add2ValList(valList, "height",    d.height());
+    add2ValList(valList, "depth",     d.depth());
+    add2ValList(valList, "array",     d.array());
+    add2ValList(valList, "format",    imageFormat2str(d.format()));
+    add2ValList(valList, "order",     imageOrder2str(d.order()));
     print(valList);
 }
 
@@ -383,9 +377,9 @@ void Disassembler::printDirective(DirectiveSamplerInit d) const
     string valList;
     add2ValList(valList, "coord",        coord2str(d.modifier().isUnnormalized()));
     add2ValList(valList, "filter",       filter2str(d.modifier().filter()));
-    add2ValList(valList, "boundaryU",    boundaryMode2str(d.boundaryU()));
-    add2ValList(valList, "boundaryV",    boundaryMode2str(d.boundaryV()));
-    add2ValList(valList, "boundaryW",    boundaryMode2str(d.boundaryW()));
+    add2ValList(valList, "boundaryu",    boundaryMode2str(d.boundaryU()));
+    add2ValList(valList, "boundaryv",    boundaryMode2str(d.boundaryV()));
+    add2ValList(valList, "boundaryw",    boundaryMode2str(d.boundaryW()));
     print(valList);
 }
 
@@ -401,7 +395,7 @@ void Disassembler::printDirective(DirectiveArgScopeEnd d) const
 
 void Disassembler::printProtoType(DirectiveSignatureArgument arg) const
 {
-    print(align2str_(arg.align()), "arg");
+    print(align2str_(arg.align(), arg.type()), "arg");
     print_(type2str(arg.type()));
     if (arg.modifier().isArray())
     {
@@ -559,7 +553,7 @@ void Disassembler::printSymDecl(DirectiveVariable s) const
     // extern, static, const, align
     print(attr2str_(s.modifier().linkage()));
     print(const2str_(s.modifier().isConst()));
-    print(align2str_(s.align()));
+    print(align2str_(s.align(), s.type()));
 
     // print symbol segment and type (separated with "_")
     print(seg2str(s.segment()));
@@ -653,7 +647,7 @@ void Disassembler::printInst(Inst i) const
     case BRIG_INST_ADDR:         printInst(InstAddr(i));        break;
     case BRIG_INST_MOD:          printInst(InstMod(i));         break;
     case BRIG_INST_CVT:          printInst(InstCvt(i));         break;
-    case BRIG_INST_BAR:          printInst(InstBar(i));         break;
+    case BRIG_INST_MEM_FENCE:    printInst(InstMemFence(i));    break;
     case BRIG_INST_CMP:          printInst(InstCmp(i));         break;
     case BRIG_INST_MEM:          printInst(InstMem(i));         break;
     case BRIG_INST_BR:           printInst(InstBr(i));          break;
@@ -661,8 +655,11 @@ void Disassembler::printInst(Inst i) const
     case BRIG_INST_ATOMIC_IMAGE: printInst(InstAtomicImage(i)); break;
     case BRIG_INST_IMAGE:        printInst(InstImage(i));       break;
     case BRIG_INST_LANE:         printInst(InstLane(i));        break;
+    case BRIG_INST_QUEUE:        printInst(InstQueue(i));       break;
     case BRIG_INST_SEG:          printInst(InstSeg(i));         break;
+    case BRIG_INST_SEG_CVT:      printInst(InstSegCvt(i));      break;
     case BRIG_INST_SOURCE_TYPE:  printInst(InstSourceType(i));  break;
+    case BRIG_INST_SIGNAL:       printInst(InstSignal(i));      break;
     case BRIG_INST_NONE:         printNop();                    break;
     default: error(i, "Unsupported Instruction Format", i.brig()->kind); break;
     }
@@ -672,7 +669,7 @@ void Disassembler::printInst(Inst i) const
 void Disassembler::printInst(InstBasic i) const
 {
     print(opcode2str(i.opcode()));
-    if (hasType(i)) print_(type2str(i.type()));
+    if (instHasType(i.opcode())) print_(type2str(i.type()));
     printInstArgs(i);
 }
 
@@ -681,21 +678,8 @@ void Disassembler::print_rounding(Inst i) const
 {
     AluModifier am = i.modifier();
     unsigned rounding = am.round();
-    unsigned defaultRounding;
-
-    if (InstCvt cvt = i)
-    {
-        defaultRounding = getDefRoundingForCvt(cvt.sourceType(), cvt.type());
-    }
-    else
-    {
-        defaultRounding = getDefRounding(i.opcode(), i.type());
-    }
-
-    if (rounding != defaultRounding)
-    {
-        print_(round2str(rounding));
-    }
+    unsigned defaultRounding = getDefRounding(i);
+    if (rounding != defaultRounding) print_(round2str(rounding));
 }
 
 void Disassembler::printInst(InstMod i) const
@@ -705,7 +689,7 @@ void Disassembler::printInst(InstMod i) const
     print(modifiers2str(i.modifier()));
     print_rounding(i);
     print_(pack2str(i.pack()));
-    if (hasType(i)) print_(type2str(i.type()));
+    if (instHasType(i.opcode())) print_(type2str(i.type()));
 
     printInstArgs(i);
 }
@@ -722,7 +706,7 @@ void Disassembler::printInst(InstBr i) const
 {
     print(opcode2str(i.opcode()));
     print_width(i);
-    if (hasType(i)) print_(type2str(i.type()));
+    if (instHasType(i.opcode())) print_(type2str(i.type()));
     if (isCall(i)) printCallArgs(i);
     else printInstArgs(i);
 }
@@ -731,10 +715,11 @@ void Disassembler::printInst(InstMem i) const
 {
     print(opcode2str(i.opcode()));
     print_v(i);
-    print_width(i);
     print_(seg2str(i.segment()));
-    print_(aligned2str(i.modifier().aligned()));
+    print_(align2str(i.align()));
+    print_(const2str(i.modifier().isConst()));
     print_(equiv2str(i.equivClass()));
+    print_width(i);
 
     print_(type2str(i.type()));
     printInstArgs(i);
@@ -745,7 +730,25 @@ void Disassembler::printInst(InstSeg i) const
     print(opcode2str(i.opcode()));
     print_(seg2str(i.segment()));
     print_(type2str(i.type()));
+    printInstArgs(i);
+}
+
+void Disassembler::printInst(InstSegCvt i) const
+{
+    print(opcode2str(i.opcode()));
+    print_(seg2str(i.segment()));
+    print_(nonull2str(i.modifier().isNoNull()));
+    print_(type2str(i.type()));
     print_(type2str(i.sourceType()));
+    printInstArgs(i);
+}
+
+void Disassembler::printInst(InstQueue i) const
+{
+    print(opcode2str(i.opcode()));
+    print_(seg2str(i.segment()));
+    print_(memoryOrder2str(i.memoryOrder()));
+    print_(type2str(i.type()));
     printInstArgs(i);
 }
 
@@ -787,6 +790,7 @@ void Disassembler::printInst(InstAtomic i) const
     print_(seg2str(i.segment()));
     print_(memoryOrder2str(i.memoryOrder()));
     print_(memoryScope2str(i.memoryScope()));
+    print_(equiv2str(i.equivClass()));
     print_(type2str(i.type()));
     printInstArgs(i);
 }
@@ -796,6 +800,7 @@ void Disassembler::printInst(InstImage i) const
     print(opcode2str(i.opcode()));
     print_v(i);
     print_(imageGeometry2str(i.geometry()));
+    print_(equiv2str(i.equivClass()));
     print_(type2str(i.type()));
     print_(type2str(i.imageType()));
     print_(type2str(i.coordType()));
@@ -816,22 +821,32 @@ void Disassembler::printInst(InstAtomicImage i) const
     print(opcode2str(i.opcode()));
     print_(atomicOperation2str(i.atomicOperation()));
     print_(imageGeometry2str(i.geometry()));
+    print_(equiv2str(i.equivClass()));
     print_(type2str(i.type()));
     print_(type2str(i.imageType()));
     print_(type2str(i.coordType()));
     printInstArgs(i);
 }
 
-void Disassembler::printInst(InstBar i) const
+void Disassembler::printInst(InstMemFence i) const
 {
     print(opcode2str(i.opcode()));
-    print_width(i);
 
+    print_(memoryFenceSegments2str(i.segments()));
     print_(memoryOrder2str(i.memoryOrder()));
     print_(memoryScope2str(i.memoryScope()));
-    print_(memoryFence2str(i.memoryFence()));
 
-    if (hasType(i)) print_(type2str(i.type()));
+    if (instHasType(i.opcode())) print_(type2str(i.type()));
+    printInstArgs(i);
+}
+
+void Disassembler::printInst(InstSignal i) const 
+{
+    print(opcode2str(i.opcode()));
+    print_(signalOperation2str(i.signalOperation()));
+    print_(memoryOrder2str(i.memoryOrder()));
+    print_(type2str(i.type()));
+    print_(type2str(i.signalType()));
     printInstArgs(i);
 }
 
@@ -951,7 +966,7 @@ void Disassembler::printOperand(Operand opr) const
     case BRIG_OPERAND_ARGUMENT_LIST:      printOperand(OperandArgumentList(opr));     break;
     case BRIG_OPERAND_FUNCTION_LIST:      printOperand(OperandFunctionList(opr));     break;
                                           
-    case BRIG_OPERAND_IMMED:              printOperandImmed(opr, OperandImmed(opr).type()); break;
+//    case BRIG_OPERAND_IMMED:              printOperandImmed(opr, OperandImmed(opr).type()); break;
 
     default: error(opr, "Unsupported Operand Kind", opr.brig()->kind); break;
     }
@@ -980,11 +995,13 @@ void Disassembler::printOperand(OperandWavesize opr) const { print("WAVESIZE"); 
 
 void Disassembler::printOperand(OperandAddress opr) const
 {
+    assert(machineModel == Brig::BRIG_MACHINE_SMALL || machineModel == Brig::BRIG_MACHINE_LARGE);
+
     DirectiveVariable name = opr.symbol();
-    int64_t offset = (getBitSize(opr.type()) > 32)
+    int64_t offset = (machineModel == Brig::BRIG_MACHINE_LARGE)
       ? (int64_t)opr.offset()
       : (int32_t)opr.offsetLo();
-    uint64_t uoffset = (getBitSize(opr.type()) > 32)
+    uint64_t uoffset = (machineModel == Brig::BRIG_MACHINE_LARGE)
       ? (uint64_t)opr.offset()
       : (uint32_t)opr.offsetLo();
     StrRef reg = opr.reg();
@@ -1048,14 +1065,13 @@ void Disassembler::DisassembleOperandImmed::visit< BrigType<Brig::BRIG_TYPE_B1> 
 void Disassembler::printOperandImmed(Inst inst, unsigned operandIdx) const
 {
     assert(inst && operandIdx <= 4);
+    assert(machineModel == Brig::BRIG_MACHINE_SMALL || machineModel == Brig::BRIG_MACHINE_LARGE);
 
-    unsigned requiredType = getImmOperandType(inst, operandIdx, getMachineType());
-    if (requiredType == Brig::BRIG_TYPE_SAMP ||
-        requiredType == Brig::BRIG_TYPE_ROIMG ||
-        requiredType == Brig::BRIG_TYPE_RWIMG)
+    unsigned requiredType = getOperandType(inst, operandIdx, machineModel);
+    if (!isValidImmType(requiredType))
     {
-        // This BRIG is invalid as there are no imm values for opaque objects.
-        // Replace opaque types with some valid type to avoid failing in printOperandImmed.
+        // This BRIG is invalid as there are no imm values for these types.
+        // Replace it with some valid type to avoid failing in printOperandImmed.
         requiredType = Brig::BRIG_TYPE_B32;
     }
     else if (requiredType == Brig::BRIG_TYPE_B128)
@@ -1197,13 +1213,13 @@ SRef Disassembler::getSymbolName(Directive d) const
 // BRIG PROPERTIES
 // ============================================================================
 
-const char* Disassembler::machineModel2str(unsigned machineModel) const
+const char* Disassembler::machineModel2str(unsigned model) const
 {
-    switch(machineModel)
+    switch(model)
     {
     case Brig::BRIG_MACHINE_LARGE: return "$large";
     case Brig::BRIG_MACHINE_SMALL: return "$small";
-    default:               return invalid("Machine", machineModel);
+    default:               return invalid("Machine", model);
     }
 }
 
@@ -1244,9 +1260,14 @@ const char* Disassembler::pack2str(unsigned t) const
     else return invalid("Packing", t);
 }
 
-const char* Disassembler::aligned2str(unsigned flag) const
+const char* Disassembler::const2str(bool isConst) const
 {
-    return flag? "aligned" : "";
+    return isConst? "const" : "";
+}
+
+const char* Disassembler::nonull2str(bool isNoNull) const
+{
+    return isNoNull ? "nonull" : "";
 }
 
 const char* Disassembler::cmpOp2str(unsigned opcode) const
@@ -1270,11 +1291,16 @@ const char* Disassembler::memoryOrder2str(unsigned memOrder) const
     else return invalid("MemoryOrder", memOrder);
 }
 
-const char* Disassembler::memoryFence2str(unsigned flags) const
+const char* Disassembler::memoryFenceSegments2str(unsigned segments) const
 {
-    const char* result=HSAIL_ASM::memoryFence2str(flags);
-    if (result != NULL && strcmp(result, "fboth")) return result; // ignore 'fboth'
-    else return "";
+  switch(segments) {
+  case Brig::BRIG_MEMORY_FENCE_GROUP:
+    return segment2str(Brig::BRIG_SEGMENT_GROUP);
+  case Brig::BRIG_MEMORY_FENCE_GLOBAL:
+    return segment2str(Brig::BRIG_SEGMENT_GLOBAL);
+  default:
+    return "";
+  }
 }
 
 const char* Disassembler::memoryScope2str(unsigned flags) const 
@@ -1289,6 +1315,13 @@ const char* Disassembler::atomicOperation2str(unsigned op) const
     const char* result=HSAIL_ASM::atomicOperation2str(op);
     if (result != NULL) return result;
     else return invalid("AtomicOperation", op);
+}
+
+const char* Disassembler::signalOperation2str(unsigned op) const
+{
+    const char* result=HSAIL_ASM::signalOperation2str(op);
+    if (result != NULL) return result;
+    else return invalid("SignalOperation", op);
 }
 
 const char* Disassembler::opcode2str(unsigned opcode) const
@@ -1401,11 +1434,32 @@ const char* Disassembler::const2str_(bool isConst) const
     return isConst? "const " : "";
 }
 
-string Disassembler::align2str_(unsigned align) const
+string Disassembler::align2str(unsigned val) const
 {
-    ostringstream s;
-    if (align > 1) s << "align " << align << ' ';
-    return s.str();
+    const char *result = HSAIL_ASM::align2str(val);
+    if (result != NULL)
+    {
+        if (strlen(result) > 0) 
+        {
+            return string("align(") + result + ')';
+        }
+        return "";
+    }
+    return invalid("align", val);
+}
+
+string Disassembler::align2str_(unsigned val, unsigned type) const
+{
+    const char *result = HSAIL_ASM::align2str(val);
+    if (result != NULL)
+    {
+        if (strlen(result) > 0 && val != (unsigned) getNaturalAlignment(type))
+        {
+            return string("align ") + result + ' ';
+        }
+        return "";
+    }
+    return invalid("align", val);
 }
 
 const char* Disassembler::width2str(unsigned val) const
@@ -1464,39 +1518,6 @@ void Disassembler::printComment(SRef s) const
     }
 }
 
-bool Disassembler::hasType(Inst i) const
-{
-    using namespace Brig;
-    assert(i);
-
-    switch(i.opcode())
-    {
-    case BRIG_OPCODE_CBR:
-    case BRIG_OPCODE_BRN:
-    case BRIG_OPCODE_CALL:
-    case BRIG_OPCODE_RET:
-    case BRIG_OPCODE_BARRIER:
-    case BRIG_OPCODE_INITFBAR:
-    case BRIG_OPCODE_JOINFBAR:
-    case BRIG_OPCODE_WAITFBAR:
-    case BRIG_OPCODE_ARRIVEFBAR:
-    case BRIG_OPCODE_LEAVEFBAR:
-    case BRIG_OPCODE_RELEASEFBAR:
-    case BRIG_OPCODE_SYNC:
-    case BRIG_OPCODE_NOP:
-        return false;
-
-    case BRIG_OPCODE_GCNMADS:
-    case BRIG_OPCODE_GCNMADU:
-    case BRIG_OPCODE_GCNMQSAD4:
-    case BRIG_OPCODE_GCNREGIONALLOC:
-        return false;
-
-    default:
-        return true;
-    }
-}
-
 bool Disassembler::isCall(Inst i) const
 {
     return i.opcode() == Brig::BRIG_OPCODE_CALL;
@@ -1543,11 +1564,6 @@ bool Disassembler::isGcnInst(Inst i) const
     default:
         return false;
     }
-}
-
-unsigned Disassembler::getMachineType() const
-{
-    return (machineModel == Brig::BRIG_MACHINE_SMALL)? Brig::BRIG_TYPE_B32 : Brig::BRIG_TYPE_B64;
 }
 
 } // namespace HSAIL_ASM

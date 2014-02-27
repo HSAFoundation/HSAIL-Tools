@@ -90,7 +90,7 @@ public:
     };
 
     Disassembler(BrigContainer& c, EFloatDisassemblyMode fmode=FloatDisassemblyModeRawBits)
-        : brig(c), err(0), stream(0), indent(0), hasErr(false), machineModel(Brig::BRIG_MACHINE_LARGE)
+        : brig(c), err(0), stream(0), indent(0), hasErr(false), machineModel(Brig::BRIG_MACHINE_UNDEF)
         , m_options(fmode)
     {}
 
@@ -99,9 +99,9 @@ public:
     int run(std::ostream &s) const;       // Disassemble all BRIG container to stream
     int run(const char* path) const;      // Disassemble all BRIG container to file
 
-    std::string get(Directive d) const;   // Disassemble one directive as string
-    std::string get(Inst i) const;        // Disassemble one instruction as string
-    std::string get(Operand i) const;     // Disassemble one operand as string
+    std::string get(Directive d, unsigned model);   // Disassemble one directive as string
+    std::string get(Inst i, unsigned model);        // Disassemble one instruction as string
+    std::string get(Operand i, unsigned model);     // Disassemble one operand as string
 
     void log(std::ostream &s);                 // Request errors logging into stream s
     bool hasError() const { return hasErr; }   // Return error flag
@@ -120,7 +120,6 @@ private:
     void printDirective(DirectiveLabel d) const;
     void printDirective(DirectiveComment d) const;
     void printDirective(DirectiveControl d) const;
-    void printDirective(DirectiveFile d) const;
     void printDirective(DirectiveLoc d) const;
     void printDirective(DirectiveExtension d) const;
     void printDirective(DirectivePragma d) const;
@@ -182,9 +181,12 @@ private:
     void printInst(InstImage i) const;
     void printInst(InstLane i) const;
     void printInst(InstAtomicImage i) const;
-    void printInst(InstBar i) const;
+    void printInst(InstMemFence i) const;
+    void printInst(InstQueue i) const;
     void printInst(InstSeg i) const;
+    void printInst(InstSegCvt i) const;
     void printInst(InstSourceType i) const;
+    void printInst(InstSignal i) const;
     void printNop() const;
 
     void printCallArgs(Inst i) const;
@@ -229,6 +231,7 @@ private:
     const char* seg2str(Brig::BrigSegment8_t  segment) const;
     const char* cmpOp2str(unsigned opcode) const;
     const char* atomicOperation2str(unsigned op) const;
+    const char* signalOperation2str(unsigned op) const;
     const char* imageGeometry2str(unsigned g) const;
     const char* imgMod2str(unsigned im) const;
     const char* machineModel2str(unsigned machineModel) const;
@@ -236,7 +239,7 @@ private:
     const char* ftz2str(unsigned ftz) const;
     const char* round2str(unsigned val) const;
     const char* memoryOrder2str(unsigned memOrder) const;
-    const char* memoryFence2str(unsigned flags) const;
+    const char* memoryFenceSegments2str(unsigned flags) const;
     const char* memoryScope2str(unsigned flags) const;
     const char* class2str(unsigned val) const;
     const char* v2str(Operand opr) const;
@@ -246,11 +249,13 @@ private:
     const char* coord2str(bool inUnnormalized) const;
     const char* boundaryMode2str(uint8_t val) const;
     const char* width2str(unsigned val) const;
-    const char* aligned2str(unsigned val) const;
+    const char* const2str(bool isConst) const;
+    const char* nonull2str(bool isNoNull) const;
 
     std::string attr2str_(Brig::BrigLinkage8_t attr) const;
     const char* const2str_(bool isConst) const;
-    std::string      align2str_(unsigned align) const;
+    std::string      align2str_(unsigned val, unsigned type) const;
+    std::string      align2str(unsigned val) const;
     std::string      equiv2str(unsigned val) const;
     std::string      modifiers2str(AluModifier mod) const;
 
@@ -258,8 +263,6 @@ private:
     bool isCall(Inst i) const;
     bool isBranch(Inst i) const;
     bool isGcnInst(Inst i) const;
-
-    unsigned getMachineType() const;
 
     //-------------------------------------------------------------------------
     // Formatting
@@ -349,7 +352,7 @@ private:
         if (d) printBrig(d);
         return os.str();
     }
-    void printBrig(Directive d) const { printDirective(d); }
+    void printBrig(Directive d) const { printDirectiveFmt(d); }
     void printBrig(Inst i)      const { printInst(i); }
     void printBrig(Operand opr) const { printOperand(opr); }
 

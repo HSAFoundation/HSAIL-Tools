@@ -8,16 +8,19 @@
 
 #include "HSAILTestGenEmulator.h"
 #include "HSAILTestGenUtilities.h"
-#include "generated/HSAILBrigUtilities_gen.hpp"
 
 #include <llvm/ADT/APInt.h>
 #include <type_traits>
 #include <math.h>
+#include <limits>
+
+using std::numeric_limits;
 
 using Brig::BRIG_TYPE_B1;
 using Brig::BRIG_TYPE_B8;
 using Brig::BRIG_TYPE_B32;
 using Brig::BRIG_TYPE_B64;
+using Brig::BRIG_TYPE_B128;
 using Brig::BRIG_TYPE_S8;
 using Brig::BRIG_TYPE_S16;
 using Brig::BRIG_TYPE_S32;
@@ -29,12 +32,13 @@ using Brig::BRIG_TYPE_U64;
 using Brig::BRIG_TYPE_F16;
 using Brig::BRIG_TYPE_F32;
 using Brig::BRIG_TYPE_F64;
+using Brig::BRIG_TYPE_U8X4;
+using Brig::BRIG_TYPE_U16X2;
 
 using HSAIL_ASM::InstBasic;
 using HSAIL_ASM::InstSourceType;
 using HSAIL_ASM::InstAtomic;
 using HSAIL_ASM::InstAtomicImage;
-using HSAIL_ASM::InstBar;
 using HSAIL_ASM::InstCmp;
 using HSAIL_ASM::InstCvt;
 using HSAIL_ASM::InstImage;
@@ -44,9 +48,17 @@ using HSAIL_ASM::InstBr;
 
 using HSAIL_ASM::isBitType;
 using HSAIL_ASM::isFloatType;
+using HSAIL_ASM::isPackedType;
 using HSAIL_ASM::isSignedType;
+using HSAIL_ASM::isUnsignedType;
 using HSAIL_ASM::isIntType;
 using HSAIL_ASM::getTypeSize;
+using HSAIL_ASM::getPacking;
+using HSAIL_ASM::isSatPacking;
+using HSAIL_ASM::getPackedDstDim;
+using HSAIL_ASM::getPackedTypeDim;
+using HSAIL_ASM::packedType2elementType;
+using HSAIL_ASM::packedType2baseType;
 
 //=================================================================================================
 //=================================================================================================
@@ -144,28 +156,35 @@ namespace TESTGEN {
 //=============================================================================
 // Properties of integer types
 
-struct IntBits
+template<typename T> 
+struct NumProps
 {
-    u64_t    allBits;
-    unsigned width;
-    unsigned shiftMask;
+    static unsigned width()     { return sizeof(T) * 8; }
+    static unsigned shiftMask() { return width() - 1; }
 };
 
-static const IntBits intBits32 = 
-{
-    0x0ffffffffULL, // allBits
-    32,             // width
-    31              // shiftMask
-};
+template<typename T> static bool isSigned(T val)   { return ((T)-1 < (T)0); }
 
-static const IntBits intBits64 = 
-{
-    0xffffffffffffffffULL,  // allBits
-    64,                     // width
-    63                      // shiftMask
-};
+// Compute number of bits required to represent 'range' values
+u32_t range2width(unsigned range) // log2
+{ 
+    switch(range)
+    {
+    case 2:     return 1; 
+    case 4:     return 2; 
+    case 8:     return 3; 
+    case 16:    return 4; 
+    case 32:    return 5; 
+    case 64:    return 6;
+    default:
+        assert(false);
+        return 0;
+    }
+}
 
-template<typename T> static bool isSigned(T val) { return ((T)-1 < (T)0); }
+u64_t getSignMask(unsigned width)  { return 1ULL << (width - 1); }
+u64_t getWidthMask(unsigned width) { return ((width == 64)? 0 : (1ULL << width)) - 1ULL; }
+u64_t getRangeMask(unsigned range) { return getWidthMask(range2width(range)); }
 
 //=============================================================================
 //=============================================================================
@@ -205,14 +224,14 @@ static bool checkTypeBoundaries(unsigned type, T val)
 {
     switch (type)
     {
-    case BRIG_TYPE_S8:   return (-S8IB  - 1 <= val) && (val <= S8IB);  break;
-    case BRIG_TYPE_S16:  return (-S16IB - 1 <= val) && (val <= S16IB); break;
-    case BRIG_TYPE_S32:  return (-S32IB - 1 <= val) && (val <= S32IB); break;
-    case BRIG_TYPE_S64:  return (-S64IB - 1 <= val) && (val <= S64IB); break;
-    case BRIG_TYPE_U8:   return (0          <= val) && (val <= U8IB);  break;
-    case BRIG_TYPE_U16:  return (0          <= val) && (val <= U16IB); break;
-    case BRIG_TYPE_U32:  return (0          <= val) && (val <= U32IB); break;
-    case BRIG_TYPE_U64:  return (0          <= val) && (val <= U64IB); break;
+    case BRIG_TYPE_S8:   return (-S8IB  - 1 <= val) && (val <= S8IB);
+    case BRIG_TYPE_S16:  return (-S16IB - 1 <= val) && (val <= S16IB);
+    case BRIG_TYPE_S32:  return (-S32IB - 1 <= val) && (val <= S32IB);
+    case BRIG_TYPE_S64:  return (-S64IB - 1 <= val) && (val <= S64IB);
+    case BRIG_TYPE_U8:   return (0          <= val) && (val <= U8IB);
+    case BRIG_TYPE_U16:  return (0          <= val) && (val <= U16IB);
+    case BRIG_TYPE_U32:  return (0          <= val) && (val <= U32IB);
+    case BRIG_TYPE_U64:  return (0          <= val) && (val <= U64IB);
 
     default: 
         assert(false);
@@ -409,6 +428,30 @@ static Val emulateBinOpSU_U32(unsigned type, Val arg1, Val arg2, T op)
     }
 }
 
+template<class T>
+static Val emulateBinOpSat(unsigned elementType, Val arg1, Val arg2, T op)
+{
+    assert(arg1.getType() == elementType);
+    assert(arg2.getType() == elementType);
+
+    switch (elementType)
+    {
+    case BRIG_TYPE_S8:  return op(elementType, arg1.s8(), arg2.s8());
+    case BRIG_TYPE_U8:  return op(elementType, arg1.u8(), arg2.u8());
+
+    case BRIG_TYPE_S16: return op(elementType, arg1.s16(), arg2.s16());
+    case BRIG_TYPE_U16: return op(elementType, arg1.u16(), arg2.u16());
+
+    case BRIG_TYPE_S32: return op(elementType, arg1.s32(), arg2.s32());
+    case BRIG_TYPE_U32: return op(elementType, arg1.u32(), arg2.u32());
+
+    case BRIG_TYPE_S64: return op(elementType, arg1.s64(), arg2.s64());
+    case BRIG_TYPE_U64: return op(elementType, arg1.u64(), arg2.u64());
+
+    default: return emulationFailed();
+    }
+}
+
 //=============================================================================
 //=============================================================================
 //=============================================================================
@@ -521,20 +564,27 @@ static Val emulateQrnOpSU_U32_U32(unsigned type, Val arg1, Val arg2, Val arg3, V
 //=============================================================================
 // Functors Emulating HSAIL Instructions
 
+template<typename T> T undef_div_rem(T val1, T val2) // Identify special cases for integer div/rem
+{ 
+    if (!Val(val1).isInt()) return false;
+    if (val2 == (T)0) return true;
+    return Val(val1).isSignedInt() && val1 == numeric_limits<T>::min() && val2 == (T)-1;
+}
+
 struct op_abs    { template<typename T> T operator()(T val)                  { return abs(val); }};
 struct op_neg    { template<typename T> T operator()(T val)                  { return -val; }};
                  
 struct op_not    { template<typename T> T operator()(T val)                  { return static_cast<T>(val ^ 0xffffffffffffffffULL); }};
                  
-struct op_add    { template<typename T> T operator()(T val1, T val2)         { return val1 + val2; }};
-struct op_sub    { template<typename T> T operator()(T val1, T val2)         { return val1 - val2; }};
-struct op_mul    { template<typename T> T operator()(T val1, T val2)         { return val1 * val2; }};
-struct op_div    { template<typename T> T operator()(T val1, T val2)         { return val1 / val2; }};
-struct op_rem    { template<typename T> T operator()(T val1, T val2)         { return val1 % val2; }};
-struct op_max    { template<typename T> T operator()(T val1, T val2)         { return Val(val1).isNan()? val2 : Val(val2).isNan()? val1 : std::max(val1, val2); }};
-struct op_min    { template<typename T> T operator()(T val1, T val2)         { return Val(val1).isNan()? val2 : Val(val2).isNan()? val1 : std::min(val1, val2); }};
-struct op_arg1   { template<typename T> T operator()(T val1, T val2)         { return val1; }};
-struct op_arg2   { template<typename T> T operator()(T val1, T val2)         { return val2; }};
+struct op_add    { template<typename T> T   operator()(T val1, T val2)       { return val1 + val2; }};
+struct op_sub    { template<typename T> T   operator()(T val1, T val2)       { return val1 - val2; }};
+struct op_mul    { template<typename T> T   operator()(T val1, T val2)       { return val1 * val2; }};
+struct op_div    { template<typename T> Val operator()(T val1, T val2)       { return undef_div_rem(val1, val2)? undefValue() : Val(val1 / val2); }};
+struct op_rem    { template<typename T> Val operator()(T val1, T val2)       { return undef_div_rem(val1, val2)? ((val2 == (T)0)? undefValue() : Val((T)0)) : Val(val1 % val2); }};
+struct op_max    { template<typename T> T   operator()(T val1, T val2)       { return Val(val1).isNan()? val2 : Val(val2).isNan()? val1 : std::max(val1, val2); }};
+struct op_min    { template<typename T> T   operator()(T val1, T val2)       { return Val(val1).isNan()? val2 : Val(val2).isNan()? val1 : std::min(val1, val2); }};
+struct op_arg1   { template<typename T> T   operator()(T val1, T val2)       { return val1; }};
+struct op_arg2   { template<typename T> T   operator()(T val1, T val2)       { return val2; }};
 
 struct op_and    { template<typename T> T operator()(T val1, T val2)         { return val1 & val2; }};
 struct op_or     { template<typename T> T operator()(T val1, T val2)         { return val1 | val2; }};
@@ -554,8 +604,8 @@ struct op_copysign { template<typename T> T operator()(T val1, T val2)       { r
 struct op_carry  { template<typename T> T operator()(T val1, T val2)         { assert(!isSigned(val1)); T res = val1 + val2; return res < val1; }};
 struct op_borrow { template<typename T> T operator()(T val1, T val2)         { assert(!isSigned(val1)); return val1 < val2; }};
 
-struct op_shl    { template<typename T> T   operator()(T val, unsigned shift){ return val << (shift & (sizeof(T) == 4? intBits32.shiftMask : intBits64.shiftMask)); }};
-struct op_shr    { template<typename T> T   operator()(T val, unsigned shift){ return val >> (shift & (sizeof(T) == 4? intBits32.shiftMask : intBits64.shiftMask)); }};
+struct op_shl    { template<typename T> T operator()(T val, unsigned shift){ return val << (shift & NumProps<T>::shiftMask()); }};
+struct op_shr    { template<typename T> T operator()(T val, unsigned shift){ return val >> (shift & NumProps<T>::shiftMask()); }};
 
 struct op_mad    { template<typename T> T operator()(T val1, T val2, T val3) { return val1 * val2 + val3; }};
 
@@ -573,23 +623,99 @@ struct op_i2f64  { template<typename T> f64_t operator()(T val)              { r
 //=============================================================================
 //=============================================================================
 //=============================================================================
+// Saturating versions of add, sub and mul (used for packed operands)
 
+struct op_add_sat    
+{ 
+    template<typename T> 
+    T operator()(unsigned type, T val1, T val2)
+    { 
+        assert(getTypeSize(type) == sizeof(T) * 8);
+
+        T res  = (T)(val1 + val2);
+        
+        int sat = 0;
+
+        if      (!isSigned(val1) && res < val1)                         sat =  1;
+        else if (isSigned(val1)  && val1 >= 0 && val2 >= 0 && res <  0) sat =  1;
+        else if (isSigned(val1)  && val1 <  0 && val2 <  0 && res >= 0) sat = -1;
+
+        if (sat != 0) res = (T)getIntBoundary(type, sat == -1);
+
+        return res;
+    }
+};
+
+struct op_sub_sat    
+{ 
+    template<typename T> 
+    T operator()(unsigned type, T val1, T val2)
+    { 
+        assert(getTypeSize(type) == sizeof(T) * 8);
+
+        T res  = (T)(val1 - val2);
+        
+        int sat = 0;
+
+        if      (!isSigned(val1) && res > val1)                         sat = -1;
+        else if (isSigned(val1)  && val1 >= 0 && val2 <  0 && res <  0) sat =  1;
+        else if (isSigned(val1)  && val1 <  0 && val2 >= 0 && res >= 0) sat = -1;
+
+        if (sat != 0) res = (T)getIntBoundary(type, sat == -1);
+
+        return res;
+    }
+};
+
+struct op_mul_sat
+{ 
+    template<typename T> 
+    T operator()(unsigned type, T val1, T val2)
+    { 
+        assert(getTypeSize(type) == sizeof(T) * 8);
+
+        T res = (T)(val1 * val2);
+        
+        int sat = 0;
+
+        if (isSigned(val1))
+        {
+            T min = (T)getSignMask(getTypeSize(type));
+            
+            if ((val1 < 0 && val2 == min) || // min negative value is a special case
+                (val1 != 0 && ((T)(res / val1) != val2)))
+            {
+                sat = ((val1 < 0) != (val2 < 0))? -1 : 1;
+            }
+        }
+        else // unsigned
+        {
+            if (val1 != 0 && (res / val1) != val2) sat = 1;
+        }
+
+        if (sat != 0) res = (T)getIntBoundary(type, sat == -1);
+
+        return res;
+    }
+};
+
+//=============================================================================
+//=============================================================================
+//=============================================================================
+
+template<typename DT> 
 struct op_bitmask 
 { 
-    unsigned dstType;
-    
-    op_bitmask(unsigned type) : dstType(type) {}
-
     template<typename T> 
     Val operator()(T val1, T val2) 
     { 
-        IntBits intBits = (getTypeSize(dstType) == 32)? intBits32 : intBits64;
-        u64_t offset    = val1 & intBits.shiftMask;
-        u64_t width     = val2 & intBits.shiftMask;
-        u64_t mask      = (1ULL << width) - 1;
+        u64_t offset = val1 & NumProps<DT>::shiftMask();
+        u64_t width  = val2 & NumProps<DT>::shiftMask();
+        u64_t mask   = (1ULL << width) - 1;
 
-        if (offset + width > intBits.width) return undefValue();
+        if (offset + width > NumProps<DT>::width()) return undefValue();
         
+        unsigned dstType = Val(DT(0)).getType();
         return Val(dstType, mask << offset);
     }
 };
@@ -601,14 +727,13 @@ struct op_bitextract
     template<typename T> 
     Val operator()(T val1, unsigned val2, unsigned val3) 
     { 
-        IntBits intBits = (sizeof(T) == 4)? intBits32 : intBits64;
-        u64_t offset    = val2 & intBits.shiftMask;
-        u64_t width     = val3 & intBits.shiftMask;
+        u64_t offset    = val2 & NumProps<T>::shiftMask();
+        u64_t width     = val3 & NumProps<T>::shiftMask();
         
         if (width == 0) return Val(static_cast<T>(0));
-        if (width + offset > intBits.width) return undefValue();
+        if (width + offset > NumProps<T>::width()) return undefValue();
 
-        u64_t shift = intBits.width - width;
+        u64_t shift = NumProps<T>::width() - width;
         return Val(static_cast<T>((val1 << (shift - offset)) >> shift));
     }
 };
@@ -618,12 +743,11 @@ struct op_bitinsert
     template<typename T> 
     Val operator()(T val1, T val2, unsigned val3, unsigned val4) 
     { 
-        IntBits intBits = (sizeof(T) == 4)? intBits32 : intBits64;
-        u64_t offset    = val3 & intBits.shiftMask;
-        u64_t width     = val4 & intBits.shiftMask;
+        u64_t offset    = val3 & NumProps<T>::shiftMask();
+        u64_t width     = val4 & NumProps<T>::shiftMask();
         u64_t mask      = (1ULL << width) - 1;
         
-        if (width + offset > intBits.width) return undefValue();
+        if (width + offset > NumProps<T>::width()) return undefValue();
 
         u64_t res = (val1 & ~(mask << offset)) | ((val2 & mask) << offset);
         return Val(static_cast<T>(res));
@@ -707,7 +831,7 @@ struct op_mulhi
         using namespace llvm; 
         using namespace APIntOps;
 
-        bool sgn = ((T)-1 < (T)0);
+        bool sgn = isSigned(val1);
         unsigned bits = sizeof(T) * 8;
         APInt a1(bits * 2, sgn ? (uint64_t)(int64_t)val1 : (uint64_t)val1, sgn);
         APInt a2(bits * 2, sgn ? (uint64_t)(int64_t)val2 : (uint64_t)val2, sgn);
@@ -720,21 +844,28 @@ struct op_mulhi
 //=============================================================================
 //=============================================================================
 
-struct op_fract  
-{ 
-    template<typename T> 
+struct op_fract
+{
+    template<typename T>
     Val operator()(T val)
-    { 
+    {
         if (Val(val).isNan()) return Val(val); // preserve NaN payload
         if (Val(val).isInf()) return Val(val).getQuietNan();
 
-        T unused; 
-        T one = 1;
+        T unused;
         T res = modf(val, &unused);
 
-        if (val > 0) return Val(res); 
-        if (val < 0 && (one + res) < one) return Val(one + res); 
-        return Val((T)0);
+        if (val > 0)       return Val(res);
+        if (res == (T)0)   return Val((T)0); // NB: res may be -0!
+        if ((1 + res) < 1) return Val(1 + res);
+
+        // Fractional part is so small that (1 + res) have to be rounded to 1.
+        // Return the largest representable number which is less than 1.0
+        if (sizeof(T) == 4) return Val(BRIG_TYPE_F32, 0x3F7FFFFFULL);
+        if (sizeof(T) == 8) return Val(BRIG_TYPE_F64, 0x3FEFFFFFFFFFFFFFULL);
+
+        assert(false);
+        return emulationFailed();
     }
 };
 
@@ -850,7 +981,7 @@ static Val emulate_popcount(unsigned stype, Val arg)
     assert(isBitType(stype));
 
     u32_t count = 0;
-    for (u64_t val = arg.conv2b64(); val > 0; val >>= 1)
+    for (u64_t val = arg.getAsB64(); val > 0; val >>= 1)
     {
         if ((val & 0x1) != 0) count++;
     }
@@ -862,7 +993,7 @@ static Val emulate_firstbit(unsigned stype, Val arg)
     assert(arg.getType() == stype);
 
     u64_t firstBit = 0x1ULL << (arg.getSize() - 1);
-    s64_t val = static_cast<s64_t>(arg.conv2b64());
+    s64_t val = arg.getAsS64(); // zero/sign-extend as necessary
 
     if (arg.isSignedInt() && val < 0) val = ~val;
     if (val == 0) return Val(BRIG_TYPE_U32, -1);
@@ -876,7 +1007,7 @@ static Val emulate_lastbit(unsigned stype, Val arg)
 {
     assert(arg.getType() == stype);
 
-    u64_t val = arg.conv2b64(false); // Disable sign-expansion
+    u64_t val = arg.getAsB64(); // Disable sign-extension
 
     if (val == 0) return Val(BRIG_TYPE_U32, -1);
     
@@ -900,11 +1031,25 @@ static Val emulate_combine(unsigned type, unsigned stype, Val arg)
         assert(arg.getDim() == 2);
         assert(stype == BRIG_TYPE_B32);
 
-        return Val(type, (arg[1].conv2b64() << 32) | arg[0].b32());
+        return Val(type, (arg[1].getAsB64() << 32) | arg[0].b32());
     } 
+    
+    assert(type == BRIG_TYPE_B128);
+
+    if (stype == BRIG_TYPE_B32)
+    {
+        assert(arg.getDim() == 4);
+
+        return Val(type, 
+                   b128((arg[1].getAsB64() << 32) | arg[0].b32(), 
+                        (arg[3].getAsB64() << 32) | arg[2].b32()));
+    }
     else 
     {
-        return unimplemented(); // required b128 support
+        assert(arg.getDim() == 2);
+        assert(stype == BRIG_TYPE_B64);
+
+        return Val(type, b128(arg[0].b64(), arg[1].b64()));
     }
 }
 
@@ -917,11 +1062,33 @@ static Val emulate_expand(unsigned type, unsigned stype, Val arg)
     {
         assert(type == BRIG_TYPE_B32);
 
-        return Val(2, Val(type, arg.conv2b32()), Val(type, arg.conv2b32hi()), Val(), Val());
+        return Val(2, 
+                   Val(type, arg.getAsB32(0)), 
+                   Val(type, arg.getAsB32(1)), 
+                   Val(), 
+                   Val());
     } 
     else 
     {
-        return unimplemented(); // required b128 support
+        assert(stype == BRIG_TYPE_B128);
+
+        if (type == BRIG_TYPE_B32)
+        {
+            return Val(4, 
+                       Val(type, arg.getAsB32(0)), 
+                       Val(type, arg.getAsB32(1)), 
+                       Val(type, arg.getAsB32(2)), 
+                       Val(type, arg.getAsB32(3)));
+        }
+        else
+        {
+            assert(type == BRIG_TYPE_B64);
+            return Val(2, 
+                       Val(type, arg.getAsB64(0)), 
+                       Val(type, arg.getAsB64(1)), 
+                       Val(), 
+                       Val());
+        }
     }
 }
 
@@ -981,7 +1148,8 @@ static Val emulateCmp(unsigned type, unsigned stype, AluMod aluMod, unsigned op,
     case BRIG_TYPE_F32: return Val(res? 1.0f : 0.0f);
     case BRIG_TYPE_F64: return Val(res? 1.0  : 0.0 );
 
-    default: return emulationFailed();
+    default: 
+        return emulationFailed();
     }
 }
 
@@ -1025,7 +1193,9 @@ static int f2i_round(Val val, unsigned rounding)
         if (val.isRegularNegative() && !val.isNatural()) round = -1;
         break;
 
-    default: return emulationFailed();
+    default: 
+        assert(false);
+        return 0;
     }
 
     return round;
@@ -1104,39 +1274,19 @@ static Val cvt_i2f(unsigned type, Val val, AluMod aluMod)
     return unimplemented(); // other fp rounding modes are not supported yet
 }
 
-static Val cvt_i2i(unsigned type, u64_t s)
-{
-    switch (type)
-    {
-    case BRIG_TYPE_U8:  s = s < 0 ? 0 : s & 0xffULL;           break;
-    case BRIG_TYPE_U16: s = s < 0 ? 0 : s & 0xffffULL;         break;
-    case BRIG_TYPE_U32: s = s < 0 ? 0 : s & intBits32.allBits; break;
-    case BRIG_TYPE_U64: s = s < 0 ? 0 : s;                     break;
-
-    case BRIG_TYPE_S8:  s = s & 0xffULL;           break;
-    case BRIG_TYPE_S16: s = s & 0xffffULL;         break;
-    case BRIG_TYPE_S32: s = s & intBits32.allBits; break;
-    case BRIG_TYPE_S64: break;
-
-    default: return emulationFailed();
-    }
-
-    return Val(type, s);
-}
-
 static Val cvt_i2x(unsigned type, unsigned stype, AluMod aluMod, Val arg)
 {
     assert(isIntType(stype));
 
     return isIntType(type)? 
-            cvt_i2i(type, arg.conv2b64()) : 
+            Val(type, arg.getAsS64()) : // zero/sign-extend as necessary
             cvt_i2f(type, arg, aluMod);
 }
 
 static Val cvt_x2b1(unsigned type, unsigned stype, AluMod aluMod, Val arg)
 {
     return isIntType(stype)? 
-            Val(type, arg.conv2b64() != 0) : 
+            Val(type, arg.getAsB64() != 0) : 
             Val(type, !arg.isZero());
 }
 
@@ -1149,7 +1299,7 @@ static Val emulateCvt(unsigned type, unsigned stype, AluMod aluMod, Val arg)
     if (stype == BRIG_TYPE_B1) // to avoid handling this type in other places
     {
         stype = BRIG_TYPE_U32;
-        arg = Val(stype, arg.conv2b64());
+        arg = Val(stype, arg.getAsB64());
     }
 
     if (type == stype)         return arg;
@@ -1216,13 +1366,232 @@ static Val emulateAluFlag(unsigned type, Val arg1, Val arg2, T op)
     {
         utype = (getTypeSize(type) == 32)? BRIG_TYPE_U32 : BRIG_TYPE_U64;
 
-        arg1 = Val(utype, arg1.conv2b64(false)); // copy bits w/o sign-extension
-        arg2 = Val(utype, arg2.conv2b64(false)); // copy bits w/o sign-extension
+        arg1 = Val(utype, arg1.getAsB64()); // copy bits w/o sign-extension
+        arg2 = Val(utype, arg2.getAsB64()); // copy bits w/o sign-extension
     }
 
     Val res = emulateBinOpSU(utype, arg1, arg2, op);  
 
-    return Val(type, res.conv2b64()); // Convert back to original type
+    // Convert back to original type
+    // NB: result is either 0 or 1, sign-extension is not necessary
+    return Val(type, res.getAsB64()); 
+}
+
+//=============================================================================
+//=============================================================================
+//=============================================================================
+// Emulation of Irregular Instructions operating with packed data
+
+static Val emulate_shuffle(unsigned type, Val arg1, Val arg2, Val arg3)
+{
+    assert(arg1.isPacked());
+    assert(arg1.getType() == type);
+    assert(arg2.getType() == type);
+    assert(isBitType(arg3.getType()) && arg3.getSize() == arg1.getSize());
+
+    Val dst(type, 0);
+
+    u32_t ctl   = arg3.getAsB32();          // value that controls shuffling
+    u32_t dim   = getPackedTypeDim(type);   // number of elements in packed data
+    u32_t width = range2width(dim);         // number of control bits per element
+    u64_t mask  = getWidthMask(width);      // mask for extracting control bits
+
+    for (unsigned i = 0; i < dim; ++i)
+    {
+        unsigned idx = (ctl & mask);
+        u64_t x = (i < dim / 2)? arg1.getElement(idx) : arg2.getElement(idx);
+        dst.setElement(i, x);
+        ctl >>= width;
+    }
+
+    return dst;
+}
+
+static Val emulate_unpackHalf(unsigned type, bool lowHalf, Val arg1, Val arg2)
+{
+    assert(arg1.isPacked());
+    assert(arg1.getType() == type);
+    assert(arg2.getType() == type);
+
+    Val dst(type, 0);
+
+    unsigned dim = getPackedTypeDim(type);
+    unsigned srcPos = lowHalf? 0 : (dim / 2);    
+
+    for (unsigned dstPos = 0; dstPos < dim; ++srcPos)
+    {
+        dst.setElement(dstPos++, arg1.getElement(srcPos));
+        dst.setElement(dstPos++, arg2.getElement(srcPos));
+    }
+
+    return dst;
+}
+
+static Val emulate_pack(unsigned type, unsigned stype, Val arg1, Val arg2, Val arg3)
+{
+    assert(isPackedType(type));
+    assert(!isPackedType(stype));
+    assert(arg1.getType() == type);
+    assert(arg2.getType() == stype);
+    assert(arg3.getType() == BRIG_TYPE_U32);
+
+    u32_t dim   = getPackedTypeDim(type);   // number of elements in packed data
+    u32_t width = range2width(dim);         // number of control bits per element
+    u64_t mask  = getWidthMask(width);      // mask for extracting control bits
+
+    Val dst = arg1;
+    dst.setElement(arg3.u32() & mask, arg2.getAsB64());
+    return dst;
+}
+
+static Val emulate_unpack(unsigned type, unsigned stype, Val arg1, Val arg2)
+{
+    assert(!isPackedType(type));
+    assert(isPackedType(stype));
+    assert(arg1.getType() == stype);
+    assert(arg2.getType() == BRIG_TYPE_U32);
+
+    u32_t dim   = getPackedTypeDim(stype);  // number of elements in packed data
+    u32_t width = range2width(dim);         // number of control bits per element
+    u64_t mask  = getWidthMask(width);      // mask for extracting control bits
+
+    // Extract specified element in native type
+    Val res(arg1.getElementType(), arg1.getElement(arg2.u32() & mask));
+
+    // The required type may be wider than extracted (for s/u).
+    // In this case sign-extend or zero-extend the value as required.
+    if (res.getType() != type)
+    {
+        assert(!res.isFloat());
+        assert(!isFloatType(type));
+
+        res = res.isSignedInt()? Val(type, res.getAsS64()) : Val(type, res.getAsB64());
+    }
+    
+    return res;
+}
+
+static Val emulate_lerp(unsigned type, Val arg1, Val arg2, Val arg3)
+{
+    assert(type == BRIG_TYPE_U8X4);
+    assert(arg1.getType() == type);
+    assert(arg2.getType() == type);
+    assert(arg3.getType() == type);
+
+    Val res(type, 0);
+
+    for (unsigned i = 0; i < 4; ++i)
+    {
+        res.setElement(i, (arg1.getElement(i) + arg2.getElement(i) + (arg3.getElement(i) & 0x1)) / 2);
+    }
+
+    return res;
+}
+
+static Val emulate_packcvt(unsigned type, unsigned stype, Val arg1, Val arg2, Val arg3, Val arg4)
+{
+    assert(type == BRIG_TYPE_U8X4);
+    assert(stype == BRIG_TYPE_F32);
+    assert(arg1.getType() == stype);
+    assert(arg2.getType() == stype);
+    assert(arg3.getType() == stype);
+    assert(arg4.getType() == stype);
+
+    Val x1 = emulateCvt(BRIG_TYPE_U8, stype, AluMod(AluMod::ROUNDING_NEARI_SAT), arg1);
+    Val x2 = emulateCvt(BRIG_TYPE_U8, stype, AluMod(AluMod::ROUNDING_NEARI_SAT), arg2);
+    Val x3 = emulateCvt(BRIG_TYPE_U8, stype, AluMod(AluMod::ROUNDING_NEARI_SAT), arg3);
+    Val x4 = emulateCvt(BRIG_TYPE_U8, stype, AluMod(AluMod::ROUNDING_NEARI_SAT), arg4);
+
+    if (x1.empty() || x2.empty() || x3.empty() || x4.empty()) return undefValue();
+
+    Val res(type, 0);
+    res.setElement(0, x1.u8());
+    res.setElement(1, x2.u8());
+    res.setElement(2, x3.u8());
+    res.setElement(3, x4.u8());
+
+    return res;
+}
+
+static Val emulate_unpackcvt(unsigned type, unsigned stype, Val arg1, Val arg2)
+{
+    assert(type == BRIG_TYPE_F32);
+    assert(stype == BRIG_TYPE_U8X4);
+    assert(arg1.getType() == stype);
+    assert(arg2.getType() == BRIG_TYPE_U32);
+
+    Val val(BRIG_TYPE_U8, arg1.getElement(arg2.u32() & 0x3));
+    return emulateCvt(type, BRIG_TYPE_U8, AluMod(AluMod::ROUNDING_NEAR), val);
+}
+
+static Val emulate_cmov(unsigned type, Val arg1, Val arg2, Val arg3)
+{
+    assert(arg1.isPacked());
+    assert(isUnsignedType(arg1.getElementType()));
+    assert(arg2.getType() == type);
+    assert(arg3.getType() == type);
+    assert(arg1.getSize() == arg2.getSize());
+    assert(arg1.getElementSize() == arg2.getElementSize());
+
+    Val dst = arg2;
+
+    u32_t dim = getPackedTypeDim(type);   // number of elements in packed data
+
+    for (unsigned i = 0; i < dim; ++i)
+    {
+        dst.setElement(i, arg1.getElement(i)? arg2.getElement(i) : arg3.getElement(i));
+    }
+
+    return dst;
+}
+
+static u64_t sad(u64_t a, u64_t b) { return a < b ? b - a : a - b; }
+
+static Val emulate_sad(unsigned type, unsigned stype, Val arg1, Val arg2, Val arg3)
+{
+    assert(type == BRIG_TYPE_U32);
+    assert(stype == BRIG_TYPE_U32 || stype == BRIG_TYPE_U16X2 || stype == BRIG_TYPE_U8X4);
+    assert(arg1.getType() == stype);
+    assert(arg2.getType() == stype);
+    assert(arg3.getType() == BRIG_TYPE_U32);
+
+    uint64_t res = arg3.u32();
+
+    if (stype == BRIG_TYPE_U32)
+    {
+        res += sad(arg1.u32(), arg2.u32());
+    }
+    else 
+    {
+        assert(isPackedType(stype));
+        u32_t dim = getPackedTypeDim(stype);
+        for (unsigned i = 0; i < dim; ++i)
+        {
+            res += sad(arg1.getElement(i), arg2.getElement(i));
+        }
+    }
+
+    return Val(type, res);
+}
+
+static Val emulate_sadhi(unsigned type, unsigned stype, Val arg1, Val arg2, Val arg3)
+{
+    assert(type == BRIG_TYPE_U16X2);
+    assert(stype == BRIG_TYPE_U8X4);
+    assert(arg1.getType() == stype);
+    assert(arg2.getType() == stype);
+    assert(arg3.getType() == BRIG_TYPE_U16X2);
+
+    uint64_t res = arg3.getElement(1);
+    u32_t dim = getPackedTypeDim(stype);
+    for (unsigned i = 0; i < dim; ++i)
+    {
+        res += sad(arg1.getElement(i), arg2.getElement(i));
+    }
+
+    Val dst = arg3;
+    dst.setElement(1, res);
+    return dst;
 }
 
 //=============================================================================
@@ -1230,7 +1599,7 @@ static Val emulateAluFlag(unsigned type, Val arg1, Val arg2, T op)
 //=============================================================================
 // Emulation of Instructions in Basic/Mod Formats
 
-static Val emulateMod(unsigned opcode, unsigned type, AluMod aluMod, unsigned packing, Val arg1, Val arg2, Val arg3, Val arg4)
+static Val emulateMod(unsigned opcode, unsigned type, AluMod aluMod, Val arg1, Val arg2, Val arg3 = Val(), Val arg4 = Val())
 {
     using namespace Brig;
 
@@ -1292,9 +1661,11 @@ static Val emulateMod(unsigned opcode, unsigned type, AluMod aluMod, unsigned pa
     case BRIG_OPCODE_FMA:       return emulateTrnOpSUF(type, arg1, arg2, arg3, op_mad());  // the same as mad but fp type
 
     case BRIG_OPCODE_MOV:       assert(arg1.getType() == type);         return arg1;
-    case BRIG_OPCODE_CMOV:      assert(arg1.getType() == BRIG_TYPE_B1); return emulateTrnOpB(type, Val(type, arg1.conv2b32()), arg2, arg3, op_cmov());
+    case BRIG_OPCODE_CMOV:      assert(arg1.getType() == BRIG_TYPE_B1); return emulateTrnOpB(type, Val(type, arg1.getAsB32()), arg2, arg3, op_cmov());
 
-    case BRIG_OPCODE_BITMASK:   return emulateBinOpB(arg1.getType(), arg1, arg2, op_bitmask(type));
+    case BRIG_OPCODE_BITMASK:   return (type == BRIG_TYPE_B32)?
+                                       emulateBinOpB(arg1.getType(), arg1, arg2, op_bitmask<b32_t>()) :
+                                       emulateBinOpB(arg1.getType(), arg1, arg2, op_bitmask<b64_t>());
     case BRIG_OPCODE_BITSELECT: return emulateTrnOpB(type, arg1, arg2, arg3, op_bitsel());
 
     case BRIG_OPCODE_BITREV:    return emulateUnrOpB(type, arg1, op_bitrev());
@@ -1384,18 +1755,18 @@ static bool isSupportedSegment(unsigned segment)
     }
 }
 
-static unsigned getRegSize(unsigned type)
-{
-    unsigned typeSize = getTypeSize(type);
-    return (typeSize == 1)? 1 : (typeSize <= 32)? 32 : 64;
-}
+///static unsigned getRegSize(unsigned type)
+///{
+///    unsigned typeSize = getTypeSize(type);
+///    return (typeSize == 1)? 1 : (typeSize <= 32)? 32 : 64;
+///}
+///
+///static bool isOperandExtended(unsigned type, Operand opr)
+///{
+///    return getRegSize(type) < getRegSize(getOperandType(opr));
+///}
 
-static bool isOperandExtended(unsigned type, Operand opr)
-{
-    return getRegSize(type) < getRegSize(getOperandType(opr));
-}
-
-void emulateFtz(Inst inst, Val& arg0, Val& arg1, Val& arg2, Val& arg3, Val& arg4)
+bool emulateFtz(Inst inst, Val& arg0, Val& arg1, Val& arg2, Val& arg3, Val& arg4)
 {
     bool ftz = false;
 
@@ -1411,7 +1782,216 @@ void emulateFtz(Inst inst, Val& arg0, Val& arg1, Val& arg2, Val& arg3, Val& arg4
         arg3 = arg3.ftz();
         arg4 = arg4.ftz();
     }
+
+    return ftz;
 }
+
+//=============================================================================
+//=============================================================================
+//=============================================================================
+// Helpers for instructions with packed operands
+
+// Identify regular operations with packed data.
+// Most of these operations may be reduced to non-packed operations.
+static bool isCommonPacked(Inst inst)
+{
+    using namespace Brig;
+
+    return (getPacking(inst) != BRIG_PACK_NONE) ||
+           (isPackedType(inst.type()) && 
+                (inst.opcode() == BRIG_OPCODE_SHL  || 
+                 inst.opcode() == BRIG_OPCODE_SHR));
+}
+
+// Identify special (irregular) operations with packed data
+// which cannot be reduced to non-packed operations
+static bool isSpecialPacked(Inst inst)
+{
+    using namespace Brig;
+
+    switch (inst.opcode())
+    {
+    case BRIG_OPCODE_SHUFFLE:   // Packed Data Operations
+    case BRIG_OPCODE_UNPACKHI:
+    case BRIG_OPCODE_UNPACKLO:
+    case BRIG_OPCODE_PACK:
+    case BRIG_OPCODE_UNPACK:
+        return true;
+    case BRIG_OPCODE_CMOV:
+        return isPackedType(inst.type());
+    case BRIG_OPCODE_PACKCVT:   // Multimedia Operations
+    case BRIG_OPCODE_UNPACKCVT:
+    case BRIG_OPCODE_LERP:
+    case BRIG_OPCODE_SAD:
+    case BRIG_OPCODE_SADHI:
+        return true;
+    default:
+        return false;
+    }
+}
+
+//=============================================================================
+//=============================================================================
+//=============================================================================
+// Emulation of packed operations
+
+// MulHi for packed types must be handled separately because there are 2 cases
+// depending on element type:
+// - subword types: use 'mul' and extract result from high bits of the product;
+// - 32/64 bit types: use regular 'mulhi'
+static Val emulateMulHiPacked(unsigned type, unsigned baseType, Val arg1, Val arg2)
+{
+    assert(isPackedType(type));
+    assert(arg1.getType() == baseType);
+    assert(arg2.getType() == baseType);
+
+    using namespace Brig;
+
+    unsigned elementType = packedType2elementType(type);
+    unsigned opcode = (getTypeSize(elementType) < 32)? BRIG_OPCODE_MUL : BRIG_OPCODE_MULHI;
+
+    Val res = emulateMod(opcode, baseType, AluMod(), arg1, arg2);
+
+    if (opcode == BRIG_OPCODE_MUL)
+    {
+        res = Val(baseType, res.getAsB64() >> getTypeSize(elementType));
+    }
+
+    return res;
+}
+
+static Val emulateSat(unsigned opcode, unsigned type, Val arg1, Val arg2)
+{
+    assert(isPackedType(type));
+    assert(!isFloatType(packedType2elementType(type)));
+
+    using namespace Brig;
+
+    // Repack from base type to element type 
+    unsigned baseType    = packedType2baseType(type);
+    unsigned elementType = packedType2elementType(type);
+    arg1 = Val(elementType, arg1.getAsB64());
+    arg2 = Val(elementType, arg2.getAsB64());
+
+    Val res;
+
+    switch (opcode)
+    {
+    case BRIG_OPCODE_ADD: res = emulateBinOpSat(elementType, arg1, arg2, op_add_sat()); break;
+    case BRIG_OPCODE_SUB: res = emulateBinOpSat(elementType, arg1, arg2, op_sub_sat()); break;
+    case BRIG_OPCODE_MUL: res = emulateBinOpSat(elementType, arg1, arg2, op_mul_sat()); break;
+    default:              
+        return emulationFailed();
+    }
+
+    return res.isSignedInt()? Val(baseType, res.getAsS64()) : Val(baseType, res.getAsB64());
+}
+
+static Val emulateDstValPackedRegular(Inst inst, Val arg0, Val arg1, Val arg2, Val arg3, Val arg4)
+{
+    using namespace Brig;
+
+    assert(arg0.empty());
+    assert(arg3.empty());
+    assert(arg4.empty());
+
+    assert(!arg1.empty());
+    assert(!arg1.isVector());
+    assert(isPackedType(arg1.getType()));
+
+    unsigned type        = inst.type();
+    unsigned stype       = InstCmp(inst)? getSrcType(inst) : type;
+    unsigned packing     = getPacking(inst);
+    unsigned opcode      = inst.opcode();
+
+    if (opcode == BRIG_OPCODE_SHL || opcode == BRIG_OPCODE_SHR) packing = BRIG_PACK_PP;
+
+    unsigned baseType    = packedType2baseType(type);
+    unsigned baseSrcType = packedType2baseType(stype);
+    unsigned typeDim     = getPackedDstDim(stype, packing);
+
+    // NB: operations with 's' packing control must preserve all elements 
+    // except for the lowest one, but this cannot be emulated. 
+    // So we just erase everything before emulation.
+    Val dst(type, b128(0, 0));
+
+    for (unsigned idx = 0; idx < typeDim; ++idx)
+    {
+        Val res;
+
+        Val x1 = arg1.getPackedElement(idx, packing, 0);
+        Val x2 = arg2.getPackedElement(idx, packing, 1);
+
+        if (opcode == BRIG_OPCODE_SHL || opcode == BRIG_OPCODE_SHR) // Mask out insignificant shift bits for shl/shr
+        {
+            assert(x2.getType() == BRIG_TYPE_U32);
+            
+            unsigned elementSize = getTypeSize(type) / typeDim;
+            x2 = Val(BRIG_TYPE_U32, x2.u32() & getRangeMask(elementSize));
+        }
+        
+        if (opcode == BRIG_OPCODE_MULHI) res = emulateMulHiPacked(  type,        baseType,                                    x1, x2);
+        else if (isSatPacking(packing))  res = emulateSat(opcode,   type,                                                     x1, x2);
+        else if (InstBasic i = inst)     res = emulateMod(opcode,   baseType,    AluMod(),                                    x1, x2);
+        else if (InstMod   i = inst)     res = emulateMod(opcode,   baseType,    AluMod(i.modifier().allBits()),              x1, x2);
+        else if (InstCmp   i = inst)     res = emulateCmp(baseType, baseSrcType, AluMod(i.modifier().allBits()), i.compare(), x1, x2);
+        else                             { assert(false); }
+
+        if (res.empty())
+        {
+            assert(idx == 0);
+            return unimplemented();
+        }
+
+        dst.setPackedElement(idx, res);
+    }
+
+    return dst;
+}
+
+static Val emulateDstValPackedSpecial(Inst inst, Val arg0, Val arg1, Val arg2, Val arg3, Val arg4)
+{
+    using namespace Brig;
+
+    switch (inst.opcode())
+    {
+    // Packed Data Operations
+    case BRIG_OPCODE_SHUFFLE:   return emulate_shuffle   (inst.type(),                    arg1, arg2, arg3);
+    case BRIG_OPCODE_UNPACKHI:  return emulate_unpackHalf(inst.type(), false,             arg1, arg2);
+    case BRIG_OPCODE_UNPACKLO:  return emulate_unpackHalf(inst.type(), true,              arg1, arg2);
+    case BRIG_OPCODE_PACK:      return emulate_pack      (inst.type(), getSrcType(inst),  arg1, arg2, arg3);
+    case BRIG_OPCODE_UNPACK:    return emulate_unpack    (inst.type(), getSrcType(inst),  arg1, arg2);
+    case BRIG_OPCODE_CMOV:      return emulate_cmov      (inst.type(),                    arg1, arg2, arg3);
+    
+    // Multimedia Operations
+    case BRIG_OPCODE_PACKCVT:   return emulate_packcvt   (inst.type(), getSrcType(inst),  arg1, arg2, arg3, arg4);
+    case BRIG_OPCODE_UNPACKCVT: return emulate_unpackcvt (inst.type(), getSrcType(inst),  arg1, arg2);
+    case BRIG_OPCODE_LERP:      return emulate_lerp      (inst.type(),                    arg1, arg2, arg3);
+    case BRIG_OPCODE_SAD:       return emulate_sad       (inst.type(), getSrcType(inst),  arg1, arg2, arg3);
+    case BRIG_OPCODE_SADHI:     return emulate_sadhi     (inst.type(), getSrcType(inst),  arg1, arg2, arg3);
+        
+    default:
+        return emulationFailed();
+    }
+}
+
+//=============================================================================
+//=============================================================================
+//=============================================================================
+// Emulation of common (non-packed) operations
+
+static Val emulateDstValCommon(Inst inst, Val arg0, Val arg1, Val arg2, Val arg3, Val arg4)
+{
+    if      (InstBasic      i = inst)  return emulateMod(i.opcode(), i.type(), AluMod(),                       arg1, arg2, arg3, arg4);
+    else if (InstMod        i = inst)  return emulateMod(i.opcode(), i.type(), AluMod(i.modifier().allBits()), arg1, arg2, arg3, arg4);
+    else if (InstCmp        i = inst)  return emulateCmp(i.type(),   i.sourceType(), AluMod(i.modifier().allBits()), i.compare(), arg1, arg2);
+    else if (InstCvt        i = inst)  return emulateCvt(i.type(),   i.sourceType(), AluMod(i.modifier().allBits()), arg1);
+    else if (InstSourceType i = inst)  return emulateSourceType(i.opcode(), i.type(), i.sourceType(), arg1, arg2, arg3);
+    else if (InstAtomic     i = inst)  return emulateAtomicDst(inst.opcode(), arg1);
+    else if (InstMem        i = inst)  return emulateMemDst(i.segment(), i.opcode(), arg1);
+    else                               return emulationFailed();
+}
+
 //=============================================================================
 //=============================================================================
 //=============================================================================
@@ -1428,17 +2008,22 @@ bool testableInst(Inst inst)
     if (InstAtomic instAtomic = inst) 
     {
         if (!isSupportedSegment(instAtomic.segment())) return false;
+        if (instAtomic.equivClass() != 0) return false;
+        //if (instAtomic.memoryOrder() == ...) return false;
+        //if (instAtomic.memoryScope() == ...) return false;
     }
     else if (InstCvt instCvt = inst)
     {
-        if (isOperandExtended(instCvt.type(),       instCvt.operand(0))) return false; // Disable dst extension
-        if (isOperandExtended(instCvt.sourceType(), instCvt.operand(1))) return false; // Disable src extension
+        //if (isOperandExtended(instCvt.type(),       instCvt.operand(0))) return false; // Disable dst extension
+        //if (isOperandExtended(instCvt.sourceType(), instCvt.operand(1))) return false; // Disable src extension
     }
     else if (InstMem instMem = inst)
     {
         if (!isSupportedSegment(instMem.segment())) return false;
-        if (isOperandExtended(inst.type(), inst.operand(0))) return false; // Disable dst extension
+        //if (isOperandExtended(inst.type(), inst.operand(0))) return false; // Disable dst extension
         if (instMem.width() != BRIG_WIDTH_NONE && instMem.width() != BRIG_WIDTH_1) return false;
+        if (instMem.align() != BRIG_ALIGNMENT_1) return false; //F unaligned access is not supported yet
+        if (instMem.modifier().isConst()) return false;
         if (instMem.equivClass() != 0) return false;
     }
 
@@ -1452,18 +2037,24 @@ Val emulateDstVal(Inst inst, Val arg0, Val arg1, Val arg2, Val arg3, Val arg4)
 {
     Val res;
 
-    emulateFtz(inst, arg0, arg1, arg2, arg3, arg4);
+    bool ftz = emulateFtz(inst, arg0, arg1, arg2, arg3, arg4);
 
-    if      (InstBasic      i = inst)  res = emulateMod(i.opcode(), i.type(), AluMod(0), Brig::BRIG_PACK_NONE, arg1, arg2, arg3, arg4);
-    else if (InstMod        i = inst)  res = emulateMod(i.opcode(), i.type(), AluMod(i.modifier().allBits()), i.pack(), arg1, arg2, arg3, arg4);
-    else if (InstCmp        i = inst)  res = emulateCmp(i.type(),   i.sourceType(), AluMod(i.modifier().allBits()), i.compare(), arg1, arg2);
-    else if (InstCvt        i = inst)  res = emulateCvt(i.type(),   i.sourceType(), AluMod(i.modifier().allBits()), arg1);
-    else if (InstSourceType i = inst)  res = emulateSourceType(i.opcode(), i.type(), i.sourceType(), arg1, arg2, arg3);
-    else if (InstAtomic     i = inst)  res = emulateAtomicDst(inst.opcode(), arg1);
-    else if (InstMem        i = inst)  res = emulateMemDst(i.segment(), i.opcode(), arg1);
-    else                               res = emulationFailed();
+    if (isCommonPacked(inst))           // regular operations on packed data
+    {
+        res = emulateDstValPackedRegular(inst, arg0, arg1, arg2, arg3, arg4);
+    }
+    else if (isSpecialPacked(inst))     // irregular operations on packed data
+    {
+        res = emulateDstValPackedSpecial(inst, arg0, arg1, arg2, arg3, arg4);
+    }
+    else                                // operations with non-packed data types
+    {
+        res = emulateDstValCommon(inst, arg0, arg1, arg2, arg3, arg4);
+    }
 
-    return res.normalize();
+    if (ftz) res = res.ftz();
+
+    return res.normalize(); // Clear NaN payload
 }
 
 // Emulate execution of instruction 'inst' using provided input values.
@@ -1508,19 +2099,11 @@ double getPrecision(Inst inst)
     case BRIG_OPCODE_NRCP:
     case BRIG_OPCODE_NSQRT:
     case BRIG_OPCODE_NRSQRT:
-         if (inst.type() == BRIG_TYPE_F64) return 0.00000002;
-         break;
     case BRIG_OPCODE_NEXP2:
     case BRIG_OPCODE_NLOG2:
          if (inst.type() == BRIG_TYPE_F32) return 0.0000005;
+         if (inst.type() == BRIG_TYPE_F64) return 0.00000002;
          break;
-    }
-
-    switch(inst.type()) // Standard precision
-    {
-    case BRIG_TYPE_F16: assert(false);
-    case BRIG_TYPE_F32: return 0.0000001;
-    case BRIG_TYPE_F64: return 0.0000000000000005; 
     }
 
     return 0; // infinite precision

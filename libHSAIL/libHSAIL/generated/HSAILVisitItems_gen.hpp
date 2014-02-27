@@ -1,36 +1,36 @@
 // University of Illinois/NCSA
 // Open Source License
-// 
+//
 // Copyright (c) 2013, Advanced Micro Devices, Inc.
 // All rights reserved.
-// 
+//
 // Developed by:
-// 
+//
 //     HSA Team
-// 
+//
 //     Advanced Micro Devices, Inc
-// 
+//
 //     www.amd.com
-// 
+//
 // Permission is hereby granted, free of charge, to any person obtaining a copy of
 // this software and associated documentation files (the "Software"), to deal with
 // the Software without restriction, including without limitation the rights to
 // use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies
 // of the Software, and to permit persons to whom the Software is furnished to do
 // so, subject to the following conditions:
-// 
+//
 //     * Redistributions of source code must retain the above copyright notice,
 //       this list of conditions and the following disclaimers.
-// 
+//
 //     * Redistributions in binary form must reproduce the above copyright notice,
 //       this list of conditions and the following disclaimers in the
 //       documentation and/or other materials provided with the distribution.
-// 
+//
 //     * Neither the names of the LLVM Team, University of Illinois at
 //       Urbana-Champaign, nor the names of its contributors may be used to
 //       endorse or promote products derived from this Software without specific
 //       prior written permission.
-// 
+//
 // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 // IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
 // FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SHALL THE
@@ -52,7 +52,6 @@ RetType dispatchByItemKind_gen(Directive item,Visitor& vis) {
 	case BRIG_DIRECTIVE_CONTROL: return vis(DirectiveControl(item));
 	case BRIG_DIRECTIVE_EXTENSION: return vis(DirectiveExtension(item));
 	case BRIG_DIRECTIVE_FBARRIER: return vis(DirectiveFbarrier(item));
-	case BRIG_DIRECTIVE_FILE: return vis(DirectiveFile(item));
 	case BRIG_DIRECTIVE_FUNCTION: return vis(DirectiveFunction(item));
 	case BRIG_DIRECTIVE_IMAGE_INIT: return vis(DirectiveImageInit(item));
 	case BRIG_DIRECTIVE_KERNEL: return vis(DirectiveKernel(item));
@@ -82,7 +81,6 @@ RetType dispatchByItemKind_gen(DirectiveCode item,Visitor& vis) {
 	case BRIG_DIRECTIVE_CONTROL: return vis(DirectiveControl(item));
 	case BRIG_DIRECTIVE_EXTENSION: return vis(DirectiveExtension(item));
 	case BRIG_DIRECTIVE_FBARRIER: return vis(DirectiveFbarrier(item));
-	case BRIG_DIRECTIVE_FILE: return vis(DirectiveFile(item));
 	case BRIG_DIRECTIVE_FUNCTION: return vis(DirectiveFunction(item));
 	case BRIG_DIRECTIVE_IMAGE_INIT: return vis(DirectiveImageInit(item));
 	case BRIG_DIRECTIVE_KERNEL: return vis(DirectiveKernel(item));
@@ -130,7 +128,6 @@ RetType dispatchByItemKind_gen(Inst item,Visitor& vis) {
 	case BRIG_INST_ADDR: return vis(InstAddr(item));
 	case BRIG_INST_ATOMIC: return vis(InstAtomic(item));
 	case BRIG_INST_ATOMIC_IMAGE: return vis(InstAtomicImage(item));
-	case BRIG_INST_BAR: return vis(InstBar(item));
 	case BRIG_INST_BASIC: return vis(InstBasic(item));
 	case BRIG_INST_BR: return vis(InstBr(item));
 	case BRIG_INST_CMP: return vis(InstCmp(item));
@@ -138,8 +135,12 @@ RetType dispatchByItemKind_gen(Inst item,Visitor& vis) {
 	case BRIG_INST_IMAGE: return vis(InstImage(item));
 	case BRIG_INST_LANE: return vis(InstLane(item));
 	case BRIG_INST_MEM: return vis(InstMem(item));
+	case BRIG_INST_MEM_FENCE: return vis(InstMemFence(item));
 	case BRIG_INST_MOD: return vis(InstMod(item));
+	case BRIG_INST_QUEUE: return vis(InstQueue(item));
 	case BRIG_INST_SEG: return vis(InstSeg(item));
+	case BRIG_INST_SEG_CVT: return vis(InstSegCvt(item));
+	case BRIG_INST_SIGNAL: return vis(InstSignal(item));
 	case BRIG_INST_SOURCE_TYPE: return vis(InstSourceType(item));
 	default: assert(false); break;
 	}
@@ -280,18 +281,13 @@ template <typename Visitor> void enumerateFields_gen(DirectiveFbarrier obj,  Vis
   vis(obj.name(),"name");
 }
 
-template <typename Visitor> void enumerateFields_gen(DirectiveFile obj,  Visitor & vis) {
-  vis(obj.code(),"code");
-  vis(obj.fileid(),"fileid");
-  vis(obj.filename(),"filename");
-}
-
 template <typename Visitor> void enumerateFields_gen(DirectiveImageInit obj,  Visitor & vis) {
   vis(obj.code(),"code");
   vis(obj.width(),"width");
   vis(obj.height(),"height");
   vis(obj.depth(),"depth");
   vis(obj.array(),"array");
+  vis(obj.geometry(),"geometry");
   vis(obj.order(),"order");
   vis(obj.format(),"format");
 }
@@ -316,7 +312,7 @@ template <typename Visitor> void enumerateFields_gen(DirectiveLabelTargets obj, 
 
 template <typename Visitor> void enumerateFields_gen(DirectiveLoc obj,  Visitor & vis) {
   vis(obj.code(),"code");
-  vis(obj.fileid(),"fileid");
+  vis(obj.filename(),"filename");
   vis(obj.line(),"line");
   vis(obj.column(),"column");
 }
@@ -392,6 +388,7 @@ template <typename Visitor> void enumerateFields_gen(InstAtomic obj,  Visitor & 
   vis(obj.memoryOrder(),"memoryOrder");
   vis(obj.memoryScope(),"memoryScope");
   vis(obj.atomicOperation(),"atomicOperation");
+  vis(obj.equivClass(),"equivClass");
 }
 
 template <typename Visitor> void enumerateFields_gen(InstAtomicImage obj,  Visitor & vis) {
@@ -404,18 +401,7 @@ template <typename Visitor> void enumerateFields_gen(InstAtomicImage obj,  Visit
   vis(obj.coordType(),"coordType");
   vis(obj.geometry(),"geometry");
   vis(obj.atomicOperation(),"atomicOperation");
-}
-
-template <typename Visitor> void enumerateFields_gen(InstBar obj,  Visitor & vis) {
-  vis(obj.opcode(),"opcode");
-  vis(obj.type(),"type");
-  for (unsigned i=0;i<5;i++) {
-    vis(obj.operand(i),"operands", i);
-  }
-  vis(obj.width(),"width");
-  vis(obj.memoryOrder(),"memoryOrder");
-  vis(obj.memoryScope(),"memoryScope");
-  vis(obj.memoryFence(),"memoryFence");
+  vis(obj.equivClass(),"equivClass");
 }
 
 template <typename Visitor> void enumerateFields_gen(InstBasic obj,  Visitor & vis) {
@@ -466,6 +452,7 @@ template <typename Visitor> void enumerateFields_gen(InstImage obj,  Visitor & v
   vis(obj.imageType(),"imageType");
   vis(obj.coordType(),"coordType");
   vis(obj.geometry(),"geometry");
+  vis(obj.equivClass(),"equivClass");
 }
 
 template <typename Visitor> void enumerateFields_gen(InstLane obj,  Visitor & vis) {
@@ -484,10 +471,22 @@ template <typename Visitor> void enumerateFields_gen(InstMem obj,  Visitor & vis
   for (unsigned i=0;i<5;i++) {
     vis(obj.operand(i),"operands", i);
   }
-  vis(obj.width(),"width");
   vis(obj.segment(),"segment");
-  enumerateFields(obj.modifier(), vis);
+  vis(obj.align(),"align");
   vis(obj.equivClass(),"equivClass");
+  vis(obj.width(),"width");
+  enumerateFields(obj.modifier(), vis);
+}
+
+template <typename Visitor> void enumerateFields_gen(InstMemFence obj,  Visitor & vis) {
+  vis(obj.opcode(),"opcode");
+  vis(obj.type(),"type");
+  for (unsigned i=0;i<5;i++) {
+    vis(obj.operand(i),"operands", i);
+  }
+  vis(obj.segments(),"segments");
+  vis(obj.memoryOrder(),"memoryOrder");
+  vis(obj.memoryScope(),"memoryScope");
 }
 
 template <typename Visitor> void enumerateFields_gen(InstMod obj,  Visitor & vis) {
@@ -500,14 +499,45 @@ template <typename Visitor> void enumerateFields_gen(InstMod obj,  Visitor & vis
   vis(obj.pack(),"pack");
 }
 
+template <typename Visitor> void enumerateFields_gen(InstQueue obj,  Visitor & vis) {
+  vis(obj.opcode(),"opcode");
+  vis(obj.type(),"type");
+  for (unsigned i=0;i<5;i++) {
+    vis(obj.operands(i),"operands", i);
+  }
+  vis(obj.segment(),"segment");
+  vis(obj.memoryOrder(),"memoryOrder");
+}
+
 template <typename Visitor> void enumerateFields_gen(InstSeg obj,  Visitor & vis) {
   vis(obj.opcode(),"opcode");
   vis(obj.type(),"type");
   for (unsigned i=0;i<5;i++) {
     vis(obj.operand(i),"operands", i);
   }
+  vis(obj.segment(),"segment");
+}
+
+template <typename Visitor> void enumerateFields_gen(InstSegCvt obj,  Visitor & vis) {
+  vis(obj.opcode(),"opcode");
+  vis(obj.type(),"type");
+  for (unsigned i=0;i<5;i++) {
+    vis(obj.operands(i),"operands", i);
+  }
   vis(obj.sourceType(),"sourceType");
   vis(obj.segment(),"segment");
+  enumerateFields(obj.modifier(), vis);
+}
+
+template <typename Visitor> void enumerateFields_gen(InstSignal obj,  Visitor & vis) {
+  vis(obj.opcode(),"opcode");
+  vis(obj.type(),"type");
+  for (unsigned i=0;i<5;i++) {
+    vis(obj.operand(i),"operands", i);
+  }
+  vis(obj.signalType(),"signalType");
+  vis(obj.memoryOrder(),"memoryOrder");
+  vis(obj.signalOperation(),"signalOperation");
 }
 
 template <typename Visitor> void enumerateFields_gen(InstSourceType obj,  Visitor & vis) {
@@ -524,7 +554,7 @@ template <typename Visitor> void enumerateFields_gen(InstNone obj,  Visitor & vi
 
 template <typename Visitor> void enumerateFields_gen(MemoryModifier obj,  Visitor & vis) {
   vis(obj.allBits(),"allBits");
-  vis(obj.aligned(),"aligned");
+  vis(obj.isConst(),"isConst");
 }
 
 template <typename Visitor> void enumerateFields_gen(OperandAddress obj,  Visitor & vis) {
@@ -533,11 +563,9 @@ template <typename Visitor> void enumerateFields_gen(OperandAddress obj,  Visito
   vis(obj.offsetLo(),"offsetLo");
   vis(obj.offset(),"offset");
   vis(obj.offsetHi(),"offsetHi");
-  vis(obj.type(),"type");
 }
 
 template <typename Visitor> void enumerateFields_gen(OperandImmed obj,  Visitor & vis) {
-  vis(obj.type(),"type");
   vis(obj.byteCount(),"byteCount");
 }
 
@@ -577,24 +605,26 @@ template <typename Visitor> void enumerateFields_gen(OperandSignatureRef obj,  V
 
 template <typename Visitor> void enumerateFields_gen(OperandReg obj,  Visitor & vis) {
   vis(obj.reg(),"reg");
-  vis(obj.type(),"type");
 }
 
 template <typename Visitor> void enumerateFields_gen(OperandRegVector obj,  Visitor & vis) {
-  vis(obj.type(),"type");
   vis(obj.regCount(),"regCount");
   vis(obj.elementCount(),"elementCount");
   vis(obj.regs(),"regs");
 }
 
 template <typename Visitor> void enumerateFields_gen(OperandWavesize obj,  Visitor & vis) {
-  vis(obj.type(),"type");
 }
 
 template <typename Visitor> void enumerateFields_gen(SamplerModifier obj,  Visitor & vis) {
   vis(obj.allBits(),"allBits");
   vis(obj.filter(),"filter");
   vis(obj.isUnnormalized(),"isUnnormalized");
+}
+
+template <typename Visitor> void enumerateFields_gen(SegCvtModifier obj,  Visitor & vis) {
+  vis(obj.allBits(),"allBits");
+  vis(obj.isNoNull(),"isNoNull");
 }
 
 template <typename Visitor> void enumerateFields_gen(SymbolModifier obj,  Visitor & vis) {

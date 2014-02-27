@@ -58,6 +58,12 @@ private: // Symbols used for testing
     DirectiveVariable sym_global_samp; 
     DirectiveVariable sym_readonly_samp;
 
+    DirectiveVariable sym_global_sig32; 
+    DirectiveVariable sym_readonly_sig32;
+
+    DirectiveVariable sym_global_sig64; 
+    DirectiveVariable sym_readonly_sig64;
+
     DirectiveFbarrier sym_fbarrier;
 
     //==========================================================================
@@ -69,7 +75,7 @@ private:
     //==========================================================================
 
 public:
-    Context(string file = "") : BrigContext(machineModel == MODEL_SMALL, !enableComments), fileName(file)
+    Context(string file = "") : BrigContext(machineModel == BRIG_MACHINE_SMALL, !enableComments), fileName(file)
     {
         emitVersion();
         if (instSubset.isSet(SUBSET_GCN))   emitExtension("amd:gcn");
@@ -77,7 +83,7 @@ public:
         genSymbols();
     }
 
-    Context(string file, const Sample s) : BrigContext(machineModel == MODEL_SMALL, !enableComments), fileName(file)
+    Context(string file, const Sample s) : BrigContext(machineModel == BRIG_MACHINE_SMALL, !enableComments), fileName(file)
     {
         emitVersion();
 
@@ -172,7 +178,6 @@ public:
         case BRIG_INST_ADDR:         return Sample(this, getContainer().append<InstAddr>(),        opcode);
         case BRIG_INST_ATOMIC:       return Sample(this, getContainer().append<InstAtomic>(),      opcode);
         case BRIG_INST_ATOMIC_IMAGE: return Sample(this, getContainer().append<InstAtomicImage>(), opcode);
-        case BRIG_INST_BAR:          return Sample(this, getContainer().append<InstBar>(),         opcode);
         case BRIG_INST_BR:           return Sample(this, getContainer().append<InstBr>(),          opcode);
         case BRIG_INST_CMP:          return Sample(this, getContainer().append<InstCmp>(),         opcode);
         case BRIG_INST_CVT:          return Sample(this, getContainer().append<InstCvt>(),         opcode);
@@ -182,6 +187,10 @@ public:
         case BRIG_INST_MOD:          return Sample(this, getContainer().append<InstMod>(),         opcode);
         case BRIG_INST_SEG:          return Sample(this, getContainer().append<InstSeg>(),         opcode);
         case BRIG_INST_SOURCE_TYPE:  return Sample(this, getContainer().append<InstSourceType>(),  opcode);
+        case BRIG_INST_MEM_FENCE:    return Sample(this, getContainer().append<InstMemFence>(),    opcode);
+        case BRIG_INST_SEG_CVT:      return Sample(this, getContainer().append<InstSegCvt>(),      opcode);
+        case BRIG_INST_SIGNAL:       return Sample(this, getContainer().append<InstSignal>(),      opcode);
+        case BRIG_INST_QUEUE:        return Sample(this, getContainer().append<InstQueue>(),       opcode);
         default:
             assert(false);
             return Sample();

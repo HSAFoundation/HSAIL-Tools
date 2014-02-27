@@ -1,0 +1,47 @@
+version 0:96:$full:$large;
+
+function &TestFunc1()()
+{
+	ret;
+};
+
+version 0:0:$full:$large;
+
+function &TestFunc2()()
+{
+	ret;
+};
+
+version 0:95:$full:$large;
+
+function &TestFunc3()()
+{
+	ret;
+};
+
+version 0:96:$full:$large;
+
+function &TestFunc4()()
+{
+	ret;
+};
+
+version 0:96:$full:$large;
+
+function &TestFunc5()()
+{
+	ret;
+};
+
+version 0:96:$full:$large;
+
+function &TestFunc7()()
+{
+	ret;
+};
+
+function &TestFunc8()()
+{
+	ldc_u64	$d0, &TestFunc7;
+	ret;
+};

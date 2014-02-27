@@ -1,0 +1,51 @@
+version 0:96:$full:$large;
+
+function &TestFunc()()
+{
+//-----------------------------------------------------------------------------------------------------------------------
+// Must be an immediate value greater than 0, or WAVESIZE.
+// If multiple control directives are present in the kernel or the functions it calls, they must all have the same values.
+// The value specified must be greater than or equal to the product of the values specified by requiredgridsize
+//-----------------------------------------------------------------------------------------------------------------------
+
+    maxflatgridsize 10;
+
+//-----------------------------------------------------------------------------------------------------------------------
+// Must be an immediate value greater than 0, or WAVESIZE.
+// If multiple control directives are present in the kernel or the functions it calls, they must all have the same values.
+// The value specified must also be greater than or equal to the product of the values specified by requiredworkgroupsize.
+//-----------------------------------------------------------------------------------------------------------------------
+
+    maxflatworkgroupsize 3;
+
+//-----------------------------------------------------------------------------------------------------------------------
+// Must be an immediate value with the value 1, 2, or 3.
+// If multiple control directives are present in the kernel or the functions it calls, they must all have the same values.
+// must be consistent with requiredgridsize and requiredworkgroupsize:
+// if requireddim = 1, => requiredgridsize X, 1, 1; requiredworkgroupsize X, 1, 1;
+// if requireddim = 2, => requiredgridsize X, Y, 1; requiredworkgroupsize X, Y, 1;
+//-----------------------------------------------------------------------------------------------------------------------
+
+    requireddim 1;
+
+//-----------------------------------------------------------------------------------------------------------------------
+// Must be an immediate value greater than 0, or WAVESIZE.
+// If multiple control directives are present in the kernel or the functions it calls, they must all have the same values.
+// The product of the values must be less than or equal to value specified by maxflatgridsize
+// Must be consistent with requireddim
+//-----------------------------------------------------------------------------------------------------------------------
+
+    requiredgridsize 10, 1, 1;
+
+//-----------------------------------------------------------------------------------------------------------------------
+// Must be an immediate value greater than 0, or WAVESIZE.
+// If multiple control directives are present in the kernel or the functions it calls, they must all have the same values.
+// The product of the values must be less than or equal to any value specified by maxflatworkgroupsize .
+// Must be consistent with requireddim
+//-----------------------------------------------------------------------------------------------------------------------
+
+    requiredworkgroupsize 3, 1, 1;
+
+//-----------------------------------------------------------------------------------------------------------------------
+
+};

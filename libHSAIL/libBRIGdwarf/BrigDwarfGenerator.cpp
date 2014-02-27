@@ -91,7 +91,7 @@ using std::endl;
 namespace BrigDebug
 {
 
-// Error is a utility class for wrapping an error message for use in
+// Error is a utility class for wrapping an error message for use in 
 // "throw"ing errors
 //
 class Error
@@ -125,7 +125,7 @@ class BRIGDwarfSymbolTable
 {
 private:
     /* pre-allocate memory for 10 items */
-    static const unsigned initialSize = 10;
+    static const unsigned initialSize = 10; 
     std::vector<Elf32_Sym> m_data;
 
     unsigned addSymbolTableEntry(const Elf32_Sym& sym)
@@ -190,7 +190,7 @@ class BRIGDwarfRelocationsTable
 {
 private:
     /* pre-allocate memory for 10 items */
-    static const unsigned initialSize = 10;
+    static const unsigned initialSize = 10; 
     std::vector<Elf32_Rel> m_data;
 
     unsigned addEntry(const Elf32_Rel& rel)
@@ -245,7 +245,7 @@ public:
 class BrigDwarfGenerator_impl : public BrigDwarfGenerator
 {
 public:
-    BrigDwarfGenerator_impl( const std::string & producer,
+    BrigDwarfGenerator_impl( const std::string & producer, 
                              const std::string & compilationDirectory,
                              const std::string & fileName );
     virtual ~BrigDwarfGenerator_impl() {}
@@ -255,7 +255,7 @@ public:
     bool generate( HSAIL_ASM::BrigContainer & c );
 
     // store the generated DWARF into a Brig container's .debug section
-    // (write only, not read-modify-write, assumes the Brig container's
+    // (write only, not read-modify-write, assumes the Brig container's 
     // .debug section has not ever been the subject of an earlier storeInBrig
     // call)
     //
@@ -314,15 +314,15 @@ private:
 #endif
 
     void readElfBytesIntoContainer();
-
+    
     // fills m_codeSymbol and m_directivesSymbol
     //
     void createCodeAndDirectivesSections();
-
+    
     // initializes shstrtab section and returns shstrtab section number
     //
     unsigned initializeShStrTab( unsigned strTabNameOffset);
-
+    
     // initializes symtab section returns symtab section number
     //
     unsigned initializeSymTab(unsigned strTab);
@@ -330,7 +330,7 @@ private:
     // binds section headers string table data to .shstrtab section
     //
     unsigned finalizeShStrTab(unsigned shStrTab);
-
+    
     // binds symbol table data to .symtab section
     //
     unsigned finalizeSymTab(unsigned symTab);
@@ -371,7 +371,7 @@ private:
     SectionHeaderTable m_stringTable;
 
     // holds all symbols in the ELF
-    //
+    // 
     BRIGDwarfSymbolTable m_symbolTable;
 
     // the index of fake code section in symbol table
@@ -401,7 +401,7 @@ private:
 };
 
 BrigDwarfGenerator *
-BrigDwarfGenerator::Create( const std::string & producer,
+BrigDwarfGenerator::Create( const std::string & producer, 
                             const std::string & compilationDirectory,
                             const std::string & fileName )
 {
@@ -409,12 +409,12 @@ BrigDwarfGenerator::Create( const std::string & producer,
                                         fileName );
 }
 
-BrigDwarfGenerator_impl::BrigDwarfGenerator_impl( const std::string & producer,
+BrigDwarfGenerator_impl::BrigDwarfGenerator_impl( const std::string & producer, 
                                                   const std::string & compilationDirectory,
-                                                  const std::string & fileName ) :
-    m_pDwarfDebug( 0 ),
+                                                  const std::string & fileName ) : 
+    m_pDwarfDebug( 0 ), 
     m_pCompileUnit( 0 ),
-    m_producerStr( producer ),
+    m_producerStr( producer ), 
     m_compilationDirectoryStr( compilationDirectory ),
     m_fileNameStr( fileName ),
     m_codeSymbol( 0xC0DE ), /* something deliberately wrong */
@@ -444,18 +444,18 @@ bool BrigDwarfGenerator_impl::generate( HSAIL_ASM::BrigContainer & c )
         std::cerr << "BrigDwarfGenerator_impl: error: " << e.m_errorMessage << std::endl;
         return false;
     }
-
+        
     return true;
 }
 
 // this callback is called from libdwarf when it wants to create an
 // elf section, which occurs during dwarf_transform_to_disk_form()
 //
-// The return value is an integer associated with the ELF section, and
-// is used to identify the section returned to us when we later call
+// The return value is an integer associated with the ELF section, and 
+// is used to identify the section returned to us when we later call 
 // dwarf_get_section_bytes().   It can be any unique integer we map internally
 // to an ELF section, but we just use the actual ELF section number directly
-//
+// 
 // *sec_name_index is an OUT parameter, a pointer to the shared string table
 // (.shrstrtab) offset for thte name of the section
 //
@@ -475,7 +475,7 @@ static int DwarfProducerCallbackFunc( char * name,
     return rv;
 }
 
-int
+int 
 BrigDwarfGenerator_impl::DwarfProducerCallback2( char * name,
                                                  int    size,
                                                  Dwarf_Unsigned type,
@@ -508,7 +508,7 @@ BrigDwarfGenerator_impl::DwarfProducerCallback2( char * name,
     shdr->sh_size   = size;
     /* WORKAROUND:
      when libdwarf creates relocatable section, it does not know anything about corresponding symtab, and passes zero instead */
-    shdr->sh_link   = (type == SHT_REL || type == SHT_RELA) ? m_symbolTableSection : link;
+    shdr->sh_link   = (type == SHT_REL || type == SHT_RELA) ? m_symbolTableSection : link; 
     shdr->sh_info   = info;
     shdr->sh_addralign = 4;
     shdr->sh_entsize = 0;
@@ -518,10 +518,10 @@ BrigDwarfGenerator_impl::DwarfProducerCallback2( char * name,
     *sect_name_index = m_symbolTable.addSectionSymbolEntry(sectionIndex);
 
 #if 0
-    cout << "Section " << name
+    cout << "Section " << name 
          << " shstrab index = " << shdr->sh_name
-         << " section header index = "   << sectionIndex
-         << " symtab index = " << *sect_name_index
+         << " section header index = "   << sectionIndex 
+         << " symtab index = " << *sect_name_index 
          << endl;
 #endif
 
@@ -555,7 +555,7 @@ void BrigDwarfGenerator_impl::initializeDwarfProducer()
 
     m_pDwarfDebug = dwarf_producer_init_c( initFlags,
                                            DwarfProducerCallbackFunc,
-                                           DwarfErrorHandler,
+                                           DwarfErrorHandler, 
                                            0 /* errarg */, userData, &pErr );
 
     // only on the init call do we need to check the return value, for all
@@ -590,13 +590,13 @@ void BrigDwarfGenerator_impl::initializeDwarfProducer()
     //
     dwarf_add_die_to_debug( m_pDwarfDebug, m_pCompileUnit, nullError );
 
-    // add the assembly source filename to the line table
+    // add the assembly source filename to the line table 
     //
     unsigned defaultDirectoryIndex = 0;
     unsigned nullTimeModified = 0;
     unsigned nullFileLength = 0;
     m_srcFileLineTableIndex = dwarf_add_file_decl( m_pDwarfDebug,
-                                                   (char *)m_fileNameStr.c_str(),
+                                                   (char *)m_fileNameStr.c_str(), 
                                                    defaultDirectoryIndex,
                                                    nullTimeModified,
                                                    nullFileLength, nullError );
@@ -607,13 +607,13 @@ void BrigDwarfGenerator_impl::initializeDwarfProducer()
 void BrigDwarfGenerator_impl::generateDwarfForBrig( HSAIL_ASM::BrigContainer & c )
 {
     assert( m_pDwarfDebug );
-
+        
     HSAIL_ASM::Directive nextD;
     for ( HSAIL_ASM::Directive d = c.directives().begin(); d != c.directives().end(); d = nextD )
     {
         // cout << "offset 0x" << std::hex << d.brigOffset() << ": ";
 
-        switch ( d.brig()->kind )
+        switch ( d.brig()->kind ) 
         {
          case Brig::BRIG_DIRECTIVE_VARIABLE:
          {
@@ -658,7 +658,7 @@ void BrigDwarfGenerator_impl::generateDwarfForBrig( HSAIL_ASM::BrigContainer & c
 // given a top level BrigDirectiveSymbol, create a DWARRF entry for it and add it to
 // the entries tree as the most recent child of the root
 //
-Dwarf_P_Die
+Dwarf_P_Die 
 BrigDwarfGenerator_impl::generateDwarfForBrigSymbol( HSAIL_ASM::Directive d,
                                                      Dwarf_P_Die parent,
                                                      unsigned dwarfTag)
@@ -668,7 +668,7 @@ BrigDwarfGenerator_impl::generateDwarfForBrigSymbol( HSAIL_ASM::Directive d,
     Dwarf_Error * nullError( 0 );
     Dwarf_P_Die nullSibling( 0 );
 
-    Dwarf_P_Die pVariableEntry = dwarf_new_die( m_pDwarfDebug, dwarfTag, parent,
+    Dwarf_P_Die pVariableEntry = dwarf_new_die( m_pDwarfDebug, dwarfTag, parent, 
                                                 nullSibling, nullSibling, nullSibling,
                                                 nullError );
     // name attribute
@@ -677,7 +677,7 @@ BrigDwarfGenerator_impl::generateDwarfForBrigSymbol( HSAIL_ASM::Directive d,
     const char * name = strCopy.c_str();
     dwarf_add_AT_name( pVariableEntry, (char *) name, nullError );
 
-    // location attribute.   The location of a brig symbol is the offset of
+    // location attribute.   The location of a brig symbol is the offset of 
     // the BRIGDirectiveSymbol directive from the start of the .directives section
     //
     Dwarf_P_Expr locationExpr = dwarf_new_expr( m_pDwarfDebug, nullError );
@@ -707,9 +707,9 @@ BrigDwarfGenerator_impl::generateDwarfForBrigSymbol( HSAIL_ASM::Directive d,
 // Create a DW_TAG_subprogram entry for the function/kernel
 // Include all formal parameters (both in and out)
 // Include a lexical scope.  All non-arg variables defined belong to
-//    the lexical scope.  Any arg variables defined belong to the enclosing
+//    the lexical scope.  Any arg variables defined belong to the enclosing 
 //    arg scope.
-// Output a warning for arg variables defined outside of an
+// Output a warning for arg variables defined outside of an 
 // argument scope.
 //
 void BrigDwarfGenerator_impl::generateDwarfForBrigKernelFunction( HSAIL_ASM::Directive d )
@@ -722,7 +722,7 @@ void BrigDwarfGenerator_impl::generateDwarfForBrigKernelFunction( HSAIL_ASM::Dir
     std::string subrName;
     unsigned startPC = 0, endPC = 0;
     HSAIL_ASM::Inst firstInstr;
-
+        
     unsigned instrCount = 0;
     bool isKernel = true;
     unsigned declLine = 1;
@@ -778,7 +778,7 @@ void BrigDwarfGenerator_impl::generateDwarfForBrigKernelFunction( HSAIL_ASM::Dir
         return;
 
     startPC = firstInstr.brigOffset();
-
+        
     // find the endPC value by first finding the last instruction
     // then calculate the offset of the following instruction
     // generate the line # mappings at the same time
@@ -792,16 +792,16 @@ void BrigDwarfGenerator_impl::generateDwarfForBrigKernelFunction( HSAIL_ASM::Dir
         if (!pSrcInfo) continue;
         if ( !m_isDwarfLineSetAddressCalled )
         {
-            Dwarf_Unsigned rv = dwarf_lne_set_address( m_pDwarfDebug,
-                                                       instr.brigOffset(),
-                                                       m_codeSymbol,
+            Dwarf_Unsigned rv = dwarf_lne_set_address( m_pDwarfDebug, 
+                                                       instr.brigOffset(), 
+                                                       m_codeSymbol, 
                                                        nullError );
             // TBD: do we need this assert?
             //
             assert(rv == 0);
             m_isDwarfLineSetAddressCalled = true;
         }
-        dwarf_add_line_entry( m_pDwarfDebug,
+        dwarf_add_line_entry( m_pDwarfDebug, 
                               m_srcFileLineTableIndex,
                               instr.brigOffset(),                // address
                               pSrcInfo->line + 1, pSrcInfo->column + 1,
@@ -812,9 +812,9 @@ void BrigDwarfGenerator_impl::generateDwarfForBrigKernelFunction( HSAIL_ASM::Dir
     endPC = lastInstr.brigOffset() + lastInstr.brigSize();
     dwarf_lne_end_sequence( m_pDwarfDebug, endPC, nullError );
 
-    Dwarf_P_Die pSubprogramEntry = dwarf_new_die( m_pDwarfDebug,
+    Dwarf_P_Die pSubprogramEntry = dwarf_new_die( m_pDwarfDebug, 
                                                   DW_TAG_subprogram, m_pCompileUnit,
-                                                  nullSibling, nullSibling,
+                                                  nullSibling, nullSibling, 
                                                   nullSibling, nullError );
     // name attribute
     //
@@ -826,13 +826,13 @@ void BrigDwarfGenerator_impl::generateDwarfForBrigKernelFunction( HSAIL_ASM::Dir
 
     // low and high PC
     //
-    dwarf_add_AT_targ_address( m_pDwarfDebug, pSubprogramEntry, DW_AT_low_pc,
+    dwarf_add_AT_targ_address( m_pDwarfDebug, pSubprogramEntry, DW_AT_low_pc, 
                                startPC, m_codeSymbol, nullError );
-    dwarf_add_AT_targ_address( m_pDwarfDebug, pSubprogramEntry, DW_AT_high_pc,
+    dwarf_add_AT_targ_address( m_pDwarfDebug, pSubprogramEntry, DW_AT_high_pc, 
                                endPC, m_codeSymbol, nullError );
 
     // declaration file, line, column
-    //
+    // 
     dwarf_add_AT_unsigned_const( m_pDwarfDebug, pSubprogramEntry, DW_AT_decl_file,
                                  m_srcFileLineTableIndex, nullError );
     dwarf_add_AT_unsigned_const( m_pDwarfDebug, pSubprogramEntry, DW_AT_decl_line,
@@ -873,11 +873,11 @@ void BrigDwarfGenerator_impl::generateDwarfForBrigKernelFunction( HSAIL_ASM::Dir
 }
 
 
-// given a DWARF subroutine entry, its BRIG directive, and the
-// first in and out parameter directives (and counts), generate the
+// given a DWARF subroutine entry, its BRIG directive, and the 
+// first in and out parameter directives (and counts), generate the 
 // formal parameter DWARF entries for the subprogram's formal parameters
 //
-HSAIL_ASM::Offset BrigDwarfGenerator_impl::generateDwarfForBrigParameters(
+HSAIL_ASM::Offset BrigDwarfGenerator_impl::generateDwarfForBrigParameters( 
     Dwarf_P_Die pSuborutineEntry,
     HSAIL_ASM::Directive d,
     HSAIL_ASM::DirectiveVariable firstInArg,
@@ -916,7 +916,7 @@ HSAIL_ASM::Offset BrigDwarfGenerator_impl::generateDwarfForBrigParameters(
 
 
 
-void BrigDwarfGenerator_impl::generateDwarfForBrigSubprogramBody(
+void BrigDwarfGenerator_impl::generateDwarfForBrigSubprogramBody( 
     HSAIL_ASM::Offset largestParameterDirectiveOffset,
     Dwarf_P_Die pSuborutineEntry,
     HSAIL_ASM::Directive firstDirectiveInSubprogram,
@@ -926,7 +926,7 @@ void BrigDwarfGenerator_impl::generateDwarfForBrigSubprogramBody(
     bool inArgScope = false;
     Dwarf_P_Die pArgScopeEntry( 0 );
 
-    // find the first directive inside the subprogram following  the
+    // find the first directive inside the subprogram following  the 
     // parameter declarations
     //
     while ( ( d.brigOffset() <= largestParameterDirectiveOffset ) &&
@@ -948,7 +948,7 @@ void BrigDwarfGenerator_impl::generateDwarfForBrigSubprogramBody(
                  //
                  if ( pArgScopeEntry == 0 )
                  {
-                     pArgScopeEntry = dwarf_new_die( m_pDwarfDebug,
+                     pArgScopeEntry = dwarf_new_die( m_pDwarfDebug, 
                                                      DW_TAG_HSA_argument_scope,
                                                      pSuborutineEntry, 0, 0, 0, 0 );
                  }
@@ -958,7 +958,7 @@ void BrigDwarfGenerator_impl::generateDwarfForBrigSubprogramBody(
              {
                  // non-argument variable, parent entry is subprogram
                  //
-                 generateDwarfForBrigSymbol( dSym, pSuborutineEntry,
+                 generateDwarfForBrigSymbol( dSym, pSuborutineEntry, 
                                              DW_TAG_variable );
              }
              break;
@@ -969,10 +969,10 @@ void BrigDwarfGenerator_impl::generateDwarfForBrigSubprogramBody(
             break;
 
          case Brig::BRIG_DIRECTIVE_ARG_SCOPE_END:
-            // We have reached the end of the current argument scope -- "forget" the
+            // We have reached the end of the current argument scope -- "forget" the 
             // current argscope entry (if there is one).
             // This is not a leak of pArgScopeEntry, dwarf tracks all allocations
-            // and frees them in dwarf_producer_finish.  We must "forget" the
+            // and frees them in dwarf_producer_finish.  We must "forget" the 
             // current scope entry so that we'll create a new arg scope entry
             // for the next one we encounter
             //
@@ -1012,12 +1012,12 @@ void BrigDwarfGenerator_impl::dumpDwarfRelocations()
         return;
 
     }
-    cout << "Relocations sections count= " << reloc_sections_count <<
+    cout << "Relocations sections count= " << reloc_sections_count << 
         " relversion=" << drd_version << endl;
 
     for( Dwarf_Unsigned ct = 0; ct < reloc_sections_count ; ++ct) {
         // elf_section_index is the elf index of the relocations
-        // themselves.
+        // themselves. 
         Dwarf_Signed elf_section_index = 0;
         // elf_section_index_link is the elf index of the section
         // the relocations apply to.
@@ -1083,7 +1083,7 @@ unsigned BrigDwarfGenerator_impl::createElfSymbolTable( )
     if ( ! strshdr )
         error( "error in elf32_getshdr in createElfSymbolTable()" );
 
-    strshdr->sh_name = m_sectionHeaderTable.addHeaderName( ".symtab" );
+    strshdr->sh_name = m_sectionHeaderTable.addHeaderName( ".symtab" ); 
     strshdr->sh_type= SHT_SYMTAB;
     strshdr->sh_flags = 0;
     strshdr->sh_addr = 0;
@@ -1118,7 +1118,7 @@ unsigned BrigDwarfGenerator_impl::initializeShStrTab( unsigned strTabNameOffset)
     if ( ! strshdr )
         error( "error in elf32_getshdr in initializeShStrTab()" );
 
-    strshdr->sh_name = strTabNameOffset;
+    strshdr->sh_name = strTabNameOffset; 
     strshdr->sh_type= SHT_STRTAB;
     strshdr->sh_flags = SHF_STRINGS;
     strshdr->sh_addr = 0;
@@ -1131,7 +1131,7 @@ unsigned BrigDwarfGenerator_impl::initializeShStrTab( unsigned strTabNameOffset)
     return  elf_ndxscn(strscn);
 
 }
-
+    
 unsigned BrigDwarfGenerator_impl::initializeSymTab(unsigned strTab)
 {
     Elf_Scn * strscn = elf_newscn( m_pElf );
@@ -1142,7 +1142,7 @@ unsigned BrigDwarfGenerator_impl::initializeSymTab(unsigned strTab)
     if ( ! symtabshdr )
         error( "error in elf32_getshdr in initializeSymTab()" );
 
-    symtabshdr->sh_name = m_sectionHeaderTable.addHeaderName( ".symtab" );
+    symtabshdr->sh_name = m_sectionHeaderTable.addHeaderName( ".symtab" ); 
     symtabshdr->sh_type= SHT_SYMTAB;
     symtabshdr->sh_flags = 0;
     symtabshdr->sh_addr = 0;
@@ -1174,7 +1174,7 @@ unsigned BrigDwarfGenerator_impl::finalizeShStrTab(unsigned shStrTab)
 
     return 0;
 }
-
+    
 unsigned BrigDwarfGenerator_impl::finalizeSymTab(unsigned symTab)
 {
     Elf_Scn * strscn = elf_getscn( m_pElf, symTab );
@@ -1205,31 +1205,31 @@ void BrigDwarfGenerator_impl::initializeElf()
 	std::string outFileName( m_fileNameStr + ".dbg" );
 	m_elfFd = BDG_OPEN( outFileName.c_str(), BDG_OPEN_FLAGS, BDG_OPEN_PERMS );
 
-    if ( m_elfFd < 0 )
+    if ( m_elfFd < 0 ) 
 	{
 		std::stringstream ss;
 		ss << "Unable to open " << outFileName << " for writing";
         error( ss.str() );
 	}
 
-    if ( elf_version(EV_CURRENT) == EV_NONE )
+    if ( elf_version(EV_CURRENT) == EV_NONE ) 
         error( "Bad elf_version" );
 
 //    m_pElf = elf_begin( m_elfFd, ELF_C_WRITE, 0, 0 );
     m_pElf = elf_begin( m_elfFd, ELF_C_WRITE, 0 );
     if ( ! m_pElf )
         error( "elf_begin() failed" );
-
+    
     m_pElfHeader = elf32_newehdr( m_pElf );
 
     if ( ! m_pElfHeader )
         error( "Unable to elf_newehdr()" );
 
-    m_pElfHeader->e_ident[EI_MAG0] = ELFMAG0;
-    m_pElfHeader->e_ident[EI_MAG1] = ELFMAG1;
-    m_pElfHeader->e_ident[EI_MAG2] = ELFMAG2;
-    m_pElfHeader->e_ident[EI_MAG3] = ELFMAG3;
-    m_pElfHeader->e_ident[EI_CLASS] = ELFCLASS32;
+    m_pElfHeader->e_ident[EI_MAG0] = ELFMAG0; 
+    m_pElfHeader->e_ident[EI_MAG1] = ELFMAG1; 
+    m_pElfHeader->e_ident[EI_MAG2] = ELFMAG2; 
+    m_pElfHeader->e_ident[EI_MAG3] = ELFMAG3; 
+    m_pElfHeader->e_ident[EI_CLASS] = ELFCLASS32; 
     m_pElfHeader->e_ident[EI_DATA] = ELFDATA2LSB;
     m_pElfHeader->e_ident[EI_VERSION] = EV_CURRENT;
 
@@ -1264,15 +1264,15 @@ void BrigDwarfGenerator_impl::processRelocations()
     if( res != DW_DLV_OK) {
         error( "Error getting relocation info count in processRelocations()" );
     }
-    cout << "Relocations sections count= " << reloc_sections_count <<
+    cout << "Relocations sections count= " << reloc_sections_count << 
         " relversion=" << drd_version << endl;
 
-    // pre-allocate memory for vectors of relocation sections
+    // pre-allocate memory for vectors of relocation sections 
     m_relocationsTables.resize(reloc_sections_count);
 
     for( Dwarf_Unsigned ct = 0; ct < reloc_sections_count ; ++ct) {
         // elf_section_index is the elf index of the relocations
-        // themselves.
+        // themselves. 
         Dwarf_Signed elf_section_index = 0;
         // elf_section_index_link is the elf index of the section
         // the relocations apply to.
@@ -1307,10 +1307,10 @@ void BrigDwarfGenerator_impl::processRelocations()
             if( rec->drd_length != 4 ) {
                 error( "unexpected relocation record length met in processRelocations()" );
             }
-            cout << "\tRR " << r
+            cout << "\tRR " << r 
                  << ": length = " << (unsigned)rec->drd_length
                  << ", offset = " << rec->drd_offset
-                 << ", symidx = " << rec->drd_symbol_index
+                 << ", symidx = " << rec->drd_symbol_index 
                  << ", type = " << (unsigned)rec->drd_type << endl;
             bdrt.addRelocationEntry(rec->drd_offset, rec->drd_symbol_index, __R_HSA_DWARF_TO_BRIG32);
         }
@@ -1333,13 +1333,13 @@ void BrigDwarfGenerator_impl::createDwarfElfSections()
     {
         Dwarf_Signed elf_section_index = 0;
         Dwarf_Unsigned length = 0;
-        Dwarf_Ptr bytes = dwarf_get_section_bytes( m_pDwarfDebug, i,
+        Dwarf_Ptr bytes = dwarf_get_section_bytes( m_pDwarfDebug, i,  
                                                    &elf_section_index, &length,
                                                    nullError);
 
         Elf_Scn *scn =  elf_getscn( m_pElf, elf_section_index );
         Elf_Data* ed = elf_newdata(scn);
-        if ( ! ed )
+        if ( ! ed ) 
             error( "elf_newdata failed in createDwarfElfSections" );
 
         ed->d_buf = bytes;
@@ -1380,7 +1380,7 @@ void BrigDwarfGenerator_impl::createDwarfElfSections()
                 {
                     rr->r_info = ELF32_R_INFO(relSym, __R_HSA_DWARF_32);
                 }
-
+                
             }
         }
     }
@@ -1409,7 +1409,7 @@ void BrigDwarfGenerator_impl::finalizeElf()
 	// note!   We can not close the m_elfFd file until we read back
 	// in the ELF disk image
 	//
-
+	
 }
 
 
@@ -1435,7 +1435,7 @@ unsigned BrigDwarfGenerator_impl::createElfStringTable( unsigned strTabNameOffse
     if ( ! strshdr )
         error( "error in elf32_getshdr in createElfStringTable()" );
 
-    strshdr->sh_name = strTabNameOffset;
+    strshdr->sh_name = strTabNameOffset; 
     strshdr->sh_type= SHT_STRTAB;
     strshdr->sh_flags = SHF_STRINGS;
     strshdr->sh_addr = 0;
@@ -1491,3 +1491,4 @@ void BrigDwarfGenerator_impl::finalizeDwarfProducer()
 }
 
 } // end namespace BrigDebug
+

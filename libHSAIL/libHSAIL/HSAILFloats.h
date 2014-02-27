@@ -95,7 +95,7 @@ template<typename T> struct FloatBits;
 class f32_t 
 {
 public:
-    f32_t() {}
+    f32_t() : m_uint32(0) {}
     f32_t(const float* rhs) : m_uint32(*reinterpret_cast<const uint32_t*>(rhs)) {}
     bool operator==(const f32_t& rv) const { return m_uint32 == rv.m_uint32; }
     bool operator!=(const f32_t& rv) const { return !(*this==rv); }
@@ -125,7 +125,7 @@ private:
 class f64_t 
 {
 public:
-    f64_t() {}
+    f64_t() : m_uint64(0) {}
     f64_t(const double* rhs) : m_uint64(*reinterpret_cast<const uint64_t*>(rhs)) { }
     bool operator==(const f64_t& rv) const { return m_uint64==rv.m_uint64; }
     bool operator!=(const f64_t& rv) const { return !(*this==rv); }

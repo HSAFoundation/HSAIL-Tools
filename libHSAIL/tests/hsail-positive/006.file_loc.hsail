@@ -1,0 +1,27 @@
+version 0:96:$full:$large;
+
+loc /**/1//
+/**/"this is a file"/**/;
+
+loc 2 "this is a file";
+
+loc 4294967295 "";
+
+function &TestFunc()()
+{
+	ret;
+
+	loc 1 1;
+	loc 1 20;
+
+	loc 4294967295 4294967295;
+
+	loc///**/ /**/10/**/3;
+/**/2///**/,/**/3//;
+/**/3//;
+;
+	loc/**/2/**/10/**/;
+	loc 1 1 "";
+	loc 1 1 "some file name";
+};
+

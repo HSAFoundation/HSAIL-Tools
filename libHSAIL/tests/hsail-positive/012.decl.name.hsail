@@ -1,0 +1,30 @@
+// Names may have "_" as the second symbol
+
+version 0:96:$full:$large;
+
+static function &_()(); // this is a valid name!
+static function &_a()(); // this is a valid name!
+static function &_0()(); // this is a valid name!
+
+version 0:96:$full:$large;
+
+static global_u32   &_[3]  = {1, 2, 3};
+static global_u32   &_a[3]  = {1, 2, 3};
+static global_u32   &_0[3]  = {1, 2, 3};
+
+version 0:96:$full:$large;
+
+kernel &_(kernarg_samp %x)
+{
+	ret;
+};
+
+kernel &_a(kernarg_samp %x)
+{
+	ret;
+};
+
+kernel &_0(kernarg_samp %x)
+{
+	ret;
+};

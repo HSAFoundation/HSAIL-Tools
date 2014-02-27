@@ -22,11 +22,12 @@
 using std::string;
 using std::ostringstream;
 using std::ofstream;
-using std::setprecision;
+using std::setw;
 
 using Brig::BRIG_TYPE_NONE;
 using Brig::BRIG_TYPE_B1;
 using Brig::BRIG_TYPE_B8;
+using Brig::BRIG_TYPE_B16;
 using Brig::BRIG_TYPE_B32;
 using Brig::BRIG_TYPE_B64;
 using Brig::BRIG_TYPE_B128;
@@ -42,6 +43,12 @@ using Brig::BRIG_TYPE_F16;
 using Brig::BRIG_TYPE_F32;
 using Brig::BRIG_TYPE_F64;
 
+using Brig::BRIG_PACK_NONE;
+using Brig::BRIG_SEGMENT_NONE;
+using Brig::BRIG_SEGMENT_KERNARG;
+using Brig::BRIG_SEGMENT_GLOBAL;
+using Brig::BRIG_SEGMENT_GROUP;
+
 using HSAIL_ASM::DirectiveKernel;
 using HSAIL_ASM::DirectiveFunction;
 using HSAIL_ASM::DirectiveExecutable;
@@ -52,7 +59,6 @@ using HSAIL_ASM::InstBasic;
 using HSAIL_ASM::InstSourceType;
 using HSAIL_ASM::InstAtomic;
 using HSAIL_ASM::InstAtomicImage;
-using HSAIL_ASM::InstBar;
 using HSAIL_ASM::InstCmp;
 using HSAIL_ASM::InstCvt;
 using HSAIL_ASM::InstImage;
@@ -73,6 +79,10 @@ using HSAIL_ASM::OperandFbarrierRef;
 using HSAIL_ASM::isFloatType;
 using HSAIL_ASM::isSignedType;
 using HSAIL_ASM::getOperandType;
+using HSAIL_ASM::isBitType;
+using HSAIL_ASM::getPackedDstDim;
+using HSAIL_ASM::getUnsignedType;
+using HSAIL_ASM::getBitType;
 
 namespace TESTGEN {
 
@@ -315,10 +325,10 @@ public:
     {
         for (int i = provider->getFirstSrcOperandIdx(); i <= provider->getLastOperandIdx(); i++)
         {
-            context->emitArg(getModelTypeU(), getSrcArrayName(i, "%"), Brig::BRIG_SEGMENT_KERNARG); 
+            context->emitArg(getModelType(), getSrcArrayName(i, "%"), BRIG_SEGMENT_KERNARG); 
         }
-        if (hasDstOperand())    context->emitArg(getModelTypeU(), getDstArrayName("%"), Brig::BRIG_SEGMENT_KERNARG); 
-        if (hasMemoryOperand()) context->emitArg(getModelTypeU(), getMemArrayName("%"), Brig::BRIG_SEGMENT_KERNARG); 
+        if (hasDstOperand())    context->emitArg(getModelType(), getDstArrayName("%"), BRIG_SEGMENT_KERNARG); 
+        if (hasMemoryOperand()) context->emitArg(getModelType(), getMemArrayName("%"), BRIG_SEGMENT_KERNARG); 
     }
 
     // Called after test kernel is defined but before generation of first kernel instruction.
@@ -328,7 +338,7 @@ public:
 
         emitCommentSeparator();
         CommentBrig commenter(context);
-        emitTestDescription(commenter);
+        emitTestDescription(commenter, 1);
 
         emitLoadId(); // Load workitem id (used as an index to arrays with test data)
         emitInitCode();
@@ -377,7 +387,7 @@ public:
             }
             else if (OperandImmed immed = operand)      // ... or an immediate...
             {
-                inst.operand(i) = context->emitImm(immed.type(), bundle.getSrcVal(i).conv2b64());
+                inst.operand(i) = context->emitImm(getImmSize(immed), bundle.getSrcVal(i).getAsB64(0), bundle.getSrcVal(i).getAsB64(1));
             }
             else if (OperandAddress addr = operand)
             {
@@ -386,18 +396,7 @@ public:
             }
             else if (OperandWavesize ws = operand)      // ... or WaveSize.
             {
-                // TestDataProvider does not know operand type for i-th value.
-                // The value returned by getSrcValue may be inappropriate for some reason,
-                // e.g. LUA may limit wavesize to values in the range [1, 64].
-                // Another possible problem is that the current instruction may
-                // have several WaveSize operands; in this case they have to be identical.
-                //
-                // If the value returned by getSrcValue is unsuitable for WaveSize,
-                // return from this function with false and reject this test case.
-                //
-                // Othewise, generate additional LUA directive to set WaveSize to this value.
-                
-                assert(false); // currently not supported
+                // nothing to do
             }
             else
             {
@@ -446,6 +445,17 @@ private:
             emitCommentHeader("Initialization of index register for memory access");
             initMemTestArrayIndexReg();
         }
+
+        // This instruction generates packed value, but affects only one packed element
+        if (getPacking(testSample) != BRIG_PACK_NONE && 
+            getPackedDstDim(getType(testSample), getPacking(testSample)) == 1) 
+        {
+            // Some packing controls such as 'ss' and 'ss_sat' result in partial dst modification.
+            // To simplify testing in these cases, we clear dst register before test instruction.
+            
+            emitCommentHeader("Clear dst register because test instruction modifies only part of dst value");
+            clearDstVal(getOperandReg(provider->getDstOperandIdx()));
+        }
     }
 
     void saveTestResults()
@@ -482,6 +492,17 @@ private:
     // Helpers for bundling tests together
 private:
 
+    // Reject unsuitable test values
+    bool validateSrcData(unsigned operandIdx, Val v)
+    {
+        if (OperandWavesize(testSample.operand(operandIdx)))
+        {
+            //F This is not valid for signed types, but we have no conversion rules for WS
+            return v.getAsB64(0) == wavesize && v.getAsB64(1) == 0;
+        }
+        return true;
+    }
+
     bool bundleTestData()
     {
         Val src[5];
@@ -491,22 +512,30 @@ private:
         bundle.clear();
 
         for(;;)
-        {            
-            for (int i = 0; i < 5; ++i) src[i] = provider->getSrcValue(i);              // Read current set of test data
-            
-            dst = emulateDstVal(testSample, src[0], src[1], src[2], src[3], src[4]);    // Return an empty value if emulation failed or there is no dst value
-            mem = emulateMemVal(testSample, src[0], src[1], src[2], src[3], src[4]);    // Return an empty value if emulation failed or there is no mem value
-
-            if ((!dst.empty() == hasDstOperand()) &&                                    // Check that all expected results have been provided by emulator
-                (!mem.empty() == hasMemoryOperand()))                                   // Add to bundle unless emulation failed
+        {     
+            bool valid = true;
+            for (unsigned i = 0; i < 5 && valid; ++i)                                            // Read current set of test data
             {
-                bundle.expand();
-                for (unsigned i = 0; i < 5; ++i) bundle.setSrcVal(i, src[i]);
-                if (hasDstOperand())             bundle.setDstVal(dst);
-                if (hasMemoryOperand())          bundle.setMemVal(mem);
+                src[i] = provider->getSrcValue(i);
+                valid = validateSrcData(i, src[i]);
             }
             
-            // Request next set of test data for this bundle, if any    
+            if (valid)
+            {
+                dst = emulateDstVal(testSample, src[0], src[1], src[2], src[3], src[4]);    // Return an empty value if emulation failed or there is no dst value
+                mem = emulateMemVal(testSample, src[0], src[1], src[2], src[3], src[4]);    // Return an empty value if emulation failed or there is no mem value
+
+                if ((!dst.empty() == hasDstOperand()) &&                                    // Check that all expected results have been provided by emulator
+                    (!mem.empty() == hasMemoryOperand()))                                   // Add to bundle unless emulation failed
+                {
+                    bundle.expand();
+                    for (unsigned i = 0; i < 5; ++i) bundle.setSrcVal(i, src[i]);
+                    if (hasDstOperand())             bundle.setDstVal(dst);
+                    if (hasMemoryOperand())          bundle.setMemVal(mem);
+                }
+            }
+
+            // Request next set of test data for this bundle, if any
             if (bundle.full() || !provider->next()) break;
         }
 
@@ -524,18 +553,18 @@ private:
     { 
     private:
         ostringstream s;
+        string pref;
+        Val value;
     
     public:
-        void setPrecision(unsigned p) { if (p != 0) s << setprecision(p); }
+        LuaSrcPrinter(string p) : pref(p) {}
+        
+    public:
+        void nextValue(Val v)  { flush(); value = v; s << pref; }
         template<typename T> 
-        void operator()(T val, unsigned p = 0, const char* sep = ", ") { 
-            setPrecision(p); 
-            s << val << sep; 
-        }
-        string operator()() { 
-            string res = s.str();
-            return res.substr(0, res.length() - strlen(", ")); // remove last separator
-        }
+        void operator()(T val) { s << val << ", "; }
+        void flush()           { if (!value.empty()) s << " -- " << value.dump() << "\n"; }
+        string operator()()    { flush(); return s.str(); }
     };
 
     // ------------------------------------------------------------------------
@@ -547,32 +576,24 @@ private:
         ostringstream s;
         string checkName;
         unsigned slot;
+        Val value;
         
     public:
         LuaDstPrinter(string name, unsigned firstSlot = 0) : checkName(name), slot(firstSlot) {}
         
     public:
-        void setPrecision(unsigned p) { if (p != 0) s << setprecision(p); }
+        void nextValue(Val v)  { value = v; }
         template<typename T> 
-        void operator()(T val, unsigned p = 0) { 
-            setPrecision(p); 
-            s << "result_array_check_set(" << checkName << ", " << slot++ << ", " << val << ")\n"; 
+        void operator()(T val) { 
+            s << "result_array_check_set(" << checkName << ", " << setw(3) << slot++ << ", " << val << ")";
+            if (!value.empty()) s << " -- " << value.dump(); 
+            value = Val();
+            s << "\n";
         }
-        string operator()() { return s.str(); }
+        string operator()()    { return s.str(); }
     };
 
     // ------------------------------------------------------------------------
-
-    string nan2lua(Val val)
-    {
-        assert(!val.empty());
-        assert(val.isFloat());
-        assert(val.isInf() || val.isNan());
-
-        return val.isNan()? "NAN" : val.isPositive()? "INF" : "-INF";
-    }
-
-    bool isSignedLuaType(unsigned type) { return isSignedType(type) && getTypeBitSize(type) <= 32; }
 
     template<class T>
     void val2lua(T& printer, Val v)
@@ -587,18 +608,30 @@ private:
 
             if (val.isFloat())
             {
-                if (val.isSpecialFloat()) printer(nan2lua(val));
-                else if (val.isX64())     printer(val.f64(), 16);
-                else                      printer(val.f32(), 8);
+                printer(val.luaStr());
             }
-            else if (isSignedLuaType(val.getType()))
+            else if (val.isPackedFloat())
             {
-                printer(static_cast<s32_t>(val.conv2b32()));    // Subword values are stored as INT32
+                unsigned dim = getPackedTypeDim(val.getType());
+                for (unsigned i = 0; i < dim; ++i) printer(val.getPackedElement(i).luaStr());
             }
-            else
+            else if (val.getSize() <= 32)
             {
-                                 printer(val.conv2b32());       // Subword values are stored as UINT32
-                if (val.isX64()) printer(val.conv2b32hi());     // 64-bit b/s/u values are stored as 2 UINT32
+                printer(val.luaStr());
+            }
+            else if (val.getSize() == 64)
+            {
+                printer(val.luaStr(0));
+                printer(val.luaStr(1));
+            }
+            else // 128-bit values
+            {
+                assert(val.getSize() == 128);
+
+                printer(val.luaStr(0));
+                printer(val.luaStr(1));
+                printer(val.luaStr(2));
+                printer(val.luaStr(3));
             }
         }
     }
@@ -645,14 +678,18 @@ private:
            << "thread_group = T{0, 0, threads, 1}\n\n";
     }
 
+    bool isSignedLuaType(unsigned type) { return isSignedType(type) && getTypeSize(type) <= 32; }
+
     void defLuaArray(ofstream& os, string name, unsigned type, unsigned dim)
     {
+        assert(type != BRIG_TYPE_F16);
+
         // Subword values are represented as 32-bit values
         // s64/u64 values are represented as 2 32-bit values because of LUA limitations
-        unsigned    typeSize  = getTypeBitSize(type);
+        unsigned    typeSize  = getTypeSize(type);
         const char* arrayType = isFloatType(type)? (typeSize == 64? "DOUBLE" : "FLOAT") 
                               : isSignedLuaType(type) ?             "INT32"  : "UINT32";
-        unsigned    arraySize = isFloatType(type)? 1 : (typeSize == 64? 2 : 1);
+        unsigned    arraySize = isFloatType(type)? 1 : (typeSize == 128? 4 : typeSize == 64? 2 : 1);
 
         os << name << " = new_global_array(" << arrayType  << ", " << arraySize * bundle.getSize() * dim << ")\n";
     }
@@ -661,30 +698,32 @@ private:
     {
         assert(!bundle.empty());
 
-        LuaSrcPrinter printer;
+        LuaSrcPrinter printer("                  ");
+
         bundle.resetPos();
 
         os << "array_set_all(" << name << ", ";
 
         if (bundle.getSize() == 1)
         {
-            val2lua(printer, bundle.getSrcVal(operandIdx));
-            os << "{ " << printer() << " }";
+            Val val = bundle.getSrcVal(operandIdx);
+            val2lua(printer, val);
+            os << "{ " << printer() << " }) -- " << val.dump() << "\n";
         }
         else 
         {
-            os << "\n              {";
+            os << "\n              {\n";
             for (;;)
             {
-                printer("\n                  ", 0, "");
-                val2lua(printer, bundle.getSrcVal(operandIdx));
+                Val val = bundle.getSrcVal(operandIdx);
+                printer.nextValue(val);
+                val2lua(printer, val);
                 if (!bundle.next()) break;
             }
             os << printer() 
-               << "\n              }\n";
+               << "              }\n"
+               << ")\n";
         }
-
-        os << ")\n";
     }
 
     void defLuaKernelArg(ofstream& os, string name)
@@ -698,7 +737,19 @@ private:
         double precision = getPrecision(testSample);
 
         os << checkName << " = new_result_array_check(" << arrayName;
-        if (precision != 0) os << ", " << precision << ", CM_RELATIVE"; // FIXME: try using CM_ULPS
+
+        if (isFloatType(type))
+        {
+            if (precision != 0) 
+            { 
+                os << ", " << precision << ", CM_RELATIVE"; //F TODO: use ULPs as well
+            } 
+            else 
+            { 
+                os << ", 1, CM_ULPS"; 
+            }
+        }
+
         os << ")\n";
     }
 
@@ -717,11 +768,14 @@ private:
         assert(!bundle.empty());
 
         LuaDstPrinter printer(checkName);
+
         bundle.resetPos();
 
         for (;;)
         {
-            val2lua(printer, isDst? bundle.getDstVal() : bundle.getMemVal());
+            Val val = isDst? bundle.getDstVal() : bundle.getMemVal();
+            printer.nextValue(val);
+            val2lua(printer, val);
             if (!bundle.next()) break;
         }
 
@@ -730,8 +784,16 @@ private:
 
     void defSrcLuaArray(ofstream& os, unsigned operandIdx)
     {
+        unsigned type = bundle.getSrcValType(operandIdx);
+        unsigned dim  = bundle.getSrcValDim(operandIdx);
+        if (HSAIL_ASM::isFloatPackedType(type))
+        {
+            dim *= getPackedTypeDim(type);
+            type = packedType2elementType(type);
+        }
+
         string name = getSrcArrayName(operandIdx);
-        defLuaArray(os, name, bundle.getSrcValType(operandIdx), bundle.getSrcValDim(operandIdx));
+        defLuaArray(os, name, type, dim);
         initLuaArray(os, name, operandIdx);
         printSrcLuaArray(os, name);
         defLuaKernelArg(os, name);
@@ -750,6 +812,12 @@ private:
 
     void defResultLuaArray(ofstream& os, string valKind, string checkName, string arrayName, unsigned type, unsigned dim, bool isDst)
     {
+        if (HSAIL_ASM::isFloatPackedType(type))
+        {
+            dim *= getPackedTypeDim(type);
+            type = packedType2elementType(type);
+        }
+
         defLuaArray(os, arrayName, type, dim);
         defLuaKernelArg(os, arrayName);
         defLuaCheckRules(os, checkName, arrayName, type);        
@@ -769,6 +837,8 @@ private:
 
         genLuaDesc(os);
         genLuaHeader(os);
+
+        //F Set LUA wavesize to the value specified by command line option
 
         for (int i = provider->getFirstSrcOperandIdx(); i <= provider->getLastOperandIdx(); ++i)
         {
@@ -792,13 +862,13 @@ private:
     // Access to registers
 private:
 
-    OperandReg getTmpReg(unsigned type)  { return context->emitReg(type2b(type),    REG_IDX_TMP);   }
-    OperandReg getAddrReg()              { return context->emitReg(getModelTypeB(), REG_IDX_ADDR);  }
-    OperandReg getIdReg(unsigned type)   { return context->emitReg(type2b(type),    REG_IDX_ID);    }
+    OperandReg getTmpReg(unsigned size)  { return context->emitReg(size, REG_IDX_TMP); }
+    OperandReg getAddrReg()              { return context->emitReg(getModelSize(), REG_IDX_ADDR); }
+    OperandReg getIdReg(unsigned size)   { return context->emitReg(size, REG_IDX_ID); }
 
-    OperandReg getIdxReg(unsigned type, unsigned idx) { if (type == BRIG_TYPE_NONE) type = getModelTypeB(); return context->emitReg(type2b(type), idx); }
-    OperandReg getIdxReg1(unsigned type = BRIG_TYPE_NONE) { return getIdxReg(type, REG_IDX_IDX1); }
-    OperandReg getIdxReg2(unsigned type = BRIG_TYPE_NONE) { return getIdxReg(type, REG_IDX_IDX2); }
+    OperandReg getIdxReg(unsigned size, unsigned idx) { return context->emitReg(size == 0? getModelSize() : size, idx); }
+    OperandReg getIdxReg1(unsigned size = 0)          { return getIdxReg(size, REG_IDX_IDX1); }
+    OperandReg getIdxReg2(unsigned size = 0)          { return getIdxReg(size, REG_IDX_IDX2); }
    
     OperandReg getOperandReg(unsigned idx) // Create register for i-th operand of test instruction.  
     {                                      
@@ -807,9 +877,12 @@ private:
         OperandReg reg = testSample.operand(idx); // NB: this register is read-only!
 
         assert(reg);
-        assert(reg.type() == BRIG_TYPE_B1 || reg.type() == BRIG_TYPE_B32 || reg.type() == BRIG_TYPE_B64);
+        assert(getRegSize(reg) == 1  ||
+               getRegSize(reg) == 32 || 
+               getRegSize(reg) == 64 || 
+               getRegSize(reg) == 128);
 
-        return context->emitReg(reg.type(), idx); // NB: create register in CURRENT context
+        return context->emitReg(getRegSize(reg), idx); // NB: create register in CURRENT context
     }
 
     OperandRegVector getOperandRegVector(unsigned idx)  // Create register vector for i-th operand of test instruction.  
@@ -818,9 +891,9 @@ private:
         assert(OperandRegVector(testSample.operand(idx)));
 
         OperandRegVector reg = testSample.operand(idx); // NB: this vector is read-only!
-        assert(reg.type() == BRIG_TYPE_B32 || reg.type() == BRIG_TYPE_B64);
+        assert(getRegSize(reg) == 32 || getRegSize(reg) == 64);
 
-        return context->emitRegVector(reg.regCount(), reg.type(), REG_IDX_VEC); // NB: create vector in CURRENT context
+        return context->emitRegVector(reg.regCount(), getRegSize(reg), REG_IDX_VEC); // NB: create vector in CURRENT context
     }
 
     //==========================================================================
@@ -830,19 +903,19 @@ private:
     void initIdReg()
     {
         // Load workitem id
-        context->emitGetWorkItemId(getIdReg(BRIG_TYPE_B32), 0); // Id for 0th dimension
+        context->emitGetWorkItemId(getIdReg(32), 0); // Id for 0th dimension
 
         if (isLargeModel()) // Convert to U64 if necessary
         {
-            context->emitCvt(BRIG_TYPE_U64, BRIG_TYPE_U32, getIdReg(BRIG_TYPE_B64), getIdReg(BRIG_TYPE_B32));
+            context->emitCvt(BRIG_TYPE_U64, BRIG_TYPE_U32, getIdReg(64), getIdReg(32));
         }
     }
 
-    OperandReg loadIndexReg(OperandReg idxReg, unsigned dim, unsigned elemType)
+    OperandReg loadIndexReg(OperandReg idxReg, unsigned dim, unsigned elemSize)
     {
-        unsigned addrType = idxReg.type();
-        if (elemType == BRIG_TYPE_B1) elemType = BRIG_TYPE_B32; // b1 is a special case, always stored as b32
-        context->emitMul(b2u(addrType), idxReg, getIdReg(addrType), dim * getTypeByteSize(elemType));
+        unsigned addrSize = getRegSize(idxReg);
+        if (elemSize == 1) elemSize = 32; // b1 is a special case, always stored as b32
+        context->emitMul(getUnsignedType(addrSize), idxReg, getIdReg(addrSize), dim * elemSize / 8);
         return idxReg;
     }
 
@@ -854,10 +927,10 @@ private:
     {
         assert(addrReg);
         assert(indexReg);
-        assert(addrReg.type() == indexReg.type());
+        assert(getRegSize(addrReg) == getRegSize(indexReg));
 
-        context->emitLd(getModelTypeU(), Brig::BRIG_SEGMENT_KERNARG, addrReg, context->emitAddrRef(getArray(arrayIdx)));
-        context->emitAdd(getModelTypeU(), addrReg, addrReg, indexReg);
+        context->emitLd(getModelType(), BRIG_SEGMENT_KERNARG, addrReg, context->emitAddrRef(getArray(arrayIdx)));
+        context->emitAdd(getModelType(), addrReg, addrReg, indexReg);
         return addrReg;
     }
 
@@ -894,10 +967,10 @@ private:
     {
         assert(reg);
 
-        OperandReg indexReg = loadIndexReg(getIdxReg1(), 1, reg.type());
+        OperandReg indexReg = loadIndexReg(getIdxReg1(), 1, getRegSize(reg));
         OperandReg addrReg  = loadGlobalArrayAddress(getAddrReg(), indexReg, arrayIdx);
-        OperandAddress addr = context->emitIndirRef(addrReg);
-        ldReg(reg.type(), reg, addr);
+        OperandAddress addr = context->emitAddrRef(addrReg);
+        ldReg(getRegSize(reg), reg, addr);
     }
 
     void initSrcVal(OperandRegVector vector, unsigned arrayIdx)
@@ -905,26 +978,33 @@ private:
         assert(vector);
 
         unsigned dim      = vector.regCount();
-        unsigned elemType = vector.type();
+        unsigned elemSize = getRegSize(vector);
 
-        OperandReg indexReg = loadIndexReg(getIdxReg1(), dim, elemType);
+        OperandReg indexReg = loadIndexReg(getIdxReg1(), dim, elemSize);
         OperandReg addrReg  = loadGlobalArrayAddress(getAddrReg(), indexReg, arrayIdx);
 
         for (unsigned i = 0; i < dim; ++i)
         {
-            OperandAddress addr = context->emitIndirRef(addrReg, getSlotSize(elemType) * i);
-            ldReg(elemType, context->emitReg(elemType, vector.regs(i)), addr);
+            OperandAddress addr = context->emitAddrRef(addrReg, getSlotSize(elemSize) / 8 * i);
+            ldReg(elemSize, context->emitReg(vector.regs(i)), addr);
         }
+    }
+
+    void clearDstVal(OperandReg reg)
+    {
+        assert(reg);
+
+        context->emitMov(getBitType(getRegSize(reg)), reg, context->emitImm(getRegSize(reg), 0, 0));
     }
 
     void saveDstVal(OperandReg reg, unsigned arrayIdx)
     {
         assert(reg);
 
-        OperandReg indexReg = loadIndexReg(getIdxReg1(), 1, reg.type());
+        OperandReg indexReg = loadIndexReg(getIdxReg1(), 1, getRegSize(reg));
         OperandReg addrReg  = loadGlobalArrayAddress(getAddrReg(), indexReg, arrayIdx);
-        OperandAddress addr = context->emitIndirRef(addrReg);
-        stReg(reg.type(), reg, addr);
+        OperandAddress addr = context->emitAddrRef(addrReg);
+        stReg(getRegSize(reg), reg, addr);
     }
 
     void saveDstVal(OperandRegVector vector, unsigned arrayIdx)
@@ -932,49 +1012,49 @@ private:
         assert(vector);
 
         unsigned dim      = vector.regCount();
-        unsigned elemType = vector.type();
+        unsigned elemSize = getRegSize(vector);
 
-        OperandReg indexReg = loadIndexReg(getIdxReg1(), dim, elemType);
+        OperandReg indexReg = loadIndexReg(getIdxReg1(), dim, elemSize);
         OperandReg addrReg  = loadGlobalArrayAddress(getAddrReg(), indexReg, arrayIdx);
 
         for (unsigned i = 0; i < dim; ++i)
         {
-            OperandAddress addr = context->emitIndirRef(addrReg, getSlotSize(elemType) * i);
-            stReg(elemType, context->emitReg(elemType, vector.regs(i)), addr);
+            OperandAddress addr = context->emitAddrRef(addrReg, getSlotSize(elemSize) / 8 * i);
+            stReg(elemSize, context->emitReg(vector.regs(i)), addr);
         }
     }
 
-    void ldReg(unsigned elemType, OperandReg reg, OperandAddress addr)
+    void ldReg(unsigned elemSize, OperandReg reg, OperandAddress addr)
     {
         assert(reg);
         assert(addr);
 
-        if (elemType == BRIG_TYPE_B1)
+        if (elemSize == 1)
         {
-            OperandReg tmpReg = getTmpReg(BRIG_TYPE_B32);
-            context->emitLd(type2LdSt(BRIG_TYPE_B32), Brig::BRIG_SEGMENT_GLOBAL, tmpReg, addr);
+            OperandReg tmpReg = getTmpReg(32);
+            context->emitLd(BRIG_TYPE_B32, BRIG_SEGMENT_GLOBAL, tmpReg, addr);
             context->emitCvt(BRIG_TYPE_B1, BRIG_TYPE_U32, reg, tmpReg);
         }
         else
         {
-            context->emitLd(type2LdSt(elemType), Brig::BRIG_SEGMENT_GLOBAL, reg, addr);
+            context->emitLd(getBitType(elemSize), BRIG_SEGMENT_GLOBAL, reg, addr);
         }
     }
 
-    void stReg(unsigned elemType, OperandReg reg, OperandAddress addr)
+    void stReg(unsigned elemSize, OperandReg reg, OperandAddress addr)
     {
         assert(reg);
         assert(addr);
        
-        if (elemType == BRIG_TYPE_B1)
+        if (elemSize == 1)
         {
-            OperandReg tmpReg = getTmpReg(BRIG_TYPE_B32);
+            OperandReg tmpReg = getTmpReg(32);
             context->emitCvt(BRIG_TYPE_U32, BRIG_TYPE_B1, tmpReg, reg);
-            context->emitSt(type2LdSt(BRIG_TYPE_B32), Brig::BRIG_SEGMENT_GLOBAL, tmpReg, addr);
+            context->emitSt(BRIG_TYPE_B32, BRIG_SEGMENT_GLOBAL, tmpReg, addr);
         }
         else
         {
-            context->emitSt(type2LdSt(elemType), Brig::BRIG_SEGMENT_GLOBAL, reg, addr);
+            context->emitSt(getBitType(elemSize), BRIG_SEGMENT_GLOBAL, reg, addr);
         }
     }
 
@@ -991,12 +1071,25 @@ private:
         return false;
     }
 
+    bool hasVectorOperand()
+    {
+        for (int i = 0; i < 5 && testSample.operand(i); ++i)
+        {
+            if (OperandRegVector(testSample.operand(i))) return true;
+        }
+        return false;
+    }
+
     void createMemTestArray()
     {                              
         if (hasMemoryOperand()) 
         {
-            assert(HSAIL_ASM::getSegment(testSample) != Brig::BRIG_SEGMENT_NONE);
+            assert(HSAIL_ASM::getSegment(testSample) != BRIG_SEGMENT_NONE);
             memTestArray = context->emitSymbol(testSample.type(), getTestArrayName(), HSAIL_ASM::getSegment(testSample), bundle.getSize() * getMaxDim());
+            
+            // FIXME: this is a temporary hack to ensure proper alignment of vector values in memory
+            // FIXME: this is not required by HSAIL spec but will likely do in the future
+            if (hasVectorOperand()) memTestArray.align() = Brig::BRIG_ALIGNMENT_8; ///F
         }
     }
 
@@ -1004,36 +1097,36 @@ private:
     {
         assert(memTestArray);
 
-        unsigned glbAddrType = getModelTypeB();
-        unsigned memAddrType = context->getSegAddrTypeB(memTestArray.segment());
+        unsigned glbAddrSize = getModelSize();
+        unsigned memAddrSize = context->getSegAddrSize(memTestArray.segment());
 
         unsigned elemType    = memTestArray.type();
-        unsigned slotType    = getSlotTypeB(elemType);
-        OperandReg reg       = getTmpReg(slotType);
+        unsigned elemSize    = getTypeSize(elemType);
+        unsigned slotSize    = getSlotSize(elemSize);
+        OperandReg reg       = getTmpReg(slotSize);
         unsigned dim         = getMaxDim();
 
-        OperandReg indexReg1 = loadIndexReg(getIdxReg1(glbAddrType), dim, slotType);
+        OperandReg indexReg1 = loadIndexReg(getIdxReg1(glbAddrSize), dim, slotSize);
         OperandReg indexReg2 = indexReg1; // Reuse first index register if possible
-        if (getTypeBitSize(glbAddrType) != getTypeBitSize(memAddrType) ||
-            getTypeBitSize(slotType)    != getTypeBitSize(elemType)) 
+        if (glbAddrSize != memAddrSize || slotSize != elemSize) 
         {
-            indexReg2 = loadIndexReg(getIdxReg2(memAddrType), dim, elemType);
+            indexReg2 = loadIndexReg(getIdxReg2(memAddrSize), dim, elemSize);
         }
 
-        OperandReg addrReg   = loadGlobalArrayAddress(getAddrReg(), indexReg1, arrayIdx);
+        OperandReg addrReg = loadGlobalArrayAddress(getAddrReg(), indexReg1, arrayIdx);
 
         for (unsigned i = 0; i < dim; ++i)
         {
-            OperandAddress addr = context->emitIndirRef(addrReg, getSlotSize(elemType) * i);
+            OperandAddress addr = context->emitAddrRef(addrReg, slotSize / 8 * i);
             if (isDst)
             {
-                ldReg(slotType, reg, addr);
-                context->emitSt(type2LdSt(elemType), memTestArray.segment(), reg, getMemTestArrayAddr(indexReg2, getTypeByteSize(elemType) * i));
+                ldReg(slotSize, reg, addr);
+                context->emitSt(elemType, memTestArray.segment(), reg, getMemTestArrayAddr(indexReg2, elemSize, i));
             }
             else
             {
-                context->emitLd(type2LdSt(elemType), memTestArray.segment(), reg, getMemTestArrayAddr(indexReg2, getTypeByteSize(elemType) * i));
-                stReg(slotType, reg, addr);
+                context->emitLd(elemType, memTestArray.segment(), reg, getMemTestArrayAddr(indexReg2, elemSize, i));
+                stReg(slotSize, reg, addr);
             }
         }
     }
@@ -1041,9 +1134,10 @@ private:
     void initMemTestArray(unsigned arrayIdx) { copyMemTestArray(arrayIdx, true); }
     void saveMemTestArray(unsigned arrayIdx) { copyMemTestArray(arrayIdx, false); }
 
-    Operand getMemTestArrayAddr(OperandReg idxReg, unsigned offset)
+    Operand getMemTestArrayAddr(OperandReg idxReg, unsigned elemSize = 0, unsigned elemIdx = 0)
     {
         assert(memTestArray);
+        unsigned offset = ((elemSize + 7) / 8) * elemIdx; // account for B1 type (1 byte)
         return context->emitAddrRef(memTestArray, idxReg, offset);
     }
 
@@ -1053,18 +1147,18 @@ private:
 
     void initMemTestArrayIndexReg()
     {
-        unsigned memAddrType = context->getSegAddrTypeB(memTestArray.segment());
-        unsigned elemType    = memTestArray.type();
+        unsigned memAddrSize = context->getSegAddrSize(memTestArray.segment());
+        unsigned elemSize    = getTypeSize(memTestArray.type());
         unsigned dim         = getMaxDim();
 
-        loadIndexReg(getIdxReg1(memAddrType), dim, elemType);
+        loadIndexReg(getIdxReg1(memAddrSize), dim, elemSize);
     }
 
     Operand getMemTestArrayAddr()
     {
         assert(memTestArray);
-        unsigned memAddrType = context->getSegAddrTypeB(memTestArray.segment());
-        return getMemTestArrayAddr(getIdxReg1(memAddrType), 0);
+        unsigned memAddrSize = context->getSegAddrSize(memTestArray.segment());
+        return getMemTestArrayAddr(getIdxReg1(memAddrSize));
     }
 
     //==========================================================================
@@ -1086,44 +1180,56 @@ private:
     };
 
     template<class T>
-    void emitTestDescription(T& comment)
+    void emitTestDescription(T& comment, unsigned maxTestNum = 0xFFFFFFFF)
     {
-        comment("Test: " + testName);
+        assert(!bundle.empty());
+
+        bundle.resetPos();
+
+        comment("Test name: " + testName);
         comment("");
         comment("Instruction: " + dumpInst(testSample));
-        comment("Arguments:");
 
-        assert(!bundle.empty());
-        bundle.resetPos(); // dump first set of test data
-
-        for (int i = provider->getFirstSrcOperandIdx(); i <= provider->getLastOperandIdx(); ++i)
+        for (unsigned testIdx = 0; testIdx < maxTestNum; ++testIdx)
         {
-            assert(testSample.operand(i));
-            comment("    Arg " + index2str(i) + " (" + getOperandKind(i) + "): " + bundle.getSrcVal(i).dump());
-        }
+            comment("");
+            if (maxTestNum == 1) {
+                comment("Test arguments:");
+            } else {
+                comment("Test#" + index2str(testIdx, 2) + "# arguments:");
+            }
 
-        if (hasDstOperand())
-        {
-            Val dstValue = bundle.getDstVal();
-            assert(!dstValue.empty());
-            assert(testSample.type() == bundle.getDstValType());
+            for (int i = provider->getFirstSrcOperandIdx(); i <= provider->getLastOperandIdx(); ++i)
+            {
+                assert(testSample.operand(i));
+                comment("    Arg " + index2str(i) + " (" + getOperandKind(i) + "):           " + bundle.getSrcVal(i).dump());
+            }
+
+            if (hasDstOperand())
+            {
+                Val dstValue = bundle.getDstVal();
+                assert(!dstValue.empty());
+                assert(testSample.type() == bundle.getDstValType());
             
-            comment("Expected result: " + dstValue.dump());
-        }
+                comment("Expected result:           " + dstValue.dump());
+            }
         
-        if (hasMemoryOperand())
-        {
-            Val memValue = bundle.getMemVal();
-            assert(!memValue.empty());
+            if (hasMemoryOperand())
+            {
+                Val memValue = bundle.getMemVal();
+                assert(!memValue.empty());
 
-            comment("Expected result in memory: " + memValue.dump());
+                comment("Expected result in memory: " + memValue.dump());
+            }
+
+            if (!bundle.next()) break;
         }
     }
 
     string dumpInst(Inst inst)
     {
         HSAIL_ASM::Disassembler disasm(context->getContainer());
-        string res = disasm.get(testSample);
+        string res = disasm.get(testSample, machineModel);
         string::size_type pos = res.find_first_of("\t");
         if (pos != string::npos) res = res.substr(0, pos);
         return res;
@@ -1172,10 +1278,10 @@ private:
     // Helpers
 private:
 
-    static bool     isSmallModel()  { return machineModel == MODEL_SMALL; }
-    static bool     isLargeModel()  { return machineModel == MODEL_LARGE; }
-    static unsigned getModelTypeU() { return isSmallModel() ? BRIG_TYPE_U32 : BRIG_TYPE_U64; }
-    static unsigned getModelTypeB() { return isSmallModel() ? BRIG_TYPE_B32 : BRIG_TYPE_B64; }
+    static bool     isSmallModel() { return machineModel == BRIG_MACHINE_SMALL; }
+    static bool     isLargeModel() { return machineModel == BRIG_MACHINE_LARGE; }
+    static unsigned getModelType() { return isSmallModel() ? BRIG_TYPE_U32 : BRIG_TYPE_U64; }
+    static unsigned getModelSize() { return isSmallModel() ? 32 : 64; }
 
     static string   getName(OperandReg reg) { return static_cast<SRef>(reg.reg()); }
     static string   getName(OperandRegVector vector) 
@@ -1189,49 +1295,20 @@ private:
         return "(" + res + ")";
     }
 
-    static unsigned getTypeBitSize(unsigned type)
+    static unsigned getSlotSize(unsigned typeSize)
     {
-        return HSAIL_ASM::getTypeSize(type);
-    }
-
-    static unsigned getTypeByteSize(unsigned type)
-    {
-        return (type == BRIG_TYPE_B1)? 1 : (HSAIL_ASM::getTypeSize(type) / 8);
-    }
-
-    static unsigned getSlotSize(unsigned type)
-    {
-        return (getTypeBitSize(type) <= 32)? 4 : 8;
-    }
-
-    static unsigned getSlotTypeB(unsigned type)
-    {
-        return (getTypeBitSize(type) <= 32)? BRIG_TYPE_B32 : BRIG_TYPE_B64;
-    }
-
-    static unsigned type2b(unsigned type)
-    {
-        return HSAIL_ASM::convType2BitType(type);
-    }
-
-    static unsigned b2u(unsigned type)
-    {
-        using namespace Brig;
-        switch(type) 
+        switch(typeSize)
         {
-        case BRIG_TYPE_B8:      return BRIG_TYPE_U8;
-        case BRIG_TYPE_B16:     return BRIG_TYPE_U16;
-        case BRIG_TYPE_B32:     return BRIG_TYPE_U32;
-        case BRIG_TYPE_B64:     return BRIG_TYPE_U64;
-        default: 
-            assert(false); 
-            return BRIG_TYPE_NONE;
+        case 1:
+        case 8:
+        case 16:
+        case 32:    return 32;
+        case 64:    return 64;
+        case 128:   return 128;
+        default:
+            assert(false);
+            return 0;
         }
-    }
-
-    static unsigned type2LdSt(unsigned type) // Convert to type supported by ld/st
-    {
-        return HSAIL_ASM::isBitType(type)? b2u(type) : type;
     }
 
     static unsigned getAtomicSrcNum(InstAtomic inst)
@@ -1242,9 +1319,13 @@ private:
         return (atmOp == Brig::BRIG_ATOMIC_CAS) ? 3 : (atmOp == Brig::BRIG_ATOMIC_LD) ? 1 : 2;
     }
 
-    static string index2str(unsigned idx)
+    static string index2str(unsigned idx, unsigned width = 0)
     {
         ostringstream s;
+        if (width > 0) {
+            s << setfill('0');
+            s << setw(width);
+        }
         s << idx;
         return s.str();
     }
@@ -1289,16 +1370,17 @@ private:
 
         TestDataProvider* p;
 
+        using namespace Brig;
         switch (inst.kind()) 
         {
-        case Brig::BRIG_INST_BASIC:
-        case Brig::BRIG_INST_MOD:         p = TestDataProvider::getProvider(inst.opcode(), inst.type());                           break;
-        case Brig::BRIG_INST_CVT:         p = TestDataProvider::getProvider(inst.opcode(), InstCvt(inst).sourceType());            break;
-        case Brig::BRIG_INST_CMP:         p = TestDataProvider::getProvider(inst.opcode(), InstCmp(inst).sourceType());            break;
-        case Brig::BRIG_INST_ATOMIC:      p = TestDataProvider::getProvider(inst.opcode(), inst.type(), getAtomicSrcNum(inst));    break;
-        case Brig::BRIG_INST_SOURCE_TYPE: p = TestDataProvider::getProvider(inst.opcode(), InstSourceType(inst).sourceType());     break;
-        case Brig::BRIG_INST_MEM:         p = TestDataProvider::getProvider(inst.opcode(), InstMem(inst).type());                  break;
-        default:                          p = 0; /* other formats are not currently supported */                                   break;
+        case BRIG_INST_BASIC:
+        case BRIG_INST_MOD:         p = TestDataProvider::getProvider(inst.opcode(), inst.type(), inst.type());                        break;
+        case BRIG_INST_CVT:         p = TestDataProvider::getProvider(inst.opcode(), inst.type(), InstCvt(inst).sourceType());         break;
+        case BRIG_INST_CMP:         p = TestDataProvider::getProvider(inst.opcode(), inst.type(), InstCmp(inst).sourceType());         break;
+        case BRIG_INST_ATOMIC:      p = TestDataProvider::getProvider(inst.opcode(), inst.type(), inst.type(), getAtomicSrcNum(inst)); break;
+        case BRIG_INST_SOURCE_TYPE: p = TestDataProvider::getProvider(inst.opcode(), inst.type(), InstSourceType(inst).sourceType());  break;
+        case BRIG_INST_MEM:         p = TestDataProvider::getProvider(inst.opcode(), inst.type(), InstMem(inst).type());               break;
+        default:                          p = 0; /* other formats are not currently supported */                                             break;
         }
 
         if (p)
@@ -1313,7 +1395,7 @@ private:
 
                 // NB: If there are vector operands, memory operands (if any) must be processed in similar way.
                 unsigned dim  = (OperandRegVector(opr) || OperandAddress(opr))? maxDim : 1;
-                bool     lock = !group || OperandImmed(opr);
+                bool     lock = !group || OperandImmed(opr) || OperandWavesize(opr);
         
                 p->registerOperand(i, dim, lock);
             }
@@ -1336,6 +1418,10 @@ private:
             if (OperandAddress addr = operand)
             {
                 if (addr.reg() || addr.offset() != 0) return false;
+            }
+            else if (OperandWavesize(operand))
+            {
+                if (wavesize == 0) return false;
             }
             else if (!OperandReg(operand) && 
                      !OperandRegVector(operand) &&

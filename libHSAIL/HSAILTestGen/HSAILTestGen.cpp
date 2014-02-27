@@ -82,13 +82,20 @@ int genTests(string path)
         std::cerr << "Warning: incompatible options; \"backend\" option ignored\n";
     }
 
+    if (rndTestNum > 1) srand(rndTestNum);
+
+    if (rndTestNum > MAX_RND_TEST_NUM)
+    {
+        std::cerr << "Number of random test values must not exceed " << MAX_RND_TEST_NUM << "\n";
+        return 1;
+    }
+
     if (rndTestNum > 0 && testPackage != PACKAGE_SEPARATE)
     {
         std::cerr << "Warning: incompatible options;  \"random\" option ignored\n";
     }
 
-    PropValidator::setMachineType(machineModel == MODEL_SMALL? Brig::BRIG_TYPE_B32 : Brig::BRIG_TYPE_B64); //F
-    PropValidator::enableOperandsExpansion(expandRegs);
+    PropDesc::init(machineModel);
 
     int res;    
     try 
@@ -111,6 +118,8 @@ int genTests(string path)
         std::cerr << err.what() << "\n";
         res = 1;
     }
+
+    PropDesc::clean();
 
     return res;
 }

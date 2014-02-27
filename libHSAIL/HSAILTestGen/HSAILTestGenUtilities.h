@@ -33,6 +33,8 @@ using HSAIL_ASM::Operand;
 using HSAIL_ASM::OperandReg;
 using HSAIL_ASM::SRef;
 
+using HSAIL_ASM::getNaturalAlignment;
+
 namespace TESTGEN {
 
 // ============================================================================
@@ -114,24 +116,22 @@ public: // Instructions
     void emitLda(OperandReg dst, DirectiveVariable var);
 
 public: // Operands
-    Operand emitReg(unsigned type, SRef regName);
-    Operand emitReg(unsigned type, unsigned idx = 0);
-    Operand emitRegVector(unsigned cnt, unsigned type, unsigned idx0);
-    Operand emitRegVector(unsigned cnt, unsigned type, bool isSrc = true);
-    Operand emitImm(unsigned type = Brig::BRIG_TYPE_B32, uint64_t lVal = 0, uint64_t hVal = 0);
-    Operand emitWavesize(unsigned type = Brig::BRIG_TYPE_B32);
+    Operand emitReg(SRef regName);
+    Operand emitReg(unsigned size, unsigned idx = 0);
+    Operand emitRegVector(unsigned cnt, unsigned size, unsigned idx0);
+    Operand emitRegVector(unsigned cnt, unsigned size, bool isSrc = true);
+    Operand emitImm(unsigned size = 32, uint64_t lVal = 0, uint64_t hVal = 0);
+    Operand emitWavesize();
     Operand emitFuncRef(DirectiveFunction func);
-    Operand emitAddrRef(Directive var, unsigned type, int reg = -1, int offset = 0);
     Operand emitAddrRef(Directive var, OperandReg reg, unsigned offset = 0);
-    Operand emitAddrRef(Directive var);
-    Operand emitIndirRef(OperandReg reg, uint64_t offset = 0);
-
+    Operand emitAddrRef(Directive var, unsigned offset = 0);
+    Operand emitAddrRef(OperandReg reg, uint64_t offset = 0);
+    Operand emitAddrRef(uint64_t offset = 0);
     Operand emitFBarrierRef(DirectiveFbarrier fb);
     Operand emitLabelRef(const char* name);
-
     Operand emitArgList(unsigned num, bool isInputArgs);
 
-    string getRegName(unsigned type, unsigned idx);
+    string getRegName(unsigned size, unsigned idx);
 
     DirectiveVariable emitSymbol(unsigned type, string name, unsigned segment = Brig::BRIG_SEGMENT_GLOBAL, unsigned dim = 0)
     {
@@ -147,7 +147,7 @@ public: // Operands
         sym.segment() = segment;
         sym.init() = Directive();
         sym.type() = type;
-        sym.align() = 0; // Natural
+        sym.align() = getNaturalAlignment(type);
         sym.dim() = dim;
 
         return sym;
@@ -162,16 +162,9 @@ public: // Operands
         return fb;
     }
 
-    unsigned getSegAddrTypeB(unsigned segment)
-    {
-        return (HSAIL_ASM::getSegAddrSize(segment, !isSmallModel) == 32)? Brig::BRIG_TYPE_B32 : Brig::BRIG_TYPE_B64;
-    }
-
-    unsigned getSegAddrTypeU(unsigned segment)
-    {
-        return (HSAIL_ASM::getSegAddrSize(segment, !isSmallModel) == 32)? Brig::BRIG_TYPE_U32 : Brig::BRIG_TYPE_U64;
-    }
-
+    unsigned getSegAddrSize(unsigned segment)    { return HSAIL_ASM::getSegAddrSize(segment, !isSmallModel); }
+    unsigned getSegAddrType(unsigned segment)    { return (getSegAddrSize(segment) == 32)? Brig::BRIG_TYPE_U32 : Brig::BRIG_TYPE_U64; }
+    unsigned conv2LdStType(unsigned type);
 };
 
 //=============================================================================
@@ -204,7 +197,7 @@ public:
     static const unsigned ROUNDING_DOWNI_SAT = Brig::BRIG_ROUND_INTEGER_MINUS_INFINITY_SAT;
 
 public:
-    AluMod(unsigned val) : bits(val) {}
+    AluMod(unsigned val = ROUNDING_NONE) : bits(val) {}
 
 public:
     bool isFtz()           { return (bits & FTZ) != 0; }

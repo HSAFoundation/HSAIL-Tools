@@ -1,4 +1,18 @@
 #include "HSAILTestGenVal.h"
+#include "HSAILUtilities.h"
+
+#include <iomanip>
+
+using std::setprecision;
+
+using HSAIL_ASM::isSignedType;
+using HSAIL_ASM::isUnsignedType;
+using HSAIL_ASM::isPackedType;
+using HSAIL_ASM::isUnrPacking;
+using HSAIL_ASM::packedType2baseType;
+using HSAIL_ASM::packedType2elementType;
+using HSAIL_ASM::getPackingControl;
+using HSAIL_ASM::pack2str;
 
 namespace TESTGEN {
 
@@ -90,7 +104,7 @@ public:
 
 public:
     // Return fractional part of fp number 
-    // normalized so that x-th digit is at 63d bit of u64_t
+    // normalized so that x-th digit is at (63-x)-th bit of u64_t
     u64_t getNormalizedFract(int x = 0) const
     {
         if (isZero() || isInf() || isNan()) return 0;
@@ -107,7 +121,7 @@ public:
 
     T copySign(T v) const { return (v & SIGN_MASK) | getExponent() | getMantissa(); }
 
-    T normalize() const
+    T normalize() const // Clear NaN payload
     {
         if (isQuietNan()) return getSign() | getExponent() | getNanType();
         return bits;
@@ -192,20 +206,20 @@ void Val::clean()
 {
     if (isVector()) 
     {
-        if (val_vec->unlock() == 0) delete val_vec;
-        val_vec = 0;
+        if (vector->unlock() == 0) delete vector;
+        vector = 0;
     }
 }
 
 void Val::copy(const Val& val)
 {
-    setProps(val.type, val.signExpEnabled()); 
+    setProps(val.type); 
 
     if (val.isVector()) {
-        val_vec = val.val_vec;
-        val_vec->lock();
+        vector = val.vector;
+        vector->lock();
     } else {
-        val_u64 = val.val_u64;
+        num = val.num;
     }
 }
 
@@ -219,13 +233,15 @@ Val::Val(unsigned dim, Val v0, Val v1, Val v2, Val v3)
     assert(2 <= dim && dim <= 4);
     
     setProps(Brig::BRIG_TYPE_NONE);
-    val_vec = new ValVector(dim, v0, v1, v2, v3);
-    assert(val_vec);
-    val_vec->lock();
+    num.clear();
+
+    vector = new ValVector(dim, v0, v1, v2, v3);
+    assert(vector);
+    vector->lock();
 
     for (unsigned i = 1; i < dim; ++i) 
     {
-        assert((*val_vec)[0].getType() == (*val_vec)[i].getType());
+        assert((*vector)[0].getType() == (*vector)[i].getType());
     }
 }
 
@@ -246,19 +262,19 @@ Val& Val::operator=(const Val& val)
 
 unsigned Val::getDim() const
 {
-    return isVector()? val_vec->getDim() : 1;
+    return isVector()? vector->getDim() : 1;
 }
 
 unsigned Val::getVecType() const 
 { 
-    return isVector()? val_vec->getType() : Brig::BRIG_TYPE_NONE; 
+    return isVector()? vector->getType() : Brig::BRIG_TYPE_NONE; 
 }
 
 Val Val::operator[](unsigned i) const
 {
     if (isVector()) {
         assert(i < getDim());
-        return (*val_vec)[i];
+        return (*vector)[i];
     } else {
         assert(i == 0);
         return *this;
@@ -268,9 +284,73 @@ Val Val::operator[](unsigned i) const
 //=============================================================================
 //=============================================================================
 //=============================================================================
-// FP-specific Val operations
+// Operations with packed values
 
-#define GET_FLOAT_PROP(prop)  bool Val::prop() const { return isFloat() && (isX64()? FloatProp64(val_u64).prop() : FloatProp32(val_u32).prop()); }
+u64_t Val::getElement(unsigned idx) const       
+{ 
+    assert(isPacked());
+    assert(idx < getPackedTypeDim(getType()));
+
+    return num.getElement(packedType2elementType(getType()), idx); 
+}
+
+void  Val::setElement(unsigned idx, u64_t val)
+{ 
+    assert(isPacked());
+    assert(idx < getPackedTypeDim(getType()));
+
+    num.setElement(val, packedType2elementType(getType()), idx);
+}
+
+Val Val::getPackedElement(unsigned elementIdx, unsigned packing /*=BRIG_PACK_P*/, unsigned srcOperandIdx /*=0*/) const
+{
+    assert(srcOperandIdx == 0 || srcOperandIdx == 1);
+    assert(pack2str(packing));
+
+    if (empty())
+    {
+        assert(srcOperandIdx == 1 && isUnrPacking(packing));
+        return *this;
+    }
+    else if (isPacked())
+    {
+        assert(elementIdx < getPackedTypeDim(getType()));
+
+        unsigned idx = (getPackingControl(srcOperandIdx, packing) == 'p')? elementIdx : 0;
+        u64_t element = getElement(idx);
+        return Val(packedType2baseType(getType()), element);
+    }
+    else // Special case for SHL/SHR
+    {
+        assert(getType() == Brig::BRIG_TYPE_U32);
+        assert(packing == Brig::BRIG_PACK_PP);
+        return *this; // shift all elements by the same amount
+    }
+}
+
+void Val::setPackedElement(unsigned elementIdx, Val dst)
+{
+    assert(isPacked());
+    assert(!dst.isPacked());
+    assert(dst.getType() == packedType2baseType(getType()));
+    assert(elementIdx < getPackedTypeDim(getType()));
+
+    // It is assumed that dst does not need sign-extension
+    setElement(elementIdx, dst.num.get<u64_t>());
+}
+
+//=============================================================================
+//=============================================================================
+//=============================================================================
+// Operations on scalar floating-point values
+
+#define GET_FLOAT_PROP(x) \
+    bool Val::x() const   \
+    {                     \
+        assert(!isF16()); \
+        return isFloat() && (isF64()? FloatProp64(num.get<u64_t>()).x()   \
+                                    : FloatProp32(num.get<u32_t>()).x()); \
+    }
 
 GET_FLOAT_PROP(isPositive)
 GET_FLOAT_PROP(isNegative)
@@ -290,128 +370,95 @@ GET_FLOAT_PROP(isRegularPositive)
 GET_FLOAT_PROP(isRegularNegative)
 GET_FLOAT_PROP(isNatural)
     
+#define GET_FLOAT_NUMBER(x) \
+    Val Val::x() const      \
+    {                       \
+        assert(isFloat());  \
+        assert(!isF16());   \
+        return isF64()? Val(getType(), FloatProp64::x())  \
+                      : Val(getType(), FloatProp32::x()); \
+    }
+
+GET_FLOAT_NUMBER(getQuietNan)
+GET_FLOAT_NUMBER(getNegativeZero)
+GET_FLOAT_NUMBER(getPositiveZero)
+GET_FLOAT_NUMBER(getNegativeInf)
+GET_FLOAT_NUMBER(getPositiveInf)
+
 u64_t Val::getNormalizedFract(int delta /*=0*/) const 
 { 
     assert(isFloat());  
-    return isX64()? FloatProp64(val_u64).getNormalizedFract(delta) : FloatProp32(val_u32).getNormalizedFract(delta); 
+    assert(!isF16());
+    return isF64()? FloatProp64(num.get<u64_t>()).getNormalizedFract(delta)
+                  : FloatProp32(num.get<u32_t>()).getNormalizedFract(delta);
 }
 
 Val Val::copySign(Val v) const 
 {
     assert(isFloat());  
-    assert(getType() == v.getType());  
+    assert(!isF16());
+    assert(getType() == v.getType());
 
-    if (isX64()) 
-    {
-        return Val(getType(), FloatProp64(val_u64).copySign(v.val_u64));
-    }
-    else
-    {
-        return Val(getType(), FloatProp32(val_u32).copySign(v.val_u32));
-    }
+    return isF64()? Val(getType(), FloatProp64(num.get<u64_t>()).copySign(v.num.get<u64_t>()))
+                  : Val(getType(), FloatProp32(num.get<u32_t>()).copySign(v.num.get<u32_t>()));
 }
 
-Val Val::normalize() const 
+//=============================================================================
+//=============================================================================
+//=============================================================================
+// Operations on scalar/packed floating-point values
+
+struct op_normalize  // Clear NaN payload
 { 
-    if (isFloat())
+    Val operator()(Val v) 
     {
-        return Val(getType(), isX64()? FloatProp64(val_u64).normalize() : FloatProp32(val_u32).normalize());
+        assert(!v.isF16());
+        if (!v.isFloat()) return v;
+        return Val(v.getType(), v.isF64()? FloatProp64(v.getAsB64()).normalize() : FloatProp32(v.getAsB32()).normalize());
     }
-    return *this;
-}
+};
 
-Val Val::ftz() const 
+struct op_ftz   // Force subnormals to 0
 { 
-    if (isFloat())
+    Val operator()(Val v) 
     {
-        if (isNegativeSubnormal()) return getNegativeZero();
-        if (isPositiveSubnormal()) return getPositiveZero();
+        assert(!v.isF16());
+        if (v.isNegativeSubnormal()) return v.getNegativeZero();
+        if (v.isPositiveSubnormal()) return v.getPositiveZero();
+        return v;
     }
-    return *this;
-}
+};
 
-Val Val::getQuietNan()     const { assert(isFloat()); return isX64()? Val(getType(), FloatProp64::getQuietNan())     : Val(getType(), FloatProp32::getQuietNan());     }
-Val Val::getNegativeZero() const { assert(isFloat()); return isX64()? Val(getType(), FloatProp64::getNegativeZero()) : Val(getType(), FloatProp32::getNegativeZero()); }
-Val Val::getPositiveZero() const { assert(isFloat()); return isX64()? Val(getType(), FloatProp64::getPositiveZero()) : Val(getType(), FloatProp32::getPositiveZero()); }
-Val Val::getNegativeInf()  const { assert(isFloat()); return isX64()? Val(getType(), FloatProp64::getNegativeInf())  : Val(getType(), FloatProp32::getNegativeInf());  }
-Val Val::getPositiveInf()  const { assert(isFloat()); return isX64()? Val(getType(), FloatProp64::getPositiveInf())  : Val(getType(), FloatProp32::getPositiveInf());  }
+Val Val::normalize() const { return transform(op_normalize()); }
+Val Val::ftz()       const { return transform(op_ftz()); }
 
 //=============================================================================
 //=============================================================================
 //=============================================================================
-// Val conversions 
+// Randomization
 
-u64_t Val::conv2b64(bool expandSignedInt /*=true*/, bool convFloat /*=false*/) const
+struct op_s2q  // Replace Signaling NaNs with Quiet ones
+{ 
+    Val operator()(Val v) 
+    {
+        assert(!v.isF16());
+        if (v.isSignalingNan()) return v.getQuietNan();
+        return v;
+    }
+};
+
+Val Val::randomize() const
 {
-    using namespace Brig;
     assert(!empty() && !isVector());
 
-    u64_t res = 0;
+    Val res = *this;
+    unsigned dim = getSize() / 8; // NB: 0 for b1; it is ok
 
-    if (isSignedInt() && expandSignedInt && signExpEnabled())
-    {
-        switch(getType())
-        {
-        case BRIG_TYPE_S8:  res = static_cast<u64_t>(static_cast<s64_t>(s8()));  break;
-        case BRIG_TYPE_S16: res = static_cast<u64_t>(static_cast<s64_t>(s16())); break;
-        case BRIG_TYPE_S32: res = static_cast<u64_t>(static_cast<s64_t>(s32())); break;
-        case BRIG_TYPE_S64: res = static_cast<u64_t>(static_cast<s64_t>(s64())); break;
-        default: assert(false); return 0;
-        }
-    }
-    else if (isFloat() && convFloat)
-    {
-        switch(getType())
-        {
-        case BRIG_TYPE_F32: res = Val(static_cast<f64_t>(f32())).b64(); break;
-        case BRIG_TYPE_F64: res = b64();                                break;
-        default: assert(false); return 0;
-        }
-    }
-    else
-    {
-        switch(getTypeSize(getType()))
-        {
-        case 1:  res = static_cast<u64_t>(val_u8);  break;
-        case 8:  res = static_cast<u64_t>(val_u8);  break;
-        case 16: res = static_cast<u64_t>(val_u16); break;
-        case 32: res = static_cast<u64_t>(val_u32); break;
-        case 64: res = static_cast<u64_t>(val_u64); break;
-        default: 
-            assert(false); return 0;
-        }
-    }
-
+    for (unsigned i = 0; i < dim; ++i) res.num.setElement(rand(), Brig::BRIG_TYPE_U8, i);
+    
+    res = res.transform(op_s2q());  // Signaling NaNs are not supported, replace with quiet
+    res = res.normalize();          // Clear NaN payload
     return res;
-}
-
-u32_t Val::conv2b32(bool expandSignedInt /*=true*/, bool convFloat /*=false*/) const
-{
-    return static_cast<u32_t>(conv2b64(expandSignedInt, convFloat));
-}
-
-u32_t Val::conv2b32hi(bool expandSignedInt /*=true*/, bool convFloat /*=false*/) const
-{
-    return static_cast<u32_t>(conv2b64(expandSignedInt, convFloat) >> 32);
-}
-
-//=============================================================================
-//=============================================================================
-//=============================================================================
-// 
-
-void Val::randomize() // FIXME
-{
-    assert(!empty() && !isVector());
-
-    val_u64 = ((((u64_t)rand()) & 0xFF) << 56)
-            | ((((u64_t)rand()) & 0xFF) << 48)
-            | ((((u64_t)rand()) & 0xFF) << 40)
-            | ((((u64_t)rand()) & 0xFF) << 32)
-            | ((((u64_t)rand()) & 0xFF) << 24)
-            | ((((u64_t)rand()) & 0xFF) << 16)
-            | ((((u64_t)rand()) & 0xFF) << 8)
-            |  (((u64_t)rand()) & 0xFF);
 }
 
 //=============================================================================
@@ -419,44 +466,113 @@ void Val::randomize() // FIXME
 //=============================================================================
 // Val dumping
 
-string Val::str() const
+static unsigned getTextWidth(unsigned type)
+{
+    if (type == Brig::BRIG_TYPE_F32) return 16;
+    if (type == Brig::BRIG_TYPE_F64) return 24;
+
+    switch (getTypeSize(type))
+    {
+    case 8:  return 4;
+    case 16: return 6;
+    case 32: return 11;
+    case 64: return 20;
+    default: return 0;  // handled separately
+    }
+}
+
+string Val::luaStr(unsigned idx /*=0*/) const
 {
     using namespace Brig;
-    assert(!empty() && !isVector());
 
-    if (isSpecialFloat()) return nan2str();
+    assert(!isPackedFloat());
+    assert(0 <= idx && idx <= 3);
+    assert(!empty() && !isVector());
+    assert(!isF16());
 
     ostringstream s;
 
-    switch (getType())
+    unsigned w = getTextWidth(getType());
+    if (isFloat()) w += 2;
+    s << setw(w);
+
+    if (isSpecialFloat())
     {
-    case BRIG_TYPE_S8:  s << static_cast<s32_t>(s8()); break;
-    case BRIG_TYPE_S16: s << s16();                    break;
-    case BRIG_TYPE_S32: s << s32();                    break;
-    case BRIG_TYPE_S64: s << s64();                    break;
-    case BRIG_TYPE_F32: s << f32();                    break;
-    case BRIG_TYPE_F64: s << f64();                    break;
-    default:            s << conv2b64();               break;
+        s << nan2str();
+    }
+    else
+    {    
+        char buffer[32];    
+    
+        switch (getType())
+        {
+        case BRIG_TYPE_F32: sprintf(buffer,  "\"%.6A\"", f32()); s << string(buffer); break;
+        case BRIG_TYPE_F64: sprintf(buffer, "\"%.13A\"", f64()); s << string(buffer); break;
+
+        case BRIG_TYPE_S8:  s << static_cast<s32_t>(s8());     break;
+        case BRIG_TYPE_S16: s << s16();                        break;
+        case BRIG_TYPE_S32: s << s32();                        break;
+        
+        default: s << setw(getTextWidth(BRIG_TYPE_U32)) << getAsB32(idx); break;
+        }
     }
 
     return s.str();
 }
 
-string Val::hexStr() const
+string Val::decDump() const
 {
     using namespace Brig;
     assert(!empty() && !isVector());
+    assert(getSize() != 128);
+    assert(!isPacked());
+    assert(!isF16());
 
     ostringstream s;
-    s << "0x" << setbase(16);
+
+    s << setw(getTextWidth(getType()));
+
+    if (isSpecialFloat())
+    {
+        s << nan2str();
+    }
+    else
+    {
+        switch (getType())
+        {
+        case BRIG_TYPE_F32: s << setprecision(9)  << f32(); break;
+        case BRIG_TYPE_F64: s << setprecision(17) << f64(); break;
+
+        case BRIG_TYPE_S8:  s << static_cast<s32_t>(s8());  break;
+        case BRIG_TYPE_S16: s << s16();                     break;
+        case BRIG_TYPE_S32: s << s32();                     break;
+        case BRIG_TYPE_S64: s << s64();                     break;
+
+        default:            s << getAsB64();                break;
+        }
+    }
+
+    return s.str();
+}
+
+string Val::hexDump() const
+{
+    using namespace Brig;
+    assert(!empty() && !isVector());
+    assert(getSize() != 128);
+    assert(!isPacked());
+    assert(!isF16());
+
+    ostringstream s;
+    s << "0x" << setbase(16) << setfill('0') << setw(getSize() / 4);
 
     switch (getType())
     {
-    case BRIG_TYPE_S8:  s << (s8() & 0xFF);            break;
-    case BRIG_TYPE_S16: s << s16();                    break;
-    case BRIG_TYPE_S32: s << s32();                    break;
-    case BRIG_TYPE_S64: s << s64();                    break;
-    default:            s << conv2b64();               break;
+    case BRIG_TYPE_S8:   s << (s8() & 0xFF);            break;
+    case BRIG_TYPE_S16:  s << s16();                    break;
+    case BRIG_TYPE_S32:  s << s32();                    break;
+    case BRIG_TYPE_S64:  s << s64();                    break;
+    default:             s << getAsB64();               break;
     }
 
     return s.str();
@@ -470,25 +586,69 @@ string Val::dump() const
     {
         string sval;
         string hval;
-        for (unsigned i = 0; i < val_vec->getDim(); ++i) 
+        for (unsigned i = 0; i < vector->getDim(); ++i)
         {
             const char* pref = (i > 0)? ", " : "";
-            sval += pref + (*val_vec)[i].str();
-            hval += pref + (*val_vec)[i].hexStr();
+            sval += pref + (*vector)[i].decDump();
+            hval += pref + (*vector)[i].hexDump();
         }
         return "(" + sval + ") [" + hval + "]";
     } 
+    else if (getType() == Brig::BRIG_TYPE_B128)
+    {
+        return b128().hexDump(); 
+    }
+    else if (isPackedType(getType()))
+    {
+        return dumpPacked();
+    }
     else 
     {
-        return str() + " [" + hexStr() + "]";
+        return decDump() + " [" + hexDump() + "]";
     }
+}
+
+string Val::dumpPacked() const
+{
+    assert(!empty());
+    assert(!isVector());
+
+    ostringstream s;
+    ostringstream h;
+
+    unsigned etype = getElementType();
+    unsigned dim   = getPackedTypeDim(getType());
+    unsigned width = getTypeSize(getType()) / dim;
+
+    if      (isSignedType(etype))   s << "_s";
+    else if (isUnsignedType(etype)) s << "_u";
+    else                            s << "_f";
+
+    s << width << "x" << dim << "(";
+    h << setbase(16) << setfill('0') << "[";
+
+    for (unsigned i = 0; i < dim; ++i)
+    {
+        if (i > 0) { s << ", "; h << ", "; }
+        
+        Val val(etype, getElement(dim - i - 1));
+
+        s << val.decDump();
+        h << val.hexDump();
+    }
+
+    s << ")";
+    h << "]";
+
+    return s.str() + " " + h.str();
 }
 
 string Val::nan2str() const
 {
     assert(isSpecialFloat());
+    assert(!isSignalingNan());
 
-    return string(isNegative()? "Negative " : "Positive ") + (isNan()? (isSignalingNan()? "Signaling NaN"  : "Quiet NaN") : "Infinity");
+    return isNan()? "NAN" : isPositiveInf()? "INF" : "-INF";
 }
 
 //=============================================================================

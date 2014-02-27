@@ -1,0 +1,463 @@
+version 0:96:$full:$small;
+
+function &TestFunc()()
+{
+    ret;
+};
+
+function &TestFunc01()(arg_u8x8 %in_arg0)
+{
+@lab1:
+    ret;
+};
+
+function &TestFunc12(arg_s32x2 %out_arg0)(
+    arg_u32 %in_arg0,
+    arg_u32 %in_arg1)
+{
+@lab1:
+    ret;
+};
+
+function &TestCalls()()
+{
+@lab1:
+    {
+        call	&TestFunc () ();
+    }
+    {
+        call	&TestFunc ();
+    }
+    {
+        call	$s0 ();
+    }
+    {
+        call_width(2147483648)	$s0 ();
+    }
+    {
+        call_width(all)	$s0 ();
+    }
+    {
+        call_width(WAVESIZE)	$s0 ()();
+    }
+    ret;
+};
+
+
+global_u32 &x;
+group_u32 &g;
+
+global_roimg &roimage = {geometry = 3d, width = 5, height = 4, depth = 6, format = unorm_short_101010, order = rgbx};
+global_rwimg &rwimage = {geometry = 3d, width = 5, height = 4, depth = 6, format = unorm_short_101010, order = rgbx};
+global_samp  &samp    = {coord = normalized, filter = nearest, boundaryu = clamp, boundaryv = clamp, boundaryw = clamp};
+
+global_sig32  &signal;
+
+kernel &TestKernel(kernarg_u32 %arg)
+{
+    lda_kernarg_u32   $s4, [%arg];
+};
+
+function &Testinst()(arg_u32 %arg)
+{
+
+    //---------------------------------------
+
+    global_b8   %globalVar[8];   lda_global_u32   $s4, [%globalVar];
+    group_b8    %groupVar[8];    lda_group_u32    $s4, [%groupVar];
+    private_b8  %privateVar[8];  lda_private_u32  $s4, [%privateVar];
+    readonly_b8 %readonlyVar[8]; lda_readonly_u32 $s4, [%readonlyVar];
+    spill_b8    %spillVar[8];    lda_spill_u32    $s4, [%spillVar];
+                                 lda_arg_u32      $s4, [%arg];
+
+    private_b8 %stacklike[8];
+    lda_private_u32 $s4, [%stacklike];
+
+    group_b8 %gs[8];
+    lda_group_u32 $s4, [%gs];
+    lda_group_u32 $s4, [%gs][12];
+    lda_group_u32 $s4, [%gs][$s0 + 12];
+    lda_group_u32 $s4, [$s0 + 12];
+    lda_group_u32 $s4, [$s0];
+
+    global_u32 %g[3];
+    lda_global_u32 $s1, [%g];
+    lda_global_u32 $s1, [$s7 + 4];
+
+    stof_global_u32_u32 $s0, $s1;
+    lda_global_u32      $s1, [$s1 + 8];
+    lda_global_u32      $s1, [800];
+    lda_global_u32      $s1, [$s1];
+
+    //---------------------------------------
+
+@lab:
+    ldc_u32 $s1, &TestFunc;
+    ldc_u32 $s2, @lab;
+
+
+    //---------------------------------------
+
+    segmentp_group_b1_u32 $c1, $s0;
+
+    //---------------------------------------
+
+    stof_spill_u32_u32      $s1, $s1;
+    stof_private_u32_u32    $s1, $s1;
+    stof_global_u32_u32     $s1, $s1;
+
+    ftos_group_u32_u32      $s1, $s2;
+    ftos_global_u32_u32     $s1, $s2;
+
+    //---------------------------------------
+
+    // dst expansion
+    ld_global_s8                $s1, [&x][$s3+4];
+    ld_global_u8                $s1, [&x][$s3+4];
+    ld_global_s16               $s1, [&x][$s3+4];
+    ld_global_u16               $s1, [&x];
+    ld_global_s32               $s1, [&x];
+
+    ld_v2_s8                   ($s1,$s2), [$s3+4];
+    ld_v2_u8                   ($s1,$s2), [$s3+4];
+    ld_v2_s16                  ($s1,$s2), [$s3+4];
+    ld_v2_u16                  ($s1,$s2), [$s3+4];
+    ld_v2_s32                  ($s1,$s2), [$s3+4];
+    ld_v2_u32                  ($s1,$s2), [$s3+4];
+
+    ld_v4_s8                   ($s1,$s2,$s3,$s4), [$s3+4];
+    ld_v4_u8                   ($s1,$s2,$s3,$s4), [$s3+4];
+    ld_v4_s16                  ($s1,$s2,$s3,$s4), [$s3+4];
+    ld_v4_u16                  ($s1,$s2,$s3,$s4), [$s3+4];
+    ld_v4_s32                  ($s1,$s2,$s3,$s4), [$s3+4];
+    ld_v4_u32                  ($s1,$s2,$s3,$s4), [$s3+4];
+
+    // segment rules
+    ld_global_f32               $s1, [&x][$s0];
+    ld_arg_equiv(2)_f32     $s1, [%arg][$s0];
+    ld_group_equiv(0)_u32       $s0, [&g][$s0];
+
+    // b128
+    ld_global_b128              $q1, [$s0];
+
+    // width
+    ld_global_width(64)_f16     $s1, [$s0];
+    ld_width(all)_f16           $s1, [$s0];
+    ld_width(WAVESIZE)_f16      $s1, [$s0];
+
+    // opaque refs
+    ld_global_roimg               $d1, [&roimage];
+    ld_global_rwimg               $d1, [&rwimage];
+    ld_global_samp                $d1, [&samp];
+    ld_global_sig32               $d3, [&signal];
+
+    // generic cases
+    ld_global_s32               $s1, [&x];
+    ld_global_f16               $s1, [&x];
+    ld_global_f64               $d1, [&x];
+    ld_global_f64           $d1, [&x];
+    ld_global_f32           $s1, [&x];
+    ld_global_f64           $d1, [&x];
+    ld_global_equiv(2)_f32  $s1, [&x];
+    ld_global_equiv(2)_f32  $s1, [$s3+4];
+
+    ld_private_f32              $s1, [$s3+4];
+    ld_spill_f32                $s1, [$s3+4];
+    ld_f32                      $s1, [$s3+4];
+    ld_f32                      $s1, [$s3+4];
+    ld_v3_s32                   ($s1,$s7,$s6), [$s3+4];
+    ld_v4_f32                   ($s1,$s7,$s6,$s2), [$s3+4];
+    ld_v2_equiv(9)_f32          ($s1,$s2), [$s3+4];
+    ld_equiv(1)_u64             $d3, [$s4+32];
+    ld_v2_equiv(1)_u64          ($d1,$d2), [$s0+32];
+    ld_v4_width(8)_f32          ($s1,$s7,$s6,$s2), [$s3+4];
+    ld_equiv(1)_u64             $d6, [128];
+    ld_v2_equiv(9)_width(4)_f32 ($s1,$s2), [$s3+4];
+    ld_width(64)_u32            $s0, [$s2];
+    ld_equiv(1)_width(1024)_u64 $d6, [128];
+    ld_equiv(1)_width(all)_u64  $d6, [128];
+
+
+    //---------------------------------------
+
+    // src expansion
+    st_global_s8                $s1, [&x][$s3+4];
+    st_global_u8                $s1, [&x][$s3+4];
+    st_global_s16               $s1, [&x];
+    st_global_u16               $s1, [&x];
+    st_global_s32               $s1, [&x];
+    st_global_u32               $s1, [&x];
+
+    st_v2_s8                   ($s1,$s2), [$s3+4];
+    st_v2_u8                   ($s1,$s2), [$s3+4];
+    st_v2_s16                  ($s1,$s2), [$s3+4];
+    st_v2_u16                  ($s1,$s2), [$s3+4];
+    st_v2_s32                  ($s1,$s2), [$s3+4];
+    st_v2_u32                  ($s1,$s2), [$s3+4];
+
+    st_v4_s8                   ($s1,$s2,$s3,$s4), [$s3+4];
+    st_v4_u8                   ($s1,$s2,$s3,$s4), [$s3+4];
+    st_v4_s16                  ($s1,$s2,$s3,$s4), [$s3+4];
+    st_v4_u16                  ($s1,$s2,$s3,$s4), [$s3+4];
+    st_v4_s32                  ($s1,$s2,$s3,$s4), [$s3+4];
+    st_v4_u32                  ($s1,$s2,$s3,$s4), [$s3+4];
+
+    // segment rules
+    st_global_f32               $s1, [&x][$s0];
+    st_arg_equiv(2)_f32         $s1, [%arg][$s0];
+    st_group_equiv(0)_u32       $s0, [&g][$s0];
+
+    // b128
+    st_global_b128              $q1, [$s0];
+
+    // opaque refs
+    st_global_roimg            $d1, [&roimage];
+    st_global_rwimg            $d1, [&rwimage];
+    st_global_samp             $d1, [&samp];
+    st_global_sig32            $d3, [&signal];
+
+    st_global_f32              $s1, [&x];
+    st_global_s32              $s1, [&x];
+    st_global_f32              $s1, [&x];
+    st_global_u8               $s1, [&x];
+    st_global_u16              $s1, [&x];
+    st_global_u32              $s1, [&x];
+    st_global_f16              $s1, [&x];
+    st_global_f64              $d1, [&x];
+    st_global_f64          $d1, [&x];
+    st_global_f32          $s1, [&x];
+    st_global_f64          $d1, [&x];
+    st_global_equiv(2)_f32 $s1, [&x];
+
+    st_equiv(2)_f32      $s1, [$s3+4];
+    st_private_f32           $s1, [$s3+4];
+    st_global_f32            $s1, [$s3+4];
+    st_spill_f32             $s1, [$s3+4];
+    st_arg_f32               $s1, [$s3+4];
+    st_f32                   $s1, [$s3+4];
+    st_f32                   $s1, [$s3+4];
+    st_v4_f32                ($s1,$s1,$s6,$s2), [$s3+4];
+    st_v2_equiv(9)_f32       ($s1,$s2),         [$s3+4];
+    st_v3_s32                ($s1,$s1,$s6),     [$s3+4];
+    st_group_equiv(0)_u32    $s0,               [$s2];
+    st_equiv(1)_u64          $d3,               [$s4+32];
+    st_equiv(1)_u64          $d3,               [$s4+32];
+    st_v2_equiv(1)_u64       ($d1,$d2),         [$s0+32];
+    st_equiv(1)_u64          $d6,               [128];
+
+    //---------------------------------------
+
+    atomic_and_global_ar_sys_b32    $s1, [&x][$s0], 23;
+    atomic_and_group_rlx_wg_b32    $s1, [&g][$s0], 23;
+    atomic_min_rlx_wg_u32          $s1, [$s7], 23;
+
+    //---------------------------------------
+
+    atomicnoret_and_global_ar_sys_b32   [&x], 23;
+    atomicnoret_and_group_ar_wv_b32   [&g][4], 23;
+    atomicnoret_or_group_ar_wg_b32    [&g][$s0], 23;
+
+    //---------------------------------------
+    // signal + rlx
+
+    signal_ld_rlx_b32_sig32 $s2, $d0;
+    signal_and_rlx_b32_sig32 $s2, $d0, $s3;
+    signal_or_rlx_b32_sig32 $s2, $d0, $s3;
+    signal_xor_rlx_b32_sig32 $s2, $d0, $s3;
+    signal_cas_rlx_b32_sig32 $s2, $d0, $s3, $s3;
+    signal_exch_rlx_b32_sig32 $s2, $d0, $s3;
+    signal_add_rlx_u32_sig32 $s2, $d0, $s3;
+    signal_sub_rlx_u32_sig32 $s2, $d0, $s3;
+    signal_inc_rlx_u32_sig32 $s2, $d0, $s3;
+    signal_dec_rlx_u32_sig32 $s2, $d0, $s3;
+    signal_max_rlx_s32_sig32 $s2, $d0, $s3;
+    signal_min_rlx_s32_sig32 $s2, $d0, $s3;
+    signal_wait_eq_rlx_s32_sig32 $s2, $d0, $s3;
+    signal_wait_ne_rlx_s32_sig32 $s2, $d0, $s3;
+    signal_wait_lt_rlx_s32_sig32 $s2, $d0, $s3;
+    signal_wait_gte_rlx_s32_sig32 $s2, $d0, $s3;
+    signal_waittimeout_eq_rlx_s32_sig32 $s2, $d0, $s3, $d4;
+    signal_waittimeout_ne_rlx_s32_sig32 $s2, $d0, $s3, $d5;
+    signal_waittimeout_lt_rlx_s32_sig32 $s2, $d0, $s3, $d4;
+    signal_waittimeout_gte_rlx_s32_sig32 $s2, $d0, $s3, $d5;
+
+    signalnoret_st_rlx_b32_sig32 $d0, $s2;
+    signalnoret_and_rlx_b32_sig32 $d0, $s3;
+    signalnoret_or_rlx_b32_sig32 $d0, $s3;
+    signalnoret_xor_rlx_b32_sig32 $d0, $s3;
+    signalnoret_cas_rlx_b32_sig32 $d0, $s3, $s5;
+    signalnoret_add_rlx_s32_sig32 $d0, $s3;
+    signalnoret_sub_rlx_u32_sig32 $d0, $s3;
+    signalnoret_inc_rlx_u32_sig32 $d0, $s3;
+    signalnoret_dec_rlx_u32_sig32 $d0, $s3;
+    signalnoret_max_rlx_s32_sig32 $d0, $s3;
+    signalnoret_min_rlx_u32_sig32 $d0, $s3;
+
+    //---------------------------------------
+    // signal + acq
+
+    signal_ld_acq_b32_sig32 $s2, $d0;
+    signal_and_acq_b32_sig32 $s2, $d0, WAVESIZE;
+    signal_or_acq_b32_sig32 $s2, $d0, WAVESIZE;
+    signal_xor_acq_b32_sig32 $s2, $d0, WAVESIZE;
+    signal_cas_acq_b32_sig32 $s2, $d0, WAVESIZE, 12;
+    signal_exch_acq_b32_sig32 $s2, $d0, WAVESIZE;
+    signal_add_acq_u32_sig32 $s2, $d0, WAVESIZE;
+    signal_sub_acq_s32_sig32 $s2, $d0, WAVESIZE;
+    signal_inc_acq_u32_sig32 $s2, $d0, WAVESIZE;
+    signal_dec_acq_u32_sig32 $s2, $d0, WAVESIZE;
+    signal_max_acq_s32_sig32 $s2, $d0, WAVESIZE;
+    signal_min_acq_u32_sig32 $s2, $d0, WAVESIZE;
+    signal_wait_eq_acq_s32_sig32 $s2, $d0, WAVESIZE;
+    signal_wait_ne_acq_s32_sig32 $s2, $d0, $s3;
+    signal_wait_lt_acq_s32_sig32 $s2, $d0, WAVESIZE;
+    signal_wait_gte_acq_s32_sig32 $s2, $d0, $s3;
+    signal_waittimeout_eq_acq_s32_sig32 $s2, $d0, WAVESIZE, $d4;
+    signal_waittimeout_ne_acq_s32_sig32 $s2, $d0, $s3, 1000;
+    signal_waittimeout_lt_acq_s32_sig32 $s2, $d0, WAVESIZE, $d4;
+    signal_waittimeout_gte_acq_s32_sig32 $s2, $d0, $s3, 1000;
+
+    signalnoret_and_acq_b32_sig32 $d0, WAVESIZE;
+    signalnoret_or_acq_b32_sig32 $d0, WAVESIZE;
+    signalnoret_xor_acq_b32_sig32 $d0, WAVESIZE;
+    signalnoret_cas_acq_b32_sig32 $d0, WAVESIZE, 12;
+    signalnoret_add_acq_u32_sig32 $d0, WAVESIZE;
+    signalnoret_sub_acq_u32_sig32 $d0, WAVESIZE;
+    signalnoret_inc_acq_u32_sig32 $d0, WAVESIZE;
+    signalnoret_dec_acq_u32_sig32 $d0, WAVESIZE;
+    signalnoret_max_acq_u32_sig32 $d0, WAVESIZE;
+    signalnoret_min_acq_u32_sig32 $d0, WAVESIZE;
+
+    //---------------------------------------
+    // signal + rel
+
+    signal_and_rel_b32_sig32 $s2, $d0, 23;
+    signal_or_rel_b32_sig32 $s2, $d0, 23;
+    signal_xor_rel_b32_sig32 $s2, $d0, 23;
+    signal_cas_rel_b32_sig32 $s2, $d0, 23, 12;
+    signal_exch_rel_b32_sig32 $s2, $d0, 23;
+    signal_add_rel_s32_sig32 $s2, $d0, 23;
+    signal_sub_rel_s32_sig32 $s2, $d0, 23;
+    signal_inc_rel_u32_sig32 $s2, $d0, 23;
+    signal_dec_rel_u32_sig32 $s2, $d0, 23;
+    signal_max_rel_s32_sig32 $s2, $d0, 23;
+    signal_min_rel_s32_sig32 $s2, $d0, 23;
+
+    signalnoret_st_rel_b32_sig32 $d0, $s2;
+    signalnoret_and_rel_b32_sig32 $d0, 23;
+    signalnoret_or_rel_b32_sig32 $d0, 23;
+    signalnoret_xor_rel_b32_sig32 $d0, 23;
+    signalnoret_cas_rel_b32_sig32 $d0, 23, 12;
+    signalnoret_add_rel_u32_sig32 $d0, 23;
+    signalnoret_sub_rel_u32_sig32 $d0, 23;
+    signalnoret_inc_rel_u32_sig32 $d0, 23;
+    signalnoret_dec_rel_u32_sig32 $d0, 23;
+    signalnoret_max_rel_u32_sig32 $d0, 23;
+    signalnoret_min_rel_u32_sig32 $d0, 23;
+
+    //---------------------------------------
+    // signal + ar
+
+    //signal_ld_ar_b32_sig32 $s2, $d0;
+    signal_and_ar_b32_sig32 $s2, $d0, 23;
+    signal_or_ar_b32_sig32 $s2, $d0, 23;
+    signal_xor_ar_b32_sig32 $s2, $d0, 23;
+    signal_cas_ar_b32_sig32 $s2, $d0, 23, WAVESIZE;
+    signal_exch_ar_b32_sig32 $s2, $d0, 23;
+    signal_add_ar_s32_sig32 $s2, $d0, 23;
+    signal_sub_ar_s32_sig32 $s2, $d0, 23;
+    signal_inc_ar_u32_sig32 $s2, $d0, 23;
+    signal_dec_ar_u32_sig32 $s2, $d0, 23;
+    signal_max_ar_s32_sig32 $s2, $d0, 23;
+    signal_min_ar_s32_sig32 $s2, $d0, 23;
+
+    signalnoret_and_ar_b32_sig32 $d0, 23;
+    signalnoret_or_ar_b32_sig32 $d0, 23;
+    signalnoret_xor_ar_b32_sig32 $d0, 23;
+    signalnoret_cas_ar_b32_sig32 $d0, 23, WAVESIZE;
+    signalnoret_add_ar_s32_sig32 $d0, 23;
+    signalnoret_sub_ar_u32_sig32 $d0, 23;
+    signalnoret_inc_ar_u32_sig32 $d0, 23;
+    signalnoret_dec_ar_u32_sig32 $d0, 23;
+    signalnoret_max_ar_s32_sig32 $d0, 23;
+    signalnoret_min_ar_u32_sig32 $d0, 23;
+
+    //---------------------------------------
+
+    cbr_width(2)    $c0, @label1;
+    cbr_width(4)    $c0, @label1;
+    cbr_width(8)    $c0, @label1;
+    cbr_width(16)    $c0, @label1;
+    cbr_width(32)    $c0, @label1;
+    cbr_width(64)    $c0, @label1;
+    cbr_width(128)    $c0, @label1;
+    cbr_width(256)    $c0, @label1;
+    cbr_width(512)    $c0, @label1;
+    cbr_width(1024)    $c0, @label1;
+    cbr_width(2048)    $c0, @label1;
+    cbr_width(4096)    $c0, @label1;
+    cbr_width(8192)    $c0, @label1;
+    cbr_width(16384)    $c0, @label1;
+    cbr_width(32768)    $c0, @label1;
+    cbr_width(65536)    $c0, @label1;
+    cbr_width(131072)    $c0, @label1;
+    cbr_width(262144)    $c0, @label1;
+    cbr_width(524288)    $c0, @label1;
+    cbr_width(1048576)    $c0, @label1;
+    cbr_width(2097152)    $c0, @label1;
+    cbr_width(4194304)    $c0, @label1;
+    cbr_width(8388608)    $c0, @label1;
+    cbr_width(16777216)    $c0, @label1;
+    cbr_width(33554432)    $c0, @label1;
+    cbr_width(67108864)    $c0, @label1;
+    cbr_width(134217728)    $c0, @label1;
+    cbr_width(268435456)    $c0, @label1;
+    cbr_width(536870912)    $c0, @label1;
+    cbr_width(1073741824)    $c0, @label1;
+    cbr_width(2147483648)    $c0, @label1;
+    cbr_width(all)          $c0, @label2;
+    cbr_width(WAVESIZE)     $c0, @label2;
+    cbr                     $c0, @label3;
+    brn             @label2;
+
+@label:
+
+    cbr            $c1, $s1;
+    cbr_width(2)   $c1, $s1;
+    cbr_width(all) $c1, $s1;
+
+    global_u32 %jumptable[3]  = {@label, @label2, @label3};
+    global_u32 %jumptable2[3] = {@label, @label2, @label3};
+    labeltargets %targets     = {@label1, @label2, @label3};
+
+
+    cbr             $c1, $s1, %targets;
+    cbr_width(2)    $c1, $s1, %jumptable;
+    cbr_width(all)  $c1, $s1, %targets;
+
+    brn $s1, %targets;
+
+@label1:
+    abs_s32 $s1, $s2;
+
+@label2:
+    brn $s1, %jumptable2;
+
+@label3:
+    abs_s32 $s1, $s2;
+
+    //---------------------------------------
+
+    queueptr_global_u32         $s0;
+    queueptr_u32                $s0;
+
+    servicequeueptr_global_u32  $s0;
+    servicequeueptr_u32         $s0;
+
+    nullptr_group_u32           $s0;    
+    nullptr_global_u32          $s1;    
+    nullptr_u32                 $s1;    
+
+    packetcompletionsig_sig32   $d6;
+
+};

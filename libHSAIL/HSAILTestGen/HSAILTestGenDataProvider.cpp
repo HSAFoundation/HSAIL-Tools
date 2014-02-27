@@ -26,8 +26,8 @@ private:
     // It is important to keep all instances of test data because they may be created 
     // for temporary purposes and are not easy to track automatically.
     // For example:
-    //      SRCT(S32.ADD(7).XCL(8))
-    // "S32.ADD(7)" creates a temporary object used as a base for ".XCL(8)"
+    //      SRCT(S32.NEW(7).ADD(8))
+    // "S32.NEW(7)" creates a temporary object used as a base for ".ADD(8)"
     // 
     static vector<OperandTestData*> tmpData; 
 
@@ -68,47 +68,37 @@ class OperandTestDataImpl : public OperandTestData // Container for test data
     //==========================================================================
 private:
     unsigned size;      // number of standard test values (NOT including randomly-generated)
-    unsigned xsize;     // number of values which must NOT be tested
+    unsigned rsize;     // number of randomly-generated test values
 
-    // NB: values in both arrays are unique!
     T *values;          // test values [standard,random]
-    T *xvalues;         // values which must NOT be tested (e.g. because of unspecified behavior)
 
     //==========================================================================
 public:
-    OperandTestDataImpl(unsigned sz, unsigned xsz, const T *vs,  const T *xvs, OperandTestDataImpl<T>* base = 0) : values(0), xvalues(0), size(sz), xsize(xsz)
+    OperandTestDataImpl(unsigned sz, const T *vs, OperandTestDataImpl<T>* base = 0) : values(0), size(sz)
     {
-        assert((sz > 0 && vs) || (xsz > 0 && xvs));
+        assert(sz > 0 && vs);
 
-        if (base)
-        {
-            size += base->size;   // copy base values only
-            xsize += base->xsize;
-        }
+        if (base) size += base->size;       // copy base values only (not including random)
+        assert(size > 0);                   // expected at least one value
+
+        values = new T[size + rndTestNum];  // NB: some elements at the end of array may be unused
+
+        // Clear initial number of values to reflect current (empty) state of arrays
+        // This is important because adding new data to these arrays 
+        // require searching through previously added elements
+        size  = 0;
+        rsize = 0;
+
+        if (base) for (unsigned i = 0; i < base->size; ++i)  size = addStdValue(size, base->values[i]);
+                  for (unsigned i = 0; i < sz; ++i)          size = addStdValue(size, vs[i]);
         assert(size > 0); // expected at least one value
 
-        values = new T[size + rndTestNum];
-        xvalues = (xsize > 0)? new T[xsize] : 0;
-
-        size = 0;
-        xsize = 0;
-
-        // NB: add excluded values first to filter out regular values
-        if (base) for (unsigned i = 0; i < base->xsize; ++i) addXclValue(base->xvalues[i]);
-        for (unsigned i = 0; i < xsz; ++i) addXclValue(xvs[i]);
-
-        // Add regular values but filter out excluded values which should not be tested
-        if (base) for (unsigned i = 0; i < base->size; ++i)  addStdValue(base->values[i]);
-        for (unsigned i = 0; i < sz; ++i)  addStdValue(vs[i]);
-
-        assert(size > 0); // expected at least one value
-        for (unsigned i = 0; i < rndTestNum; ++i) addRndValue(size + i);
+        for (unsigned i = 0; i < rndTestNum; ++i) rsize = addRndValue(rsize);
     }
 
     ~OperandTestDataImpl()
     {
         delete[] values;
-        delete[] xvalues;
     }
 
     //==========================================================================
@@ -118,65 +108,49 @@ public:
     // predefined sets for standard data types.
 
     // Create a set of values of base type but replace base test values with specified values. Used by 'NEW'.
-    OperandTestDataImpl<T>& reset(T x)                          { T values[] = {x};                  return resetValues(sizeof(values) / sizeof(T), values); }
-    OperandTestDataImpl<T>& reset(T x1, T x2)                   { T values[] = {x1, x2};             return resetValues(sizeof(values) / sizeof(T), values); }
-    OperandTestDataImpl<T>& reset(T x1, T x2, T x3)             { T values[] = {x1, x2, x3};         return resetValues(sizeof(values) / sizeof(T), values); }
-    OperandTestDataImpl<T>& reset(T x1, T x2, T x3, T x4)       { T values[] = {x1, x2, x3, x4};     return resetValues(sizeof(values) / sizeof(T), values); }
-    OperandTestDataImpl<T>& reset(T x1, T x2, T x3, T x4, T x5) { T values[] = {x1, x2, x3, x4, x5}; return resetValues(sizeof(values) / sizeof(T), values); }
-    OperandTestDataImpl<T>& resetValues(unsigned sz, T* values) { OperandTestDataImpl<T>* res = new OperandTestDataImpl<T>(sz, 0, values, 0, 0); registerData(res); return *res; }
-    OperandTestDataImpl<T>& resetList(unsigned sz, T* values)   { OperandTestDataImpl<T>* res = new OperandTestDataImpl<T>(sz / sizeof(T), 0, values, 0, 0); registerData(res); return *res; }
+    OperandTestDataImpl<T>& reset(T x)                                { T values[] = {x};                  return resetValues(sizeof(values) / sizeof(T), values); }
+    OperandTestDataImpl<T>& reset(T x1, T x2)                         { T values[] = {x1, x2};             return resetValues(sizeof(values) / sizeof(T), values); }
+    OperandTestDataImpl<T>& reset(T x1, T x2, T x3)                   { T values[] = {x1, x2, x3};         return resetValues(sizeof(values) / sizeof(T), values); }
+    OperandTestDataImpl<T>& reset(T x1, T x2, T x3, T x4)             { T values[] = {x1, x2, x3, x4};     return resetValues(sizeof(values) / sizeof(T), values); }
+    OperandTestDataImpl<T>& reset(T x1, T x2, T x3, T x4, T x5)       { T values[] = {x1, x2, x3, x4, x5}; return resetValues(sizeof(values) / sizeof(T), values); }
+    OperandTestDataImpl<T>& resetValues(unsigned sz, const T* values) { OperandTestDataImpl<T>* res = new OperandTestDataImpl<T>(sz, values); registerData(res); return *res; }
+    OperandTestDataImpl<T>& resetList(unsigned sz, const T* values)   { OperandTestDataImpl<T>* res = new OperandTestDataImpl<T>(sz / sizeof(T), values); registerData(res); return *res; }
 
     // Create a set of values of base type; copy base test values and add specified values. Used by 'ADD'.
-    OperandTestDataImpl<T>& clone(T x)                          { T values[] = {x};                  return cloneValues(sizeof(values) / sizeof(T), values); }
-    OperandTestDataImpl<T>& clone(T x1, T x2)                   { T values[] = {x1, x2};             return cloneValues(sizeof(values) / sizeof(T), values); }
-    OperandTestDataImpl<T>& clone(T x1, T x2, T x3)             { T values[] = {x1, x2, x3};         return cloneValues(sizeof(values) / sizeof(T), values); }
-    OperandTestDataImpl<T>& clone(T x1, T x2, T x3, T x4)       { T values[] = {x1, x2, x3, x4};     return cloneValues(sizeof(values) / sizeof(T), values); }
-    OperandTestDataImpl<T>& clone(T x1, T x2, T x3, T x4, T x5) { T values[] = {x1, x2, x3, x4, x5}; return cloneValues(sizeof(values) / sizeof(T), values); }
-    OperandTestDataImpl<T>& cloneValues(unsigned sz, T* values) { OperandTestDataImpl<T>* res = new OperandTestDataImpl<T>(sz, 0, values, 0, this); registerData(res); return *res; }
-    OperandTestDataImpl<T>& cloneList(unsigned sz, T* values)   { OperandTestDataImpl<T>* res = new OperandTestDataImpl<T>(sz / sizeof(T), 0, values, 0, this); registerData(res); return *res; }
-
-    // Create a set of values of base type; clone base test values but remove specified values. Used by 'XCL'.
-    OperandTestDataImpl<T>& xclone(T x)                          { T values[] = {x};                  return xcloneValues(sizeof(values) / sizeof(T), values); }
-    OperandTestDataImpl<T>& xclone(T x1, T x2)                   { T values[] = {x1, x2};             return xcloneValues(sizeof(values) / sizeof(T), values); }
-    OperandTestDataImpl<T>& xclone(T x1, T x2, T x3)             { T values[] = {x1, x2, x3};         return xcloneValues(sizeof(values) / sizeof(T), values); }
-    OperandTestDataImpl<T>& xclone(T x1, T x2, T x3, T x4)       { T values[] = {x1, x2, x3, x4};     return xcloneValues(sizeof(values) / sizeof(T), values); }
-    OperandTestDataImpl<T>& xclone(T x1, T x2, T x3, T x4, T x5) { T values[] = {x1, x2, x3, x4, x5}; return xcloneValues(sizeof(values) / sizeof(T), values); }
-    OperandTestDataImpl<T>& xcloneValues(unsigned sz, T* values) { OperandTestDataImpl<T>* res = new OperandTestDataImpl<T>(0, sz, 0, values, this); registerData(res); return *res; }
+    OperandTestDataImpl<T>& clone(T x)                                { T values[] = {x};                  return cloneValues(sizeof(values) / sizeof(T), values); }
+    OperandTestDataImpl<T>& clone(T x1, T x2)                         { T values[] = {x1, x2};             return cloneValues(sizeof(values) / sizeof(T), values); }
+    OperandTestDataImpl<T>& clone(T x1, T x2, T x3)                   { T values[] = {x1, x2, x3};         return cloneValues(sizeof(values) / sizeof(T), values); }
+    OperandTestDataImpl<T>& clone(T x1, T x2, T x3, T x4)             { T values[] = {x1, x2, x3, x4};     return cloneValues(sizeof(values) / sizeof(T), values); }
+    OperandTestDataImpl<T>& clone(T x1, T x2, T x3, T x4, T x5)       { T values[] = {x1, x2, x3, x4, x5}; return cloneValues(sizeof(values) / sizeof(T), values); }
+    OperandTestDataImpl<T>& cloneValues(unsigned sz, const T* values) { OperandTestDataImpl<T>* res = new OperandTestDataImpl<T>(sz, values, this); registerData(res); return *res; }
+    OperandTestDataImpl<T>& cloneList(unsigned sz, const T* values)   { OperandTestDataImpl<T>* res = new OperandTestDataImpl<T>(sz / sizeof(T), values, this); registerData(res); return *res; }
 
     //==========================================================================
 
     unsigned getType()     { assert(size > 0 && values); return Val(*values).getType(); } // Is there another way to do this?
-    unsigned getSize()     { return size + rndTestNum; }
-    Val getVal(unsigned i) { assert(i < size + rndTestNum); return Val(values[i]); }
+    unsigned getSize()     { return size + rsize; }
+    Val getVal(unsigned i) { assert(i < getSize()); return Val(values[i]); }
 
     void dump()
     {
         std::cout << "======================================================\n";
-        std::cout << "type = " << getType() << "\n";
+        std::cout << "type = " << getType() << "\n\n";
 
         std::cout << "standard values = [";
         for (unsigned i = 0; i < size; ++i)
         {
             if (i > 0) std::cout << ", ";
-            std::cout << values[i];
+            std::cout << "\n\t\t\t" << Val(values[i]).dump();
         }
-        std::cout << "]\n";
+        std::cout << "\n                  ]\n\n";
 
-        std::cout << "random values = [";
-        for (unsigned i = 0; i < rndTestNum; ++i)
+        std::cout << "random values   = [";
+        for (unsigned i = 0; i < rsize; ++i)
         {
             if (i > 0) std::cout << ", ";
-            std::cout << values[size + i];
+            std::cout << "\n\t\t\t" << Val(values[size + i]).dump();
         }
-        std::cout << "]\n";
-
-        std::cout << "negative = [";
-        for (unsigned i = 0; i < xsize; ++i)
-        {
-            if (i > 0) std::cout << ", ";
-            std::cout << xvalues[i];
-        }
-        std::cout << "]\n";
+        std::cout << "\n                  ]\n\n";
     }
 
     //==========================================================================
@@ -189,7 +163,7 @@ private:
         {
             return isNan(val1) && isNan(val2); 
         }
-        else if (val1 == 0 && val2 == 0)        // -0.0 != +0.0
+        else if (Val(val1).isZero() && Val(val2).isZero())        // -0.0 != +0.0
         {
             return Val(val1).isPositiveZero() == Val(val2).isPositiveZero();
         }
@@ -204,22 +178,20 @@ private:
         for (unsigned i = 0; i < size; ++i) if (eq(val, values[i])) return true;
         return false;
     }
-    bool isXclValue(T val)
-    {
-        for (unsigned i = 0; i < xsize; ++i) if (eq(val, xvalues[i])) return true;
-        return false;
+
+    unsigned addStdValue(unsigned pos, T val) 
+    { 
+        if (!isStdValue(val)) values[pos++] = Val(val).normalize(); 
+        return pos;
     }
 
-    // NB: excluded values should be added first, so they MUST NOT intersect with regular values!
-    void addXclValue(T val) { assert(!isStdValue(val)); if (!isXclValue(val)) xvalues[xsize++] = Val(val).normalize(); }
-
-    void addStdValue(T val) { if (!isStdValue(val) && !isXclValue(val)) values[size++] = Val(val).normalize(); }
-
-    void addRndValue(unsigned idx)
+    unsigned addRndValue(unsigned pos)
     {
         Val v(*values); // Create properly typed value
-        for (v.randomize(); isStdValue(v) || isXclValue(v); v.randomize()); // filter out duplicated and excluded values
-        values[idx] = v.normalize();
+        unsigned cnt = MAX_RND_TEST_TRY;
+        for (v = v.randomize(); isStdValue(v) && cnt > 0; v = v.randomize(), --cnt); // filter out duplicated values
+        if (cnt > 0) values[size + pos++] = v;
+        return pos;
     }
 };
 
@@ -240,6 +212,7 @@ private:
         IDX_b16_t,
         IDX_b32_t,
         IDX_b64_t,
+        IDX_b128_t,
 
         IDX_u8_t,
         IDX_u16_t,
@@ -254,10 +227,32 @@ private:
         IDX_f32_t,
         IDX_f64_t,
 
-        //
-        // IDX_f16_t,   // Postponed
-        // IDX_s8x4_t,  // Postponed
-        // ...
+        IDX_s8x4_t,
+        IDX_s8x8_t,
+        IDX_s8x16_t,
+        IDX_s16x2_t,
+        IDX_s16x4_t,
+        IDX_s16x8_t,
+        IDX_s32x2_t,
+        IDX_s32x4_t,
+        IDX_s64x2_t,
+
+        IDX_u8x4_t,
+        IDX_u8x8_t,
+        IDX_u8x16_t,
+        IDX_u16x2_t,
+        IDX_u16x4_t,
+        IDX_u16x8_t,
+        IDX_u32x2_t,
+        IDX_u32x4_t,
+        IDX_u64x2_t,
+
+//      IDX_f16x2_t,
+//      IDX_f16x4_t,
+//      IDX_f16x8_t,
+        IDX_f32x2_t,
+        IDX_f32x4_t,
+        IDX_f64x2_t,
 
         TSZ // Table size
     };
@@ -269,7 +264,7 @@ public:
     template<typename T>
     static OperandTestDataImpl<T>* create(unsigned sz, const T *vs)
     {
-        return new OperandTestDataImpl<T>(sz, 0, vs, 0, 0);
+        return new OperandTestDataImpl<T>(sz, vs);
     }
 
     static void dump(OperandTestData* data)
@@ -283,6 +278,7 @@ public:
     static OperandTestData& get(unsigned type)
     {
         using namespace Brig;
+
         switch(type)
         {
         case BRIG_TYPE_B1:  return *predefined[IDX_b1_t];
@@ -290,6 +286,7 @@ public:
         case BRIG_TYPE_B16: return *predefined[IDX_b16_t];
         case BRIG_TYPE_B32: return *predefined[IDX_b32_t];
         case BRIG_TYPE_B64: return *predefined[IDX_b64_t];
+        case BRIG_TYPE_B128:return *predefined[IDX_b128_t];
 
         case BRIG_TYPE_U8:  return *predefined[IDX_u8_t];
         case BRIG_TYPE_U16: return *predefined[IDX_u16_t];
@@ -304,9 +301,32 @@ public:
         case BRIG_TYPE_F32: return *predefined[IDX_f32_t];
         case BRIG_TYPE_F64: return *predefined[IDX_f64_t];
 
-        // case Brigf16: return *predefined[IDX_f16_t];    // Postponed
-        // case Brigs8x4: return *predefined[IDX_s8x4_t];  // Postponed
-        // ...
+        case BRIG_TYPE_S8X4:  return *predefined[IDX_s8x4_t];
+        case BRIG_TYPE_S8X8:  return *predefined[IDX_s8x8_t];
+        case BRIG_TYPE_S8X16: return *predefined[IDX_s8x16_t];
+        case BRIG_TYPE_S16X2: return *predefined[IDX_s16x2_t];
+        case BRIG_TYPE_S16X4: return *predefined[IDX_s16x4_t];
+        case BRIG_TYPE_S16X8: return *predefined[IDX_s16x8_t];
+        case BRIG_TYPE_S32X2: return *predefined[IDX_s32x2_t];
+        case BRIG_TYPE_S32X4: return *predefined[IDX_s32x4_t];
+        case BRIG_TYPE_S64X2: return *predefined[IDX_s64x2_t];
+
+        case BRIG_TYPE_U8X4:  return *predefined[IDX_u8x4_t];
+        case BRIG_TYPE_U8X8:  return *predefined[IDX_u8x8_t];
+        case BRIG_TYPE_U8X16: return *predefined[IDX_u8x16_t];
+        case BRIG_TYPE_U16X2: return *predefined[IDX_u16x2_t];
+        case BRIG_TYPE_U16X4: return *predefined[IDX_u16x4_t];
+        case BRIG_TYPE_U16X8: return *predefined[IDX_u16x8_t];
+        case BRIG_TYPE_U32X2: return *predefined[IDX_u32x2_t];
+        case BRIG_TYPE_U32X4: return *predefined[IDX_u32x4_t];
+        case BRIG_TYPE_U64X2: return *predefined[IDX_u64x2_t];
+
+//      case BRIG_TYPE_F16X2: return *predefined[IDX_f16x2_t];
+//      case BRIG_TYPE_F16X4: return *predefined[IDX_f16x4_t];
+//      case BRIG_TYPE_F16X8: return *predefined[IDX_f16x8_t];
+        case BRIG_TYPE_F32X2: return *predefined[IDX_f32x2_t];
+        case BRIG_TYPE_F32X4: return *predefined[IDX_f32x4_t];
+        case BRIG_TYPE_F64X2: return *predefined[IDX_f64x2_t];
 
         default:
             throw TestGenError("OperandTestDataFactory: unsupported data type");
@@ -347,7 +367,7 @@ TestDataProvider::TestDataProvider(unsigned opType) : type(opType), firstSrcOper
 
 TestDataProvider* TestDataProvider::defIterators(unsigned n, unsigned first /*=1*/)
 {
-    assert(n > 0 && first + n < 5);
+    assert(n > 0 && first + n <= 5);
 
     firstSrcOperand = first;
 
@@ -443,11 +463,12 @@ void TestDataProvider::clean()                { OperandTestDataFactory::clean();
 //=============================================================================
 //=============================================================================
 
-#define B1T  (static_cast<OperandTestDataImpl<b1_t>&> (OperandTestDataFactory::get(BRIG_TYPE_B1)))
-#define B8T  (static_cast<OperandTestDataImpl<b8_t>&> (OperandTestDataFactory::get(BRIG_TYPE_B8)))
-#define B16T (static_cast<OperandTestDataImpl<b16_t>&>(OperandTestDataFactory::get(BRIG_TYPE_B16)))
-#define B32T (static_cast<OperandTestDataImpl<b32_t>&>(OperandTestDataFactory::get(BRIG_TYPE_B32)))
-#define B64T (static_cast<OperandTestDataImpl<b64_t>&>(OperandTestDataFactory::get(BRIG_TYPE_B64)))
+#define B1T   (static_cast<OperandTestDataImpl<b1_t>&> (OperandTestDataFactory::get(BRIG_TYPE_B1)))
+#define B8T   (static_cast<OperandTestDataImpl<b8_t>&> (OperandTestDataFactory::get(BRIG_TYPE_B8)))
+#define B16T  (static_cast<OperandTestDataImpl<b16_t>&>(OperandTestDataFactory::get(BRIG_TYPE_B16)))
+#define B32T  (static_cast<OperandTestDataImpl<b32_t>&>(OperandTestDataFactory::get(BRIG_TYPE_B32)))
+#define B64T  (static_cast<OperandTestDataImpl<b64_t>&>(OperandTestDataFactory::get(BRIG_TYPE_B64)))
+#define B128T (static_cast<OperandTestDataImpl<b128_t>&>(OperandTestDataFactory::get(BRIG_TYPE_B128)))
 
 #define U8T  (static_cast<OperandTestDataImpl<u8_t>&> (OperandTestDataFactory::get(BRIG_TYPE_U8)))
 #define U16T (static_cast<OperandTestDataImpl<u16_t>&>(OperandTestDataFactory::get(BRIG_TYPE_U16)))
@@ -462,8 +483,35 @@ void TestDataProvider::clean()                { OperandTestDataFactory::clean();
 #define F32T (static_cast<OperandTestDataImpl<f32_t>&>(OperandTestDataFactory::get(BRIG_TYPE_F32)))
 #define F64T (static_cast<OperandTestDataImpl<f64_t>&>(OperandTestDataFactory::get(BRIG_TYPE_F64)))
 
+#define S8X4T  (static_cast<OperandTestDataImpl<s8x4_t >&>(OperandTestDataFactory::get(BRIG_TYPE_S8X4 )))
+#define S8X8T  (static_cast<OperandTestDataImpl<s8x8_t >&>(OperandTestDataFactory::get(BRIG_TYPE_S8X8 )))
+#define S8X16T (static_cast<OperandTestDataImpl<s8x16_t>&>(OperandTestDataFactory::get(BRIG_TYPE_S8X16)))
+#define S16X2T (static_cast<OperandTestDataImpl<s16x2_t>&>(OperandTestDataFactory::get(BRIG_TYPE_S16X2)))
+#define S16X4T (static_cast<OperandTestDataImpl<s16x4_t>&>(OperandTestDataFactory::get(BRIG_TYPE_S16X4)))
+#define S16X8T (static_cast<OperandTestDataImpl<s16x8_t>&>(OperandTestDataFactory::get(BRIG_TYPE_S16X8)))
+#define S32X2T (static_cast<OperandTestDataImpl<s32x2_t>&>(OperandTestDataFactory::get(BRIG_TYPE_S32X2)))
+#define S32X4T (static_cast<OperandTestDataImpl<s32x4_t>&>(OperandTestDataFactory::get(BRIG_TYPE_S32X4)))
+#define S64X2T (static_cast<OperandTestDataImpl<s64x2_t>&>(OperandTestDataFactory::get(BRIG_TYPE_S64X2)))
+
+#define U8X4T  (static_cast<OperandTestDataImpl<u8x4_t >&>(OperandTestDataFactory::get(BRIG_TYPE_U8X4 )))
+#define U8X8T  (static_cast<OperandTestDataImpl<u8x8_t >&>(OperandTestDataFactory::get(BRIG_TYPE_U8X8 )))
+#define U8X16T (static_cast<OperandTestDataImpl<u8x16_t>&>(OperandTestDataFactory::get(BRIG_TYPE_U8X16)))
+#define U16X2T (static_cast<OperandTestDataImpl<u16x2_t>&>(OperandTestDataFactory::get(BRIG_TYPE_U16X2)))
+#define U16X4T (static_cast<OperandTestDataImpl<u16x4_t>&>(OperandTestDataFactory::get(BRIG_TYPE_U16X4)))
+#define U16X8T (static_cast<OperandTestDataImpl<u16x8_t>&>(OperandTestDataFactory::get(BRIG_TYPE_U16X8)))
+#define U32X2T (static_cast<OperandTestDataImpl<u32x2_t>&>(OperandTestDataFactory::get(BRIG_TYPE_U32X2)))
+#define U32X4T (static_cast<OperandTestDataImpl<u32x4_t>&>(OperandTestDataFactory::get(BRIG_TYPE_U32X4)))
+#define U64X2T (static_cast<OperandTestDataImpl<u64x2_t>&>(OperandTestDataFactory::get(BRIG_TYPE_U64X2)))
+
+//#define F16X2T (static_cast<OperandTestDataImpl<f16x2_t>&>(OperandTestDataFactory::get(BRIG_TYPE_F16X2)))
+//#define F16X4T (static_cast<OperandTestDataImpl<f16x4_t>&>(OperandTestDataFactory::get(BRIG_TYPE_F16X4)))
+//#define F16X8T (static_cast<OperandTestDataImpl<f16x8_t>&>(OperandTestDataFactory::get(BRIG_TYPE_F16X8)))
+#define F32X2T (static_cast<OperandTestDataImpl<f32x2_t>&>(OperandTestDataFactory::get(BRIG_TYPE_F32X2)))
+#define F32X4T (static_cast<OperandTestDataImpl<f32x4_t>&>(OperandTestDataFactory::get(BRIG_TYPE_F32X4)))
+#define F64X2T (static_cast<OperandTestDataImpl<f64x2_t>&>(OperandTestDataFactory::get(BRIG_TYPE_F64X2)))
+
 #define BEGIN_TEST_DATA \
-    TestDataProvider* TestDataProvider::getProvider(unsigned opcode, unsigned type, unsigned srcNum)\
+    TestDataProvider* TestDataProvider::getProvider(unsigned opcode, unsigned dstType, unsigned srcType, unsigned srcNum)\
     {\
         using namespace Brig;\
         switch(opcode)\
@@ -476,24 +524,92 @@ void TestDataProvider::clean()                { OperandTestDataFactory::clean();
         return 0;\
     }
 
-#define INST(inst) } return 0; } case Brig::BRIG_OPCODE_##inst: { switch(type) {
+#define INST(inst)  } return 0; } case Brig::BRIG_OPCODE_##inst: { switch(srcType) {
+
 #define TYPE(t) case BRIG_TYPE_##t:
 #define SRC_TYPE(t) case BRIG_TYPE_##t:
+#define DST_TYPE(t) case BRIG_TYPE_##t:
 
-#define SRCN return (new TestDataProvider(type))->defIterators
-#define SRCT return (new TestDataProvider(type))->def
+#define BEGIN_DST switch(dstType) {
+#define END_DST   }
+
+#define SX32TYPES   \
+    TYPE(S8X4)      \
+    TYPE(S16X2)
+
+#define SX64TYPES   \
+    TYPE(S8X8)      \
+    TYPE(S16X4)     \
+    TYPE(S32X2)
+
+#define SX128TYPES  \
+    TYPE(S8X16)     \
+    TYPE(S16X8)     \
+    TYPE(S32X4)     \
+    TYPE(S64X2)
+
+#define UX32TYPES   \
+    TYPE(U8X4)      \
+    TYPE(U16X2)
+
+#define UX64TYPES   \
+    TYPE(U8X8)      \
+    TYPE(U16X4)     \
+    TYPE(U32X2)
+
+#define UX128TYPES  \
+    TYPE(U8X16)     \
+    TYPE(U16X8)     \
+    TYPE(U32X4)     \
+    TYPE(U64X2)
+
+#define FX64TYPES   \
+    TYPE(F32X2)
+
+#define FX128TYPES  \
+    TYPE(F32X4)     \
+    TYPE(F64X2)
+
+#define SXTYPES  \
+    SX32TYPES    \
+    SX64TYPES    \
+    SX128TYPES   
+                 
+#define UXTYPES  \
+    UX32TYPES    \
+    UX64TYPES    \
+    UX128TYPES   
+                 
+#define FXTYPES  \
+    FX64TYPES    \
+    FX128TYPES
+
+#define X32TYPES \
+    SX32TYPES    \
+    UX32TYPES
+
+#define X64TYPES \
+    SX64TYPES    \
+    UX64TYPES    \
+    FX64TYPES   
+                 
+#define XTYPES   \
+    SXTYPES      \
+    UXTYPES      \
+    FXTYPES
+
+#define SRCN return (new TestDataProvider(srcType))->defIterators
+#define SRCT return (new TestDataProvider(srcType))->def
 #define ADD clone
 #define ADDL(x) cloneList(sizeof(x), x)
-#define XCL xclone
 #define NEW reset
 #define NEWL(x) resetList(sizeof(x), x)
 
 #define REGISTER_TEST_VALUES(type) \
-    predefined[IDX_##type] = create<type>(sizeof(vals_##type) / sizeof(type), vals_##type); /*predefined[IDX_##type]->dump();*/
+    predefined[IDX_##type] = create<type>(sizeof(vals_##type) / sizeof(type), vals_##type); /* predefined[IDX_##type]->dump(); */
 
 #define DCL_TEST_SET(type) \
     const type vals_##type[]
-
 
 //=============================================================================
 //=============================================================================
@@ -516,6 +632,8 @@ void OperandTestDataFactory::init()
     DCL_TEST_SET(b16_t)  = TEST_DATA_b16_t;
     DCL_TEST_SET(b32_t)  = TEST_DATA_b32_t;
     DCL_TEST_SET(b64_t)  = TEST_DATA_b64_t;
+    DCL_TEST_SET(b128_t) = TEST_DATA_b128_t;
+
 
     DCL_TEST_SET(u8_t)   = TEST_DATA_u8_t;
     DCL_TEST_SET(u16_t)  = TEST_DATA_u16_t;
@@ -530,11 +648,40 @@ void OperandTestDataFactory::init()
     DCL_TEST_SET(f32_t)  = TEST_DATA_f32_t;
     DCL_TEST_SET(f64_t)  = TEST_DATA_f64_t;
 
+    DCL_TEST_SET(s8x4_t ) = TEST_DATA_s8x4_t ;
+    DCL_TEST_SET(s8x8_t ) = TEST_DATA_s8x8_t ;
+    DCL_TEST_SET(s8x16_t) = TEST_DATA_s8x16_t;
+    DCL_TEST_SET(s16x2_t) = TEST_DATA_s16x2_t;
+    DCL_TEST_SET(s16x4_t) = TEST_DATA_s16x4_t;
+    DCL_TEST_SET(s16x8_t) = TEST_DATA_s16x8_t;
+    DCL_TEST_SET(s32x2_t) = TEST_DATA_s32x2_t;
+    DCL_TEST_SET(s32x4_t) = TEST_DATA_s32x4_t;
+    DCL_TEST_SET(s64x2_t) = TEST_DATA_s64x2_t;
+
+    DCL_TEST_SET(u8x4_t ) = TEST_DATA_u8x4_t ;
+    DCL_TEST_SET(u8x8_t ) = TEST_DATA_u8x8_t ;
+    DCL_TEST_SET(u8x16_t) = TEST_DATA_u8x16_t;
+    DCL_TEST_SET(u16x2_t) = TEST_DATA_u16x2_t;
+    DCL_TEST_SET(u16x4_t) = TEST_DATA_u16x4_t;
+    DCL_TEST_SET(u16x8_t) = TEST_DATA_u16x8_t;
+    DCL_TEST_SET(u32x2_t) = TEST_DATA_u32x2_t;
+    DCL_TEST_SET(u32x4_t) = TEST_DATA_u32x4_t;
+    DCL_TEST_SET(u64x2_t) = TEST_DATA_u64x2_t;
+
+//  DCL_TEST_SET(f16x2_t) = TEST_DATA_f16x2_t;
+//  DCL_TEST_SET(f16x4_t) = TEST_DATA_f16x4_t;
+//  DCL_TEST_SET(f16x8_t) = TEST_DATA_f16x8_t;
+    DCL_TEST_SET(f32x2_t) = TEST_DATA_f32x2_t;
+    DCL_TEST_SET(f32x4_t) = TEST_DATA_f32x4_t;
+    DCL_TEST_SET(f64x2_t) = TEST_DATA_f64x2_t;
+
+
     REGISTER_TEST_VALUES(b1_t);
     REGISTER_TEST_VALUES(b8_t);
     REGISTER_TEST_VALUES(b16_t);
     REGISTER_TEST_VALUES(b32_t);
     REGISTER_TEST_VALUES(b64_t);
+    REGISTER_TEST_VALUES(b128_t);
 
     REGISTER_TEST_VALUES(u8_t);
     REGISTER_TEST_VALUES(u16_t);
@@ -549,9 +696,32 @@ void OperandTestDataFactory::init()
     REGISTER_TEST_VALUES(f32_t);
     REGISTER_TEST_VALUES(f64_t);
 
-    // REGISTER_TEST_VALUES(f16_t);   // Postponed
-    // REGISTER_TEST_VALUES(s8x4_t);  // Postponed
-    // ...
+    REGISTER_TEST_VALUES(s8x4_t );
+    REGISTER_TEST_VALUES(s8x8_t );
+    REGISTER_TEST_VALUES(s8x16_t);
+    REGISTER_TEST_VALUES(s16x2_t);
+    REGISTER_TEST_VALUES(s16x4_t);
+    REGISTER_TEST_VALUES(s16x8_t);
+    REGISTER_TEST_VALUES(s32x2_t);
+    REGISTER_TEST_VALUES(s32x4_t);
+    REGISTER_TEST_VALUES(s64x2_t);
+
+    REGISTER_TEST_VALUES(u8x4_t );
+    REGISTER_TEST_VALUES(u8x8_t );
+    REGISTER_TEST_VALUES(u8x16_t);
+    REGISTER_TEST_VALUES(u16x2_t);
+    REGISTER_TEST_VALUES(u16x4_t);
+    REGISTER_TEST_VALUES(u16x8_t);
+    REGISTER_TEST_VALUES(u32x2_t);
+    REGISTER_TEST_VALUES(u32x4_t);
+    REGISTER_TEST_VALUES(u64x2_t);
+
+//  REGISTER_TEST_VALUES(f16x2_t);
+//  REGISTER_TEST_VALUES(f16x4_t);
+//  REGISTER_TEST_VALUES(f16x8_t);
+    REGISTER_TEST_VALUES(f32x2_t);
+    REGISTER_TEST_VALUES(f32x4_t);
+    REGISTER_TEST_VALUES(f64x2_t);
 }
 
 //==============================================================================

@@ -1,0 +1,36 @@
+version 0:96:$full:$large;
+
+static function &TestFunc()();
+
+function &TestCalls_01()()
+{
+	{
+		call	 &TestFunc () ();
+	}
+	ret;
+};
+
+static function &TestFunc()()
+{
+	ret;
+};
+
+version 0:96:$full:$large;
+
+static function &TestFunc()()
+{
+	ret;
+};
+
+function &TestFuncEXT()();
+
+function &TestCalls_02()()
+{
+	{
+		call	 &TestFunc () ();
+	}
+	{
+		call	 &TestFuncEXT () ();
+	}
+	ret;
+};

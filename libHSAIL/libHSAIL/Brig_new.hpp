@@ -42,9 +42,9 @@ enum BrigVersion {
     //.nowrap
     //.nodump
     BRIG_VERSION_HSAIL_MAJOR = 0,
-    BRIG_VERSION_HSAIL_MINOR = 98,
+    BRIG_VERSION_HSAIL_MINOR = 20131224,
     BRIG_VERSION_BRIG_MAJOR = 0,
-    BRIG_VERSION_BRIG_MINOR = 4
+    BRIG_VERSION_BRIG_MINOR = 20131224
 };
 
 // new typedefs
@@ -55,7 +55,7 @@ typedef uint8_t  BrigCompareOperation8_t;
 typedef uint16_t BrigControlDirective16_t;
 typedef uint16_t BrigType16_t;
 typedef uint16_t BrigDirectiveKinds16_t;
-typedef uint8_t  BrigImageGeometry8_t;
+typedef uint8_t  BrigImageGeometry8_t;        //.defValue=Brig::BRIG_GEOMETRY_UNKNOWN
 typedef uint8_t  BrigImageFormat8_t;          //.defValue=Brig::BRIG_FORMAT_UNKNOWN
 typedef uint8_t  BrigImageOrder8_t;           //.defValue=Brig::BRIG_ORDER_UNKNOWN
 typedef uint8_t  BrigMachineModel8_t;         //.defValue=Brig::BRIG_MACHINE_LARGE
@@ -70,26 +70,27 @@ typedef uint32_t BrigDirectiveOffset32_t;     //.defValue=0      //.wtype=ItemRe
 typedef uint32_t BrigOperandOffset32_t;       //.defValue=0      //.wtype=ItemRef<Operand>
 typedef uint32_t BrigStringOffset32_t;        //.defValue=0      //.wtype=StrRef
 typedef uint16_t BrigAluModifier16_t;
-
-// new typedefs
 typedef uint32_t BrigDataOffset32_t;
 typedef uint8_t  BrigExecutableModifier8_t;
 typedef uint8_t  BrigSymbolModifier8_t;
 typedef uint8_t  BrigSamplerModifier8_t;
-typedef uint16_t BrigMemoryModifier8_t;
+typedef uint8_t  BrigMemoryModifier8_t;
 typedef uint8_t  BrigSamplerBoundaryMode8_t;  //.defValue=Brig::BRIG_BOUNDARY_CLAMP
 typedef uint8_t  BrigWidth8_t;
-typedef uint8_t  BrigMemoryFence8_t;
 typedef uint16_t BrigOperandKinds16_t;
 typedef uint16_t BrigInstKinds16_t;
+typedef uint8_t  BrigSignalOperation8_t;
 typedef uint32_t BrigVersion32_t;
 typedef uint8_t  BrigSamplerFilter8_t;
-
+typedef uint8_t  BrigAlignment8_t;
+typedef uint8_t  BrigMemoryFenceSegments8_t;
+typedef uint8_t BrigSegCvtModifier8_t;
 
 
 enum BrigAtomicOperation { //.tdcaption="Atomic Operations"
     //.mnemo={ s/^BRIG_ATOMIC_//;lc }
     //.mnemo_token=_EMAtomicOp
+    //.mnemo_context=Brig::BRIG_INST_ATOMIC
   BRIG_ATOMIC_ADD  = 0,
   BRIG_ATOMIC_AND  = 1,
   BRIG_ATOMIC_CAS  = 2,
@@ -99,9 +100,9 @@ enum BrigAtomicOperation { //.tdcaption="Atomic Operations"
   BRIG_ATOMIC_LD   = 6,
   BRIG_ATOMIC_MAX  = 7,
   BRIG_ATOMIC_MIN  = 8,
-  BRIG_ATOMIC_ST   = 9,
-  BRIG_ATOMIC_SUB  = 10,
-  BRIG_ATOMIC_OR   = 11,
+  BRIG_ATOMIC_OR = 9,
+  BRIG_ATOMIC_ST = 10,
+  BRIG_ATOMIC_SUB = 11,
   BRIG_ATOMIC_XOR  = 12
 };
 
@@ -211,6 +212,9 @@ enum BrigTypeX {
     BRIG_TYPE_SAMP = 18,     //.mnemo=samp  // sampler object
     BRIG_TYPE_ROIMG = 19,    //.mnemo=roimg // read-only image object
     BRIG_TYPE_RWIMG = 20,    //.mnemo=rwimg // read/write image object
+    BRIG_TYPE_SIG32 = 21,    //.mnemo=sig32 // signal handle to signal object with 32 bit signal value
+    BRIG_TYPE_SIG64 = 22,    //.mnemo=sig64 // signal handle to signal object with 64 bit signal value
+
 
     BRIG_TYPE_U8X4  = BRIG_TYPE_U8  | BRIG_TYPE_PACK_32,   //.ctype=uint8_t  // four bytes unsigned
     BRIG_TYPE_U8X8  = BRIG_TYPE_U8  | BRIG_TYPE_PACK_64,   //.ctype=uint8_t  // eight bytes unsigned
@@ -235,7 +239,10 @@ enum BrigTypeX {
     BRIG_TYPE_F16X8 = BRIG_TYPE_F16 | BRIG_TYPE_PACK_128,  //.ctype=f16_t    // eight half-floats
     BRIG_TYPE_F32X2 = BRIG_TYPE_F32 | BRIG_TYPE_PACK_64,   //.ctype=float    // two floats
     BRIG_TYPE_F32X4 = BRIG_TYPE_F32 | BRIG_TYPE_PACK_128,  //.ctype=float    // four floats
-    BRIG_TYPE_F64X2 = BRIG_TYPE_F64 | BRIG_TYPE_PACK_128   //.ctype=double   // two doubles
+    BRIG_TYPE_F64X2 = BRIG_TYPE_F64 | BRIG_TYPE_PACK_128,   //.ctype=double   // two doubles
+
+    // Used internally
+    BRIG_TYPE_INVALID                       = -1 //.skip
 };
 
 enum BrigDirectiveKinds {
@@ -260,20 +267,19 @@ enum BrigDirectiveKinds {
     BRIG_DIRECTIVE_CONTROL = 7,          //.isBodyOnly=true
     BRIG_DIRECTIVE_EXTENSION = 8,        //.isToplevelOnly=true
     BRIG_DIRECTIVE_FBARRIER = 9,
-    BRIG_DIRECTIVE_FILE = 10,            //.isToplevelOnly=true
-    BRIG_DIRECTIVE_FUNCTION = 11,        //.isToplevelOnly=true
-    BRIG_DIRECTIVE_IMAGE_INIT = 12,      //.isToplevelOnly=true
-    BRIG_DIRECTIVE_KERNEL = 13,          //.isToplevelOnly=true
-    BRIG_DIRECTIVE_LABEL = 14,           //.isBodyOnly=true
-    BRIG_DIRECTIVE_LABEL_INIT = 15,      //.isBodyOnly=true
-    BRIG_DIRECTIVE_LABEL_TARGETS = 16,   //.isBodyOnly=true
-    BRIG_DIRECTIVE_LOC = 17,             //.isBodyOnly=true
-    BRIG_DIRECTIVE_PRAGMA = 18,
-    BRIG_DIRECTIVE_SAMPLER_INIT = 19,    //.isToplevelOnly=true
-    BRIG_DIRECTIVE_SIGNATURE = 20,       //.isToplevelOnly=true
-    BRIG_DIRECTIVE_VARIABLE = 21,
-    BRIG_DIRECTIVE_VARIABLE_INIT = 22,
-    BRIG_DIRECTIVE_VERSION = 23          //.isToplevelOnly=true
+    BRIG_DIRECTIVE_FUNCTION = 10,        //.isToplevelOnly=true
+    BRIG_DIRECTIVE_IMAGE_INIT = 11,      //.isToplevelOnly=true
+    BRIG_DIRECTIVE_KERNEL = 12,          //.isToplevelOnly=true
+    BRIG_DIRECTIVE_LABEL = 13,           //.isBodyOnly=true
+    BRIG_DIRECTIVE_LABEL_INIT = 14,      //.isBodyOnly=true
+    BRIG_DIRECTIVE_LABEL_TARGETS = 15,   //.isBodyOnly=true
+    BRIG_DIRECTIVE_LOC = 16,
+    BRIG_DIRECTIVE_PRAGMA = 17,
+    BRIG_DIRECTIVE_SAMPLER_INIT = 18,    //.isToplevelOnly=true
+    BRIG_DIRECTIVE_SIGNATURE = 19,       //.isToplevelOnly=true
+    BRIG_DIRECTIVE_VARIABLE = 20,
+    BRIG_DIRECTIVE_VARIABLE_INIT = 21,
+    BRIG_DIRECTIVE_VERSION = 22          //.isToplevelOnly=true
 };
 
 //BrigImageGeometry was BrigGeom
@@ -285,7 +291,8 @@ enum BrigImageGeometry { //.tdcaption="Geometry"
     BRIG_GEOMETRY_3D  = 2,
     BRIG_GEOMETRY_1DA = 3,
     BRIG_GEOMETRY_1DB = 4,
-    BRIG_GEOMETRY_2DA = 5
+    BRIG_GEOMETRY_2DA = 5,
+    BRIG_GEOMETRY_UNKNOWN //.mnemo=""
 };
 
 enum BrigImageFormat {
@@ -341,17 +348,20 @@ enum BrigInstKinds {
     BRIG_INST_BASIC        = 1,
     BRIG_INST_ATOMIC       = 2,
     BRIG_INST_ATOMIC_IMAGE = 3,
-    BRIG_INST_BAR          = 4,
-    BRIG_INST_BR           = 5,
-    BRIG_INST_CMP          = 6,
-    BRIG_INST_CVT          = 7,
-    BRIG_INST_IMAGE        = 8, 
-    BRIG_INST_LANE         = 9,
-    BRIG_INST_MEM          = 10,
+    BRIG_INST_BR           = 4,
+    BRIG_INST_CMP          = 5,
+    BRIG_INST_CVT          = 6,
+    BRIG_INST_IMAGE        = 7, 
+    BRIG_INST_LANE         = 8,
+    BRIG_INST_MEM          = 9,
+    BRIG_INST_MEM_FENCE    = 10,
     BRIG_INST_ADDR         = 11,
     BRIG_INST_MOD          = 12,
-    BRIG_INST_SEG          = 13,
-    BRIG_INST_SOURCE_TYPE  = 14   
+    BRIG_INST_QUEUE        = 13,
+    BRIG_INST_SEG          = 14,
+    BRIG_INST_SEG_CVT      = 15,
+    BRIG_INST_SIGNAL       = 16,
+    BRIG_INST_SOURCE_TYPE  = 17
 };
 
 //BrigMachineModel was BrigMachine
@@ -360,8 +370,10 @@ enum BrigMachineModel {
     //.mnemo_token=ETargetMachine
     BRIG_MACHINE_SMALL = 0, // 32-bit model (all addresses are 32 bits;
                             // a pointer fits into an s register)
-    BRIG_MACHINE_LARGE = 1  // 64-bit model (all addresses are 64 bits;
+    BRIG_MACHINE_LARGE = 1, // 64-bit model (all addresses are 64 bits;
                             // a pointer fits into a d register)
+
+    BRIG_MACHINE_UNDEF = 2  //.skip
 };
 
 enum BrigMemoryOrder {
@@ -371,8 +383,7 @@ enum BrigMemoryOrder {
     BRIG_MEMORY_ORDER_RELAXED = 1,                //.mnemo=rlx
     BRIG_MEMORY_ORDER_ACQUIRE = 2,                //.mnemo=acq
     BRIG_MEMORY_ORDER_RELEASE = 3,                //.mnemo=rel
-    BRIG_MEMORY_ORDER_ACQUIRE_RELEASE = 4,        //.mnemo=ar
-    BRIG_MEMORY_ORDER_SEQUENTIALLY_CONSISTENT = 5 //.mnemo=sc
+    BRIG_MEMORY_ORDER_ACQUIRE_RELEASE = 4         //.mnemo=ar
 };
 
 
@@ -380,12 +391,12 @@ enum BrigMemoryScope {
     //.mnemo={ s/^BRIG_MEMORY_SCOPE_//; lc }
     //.mnemo_token=_EMMemoryScope
   BRIG_MEMORY_SCOPE_NONE = 0,                       //.mnemo=""
-  BRIG_MEMORY_SCOPE_WORKGROUP = 1,                  //.mnemo="wg"
-  BRIG_MEMORY_SCOPE_COMPONENT = 2,                  //.mnemo="cmp"
-  BRIG_MEMORY_SCOPE_SYSTEM = 3                      //.mnemo="sys"
+  BRIG_MEMORY_SCOPE_WAVEFRONT = 1,                  //.mnemo="wv" 
+  BRIG_MEMORY_SCOPE_WORKGROUP = 2,                  //.mnemo="wg"
+  BRIG_MEMORY_SCOPE_COMPONENT = 3,                  //.mnemo="cmp"
+  BRIG_MEMORY_SCOPE_SYSTEM = 4                      //.mnemo="sys"
 };
 
-// TBD095 this is new opcodes
 enum BrigOpcode { //.tdcaption="Instruction Opcodes"
     //.k={ "BASIC" }
     //.pscode=$k{ MACRO2Name("_".$k) }
@@ -404,17 +415,8 @@ enum BrigOpcode { //.tdcaption="Instruction Opcodes"
     //.has_memory_order={undef}
     //.semsupport=$has_memory_order{ return $has_memory_order && "true" }
 
-    //.defOrder={undef}
-    //.defOrderV=$defOrder{ return $defOrder&& "Brig::".$defOrder }
-    //.defOrderV_switch //.defOrderV_proto="Brig::BrigMemoryOrder8_t getDefOrder(Brig::BrigOpcode16_t arg)" //.defOrderV_default="return Brig::BRIG_MEMORY_ORDER_RELAXED"
-
-    //.defScope={undef}
-    //.defScopeV=$defScope{ return $defScope&& "Brig::".$defScope }
-    //.defScopeV_switch //.defScopeV_proto="Brig::BrigMemoryFence8_t getDefScope(Brig::BrigOpcode16_t arg)" //.defScopeV_default="return Brig::BRIG_MEMORY_SCOPE_SYSTEM"
-
-    //.defFence={undef}
-    //.defFenceV=$defFence{ return $defFence && "Brig::".$defFence }
-    //.defFenceV_switch //.defFenceV_proto="Brig::BrigMemoryFence8_t getDefFence(Brig::BrigOpcode16_t arg)" //.defFenceV_default="return Brig::BRIG_MEMORY_FENCE_NONE"
+    //.hasType=$k{ return ($k and $k eq "BASIC_NO_TYPE" || $k eq "BR") ? "false" : undef; }
+    //.hasType_switch  //.hasType_proto="bool instHasType(Brig::BrigOpcode16_t arg)" //.hasType_default="return true"
 
     //.opcodevis=$pscode{ "vis.template " . sprintf("%-47s(","visitOpcode<$_>") . ($pscode =~m/^(BasicOrMod|Nop)$/? "inst" : "HSAIL_ASM::Inst". ($pscode=~m/BasicNoType/? "Basic":$pscode) ."(inst)").")" }
     //.opcodevis_switch //.opcodevis_proto="template <typename RetType, typename Visitor> RetType visitOpcode_gen(HSAIL_ASM::Inst inst, Visitor& vis)"
@@ -423,142 +425,149 @@ enum BrigOpcode { //.tdcaption="Instruction Opcodes"
 
     //.ftz=$k{ return ($k eq "BASIC_OR_MOD" or $k eq "CMP" or $k eq "CVT") ? "true" : undef }
     //.ftz_incfile=ItemUtils //.ftz_switch //.ftz_proto="inline bool instSupportsFtz(Brig::BrigOpcode16_t arg)" //.ftz_default="return false"
-    BRIG_OPCODE_NOP                    =   0,	//.k=NOP //.psopnd=NoOperands
-    BRIG_OPCODE_CODEBLOCKEND           =   1,   //.k=BASIC_NO_TYPE
-    BRIG_OPCODE_ABS                    =   2,	//.k=BASIC_OR_MOD
-    BRIG_OPCODE_ADD                    =   3,	//.k=BASIC_OR_MOD
-    BRIG_OPCODE_BORROW                 =   4,	
-    BRIG_OPCODE_CARRY                  =   5,	
-    BRIG_OPCODE_CEIL                   =   6,	//.k=BASIC_OR_MOD
-    BRIG_OPCODE_COPYSIGN               =   7,	//.k=BASIC_OR_MOD
-    BRIG_OPCODE_DIV                    =   8,	//.k=BASIC_OR_MOD
-    BRIG_OPCODE_FLOOR                  =   9,	//.k=BASIC_OR_MOD
-    BRIG_OPCODE_FMA                    =  10,	//.k=BASIC_OR_MOD
-    BRIG_OPCODE_FRACT                  =  11,	//.k=BASIC_OR_MOD
-    BRIG_OPCODE_MAD                    =  12,	
-    BRIG_OPCODE_MAX                    =  13,	//.k=BASIC_OR_MOD
-    BRIG_OPCODE_MIN                    =  14,	//.k=BASIC_OR_MOD
-    BRIG_OPCODE_MUL                    =  15,	//.k=BASIC_OR_MOD
-    BRIG_OPCODE_MULHI                  =  16,	//.k=BASIC_OR_MOD
-    BRIG_OPCODE_NEG                    =  17,	//.k=BASIC_OR_MOD
-    BRIG_OPCODE_REM                    =  18,	
-    BRIG_OPCODE_RINT                   =  19,	//.k=BASIC_OR_MOD
-    BRIG_OPCODE_SQRT                   =  20,	//.k=BASIC_OR_MOD
-    BRIG_OPCODE_SUB                    =  21,	//.k=BASIC_OR_MOD
-    BRIG_OPCODE_TRUNC                  =  22,	//.k=BASIC_OR_MOD
-    BRIG_OPCODE_MAD24                  =  23,	
-    BRIG_OPCODE_MAD24HI                =  24,	
-    BRIG_OPCODE_MUL24                  =  25,	
-    BRIG_OPCODE_MUL24HI                =  26,	
-    BRIG_OPCODE_SHL                    =  27,	
-    BRIG_OPCODE_SHR                    =  28,
-    BRIG_OPCODE_AND                    =  29,	
-    BRIG_OPCODE_NOT                    =  30,	
-    BRIG_OPCODE_OR                     =  31,	
-    BRIG_OPCODE_POPCOUNT               =  32,	//.k=SOURCE_TYPE
-    BRIG_OPCODE_XOR                    =  33,	
-    BRIG_OPCODE_BITEXTRACT             =  34,	
-    BRIG_OPCODE_BITINSERT              =  35,	
-    BRIG_OPCODE_BITMASK                =  36,	
-    BRIG_OPCODE_BITREV                 =  37,	
-    BRIG_OPCODE_BITSELECT              =  38,	
-    BRIG_OPCODE_FIRSTBIT               =  39,	//.k=SOURCE_TYPE
-    BRIG_OPCODE_LASTBIT                =  40,	//.k=SOURCE_TYPE
-    BRIG_OPCODE_COMBINE                =  41,	//.k=SOURCE_TYPE    //.mnemo_token=EInstruction_Vx
-    BRIG_OPCODE_EXPAND                 =  42,	//.k=SOURCE_TYPE    //.mnemo_token=EInstruction_Vx
-    BRIG_OPCODE_LDA                    =  43,	//.k=ADDR
-    BRIG_OPCODE_LDC                    =  44,	
-    BRIG_OPCODE_MOV                    =  45,	
-    BRIG_OPCODE_SHUFFLE                =  46,	
-    BRIG_OPCODE_UNPACKHI               =  47,	
-    BRIG_OPCODE_UNPACKLO               =  48,	
-    BRIG_OPCODE_PACK                   =  49,	//.k=SOURCE_TYPE
-    BRIG_OPCODE_UNPACK                 =  50,	//.k=SOURCE_TYPE
-    BRIG_OPCODE_CMOV                   =  51,	
-    BRIG_OPCODE_CLASS                  =  52,	//.k=SOURCE_TYPE
-    BRIG_OPCODE_NCOS                   =  53,	
-    BRIG_OPCODE_NEXP2                  =  54,	
-    BRIG_OPCODE_NFMA                   =  55,	
-    BRIG_OPCODE_NLOG2                  =  56,	
-    BRIG_OPCODE_NRCP                   =  57,	
-    BRIG_OPCODE_NRSQRT                 =  58,	
-    BRIG_OPCODE_NSIN                   =  59,	
-    BRIG_OPCODE_NSQRT                  =  60,	
-    BRIG_OPCODE_BITALIGN               =  61,	
-    BRIG_OPCODE_BYTEALIGN              =  62,	
-    BRIG_OPCODE_PACKCVT                =  63,	//.k=SOURCE_TYPE
-    BRIG_OPCODE_UNPACKCVT              =  64,	//.k=SOURCE_TYPE
-    BRIG_OPCODE_LERP                   =  65,	
-    BRIG_OPCODE_SAD                    =  66,	//.k=SOURCE_TYPE
-    BRIG_OPCODE_SADHI                  =  67,	//.k=SOURCE_TYPE
-    BRIG_OPCODE_SEGMENTP               =  68,	//.k=SEG
-    BRIG_OPCODE_FTOS                   =  69,	//.k=SEG
-    BRIG_OPCODE_STOF                   =  70,	//.k=SEG
-    BRIG_OPCODE_CMP                    =  71,	//.k=CMP
-    BRIG_OPCODE_CVT                    =  72,	//.k=CVT
-    BRIG_OPCODE_LD                     =  73,	//.k=MEM               //.has_memory_order  //.mnemo_token=EInstruction_Vx
-    BRIG_OPCODE_ST                     =  74,	//.k=MEM               //.has_memory_order  //.mnemo_token=EInstruction_Vx
-    BRIG_OPCODE_ATOMIC                 =  75,	//.k=ATOMIC
-    BRIG_OPCODE_ATOMICNORET            =  76,	//.k=ATOMIC
-    BRIG_OPCODE_RDIMAGE                =  77,	//.k=IMAGE
-    BRIG_OPCODE_LDIMAGE                =  78,	//.k=IMAGE
-    BRIG_OPCODE_STIMAGE                =  79,	//.k=IMAGE
-    BRIG_OPCODE_ATOMICIMAGE            =  80,	//.k=ATOMIC_IMAGE
-    BRIG_OPCODE_ATOMICIMAGENORET       =  81,	//.k=ATOMIC_IMAGE
-    BRIG_OPCODE_QUERYIMAGEARRAY        =  82,	//.k=SOURCE_TYPE
-    BRIG_OPCODE_QUERYIMAGEDEPTH        =  83,	//.k=SOURCE_TYPE
-    BRIG_OPCODE_QUERYIMAGEFORMAT       =  84,	//.k=SOURCE_TYPE
-    BRIG_OPCODE_QUERYIMAGEHEIGHT       =  85,	//.k=SOURCE_TYPE
-    BRIG_OPCODE_QUERYIMAGEORDER        =  86,	//.k=SOURCE_TYPE
-    BRIG_OPCODE_QUERYIMAGEWIDTH        =  87,	//.k=SOURCE_TYPE
-    BRIG_OPCODE_QUERYSAMPLERBOUNDARY   =  88,	//.k=SOURCE_TYPE
-    BRIG_OPCODE_QUERYSAMPLERCOORD      =  89,	//.k=SOURCE_TYPE
-    BRIG_OPCODE_QUERYSAMPLERFILTER     =  90,	//.k=SOURCE_TYPE
-    BRIG_OPCODE_CBR                    =  91,	//.k=BR
-    BRIG_OPCODE_BRN                    =  92,	//.k=BR
-    BRIG_OPCODE_BARRIER                =  93,	//.k=BAR   //.defFence=BRIG_MEMORY_FENCE_BOTH                                         //.defOrder=BRIG_MEMORY_ORDER_NONE
-    BRIG_OPCODE_ARRIVEFBAR             =  94,	//.k=BAR   //.defFence=BRIG_MEMORY_FENCE_BOTH                                         //.defOrder=BRIG_MEMORY_ORDER_NONE
-    BRIG_OPCODE_INITFBAR               =  95,	//.k=BAR                                        //.defScope=BRIG_MEMORY_SCOPE_NONE    //.defOrder=BRIG_MEMORY_ORDER_NONE
-    BRIG_OPCODE_JOINFBAR               =  96,	//.k=BAR                                        //.defScope=BRIG_MEMORY_SCOPE_NONE    //.defOrder=BRIG_MEMORY_ORDER_NONE
-    BRIG_OPCODE_LEAVEFBAR              =  97,	//.k=BAR                                        //.defScope=BRIG_MEMORY_SCOPE_NONE    //.defOrder=BRIG_MEMORY_ORDER_NONE
-    BRIG_OPCODE_RELEASEFBAR            =  98,	//.k=BAR                                        //.defScope=BRIG_MEMORY_SCOPE_NONE    //.defOrder=BRIG_MEMORY_ORDER_NONE
-    BRIG_OPCODE_WAITFBAR               =  99,	//.k=BAR   //.defFence=BRIG_MEMORY_FENCE_BOTH                                         //.defOrder=BRIG_MEMORY_ORDER_NONE
-    BRIG_OPCODE_LDF                    = 100,
-    BRIG_OPCODE_SYNC                   = 101,	//.k=BAR   //.defFence=BRIG_MEMORY_FENCE_BOTH
-    BRIG_OPCODE_COUNTLANE              = 102,	//.k=LANE
-    BRIG_OPCODE_COUNTUPLANE            = 103,	//.k=LANE
-    BRIG_OPCODE_MASKLANE               = 104,	//.k=LANE
-    BRIG_OPCODE_SENDLANE               = 105,	//.k=LANE
-    BRIG_OPCODE_RECEIVELANE            = 106,	//.k=LANE
-    BRIG_OPCODE_CALL                   = 107,	//.k=BR //.psopnd=CallOperands
-    BRIG_OPCODE_RET                    = 108,	//.k=BASIC_NO_TYPE
-    BRIG_OPCODE_SYSCALL                = 109,	
-    BRIG_OPCODE_ALLOCA                 = 110,	//.k=SEG
-    BRIG_OPCODE_CLEARDETECTEXCEPT      = 111,	
-    BRIG_OPCODE_CLOCK                  = 112,	
-    BRIG_OPCODE_CUID                   = 113,	
-    BRIG_OPCODE_CURRENTWORKGROUPSIZE   = 114,	
-    BRIG_OPCODE_DEBUGTRAP              = 115,	
-    BRIG_OPCODE_DIM                    = 116,	
-    BRIG_OPCODE_DISPATCHID             = 117,	
-    BRIG_OPCODE_DISPATCHPTR            = 118,	//.k=SEG
-    BRIG_OPCODE_GETDETECTEXCEPT        = 119,	
-    BRIG_OPCODE_GRIDGROUPS             = 120,	
-    BRIG_OPCODE_GRIDSIZE               = 121,	
-    BRIG_OPCODE_LANEID                 = 122,	
-    BRIG_OPCODE_MAXCUID                = 123,	
-    BRIG_OPCODE_MAXWAVEID              = 124,	
-    BRIG_OPCODE_NULLPTR                = 125,	//.k=SEG
-    BRIG_OPCODE_QID                    = 126,	
-    BRIG_OPCODE_QPTR                   = 127,	//.k=SEG
-    BRIG_OPCODE_SETDETECTEXCEPT        = 128,	
-    BRIG_OPCODE_WAVEID                 = 129,	
-    BRIG_OPCODE_WORKGROUPID            = 130,	
-    BRIG_OPCODE_WORKGROUPSIZE          = 131,	
-    BRIG_OPCODE_WORKITEMABSID          = 132,	
-    BRIG_OPCODE_WORKITEMFLATABSID      = 133,	
-    BRIG_OPCODE_WORKITEMFLATID         = 134,	
-    BRIG_OPCODE_WORKITEMID             = 135,	
+    BRIG_OPCODE_NOP                     =    0,  //.k=NOP //.hasType=false //.psopnd=NoOperands
+    BRIG_OPCODE_CODEBLOCKEND            =    1,  //.k=BASIC_NO_TYPE
+    BRIG_OPCODE_ABS                     =    2,  //.k=BASIC_OR_MOD
+    BRIG_OPCODE_ADD                     =    3,  //.k=BASIC_OR_MOD
+    BRIG_OPCODE_BORROW                  =    4,  
+    BRIG_OPCODE_CARRY                   =    5,  
+    BRIG_OPCODE_CEIL                    =    6,  //.k=BASIC_OR_MOD
+    BRIG_OPCODE_COPYSIGN                =    7,  //.k=BASIC_OR_MOD
+    BRIG_OPCODE_DIV                     =    8,  //.k=BASIC_OR_MOD
+    BRIG_OPCODE_FLOOR                   =    9,  //.k=BASIC_OR_MOD
+    BRIG_OPCODE_FMA                     =   10,  //.k=BASIC_OR_MOD
+    BRIG_OPCODE_FRACT                   =   11,  //.k=BASIC_OR_MOD
+    BRIG_OPCODE_MAD                     =   12,  
+    BRIG_OPCODE_MAX                     =   13,  //.k=BASIC_OR_MOD
+    BRIG_OPCODE_MIN                     =   14,  //.k=BASIC_OR_MOD
+    BRIG_OPCODE_MUL                     =   15,  //.k=BASIC_OR_MOD
+    BRIG_OPCODE_MULHI                   =   16,  //.k=BASIC_OR_MOD
+    BRIG_OPCODE_NEG                     =   17,  //.k=BASIC_OR_MOD
+    BRIG_OPCODE_REM                     =   18,  
+    BRIG_OPCODE_RINT                    =   19,  //.k=BASIC_OR_MOD
+    BRIG_OPCODE_SQRT                    =   20,  //.k=BASIC_OR_MOD
+    BRIG_OPCODE_SUB                     =   21,  //.k=BASIC_OR_MOD
+    BRIG_OPCODE_TRUNC                   =   22,  //.k=BASIC_OR_MOD
+    BRIG_OPCODE_MAD24                   =   23,  
+    BRIG_OPCODE_MAD24HI                 =   24,  
+    BRIG_OPCODE_MUL24                   =   25,  
+    BRIG_OPCODE_MUL24HI                 =   26,  
+    BRIG_OPCODE_SHL                     =   27,  
+    BRIG_OPCODE_SHR                     =   28,  
+    BRIG_OPCODE_AND                     =   29,  
+    BRIG_OPCODE_NOT                     =   30,  
+    BRIG_OPCODE_OR                      =   31,  
+    BRIG_OPCODE_POPCOUNT                =   32,  //.k=SOURCE_TYPE
+    BRIG_OPCODE_XOR                     =   33,  
+    BRIG_OPCODE_BITEXTRACT              =   34,  
+    BRIG_OPCODE_BITINSERT               =   35,  
+    BRIG_OPCODE_BITMASK                 =   36,  
+    BRIG_OPCODE_BITREV                  =   37,  
+    BRIG_OPCODE_BITSELECT               =   38,  
+    BRIG_OPCODE_FIRSTBIT                =   39,  //.k=SOURCE_TYPE
+    BRIG_OPCODE_LASTBIT                 =   40,  //.k=SOURCE_TYPE
+    BRIG_OPCODE_COMBINE                 =   41,  //.k=SOURCE_TYPE    //.mnemo_token=EInstruction_Vx
+    BRIG_OPCODE_EXPAND                  =   42,  //.k=SOURCE_TYPE    //.mnemo_token=EInstruction_Vx
+    BRIG_OPCODE_LDA                     =   43,  //.k=ADDR
+    BRIG_OPCODE_LDC                     =   44,  
+    BRIG_OPCODE_MOV                     =   45,  
+    BRIG_OPCODE_SHUFFLE                 =   46,  
+    BRIG_OPCODE_UNPACKHI                =   47,  
+    BRIG_OPCODE_UNPACKLO                =   48,  
+    BRIG_OPCODE_PACK                    =   49,  //.k=SOURCE_TYPE
+    BRIG_OPCODE_UNPACK                  =   50,  //.k=SOURCE_TYPE
+    BRIG_OPCODE_CMOV                    =   51,  
+    BRIG_OPCODE_CLASS                   =   52,  //.k=SOURCE_TYPE
+    BRIG_OPCODE_NCOS                    =   53,  
+    BRIG_OPCODE_NEXP2                   =   54,  
+    BRIG_OPCODE_NFMA                    =   55,  
+    BRIG_OPCODE_NLOG2                   =   56,  
+    BRIG_OPCODE_NRCP                    =   57,  
+    BRIG_OPCODE_NRSQRT                  =   58,  
+    BRIG_OPCODE_NSIN                    =   59,  
+    BRIG_OPCODE_NSQRT                   =   60,  
+    BRIG_OPCODE_BITALIGN                =   61,  
+    BRIG_OPCODE_BYTEALIGN               =   62,  
+    BRIG_OPCODE_PACKCVT                 =   63,  //.k=SOURCE_TYPE
+    BRIG_OPCODE_UNPACKCVT               =   64,  //.k=SOURCE_TYPE
+    BRIG_OPCODE_LERP                    =   65,  
+    BRIG_OPCODE_SAD                     =   66,  //.k=SOURCE_TYPE
+    BRIG_OPCODE_SADHI                   =   67,  //.k=SOURCE_TYPE
+    BRIG_OPCODE_SEGMENTP                =   68,  //.k=SEG_CVT
+    BRIG_OPCODE_FTOS                    =   69,  //.k=SEG_CVT
+    BRIG_OPCODE_STOF                    =   70,  //.k=SEG_CVT
+    BRIG_OPCODE_CMP                     =   71,  //.k=CMP
+    BRIG_OPCODE_CVT                     =   72,  //.k=CVT
+    BRIG_OPCODE_LD                      =   73,  //.k=MEM               //.has_memory_order  //.mnemo_token=EInstruction_Vx
+    BRIG_OPCODE_ST                      =   74,  //.k=MEM               //.has_memory_order  //.mnemo_token=EInstruction_Vx
+    BRIG_OPCODE_ATOMIC                  =   75,  //.k=ATOMIC
+    BRIG_OPCODE_ATOMICNORET             =   76,  //.k=ATOMIC
+    BRIG_OPCODE_SIGNAL                  =   77,  //.k=SIGNAL
+    BRIG_OPCODE_SIGNALNORET             =   78,  //.k=SIGNAL
+    BRIG_OPCODE_MEMFENCE                =   79,  //.k=MEM_FENCE
+    BRIG_OPCODE_RDIMAGE                 =   80,  //.k=IMAGE
+    BRIG_OPCODE_LDIMAGE                 =   81,  //.k=IMAGE
+    BRIG_OPCODE_STIMAGE                 =   82,  //.k=IMAGE
+    BRIG_OPCODE_ATOMICIMAGE             =   83,  //.k=ATOMIC_IMAGE
+    BRIG_OPCODE_ATOMICIMAGENORET        =   84,  //.k=ATOMIC_IMAGE
+    BRIG_OPCODE_QUERYIMAGEARRAY         =   85,  //.k=SOURCE_TYPE
+    BRIG_OPCODE_QUERYIMAGEDEPTH         =   86,  //.k=SOURCE_TYPE
+    BRIG_OPCODE_QUERYIMAGEFORMAT        =   87,  //.k=SOURCE_TYPE
+    BRIG_OPCODE_QUERYIMAGEHEIGHT        =   88,  //.k=SOURCE_TYPE
+    BRIG_OPCODE_QUERYIMAGEORDER         =   89,  //.k=SOURCE_TYPE
+    BRIG_OPCODE_QUERYIMAGEWIDTH         =   90,  //.k=SOURCE_TYPE
+    BRIG_OPCODE_QUERYSAMPLERBOUNDARY    =   91,  //.k=SOURCE_TYPE
+    BRIG_OPCODE_QUERYSAMPLERCOORD       =   92,  //.k=SOURCE_TYPE
+    BRIG_OPCODE_QUERYSAMPLERFILTER      =   93,  //.k=SOURCE_TYPE
+    BRIG_OPCODE_CBR                     =   94,  //.k=BR
+    BRIG_OPCODE_BRN                     =   95,  //.k=BR
+    BRIG_OPCODE_BARRIER                 =   96,  //.k=BR  
+    BRIG_OPCODE_WAVEBARRIER             =   97,  //.k=BR
+    BRIG_OPCODE_ARRIVEFBAR              =   98,  //.k=BR
+    BRIG_OPCODE_INITFBAR                =   99,  //.k=BASIC_NO_TYPE
+    BRIG_OPCODE_JOINFBAR                =  100,  //.k=BR
+    BRIG_OPCODE_LEAVEFBAR               =  101,  //.k=BR
+    BRIG_OPCODE_RELEASEFBAR             =  102,  //.k=BASIC_NO_TYPE
+    BRIG_OPCODE_WAITFBAR                =  103,  //.k=BR
+    BRIG_OPCODE_LDF                     =  104,
+    BRIG_OPCODE_ACTIVELANECOUNT         =  105,  //.k=LANE
+    BRIG_OPCODE_ACTIVELANEID            =  106,  //.k=LANE
+    BRIG_OPCODE_ACTIVELANEMASK          =  107,  //.k=LANE
+    BRIG_OPCODE_ACTIVELANESHUFFLE       =  108,  //.k=LANE
+    BRIG_OPCODE_CALL                    =  109,  //.k=BR //.psopnd=CallOperands
+    BRIG_OPCODE_RET                     =  110,  //.k=BASIC_NO_TYPE
+    BRIG_OPCODE_ALLOCA                  =  111,  //.k=MEM
+    BRIG_OPCODE_ADDQUEUEWRITEINDEX      =  112,  //.k=QUEUE
+    BRIG_OPCODE_CASQUEUEWRITEINDEX      =  113,  //.k=QUEUE
+    BRIG_OPCODE_CLEARDETECTEXCEPT       =  114,
+    BRIG_OPCODE_CLOCK                   =  115,
+    BRIG_OPCODE_CUID                    =  116,
+    BRIG_OPCODE_CURRENTWORKGROUPSIZE    =  117,
+    BRIG_OPCODE_DEBUGTRAP               =  118,
+    BRIG_OPCODE_DIM                     =  119,
+    BRIG_OPCODE_GETDETECTEXCEPT         =  120,
+    BRIG_OPCODE_GRIDGROUPS              =  121,
+    BRIG_OPCODE_GRIDSIZE                =  122,
+    BRIG_OPCODE_LANEID                  =  123,
+    BRIG_OPCODE_LDQUEUEREADINDEX        =  124,  //.k=QUEUE
+    BRIG_OPCODE_LDQUEUEWRITEINDEX       =  125,  //.k=QUEUE
+    BRIG_OPCODE_MAXCUID                 =  126,
+    BRIG_OPCODE_MAXWAVEID               =  127,
+    BRIG_OPCODE_NULLPTR                 =  128,  //.k=SEG
+    BRIG_OPCODE_PACKETCOMPLETIONSIG     =  129,
+    BRIG_OPCODE_PACKETID                =  130,  
+    BRIG_OPCODE_QUEUEID                 =  131,
+    BRIG_OPCODE_QUEUEPTR                =  132,  //.k=SEG
+    BRIG_OPCODE_SERVICEQUEUEPTR         =  133,  //.k=SEG
+    BRIG_OPCODE_SETDETECTEXCEPT         =  134,
+    BRIG_OPCODE_STQUEUEWRITEINDEX       =  135,  //.k=QUEUE
+    BRIG_OPCODE_WAVEID                  =  136,
+    BRIG_OPCODE_WORKGROUPID             =  137,
+    BRIG_OPCODE_WORKGROUPSIZE           =  138,
+    BRIG_OPCODE_WORKITEMABSID           =  139,
+    BRIG_OPCODE_WORKITEMFLATABSID       =  140,
+    BRIG_OPCODE_WORKITEMFLATID          =  141,
+    BRIG_OPCODE_WORKITEMID              =  142,
 
     BRIG_OPCODE_GCNMADU        = (1u << 15) |  0, //.k=BASIC_NO_TYPE
     BRIG_OPCODE_GCNMADS        = (1u << 15) |  1, //.k=BASIC_NO_TYPE
@@ -586,41 +595,10 @@ enum BrigOpcode { //.tdcaption="Instruction Opcodes"
     BRIG_OPCODE_GCNCONSUME     = (1u << 15) | 23, //.k=ADDR          //.mnemo=gcn_atomic_consume
     BRIG_OPCODE_GCNAPPEND      = (1u << 15) | 24, //.k=ADDR          //.mnemo=gcn_atomic_append
     BRIG_OPCODE_GCNB4XCHG      = (1u << 15) | 25,                    //.mnemo=gcn_b4xchg
-    BRIG_OPCODE_GCNB32XCHG     = (1u << 15) | 26                     //.mnemo=gcn_b32xchg
+    BRIG_OPCODE_GCNB32XCHG     = (1u << 15) | 26,                    //.mnemo=gcn_b32xchg
+    BRIG_OPCODE_GCNMAX         = (1u << 15) | 27, 
+    BRIG_OPCODE_GCNMIN         = (1u << 15) | 28,
 };
-
-/*
-enum OldGcnOpcodes {
-    // TBD revise this, as this is a copy from old spec
-    BRIG_OPCODE_GCNMADU        = (1u << 15) |  0, //.k=Base   //.pscode=NoType
-    BRIG_OPCODE_GCNMADS        = (1u << 15) |  1, //.k=Base   //.pscode=NoType
-    BRIG_OPCODE_GCNMAX3        = (1u << 15) |  2, //.k=Base
-    BRIG_OPCODE_GCNMIN3        = (1u << 15) |  3, //.k=Base
-    BRIG_OPCODE_GCNMED3        = (1u << 15) |  4, //.k=Base
-    BRIG_OPCODE_GCNFLDEXP      = (1u << 15) |  5, //.k=Base
-    BRIG_OPCODE_GCNFREXP_EXP   = (1u << 15) |  6, //.k=Base
-    BRIG_OPCODE_GCNFREXP_MANT  = (1u << 15) |  7, //.k=Base
-    BRIG_OPCODE_GCNTRIG_PREOP  = (1u << 15) |  8, //.k=Base
-    BRIG_OPCODE_GCNBFM         = (1u << 15) |  9, //.k=Base
-    BRIG_OPCODE_GCNLD          = (1u << 15) | 10, //.k=LdSt   //.mnemo_token=EInstruction_Vx
-    BRIG_OPCODE_GCNST          = (1u << 15) | 11, //.k=LdSt   //.mnemo_token=EInstruction_Vx
-    BRIG_OPCODE_GCNATOMIC      = (1u << 15) | 12, //.k=Atomic
-    BRIG_OPCODE_GCNATOMICNORET = (1u << 15) | 13, //.k=Atomic //.mnemo=gcn_atomicNoRet
-    BRIG_OPCODE_GCNSLEEP       = (1u << 15) | 14, //.k=Base
-    BRIG_OPCODE_GCNPRIORITY    = (1u << 15) | 15, //.k=Base
-    BRIG_OPCODE_GCNREGIONALLOC = (1u << 15) | 16, //.k=Base   //.mnemo=gcn_region_alloc //.pscode=NoType
-    BRIG_OPCODE_GCNMSAD        = (1u << 15) | 17, //.k=Base
-    BRIG_OPCODE_GCNQSAD        = (1u << 15) | 18, //.k=Base
-    BRIG_OPCODE_GCNMQSAD       = (1u << 15) | 19, //.k=Base
-    BRIG_OPCODE_GCNMQSAD4      = (1u << 15) | 20, //.k=Base   //.pscode=NoType
-    BRIG_OPCODE_GCNSADW        = (1u << 15) | 21, //.k=Base
-    BRIG_OPCODE_GCNSADD        = (1u << 15) | 22, //.k=Base
-    BRIG_OPCODE_GCNCONSUME     = (1u << 15) | 23, //.k=Base   //.mnemo=gcn_atomic_consume
-    BRIG_OPCODE_GCNAPPEND      = (1u << 15) | 24, //.k=Base   //.mnemo=gcn_atomic_append
-    BRIG_OPCODE_GCNB4XCHG      = (1u << 15) | 25, //.k=Base   //.mnemo=gcn_b4xchg
-    BRIG_OPCODE_GCNB32XCHG     = (1u << 15) | 26  //.k=Base   //.mnemo=gcn_b32xchg
-};
-*/
 
 enum BrigOperandKinds {
     //.wname={ s/^BRIG//; MACRO2Name($_) }
@@ -673,20 +651,17 @@ enum BrigSegment {
     BRIG_SEGMENT_NONE     = 0, //.mnemo=""
     BRIG_SEGMENT_FLAT     = 1, //.mnemo=""
     BRIG_SEGMENT_GLOBAL   = 2,
+    BRIG_SEGMENT_READONLY = 3,
+    BRIG_SEGMENT_KERNARG  = 4,
     BRIG_SEGMENT_GROUP    = 5,
     BRIG_SEGMENT_PRIVATE  = 6,
-    BRIG_SEGMENT_KERNARG  = 4,
-    BRIG_SEGMENT_READONLY = 3,
     BRIG_SEGMENT_SPILL    = 7,
     BRIG_SEGMENT_ARG      = 8,
     BRIG_SEGMENT_EXTSPACE0 = 9, //.mnemo="region"
-    //BRIG_ExtSpace0 = BRIG_SEGMENT_EXTSPACE0 //.skip // TBD095 FIXME
 };
 
-enum BrigMemoryFence {
-    //.mnemo={ s/^BRIG_MEMORY_FENCE_/f/; s/_//; lc }
-    //.mnemo_token=_EMMemoryFence
-    BRIG_MEMORY_FENCE_NONE   = 0, //.mnemo=""
+enum BrigMemoryFenceSegments {
+    BRIG_MEMORY_FENCE_NONE   = 0, // \todo: NONE cannot happen according to the spec. BOTH is the default
     BRIG_MEMORY_FENCE_GROUP  = 1,
     BRIG_MEMORY_FENCE_GLOBAL = 2,
     BRIG_MEMORY_FENCE_BOTH   = 3
@@ -758,7 +733,7 @@ enum BrigAluModifierMask {
 
 struct BrigAluModifier { //.isroot //.standalone
     BrigAluModifier16_t allBits; //.defValue=0
-    //^^ BrigRound8_t   round;   //.wtype=BFValRef<Brig::BrigRound8_t,0,4>  // TBD095 Why 15 bits for BrigRound8_t?
+    //^^ BrigRound8_t   round;   //.wtype=BFValRef<Brig::BrigRound8_t,0,4>
     //^^ bool           ftz;     //.wtype=BitValRef<4>
 };
 
@@ -789,9 +764,6 @@ struct BrigSymbolModifier { //.isroot //.standalone
     //^^ bool        isArray;       //.wtype=BitValRef<4>
     //^^ bool        isFlexArray;   //.wtype=BitValRef<5>
 };
-
-
-
 
 enum BrigExecuteableModifierMask {
     //.nodump
@@ -828,15 +800,66 @@ struct BrigSamplerModifier { //.isroot //.standalone
 };
 
 enum BrigMemoryModifierMask {
-    BRIG_MEMORY_ALIGNED = 1
+    BRIG_MEMORY_CONST = 1
 };
 
 struct BrigMemoryModifier { //.isroot //.standalone
     BrigMemoryModifier8_t      allBits;   //.defValue=0
-    //^^ bool                  aligned;   //.wtype=BitValRef<0>
+    //^^ bool                  isConst;   //.wtype=BitValRef<0>
 };
 
+struct BrigSegCvtModifier { //.isroot //.standalone
+    BrigSegCvtModifier8_t      allBits;   //.defValue=0
+    //^^ bool                  isNoNull;    //.wtype=BitValRef<0>
+};
 
+enum BrigSegCvtModifierMask {
+  BRIG_SEGCVT_NONULL = 1                          //.mnemo="nonull"
+};
+
+enum BrigAlignment {
+    BRIG_ALIGNMENT_NONE = 0,
+    BRIG_ALIGNMENT_1 = 1,
+    BRIG_ALIGNMENT_2 = 2,
+    BRIG_ALIGNMENT_4 = 3,
+    BRIG_ALIGNMENT_8 = 4,
+    BRIG_ALIGNMENT_16 = 5,
+    BRIG_ALIGNMENT_32 = 6,
+    BRIG_ALIGNMENT_64 = 7,
+    BRIG_ALIGNMENT_128 = 8
+};
+
+enum BrigSignalOperation {
+    //.mnemo={ s/^BRIG_SIGNAL_//;lc }
+    //.mnemo_token=_EMSignalOp
+    //.mnemo_context=Brig::BRIG_INST_SIGNAL
+    BRIG_SIGNAL_ADD = 0,
+    BRIG_SIGNAL_AND = 1,
+    BRIG_SIGNAL_CAS = 2,
+    BRIG_SIGNAL_DEC = 3,
+    BRIG_SIGNAL_EXCH = 4,
+    BRIG_SIGNAL_INC = 5,
+    BRIG_SIGNAL_LD = 6,
+    BRIG_SIGNAL_MAX = 7,
+    BRIG_SIGNAL_MIN = 8,
+    BRIG_SIGNAL_OR = 9,
+    BRIG_SIGNAL_ST = 10,
+    BRIG_SIGNAL_SUB = 11,
+    BRIG_SIGNAL_XOR = 12,
+    BRIG_SIGNAL_WAIT_EQ = 13,
+    BRIG_SIGNAL_WAIT_NE = 14,
+    BRIG_SIGNAL_WAIT_LT = 15,
+    BRIG_SIGNAL_WAIT_GTE = 16,
+    BRIG_SIGNAL_WAITTIMEOUT_EQ = 17,
+    BRIG_SIGNAL_WAITTIMEOUT_NE = 18,
+    BRIG_SIGNAL_WAITTIMEOUT_LT = 19,
+    BRIG_SIGNAL_WAITTIMEOUT_GTE = 20
+};
+
+enum BrigSamplerCoord {
+    BRIG_COORD_NORMALIZED = 0,
+    BRIG_COORD_UNNORMALIZED = 1
+};
 
 struct BrigString {
     //.nowrap
@@ -873,21 +896,6 @@ struct BrigDirectiveCode { //.generic //.parent=BrigDirective
     /// Location in the instruction stream corresponding to this directive.
     BrigCodeOffset32_t     code;
 };
-
-
-/*
-struct BrigDirectiveVersion { //.parent=BrigDirectiveCode
-    uint16_t size;
-    uint16_t kind;
-    BrigcOffset32_t c_code;
-    uint16_t major;
-    uint16_t minor;
-    BrigMachine16_t machine;
-    BrigProfile16_t profile;
-    BrigSftz16_t ftz;
-    uint16_t reserved;
-};*/
-
 
 struct BrigDirectiveVersion { //.parent=BrigDirectiveCode
     uint16_t               size;
@@ -963,17 +971,6 @@ struct BrigDirectiveExtension { //.parent=BrigDirectiveCode
     BrigStringOffset32_t   name;
 };
 
-/// file directive.
-struct BrigDirectiveFile { //.parent=BrigDirectiveCode
-    uint16_t               size;
-    BrigDirectiveKinds16_t kind;
-    BrigCodeOffset32_t     code;
-    uint32_t               fileid;
-    BrigStringOffset32_t   filename;
-};
-
-
-//new
 struct BrigDirectiveCallableBase { //.generic //.parent=BrigDirectiveCode
     uint16_t               size;
     BrigDirectiveKinds16_t kind;
@@ -1034,7 +1031,7 @@ struct BrigDirectiveKernel { //.parent=BrigDirectiveExecutable
 /// element describing properties of function signature argument.
 struct BrigDirectiveSignatureArgument { //.isroot //.standalone
     BrigType16_t          type;
-    uint8_t               align;
+    BrigAlignment8_t      align;
     BrigSymbolModifier    modifier; //.acc=subItem<SymbolModifier> //.wtype=SymbolModifier
     uint32_t              dimLo;
     //^^ uint64_t         dim;      //.wtype=ValRef<uint64_t> //.acc=reinterpretValRef<uint64_t>
@@ -1052,25 +1049,6 @@ struct BrigDirectiveSignature { //.parent=BrigDirectiveCallableBase
     BrigDirectiveSignatureArgument args[1]; //.wtype=DirectiveSignatureArgument //.acc=subItem<DirectiveSignatureArgument> //.wspecial=DirectiveSignatureArguments
 };
 
-/*
-/// symbol (variable,arg declarator)
-struct BrigDirectiveSymbol { //.generic //.parent=BrigDirectiveCode
-    uint16_t                size;
-    BrigDirectiveKinds16_t  kind;
-    BrigCodeOffset32_t      code;
-    BrigStringOffset32_t    name;
-    BrigDirectiveOffset32_t init;     //.wtype=ItemRef<Directive>
-    BrigType16_t            type;
-    BrigSegment8_t          segment;
-    uint8_t                 align;    //.defValue=0
-    uint32_t                dimLo;    //.defValue=0
-    //^^ uint64_t           dim;      //.wtype=ValRef<uint64_t> //.acc=reinterpretValRef<uint64_t>
-    uint32_t                dimHi;    //.defValue=0
-    BrigSymbolModifier      modifier; //.acc=subItem<SymbolModifier> //.wtype=SymbolModifier
-    uint8_t reserved[3];              //.defValue=0
-};
-*/
-
 struct BrigDirectiveVariable { //.parent=BrigDirectiveCode
     uint16_t                size;
     BrigDirectiveKinds16_t  kind;
@@ -1079,47 +1057,13 @@ struct BrigDirectiveVariable { //.parent=BrigDirectiveCode
     BrigDirectiveOffset32_t init;     //.wtype=ItemRef<Directive> // it might be DirectiveVariableInit or DirectiveLabelInit
     BrigType16_t            type;
     BrigSegment8_t          segment;
-    uint8_t                 align;    //.defValue=0
+    BrigAlignment8_t        align;    //.defValue=0
     uint32_t                dimLo;    //.defValue=0
     //^^ uint64_t           dim;      //.wtype=ValRef<uint64_t> //.acc=reinterpretValRef<uint64_t>
     uint32_t                dimHi;    //.defValue=0
     BrigSymbolModifier      modifier; //.acc=subItem<SymbolModifier> //.wtype=SymbolModifier
     uint8_t reserved[3];              //.defValue=0
 };
-
-/*
-struct BrigDirectiveImage { //.parent=BrigDirectiveSymbol
-    uint16_t                size;
-    BrigDirectiveKinds16_t  kind;
-    BrigCodeOffset32_t      code;
-    BrigStringOffset32_t    name;     //.defValue=Brig::BRIG_TYPE_RWIMG
-    BrigDirectiveOffset32_t init;     //.wtype=ItemRef<DirectiveImageInit>
-    BrigType16_t            type;
-    BrigSegment8_t          segment;
-    uint8_t                 align;    //.defValue=0
-    uint32_t                dimLo;    //.defValue=0
-    //^^ uint64_t           dim;      //.wtype=ValRef<uint64_t> //.acc=reinterpretValRef<uint64_t>
-    uint32_t                dimHi;    //.defValue=0
-    BrigSymbolModifier      modifier; //.acc=subItem<SymbolModifier> //.wtype=SymbolModifier
-    uint8_t reserved[3];              //.defValue=0
-};
-
-struct BrigDirectiveSampler { //.parent=BrigDirectiveSymbol
-    uint16_t                size;
-    BrigDirectiveKinds16_t  kind;
-    BrigCodeOffset32_t      code;
-    BrigStringOffset32_t    name;
-    BrigDirectiveOffset32_t init;     //.wtype=ItemRef<DirectiveSamplerInit>
-    BrigType16_t            type;     //.defValue=Brig::BRIG_TYPE_SAMP
-    BrigSegment8_t          segment;
-    uint8_t                 align;    //.defValue=0
-    uint32_t                dimLo;    //.defValue=0
-    //^^ uint64_t           dim;      //.wtype=ValRef<uint64_t> //.acc=reinterpretValRef<uint64_t>
-    uint32_t                dimHi;    //.defValue=0
-    BrigSymbolModifier      modifier; //.acc=subItem<SymbolModifier> //.wtype=SymbolModifier
-    uint8_t reserved[3];              //.defValue=0
-};
-*/
 
 struct BrigDirectiveVariableInit { //.parent=BrigDirectiveCode
     uint16_t                size;
@@ -1132,8 +1076,6 @@ struct BrigDirectiveVariableInit { //.parent=BrigDirectiveCode
     uint16_t reserved;                    //.defValue=0
 };
 
-//BrigDirectiveImageInit was BrigDirectiveImage
-/// image directive.
 struct BrigDirectiveImageInit { //.parent=BrigDirectiveCode
     uint16_t               size;
     BrigDirectiveKinds16_t kind;
@@ -1141,10 +1083,11 @@ struct BrigDirectiveImageInit { //.parent=BrigDirectiveCode
     uint32_t               width;  //.defValue=0
     uint32_t               height; //.defValue=0
     uint32_t               depth;  //.defValue=0
-    uint32_t               array;  //.defValue=1
+    uint32_t               array;  //.defValue=0
+    BrigImageGeometry8_t   geometry;
     BrigImageOrder8_t      order;
     BrigImageFormat8_t     format;
-    uint16_t reserved;             //.defValue=0
+    uint8_t reserved;             //.defValue=0
 };
 
 struct BrigDirectiveSamplerInit { //.parent=BrigDirective
@@ -1164,6 +1107,7 @@ struct BrigDirectiveLabel { //.parent=BrigDirectiveCode
     BrigStringOffset32_t    name;
 };
 
+// \todo: this should be renamed BrigDirectiveLabelList?
 struct BrigDirectiveLabelTargets { //.parent=BrigDirectiveCode
     uint16_t                size;
     BrigDirectiveKinds16_t  kind;
@@ -1187,9 +1131,9 @@ struct BrigDirectiveLoc { //.parent=BrigDirectiveCode
     uint16_t                size;
     BrigDirectiveKinds16_t  kind;
     BrigCodeOffset32_t      code;
-    uint32_t                fileid;
+    BrigStringOffset32_t    filename;
     uint32_t                line;
-    uint32_t                column; //.defValue=0
+    uint32_t                column; //.defValue=1
 };
 
 struct BrigDirectivePragma { //.parent=BrigDirectiveCode
@@ -1251,8 +1195,8 @@ struct BrigInstAtomic {
     BrigMemoryOrder8_t     memoryOrder;
     BrigMemoryScope8_t     memoryScope;
     BrigAtomicOperation8_t atomicOperation;
-
-    int8_t reserved;                    //.defValue=0
+    uint8_t                equivClass;
+    uint8_t reserved[3];                    //.defValue=0
 };
 
 struct BrigInstAtomicImage {
@@ -1266,20 +1210,21 @@ struct BrigInstAtomicImage {
     BrigType16_t           coordType;
     BrigImageGeometry8_t   geometry;
     BrigAtomicOperation8_t atomicOperation;
-    uint16_t reserved;                    //.defValue=0
+    uint8_t                equivClass;
+    uint8_t                reserved;      //.defValue=0
 };
 
-struct BrigInstBar {
+struct BrigInstMemFence {
     uint16_t              size;
     BrigInstKinds16_t     kind;
     BrigOpcode16_t        opcode;
     BrigType16_t          type;        //.defValue=Brig::BRIG_TYPE_NONE
     BrigOperandOffset32_t operands[5]; //.wname=operand
 
-    BrigWidth8_t          width;
+    BrigMemoryFenceSegments8_t segments;
     BrigMemoryOrder8_t    memoryOrder;
     BrigMemoryScope8_t    memoryScope;
-    BrigMemoryFence8_t    memoryFence;
+    uint8_t reserved;                    //.defValue=0
 };
 
 struct BrigInstBasic {
@@ -1341,8 +1286,9 @@ struct BrigInstImage {
     BrigType16_t          imageType;
     BrigType16_t          coordType;
     BrigImageGeometry8_t  geometry;
+    uint8_t               equivClass;
 
-    uint8_t reserved[3];               //.defValue=0
+    uint16_t reserved; //.defValue=0
 };
 
 struct BrigInstMem {
@@ -1350,12 +1296,13 @@ struct BrigInstMem {
     BrigInstKinds16_t     kind;
     BrigOpcode16_t        opcode;
     BrigType16_t          type;
-    BrigOperandOffset32_t operands[5]; //.wname=operand
-
-    BrigWidth8_t          width;
+    BrigOperandOffset32_t operands[5];  //.wname=operand
     BrigSegment8_t        segment;
-    BrigMemoryModifier    modifier;   //.acc=subItem<MemoryModifier> //.wtype=MemoryModifier
+    BrigAlignment8_t      align;
     uint8_t               equivClass;
+    BrigWidth8_t          width;
+    BrigMemoryModifier    modifier;     //.acc=subItem<MemoryModifier> //.wtype=MemoryModifier
+    uint8_t reserved[3];                //.defValue=0
 };
 
 struct BrigInstAddr {
@@ -1383,18 +1330,14 @@ struct BrigInstSourceType {
     uint16_t reserved;                  //.defValue=0
 };
 
-//new
 struct BrigInstSeg {
     uint16_t              size;
     BrigInstKinds16_t     kind;
     BrigOpcode16_t        opcode;
     BrigType16_t          type;
     BrigOperandOffset32_t operands[5]; //.wname=operand
-
-    BrigType16_t          sourceType;
     BrigSegment8_t        segment;
-
-    uint8_t reserved;                  //.defValue=0
+    uint8_t reserved[3];                  //.defValue=0
 };
 
 struct BrigInstBr {
@@ -1406,7 +1349,7 @@ struct BrigInstBr {
 
     BrigWidth8_t          width;
 
-    uint8_t reserved;                  //.defValue=0
+    uint8_t reserved[3];                  //.defValue=0
 };
 
 struct BrigInstLane {
@@ -1422,12 +1365,45 @@ struct BrigInstLane {
     uint8_t reserved;                  //.defValue=0
 };
 
-//new
 struct BrigInstNone { //.isroot //.standalone
     uint16_t              size;
     BrigInstKinds16_t     kind;
 };
 
+struct BrigInstSignal {
+    uint16_t               size;
+    BrigInstKinds16_t      kind;
+    BrigOpcode16_t         opcode;
+    BrigType16_t           type;
+    BrigOperandOffset32_t  operands[5]; //.wname=operand
+
+    BrigType16_t           signalType;
+    BrigMemoryOrder8_t     memoryOrder;
+    BrigSignalOperation8_t signalOperation;
+};
+
+struct BrigInstQueue {
+    uint16_t               size;
+    BrigInstKinds16_t      kind;
+    BrigOpcode16_t         opcode;
+    BrigType16_t           type;
+    BrigOperandOffset32_t  operands[5];
+    BrigSegment8_t         segment;
+    BrigMemoryOrder8_t     memoryOrder;
+    uint16_t reserved;                  //.defValue=0
+};
+
+struct BrigInstSegCvt {
+    uint16_t               size;
+    BrigInstKinds16_t      kind;
+    BrigOpcode16_t         opcode;
+    BrigType16_t           type;
+    BrigOperandOffset32_t  operands[5];
+
+    BrigType16_t           sourceType;
+    BrigSegment8_t         segment;
+    BrigSegCvtModifier     modifier; //.acc=subItem<SegCvtModifier> //.wtype=SegCvtModifier
+};
 
 // ============================================================================
 //  Operands
@@ -1450,23 +1426,21 @@ struct BrigOperandAddress {
     uint32_t                offsetLo;
     //^^ uint64_t           offset;      //.wtype=ValRef<uint64_t> //.acc=reinterpretValRef<uint64_t>
     uint32_t                offsetHi;
-    BrigType16_t            type;
-    uint16_t reserved;                   //.defValue=0
 };
 
 struct BrigOperandList { //.generic
     uint16_t                size;
     BrigOperandKinds16_t    kind;
-    uint16_t                elementCount; //.defValue=0
     uint16_t reserved;                    //.defValue=0
+    uint16_t                elementCount; //.defValue=0
     BrigDirectiveOffset32_t elements[1];  //.wspecial=RefList
 };
 
 struct BrigOperandArgumentList { //.parent=BrigOperandList
     uint16_t                size;
     BrigOperandKinds16_t    kind;
-    uint16_t                elementCount; //.defValue=0
     uint16_t reserved;                    //.defValue=0
+    uint16_t                elementCount; //.defValue=0
     BrigDirectiveOffset32_t elements[1];  //.wspecial=ArgumentRefList
 };
 
@@ -1474,8 +1448,8 @@ struct BrigOperandArgumentList { //.parent=BrigOperandList
 struct BrigOperandFunctionList { //.parent=BrigOperandList
     uint16_t                size;
     BrigOperandKinds16_t    kind;
-    uint16_t                elementCount; //.defValue=0
     uint16_t reserved;                    //.defValue=0
+    uint16_t                elementCount; //.defValue=0
     BrigDirectiveOffset32_t elements[1];  //.wspecial=FunctionRefList
 };
 
@@ -1526,23 +1500,21 @@ struct BrigOperandFbarrierRef { //.parent=BrigOperandRef
 struct BrigOperandImmed {
     uint16_t                size;
     BrigOperandKinds16_t    kind;
-    BrigType16_t            type;
+    uint16_t                reserved;  //.defValue=0
     uint16_t                byteCount;
-    uint8_t                 bytes[1];  //.novisit
+    uint8_t                 bytes[1];  //.novisit //.noaligncheck
 };
 
 struct BrigOperandReg {
     uint16_t             size;
     BrigOperandKinds16_t kind;
     BrigStringOffset32_t reg;
-    BrigType16_t         type;
-    uint16_t reserved;              //.defValue=0
 };
 
 struct BrigOperandRegVector {
     uint16_t             size;
     BrigOperandKinds16_t kind;
-    BrigType16_t         type;
+    uint16_t             reserved; //.defValue=0
     uint16_t             regCount; //.defValue=0
     //^^uint16_t         elementCount; //.wname=elementCount
     BrigStringOffset32_t regs[1];  //.wtype=StrRef //.wspecial=RegVecStrList
@@ -1551,6 +1523,4 @@ struct BrigOperandRegVector {
 struct BrigOperandWavesize {
     uint16_t             size;
     BrigOperandKinds16_t kind;
-    BrigType16_t         type;
-    uint16_t reserved;              //.defValue=0
 };

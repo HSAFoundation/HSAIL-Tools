@@ -125,7 +125,7 @@ struct LengthOnlyRuleConvert {
         return *reinterpret_cast<const DstType*>(&src);
     }
     DstType getBits(false_type*) const { // when sizeof(DstType) != sizeof(SrcType)
-        throw ConversionError("value bitlength should match bitlength of destination");
+        throw ConversionError("literal size must match size of operand type");
     }
 
     DstType visit(...) const {
@@ -144,7 +144,7 @@ struct TruncateRuleConvert {
         return *reinterpret_cast<const DstType*>(&src);
     }
     DstType getBits(false_type*) const { // when sizeof(DstType) > sizeof(SrcType)
-        throw ConversionError("value bitlength should match or exceed the bitlength of destination");
+        throw ConversionError("literal size must match or exceed size of operand type");
     }
 
     DstType visit(...) const {

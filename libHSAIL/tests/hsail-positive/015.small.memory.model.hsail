@@ -1,0 +1,91 @@
+version 0:96:$full:$small;
+
+function &TestFuncX    ()(arg_s32 %in_arg0) { ret; };
+function &TestFuncUndef()(arg_s32 %in_arg0); // defined elsewhere
+
+global_u32   &global_var;
+readonly_u32 &readonly_var;
+group_u32    &group_var;
+
+kernel &testKernel(kernarg_u32 %in_arg0)
+{
+    lda_kernarg_u32 $s1, [%in_arg0];
+
+    ld_kernarg_u32 $s0, [%in_arg0];
+    ld_kernarg_u32 $s0, [%in_arg0][12];
+    ld_kernarg_u32 $s0, [%in_arg0][$s0 + 12];
+
+    ret;
+};
+
+function &TestCallUndefTarget()(arg_u32 %in_arg0)
+{
+    ld_arg_u32 $s0, [%in_arg0];
+    ld_arg_u32 $s0, [%in_arg0][12];
+    ld_arg_u32 $s0, [%in_arg0][$s0 + 12];
+
+    ld_global_u32 $s0, [&global_var];
+    ld_global_u32 $s0, [&global_var][12];
+    ld_global_u32 $s0, [&global_var][$s0 + 12];
+
+    atomic_and_global_ar_sys_b32 $s1, [&global_var], 23;
+
+    lda_arg_u32 $s1, [%in_arg0];
+    lda_arg_u32 $s1, [%in_arg0][12];
+    lda_arg_u32 $s1, [%in_arg0][$s0 + 12];
+    lda_group_u32 $s1, [&group_var];
+    lda_group_u32 $s1, [&group_var][12];
+    lda_group_u32 $s1, [&group_var][$s0 + 12];
+
+    lda_global_u32 $s2, [&global_var];
+    lda_global_u32 $s2, [&global_var][12];
+    lda_global_u32 $s2, [&global_var][$s0 + 12];
+    lda_readonly_u32 $s2, [&readonly_var];
+    lda_readonly_u32 $s2, [&readonly_var][12];
+    lda_readonly_u32 $s2, [&readonly_var][$s0 + 12];
+
+    // Flat address
+    lda_u32 $s2, [0];
+    lda_u32 $s2, [$s0 + 12];
+    lda_u32 $s2, [$s0 + 12];
+
+
+    spill_b64 %x;
+    lda_spill_u32 $s0, [%x];
+    lda_spill_u32 $s0, [%x][12];
+    lda_spill_u32 $s0, [%x][$s1 + 12];
+
+    stof_spill_u32_u32 $s1, $s0;
+    stof_global_u32_u32 $s1, $s0;
+
+    ftos_spill_u32_u32 $s1, $s0;
+    ftos_readonly_u32_u32 $s1, $s0;
+
+    segmentp_private_b1_u32 $c1, $s1;
+
+    ldc_u32 $s1, &TestFuncX;
+
+    {
+        arg_s32 %arg0;
+
+        st_arg_s32	0, [%arg0];
+        call   $s1 () (%arg0) [&TestFuncX, &TestFuncUndef];
+    }       		
+};
+
+function &test_indirect()()
+{
+    ldc_u32 $s0, @k1;
+    ldc_u32 $s1, @join;
+    cbr $c0, $s0;
+
+    add_s32 $s7, $s8, $s9;
+    brn $s1;
+
+@k1:
+    sub_s32 $s7, $s8, $s9;
+
+@join:
+
+    ret;
+};

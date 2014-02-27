@@ -23,6 +23,10 @@ namespace TESTGEN {
 class PropDesc
 {
 public:
+    static void init(unsigned machineModel);
+    static void clean();
+
+public:
     static const unsigned* getPropVals(unsigned propId, unsigned& num);                 // Return all possible values 'propId' may take
 
     static       bool      isBrigProp(unsigned propId);                                 // Return true if 'propId' is a Brig property; return false otherwise

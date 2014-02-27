@@ -101,7 +101,7 @@ public:
     /// @param machineModel - one of Brig::BrigMachineModel enum values
     /// @param profile - one of Brig::BrigProfile enum values
     /// @param srcInfo - (optional) source location
-    DirectiveVersion version(unsigned short major,unsigned short minor,
+    DirectiveVersion version(Brig::BrigVersion32_t major,Brig::BrigVersion32_t minor,
         Brig::BrigMachineModel8_t machineModel,Brig::BrigProfile8_t profile,
         const SourceInfo* srcInfo=NULL);
 
@@ -352,7 +352,7 @@ public:
 
     /// create 'Wavesize' operand.
     /// @param srcInfo - (optional) source location.
-    OperandWavesize    createWaveSz(Brig::BrigType16_t type, const SourceInfo* srcInfo=NULL);
+    OperandWavesize    createWaveSz(const SourceInfo* srcInfo=NULL);
 
     /// @name Miscelaneous members
     /// @{
@@ -371,7 +371,7 @@ public:
     Dir            findInScopes(const SRef& name) const;
 
     /// return model.
-    unsigned       getMachineType() const;
+    unsigned       getMachineModel() const { return m_machine; }
 
     /// store DWARF data.
     /// @param dwarfData - data.

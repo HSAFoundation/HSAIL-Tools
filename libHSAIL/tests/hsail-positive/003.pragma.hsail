@@ -1,0 +1,17 @@
+version 0:96:$full:$large;
+
+pragma"";
+pragma "";
+pragma"\"";
+
+function &TestFunc()()
+{
+	pragma//*pragma"";*/"";
+"";
+	pragma/*pragma"";*/"";
+	ret;
+	pragma"\?";
+	pragma"\t\012\x0a";
+};
+
+pragma"123";

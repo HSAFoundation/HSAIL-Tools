@@ -1,36 +1,36 @@
 // University of Illinois/NCSA
 // Open Source License
-// 
+//
 // Copyright (c) 2013, Advanced Micro Devices, Inc.
 // All rights reserved.
-// 
+//
 // Developed by:
-// 
+//
 //     HSA Team
-// 
+//
 //     Advanced Micro Devices, Inc
-// 
+//
 //     www.amd.com
-// 
+//
 // Permission is hereby granted, free of charge, to any person obtaining a copy of
 // this software and associated documentation files (the "Software"), to deal with
 // the Software without restriction, including without limitation the rights to
 // use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies
 // of the Software, and to permit persons to whom the Software is furnished to do
 // so, subject to the following conditions:
-// 
+//
 //     * Redistributions of source code must retain the above copyright notice,
 //       this list of conditions and the following disclaimers.
-// 
+//
 //     * Redistributions in binary form must reproduce the above copyright notice,
 //       this list of conditions and the following disclaimers in the
 //       documentation and/or other materials provided with the distribution.
-// 
+//
 //     * Neither the names of the LLVM Team, University of Illinois at
 //       Urbana-Champaign, nor the names of its contributors may be used to
 //       endorse or promote products derived from this Software without specific
 //       prior written permission.
-// 
+//
 // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 // IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
 // FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SHALL THE
@@ -68,7 +68,7 @@ typedef TrailingRefs <
 class OperandList;
 typedef TrailingRefs<
     OperandList,
-    Directive, 
+    Directive,
     offsetof(Brig::BrigOperandList, elements)
 > RefList;
 
@@ -76,7 +76,7 @@ class OperandArgumentList;
 class DirectiveVariable;
 typedef TrailingRefs<
     OperandArgumentList,
-    DirectiveVariable, 
+    DirectiveVariable,
     offsetof(Brig::BrigOperandArgumentList, elements)
 > ArgumentRefList;
 
@@ -84,7 +84,7 @@ class OperandFunctionList;
 class DirectiveFunction;
 typedef TrailingRefs<
     OperandFunctionList,
-    DirectiveFunction, 
+    DirectiveFunction,
     offsetof(Brig::BrigOperandFunctionList, elements)
 > FunctionRefList;
 
@@ -107,7 +107,7 @@ class DirectiveSignature;
 class DirectiveSignatureArgument;
 class DirectiveSignatureArguments;
 
-#include "generated/HSAILItems_gen.hpp"
+#include "HSAILItems_gen.hpp"
 
 class DirectiveSignatureArguments
 {
@@ -118,13 +118,13 @@ public:
 
     enum ArgKind { Input, Output };
 
-    DirectiveSignatureArgument addArg(ArgKind kind, Brig::BrigType16_t type, Optional<uint64_t> dim, uint8_t  align = 1) {
+    DirectiveSignatureArgument addArg(ArgKind kind, Brig::BrigType16_t type, Optional<uint64_t> dim, Brig::BrigAlignment align = Brig::BRIG_ALIGNMENT_NONE) {
         unsigned const newNumElem = m_item.outCount() + m_item.inCount() + 1;
         unsigned const newNumBytes = offsetof(Brig::BrigDirectiveSignature, args) + newNumElem*sizeof(Brig::BrigDirectiveSignatureArgument);
         if (grow(m_item,newNumBytes)>=newNumBytes) {
             DirectiveSignatureArgument t = m_item.args(newNumElem-1);
             t.type()   = type;
-            t.align()  = align;
+            t.align()  = (align == Brig::BRIG_ALIGNMENT_NONE)? getNaturalAlignment(type) : align;
             t.modifier().linkage() = Brig::BRIG_LINKAGE_NONE;
             t.modifier().isConst() = false;
             t.modifier().isDeclaration() = true;
@@ -150,11 +150,11 @@ public:
     }
 };
 
-#include "generated/HSAILItemImpls_gen.hpp"
+#include "HSAILItemImpls_gen.hpp"
 
-#include "generated/HSAILVisitItems_gen.hpp"
+#include "HSAILVisitItems_gen.hpp"
 
-#include "generated/HSAILItemUtils_gen.hpp"
+#include "HSAILItemUtils_gen.hpp"
 
 // shortcut for "final" classes
 template<typename RetType, typename Visitor, typename Item>
@@ -189,7 +189,7 @@ inline void dispatchByItemKind(Item item, const Visitor& vis) {
 
 // by default - just call enumerateFields_gen version
 template <typename Visitor,typename Item>
-inline void enumerateFieldsImpl(Item item, Visitor& vis) {   
+inline void enumerateFieldsImpl(Item item, Visitor& vis) {
     enumerateFields_gen(item, vis);
 }
 
@@ -210,14 +210,14 @@ public:
     void visitNone(...) const {}
 };
 
-// OperandImmed: make a virtual "value" field that has ValRef<T> type where T is selected at runtime 
+// OperandImmed: make a virtual "value" field that has ValRef<T> type where T is selected at runtime
 // by OperandImmed::type
-template <typename Visitor>
+/*template <typename Visitor>
 void enumerateFieldsImpl(OperandImmed op, Visitor& vis) {
     enumerateFields_gen(op, vis);
     PassOperandImmedValueByType<Visitor> passOperandImmedValueByType(op,vis);
     dispatchByType(op.type(),passOperandImmedValueByType);
-}
+}*/
 
 
 template <typename Visitor>
@@ -226,7 +226,7 @@ class PassValuesByType
     DataItem m_data;
     Visitor& m_vis;
 public:
-    PassValuesByType(DataItem data,Visitor& vis) 
+    PassValuesByType(DataItem data,Visitor& vis)
         : m_data(data), m_vis(vis) {}
     template <typename BrigType>
     void visit() const {
@@ -259,7 +259,7 @@ public:
 };
 
 // enumerateFields dispatches visitor to the actual item kind (like a dynamic_cast)
-template <typename Item, typename Visitor> 
+template <typename Item, typename Visitor>
 inline void enumerateFields(Item item, Visitor& vis) {
     FieldEnumerator<Visitor> fieldEnum(vis);
     dispatchByItemKind(item,fieldEnum);
@@ -303,10 +303,10 @@ class GetImmediate
     const void *m_bits;
 public:
     GetImmediate(const void *bits) : m_bits(bits) {}
-   
+
     template <typename SrcBrigType>
     typename ReqBrigType::CType visit() const {
-        return convert< ReqBrigType, SrcBrigType, Convertor >( 
+        return convert< ReqBrigType, SrcBrigType, Convertor >(
 		    *reinterpret_cast<const typename SrcBrigType::CType*>(m_bits) );
     }
     typename ReqBrigType::CType visitNone(unsigned /*type*/) const {
@@ -322,7 +322,9 @@ typename ReqBrigType::CType getImmValue( Inst i, unsigned opndIndex, Brig::BrigM
         assert(false);
         return typename ReqBrigType::CType();
     }
-    unsigned const opndType = getImmOperandType(i, opndIndex, machine);  
+    unsigned const opndType = getOperandType(i, opndIndex, machine);
+    assert(opndType != Brig::BRIG_TYPE_INVALID); // cannot find out operand type because of malformed instruction
+    assert(opndType != Brig::BRIG_TYPE_NONE);    // operand cannot be immediate
     return dispatchByType<typename ReqBrigType::CType> ( opndType, GetImmediate<ReqBrigType,Convertor>(&imm.brig()->bytes) );
 }
 

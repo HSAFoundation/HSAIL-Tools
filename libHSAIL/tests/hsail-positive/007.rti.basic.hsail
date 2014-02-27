@@ -1,0 +1,72 @@
+version 0:96:$full:$large;
+
+block"rti"
+blockstring "this is a string";
+endblock;
+
+function &TestFunc()()
+{
+	ret;
+
+	block/**/"rti"blockstring"this is a string";
+
+	blocknumeric_b8  0, 127, 255;
+	blocknumeric_b16  0, 32767, 65535;
+	blocknumeric_b32 0, 127, 255, 256, 12345, 2147483647;
+	blocknumeric_b64 0, 127, 255, 256, 12345, 2147483647;
+
+	blocknumeric_b64 9223372036854775807;
+
+	blockstring//
+			"this is a string"/**/ //
+	;blockstring/**/"";
+
+	endblock;
+
+};
+
+block//
+/**/"rti"/**/ //
+blockstring"this is a string";
+blocknumeric_b8 255, 23, 10, 23;
+blocknumeric_b32 1255, 0x323, 10, 23;
+blocknumeric_b64 0x123456781, 0x323, 10, 23;	
+endblock;
+
+
+function &TestFunc100()()
+{
+	ret;
+
+	block "rti"
+	blocknumeric_b8  0, 127, 255;
+	endblock;
+
+};
+
+function &TestFunc200()()
+{
+	ret;
+
+	block "rti"
+	blocknumeric_b8  0, 127, 255;
+	endblock;
+
+	block "rti"
+	blocknumeric_b8  0, 127, 255;
+	endblock;
+};
+
+function &TestFunc300()()
+{
+
+	block "rti"
+	blocknumeric_b8  0, 127, 255;
+	endblock;
+	
+	ret;
+
+	block "rti"
+	blocknumeric_b8  0, 127, 255;
+	endblock;
+};
