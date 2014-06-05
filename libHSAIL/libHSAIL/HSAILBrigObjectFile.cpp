@@ -600,20 +600,23 @@ int BrigIO::load(BrigContainer &dst,
                  ReadAdapter&  src)
 {
     unsigned char ident[16];
-    src.pread((char*)ident, 16, 0);
-    switch(ident[EI_CLASS]) {
-    case ELFCLASS32: {
-        BrigIOImpl<Elf32Policy> impl(fmt);
-        return impl.readContainer(dst, &src);
-        }
-    case ELFCLASS64: {
-        BrigIOImpl<Elf64Policy> impl(fmt);
-        return impl.readContainer(dst, &src);
-        }
-    default:
-        src.errs << "Invalid ELFCLASS";
-        return 1;
-    }
+    if (!(src.pread((char*)ident, 16, 0))) {
+			switch(ident[EI_CLASS]) {
+			case ELFCLASS32: {
+					BrigIOImpl<Elf32Policy> impl(fmt);
+					return impl.readContainer(dst, &src);
+					}
+			case ELFCLASS64: {
+					BrigIOImpl<Elf64Policy> impl(fmt);
+					return impl.readContainer(dst, &src);
+					}
+			default:
+					src.errs << "Invalid ELFCLASS";
+					return 1;
+			}
+		} else {
+			return 1;
+		}
 }
 
 int BrigIO::save(BrigContainer &src, 
