@@ -1,36 +1,36 @@
 // University of Illinois/NCSA
 // Open Source License
-// 
+//
 // Copyright (c) 2013, Advanced Micro Devices, Inc.
 // All rights reserved.
-// 
+//
 // Developed by:
-// 
+//
 //     HSA Team
-// 
+//
 //     Advanced Micro Devices, Inc
-// 
+//
 //     www.amd.com
-// 
+//
 // Permission is hereby granted, free of charge, to any person obtaining a copy of
 // this software and associated documentation files (the "Software"), to deal with
 // the Software without restriction, including without limitation the rights to
 // use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies
 // of the Software, and to permit persons to whom the Software is furnished to do
 // so, subject to the following conditions:
-// 
+//
 //     * Redistributions of source code must retain the above copyright notice,
 //       this list of conditions and the following disclaimers.
-// 
+//
 //     * Redistributions in binary form must reproduce the above copyright notice,
 //       this list of conditions and the following disclaimers in the
 //       documentation and/or other materials provided with the distribution.
-// 
+//
 //     * Neither the names of the LLVM Team, University of Illinois at
 //       Urbana-Champaign, nor the names of its contributors may be used to
 //       endorse or promote products derived from this Software without specific
 //       prior written permission.
-// 
+//
 // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 // IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
 // FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SHALL THE
@@ -91,15 +91,13 @@ using std::string;
 enum ActionType {
     AC_Assemble,
     AC_Disassemble,
-    AC_GenTests
 };
 
 static cl::opt<ActionType>
     Action(cl::desc("Action to perform:"),
            cl::init(AC_Assemble),
-           cl::values(clEnumValN(AC_Assemble, "assemble", "Assemble a .s file (default)"),
-                      clEnumValN(AC_Disassemble, "disassemble", "Disassemble an .o file"),
-                      clEnumValN(AC_GenTests,    "gen-tests",   "Generate tests for HSAIL instructions"),
+           cl::values(clEnumValN(AC_Assemble, "assemble", "Assemble a .hsail file (default)"),
+                      clEnumValN(AC_Disassemble, "disassemble", "Disassemble an .brig file"),
                       clEnumValEnd));
 
 static cl::opt<std::string>
@@ -110,6 +108,9 @@ static cl::opt<std::string>
 
 static cl::opt<bool>
     BifFileFormat("bif", cl::init(false), cl::desc("Use BIF3.0 format for assembled files instead of default (legacy BRIG)"));
+
+static cl::opt<bool>
+    Elf64FileFormat("elf64", cl::init(false), cl::desc("Use ELF64 container"));
 
 static cl::opt<bool>
     DisableOperandOptimizer("disable-operand-optimizer", cl::Hidden, cl::desc("Disable Operand Optimizer"));
@@ -133,20 +134,18 @@ static cl::opt<std::string>
 static cl::opt<bool>
     RepeatForever("repeat-forever", cl::ReallyHidden, cl::desc("Repeat forever (for profiling)"));
 
-static cl::opt<Disassembler::FloatDisassemblyMode>
+static cl::opt<EFloatDisassemblyMode>
     FloatDisassemblyMode(cl::desc("float disassembly mode:"),
-           cl::init(Disassembler::RawBits),
-           cl::values(clEnumValN(Disassembler::RawBits,  "floatraw", "print in form 0[DFH]rawbits"),
-                      clEnumValN(Disassembler::C99,      "floatc99", "print in form +-0xX.XXXp+-DD C99 format"),
-                      clEnumValN(Disassembler::Decimal,  "floatdec", "print in decimal form"),
+           cl::init(FloatDisassemblyModeRawBits),
+           cl::values(clEnumValN(FloatDisassemblyModeRawBits,  "floatraw", "print in form 0[DFH]rawbits"),
+                      clEnumValN(FloatDisassemblyModeC99,      "floatc99", "print in form +-0xX.XXXp+-DD C99 format"),
+                      clEnumValN(FloatDisassemblyModeDecimal,  "floatdec", "print in decimal form"),
                       clEnumValEnd));
+static cl::opt<bool>
+    DisasmInstOffset("disasm-inst-offset", cl::Hidden, cl::desc("print Brig instruction offset as comment to an instruction on disassembly"));
 
 static cl::opt<bool>
     DumpFormatError("dump-format-error", cl::Hidden, cl::desc("Dump items which do not pass validation (experimental)"));
-
-// ============================================================================
-
-extern int genTests(const char* fileName);
 
 // ============================================================================
 
@@ -167,7 +166,7 @@ static string getOutputFileName() {
 static int ValidateContainer(BrigContainer &c, std::istream *is) {
     if (!DisableValidator) {
         Validator vld(c);
-        if (!vld.validate(ValidateLinkedCode ? Validator::VM_BrigLinked : Validator::VM_BrigNotLinked)) {
+        if (!vld.validate(DumpFormatError)) {
             std::cerr << vld.getErrorMsg(is) << '\n';
             return vld.getErrorCode();
         }
@@ -207,8 +206,10 @@ static void DumpDebugInfoToFile( BrigContainer & c )
     std::ofstream ofs( (const char*)(DebugInfoFilename.c_str()), std::ofstream::binary );
     if ( ! ofs.is_open() || ofs.bad() )
         std::cout << "Could not create output debug info file " << DebugInfoFilename << ", not dumping debug info\n";
-    else
-        c.ExtractDebugInformationToStream( ofs );
+    else {
+      SRef data = c.debugInfo().payload();
+      ofs.write(data.begin, data.length());
+    }
 }
 
 
@@ -248,7 +249,7 @@ static int AssembleInput() {
         ssVersion << ", HSAIL version ";
         ssVersion << Brig::BRIG_VERSION_HSAIL_MAJOR << ':' << Brig::BRIG_VERSION_HSAIL_MINOR;
 
-        std::auto_ptr<BrigDebug::BrigDwarfGenerator> pBdig(
+        std::unique_ptr<BrigDebug::BrigDwarfGenerator> pBdig(
             BrigDebug::BrigDwarfGenerator::Create( ssVersion.str(),
                                                    GetCurrentWorkingDirectory(),
                                                    InputFilename ) );
@@ -264,12 +265,18 @@ static int AssembleInput() {
 
     DEBUG(HSAIL_ASM::dump(c));
 
-    if (!DisableOperandOptimizer) {
+    /*if (!DisableOperandOptimizer) {
         c.optimizeOperands();
+    }*/
+    if (Elf64FileFormat) {
+        return BifFileFormat
+          ?  Bif64Streamer::save(c, getOutputFileName().c_str())
+          : Brig64Streamer::save(c, getOutputFileName().c_str());
+    } else {
+        return BifFileFormat
+          ?  Bif32Streamer::save(c, getOutputFileName().c_str())
+          : Brig32Streamer::save(c, getOutputFileName().c_str());
     }
-    return BifFileFormat
-      ?  BifStreamer::save(c, getOutputFileName().c_str())
-      : BrigStreamer::save(c, getOutputFileName().c_str());
 }
 
 static int DisassembleInput() {
@@ -281,14 +288,19 @@ static int DisassembleInput() {
     int res = ValidateContainer(c, NULL);
     if (res) return res;
 
-    Disassembler disasm(c,FloatDisassemblyMode);
-    //disasm.log(errs());
+    Disassembler disasm(c);
+    disasm.setOutputOptions(static_cast<unsigned>(FloatDisassemblyMode)
+      | (DisasmInstOffset ? static_cast<unsigned>(Disassembler::PrintInstOffset) : 0u));
     disasm.log(std::cerr);
 
     if ( DebugInfoFilename.size() > 0 )
         DumpDebugInfoToFile( c );
-
-    return disasm.run(getOutputFileName().c_str());
+    std::string ofn = getOutputFileName();
+    if (ofn == "-") {
+        return disasm.run(std::cout);
+    } else {
+        return disasm.run(ofn.c_str());
+    }
 }
 
 static int Repeat(int (*func)()) {
@@ -330,12 +342,10 @@ int main(int argc, char **argv) {
         return Repeat(AssembleInput);
     case AC_Disassemble:
         return Repeat(DisassembleInput);
-    case AC_GenTests:
-        assert(false); // TBD095 genTests
-        //return genTests(InputFilename.c_str());
     }
 
     return 0;
 }
 
 // ============================================================================
+

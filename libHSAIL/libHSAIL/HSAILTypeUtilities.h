@@ -1,36 +1,36 @@
 // University of Illinois/NCSA
 // Open Source License
-// 
+//
 // Copyright (c) 2013, Advanced Micro Devices, Inc.
 // All rights reserved.
-// 
+//
 // Developed by:
-// 
+//
 //     HSA Team
-// 
+//
 //     Advanced Micro Devices, Inc
-// 
+//
 //     www.amd.com
-// 
+//
 // Permission is hereby granted, free of charge, to any person obtaining a copy of
 // this software and associated documentation files (the "Software"), to deal with
 // the Software without restriction, including without limitation the rights to
 // use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies
 // of the Software, and to permit persons to whom the Software is furnished to do
 // so, subject to the following conditions:
-// 
+//
 //     * Redistributions of source code must retain the above copyright notice,
 //       this list of conditions and the following disclaimers.
-// 
+//
 //     * Redistributions in binary form must reproduce the above copyright notice,
 //       this list of conditions and the following disclaimers in the
 //       documentation and/or other materials provided with the distribution.
-// 
+//
 //     * Neither the names of the LLVM Team, University of Illinois at
 //       Urbana-Champaign, nor the names of its contributors may be used to
 //       endorse or promote products derived from this Software without specific
 //       prior written permission.
-// 
+//
 // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 // IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
 // FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SHALL THE
@@ -238,6 +238,19 @@ struct BrigTypePacked : BrigTypeAnyPacked {
     static size_t const Size = N;
     typedef MySmallArray<typename ElementType::CType,N> CType;
 };
+
+template <> struct BrigType<Brig::BRIG_TYPE_SIG32>   : BrigTypeAny {
+    static const Brig::BrigTypeX value = Brig::BRIG_TYPE_SIG32;
+    typedef uint64_t CType;
+    typedef BrigType<Brig::BRIG_TYPE_B64>  asBitType;
+};
+
+template <> struct BrigType<Brig::BRIG_TYPE_SIG64>   : BrigTypeAny {
+    static const Brig::BrigTypeX value = Brig::BRIG_TYPE_SIG64;
+    typedef uint64_t CType;
+    typedef BrigType<Brig::BRIG_TYPE_B64>  asBitType;
+};
+
 
 // bitstrings
 template <> struct BrigType<Brig::BRIG_TYPE_B1>   : BrigTypeB {
@@ -522,7 +535,7 @@ template <> struct CType2Brig< f32_t,4u >    : BrigType<Brig::BRIG_TYPE_F32X4> {
 template <> struct CType2Brig< f64_t,2u >   : BrigType<Brig::BRIG_TYPE_F64X2> {};
 
 
-#include "generated/HSAILTemplateUtilities_gen.hpp"
+#include "HSAILTemplateUtilities_gen.hpp"
 
 template<typename RetType, typename Visitor>
 inline RetType dispatchByType(unsigned type, const Visitor& v) {
@@ -576,6 +589,9 @@ class Optional
     Value m_value;
     bool m_initialized;
 
+    typedef void (Optional::*bool_type)() const;
+    void toCompare() const {}
+
 public:
     Optional() : m_value(), m_initialized(false) {};
 
@@ -587,8 +603,8 @@ public:
         return *this;
     }
 
-    operator Value() const { return value(); }
     bool isInitialized() const { return m_initialized; }
+    operator bool_type() const { return isInitialized() ? &Optional::toCompare : NULL; }
 
     Value value() const { assert(m_initialized); return m_value; }
     Value value(Value def) const { return m_initialized? m_value : def; }

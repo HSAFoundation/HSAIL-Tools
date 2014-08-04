@@ -1,36 +1,36 @@
 // University of Illinois/NCSA
 // Open Source License
-// 
+//
 // Copyright (c) 2013, Advanced Micro Devices, Inc.
 // All rights reserved.
-// 
+//
 // Developed by:
-// 
+//
 //     HSA Team
-// 
+//
 //     Advanced Micro Devices, Inc
-// 
+//
 //     www.amd.com
-// 
+//
 // Permission is hereby granted, free of charge, to any person obtaining a copy of
 // this software and associated documentation files (the "Software"), to deal with
 // the Software without restriction, including without limitation the rights to
 // use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies
 // of the Software, and to permit persons to whom the Software is furnished to do
 // so, subject to the following conditions:
-// 
+//
 //     * Redistributions of source code must retain the above copyright notice,
 //       this list of conditions and the following disclaimers.
-// 
+//
 //     * Redistributions in binary form must reproduce the above copyright notice,
 //       this list of conditions and the following disclaimers in the
 //       documentation and/or other materials provided with the distribution.
-// 
+//
 //     * Neither the names of the LLVM Team, University of Illinois at
 //       Urbana-Champaign, nor the names of its contributors may be used to
 //       endorse or promote products derived from this Software without specific
 //       prior written permission.
-// 
+//
 // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 // IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
 // FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SHALL THE
@@ -60,12 +60,13 @@ struct Guard {
 
 
 #include "Brig.h"
+#include "HSAILItems.h"
 #include "HSAILTypeUtilities.h"
 #include "HSAILUtilities.h"
 #include "HSAILSRef.h"
 #include "HSAILFloats.h"
-#include "HSAILConvertors.h"
 
+#include <memory>
 #include <vector>
 #include <string>
 #include <list>
@@ -114,25 +115,30 @@ public:
     typedef std::vector<char>         BufferContainer;
 
 protected:
-    const char *m_tokStart;
-    const char *m_curPos;
     const char *m_end;
 
     std::istream&   m_is;
-    //bool            m_eof;
     BufferContainer m_buffer;
 
     void readChars(int n);
+    void readBuffer();
     std::streamoff  streamPosAt(const char *i) const;
 
 public:
     StreamScannerBase(std::istream& is);
-
-    std::streamoff streamPos() const { return streamPosAt(m_tokStart); } // streamoff at start of current token
 };
 
 namespace HSAIL_ASM
 {
+
+enum ELitKinds
+{
+    ELitDecimal,
+    ELitDecimalWithSuffix,
+    ELitHex,
+    ELitOctal,
+    ELitC99
+};
 
 enum ETokens
 {
@@ -167,24 +173,30 @@ enum ETokens
     EKWLoc,
     EKWConst,
     EKWAlign,
+    EKWAlloc,
+    EAllocKind,
     EKWExtension,
-    EKWFile,
+    ELinkage,
+    EKWDecl,
+    EKWIndirect,
 
     EKWImageWidth,
     EKWImageHeight,
     EKWImageDepth,
-    EKWImageFormat,
-    EKWImageOrder,
+    EKWImageChannelType,
+    EKWImageChannelOrder,
+    EKWImageGeometry,
+    EKWImageArray,
+
+    EMemoryScope,
 
     ESamplerFirstProp,
-    EKWSamplerBoundaryU = ESamplerFirstProp,
-    EKWSamplerBoundaryV,
-    EKWSamplerBoundaryW,
+    EKWSamplerAddressing = ESamplerFirstProp,
     EKWSamplerCoord,
     EKWSamplerFilter,
     ESamplerLastProp = EKWSamplerFilter,
 
-    ESamplerBoundaryMode,
+    ESamplerAddressingMode,
     ESamplerCoord,
     ESamplerFilter,
 
@@ -193,26 +205,23 @@ enum ETokens
     EKWBlockStr,
     EKWBlockEnd,
 
-    EKWFBar,
-    EKWLabelTargets,
     EKWSignature,
     EKWWidthAll,
     EKWFbarrier,
+    EKWRWImg,
+    EKWROImg,
+    EKWWOImg,
+    EKWSamp,
 
     // constants
-    EDecimalNumber,
-    EOctalNumber,
-    EHexNumber,
-    EHlfHexNumber,
-    ESglHexNumber,
-    EDblHexNumber,
-    EHlfNumber,
-    ESglNumber,
-    EDblNumber,
-    EHlfC99Number,
-    ESglC99Number,
-    EDblC99Number,
+
+    EIntLiteral,
+    EF16Literal,
+    EF32Literal,
+    EF64Literal,
     EPackedLiteral,
+    EStringLiteral,
+    EEmbeddedText,
 
     // user names
     ELabel,
@@ -220,16 +229,20 @@ enum ETokens
     EIDLocal,
     ERegister,
 
-    EAttribute,
     ESegment,
 
     // other
+    ESLComment,
+    EMLCommentStart,
     EId,
     EWaveSizeMacro,
     EControl,
     ETargetMachine,
     ETargetProfile,
     ETargetSftz,
+    EImageFormat,
+    EImageOrder,
+    EImageGeometry,
 
     // insts
     EInstNoType,
@@ -246,21 +259,23 @@ enum ETokens
     EInstModAlu,
     EInstReadImage,
     EInstLdStImage,
-    EInstAtomicImage,
     EInstQueryImage,
 
     EInstSkip, // TBD remove
 
     EInstruction,
-    EInstruction_Vx,
 
     // modifiers
-    EMType,
+    EModifiers,
+    EMType = EModifiers,
     EMPacking,
-    EMSemantics,
+    EMMemoryOrder,
+    EMMemoryScope,
     EMAtomicOp,
     EMSegment,
+    EMNoNull,
     EMWidth,
+    EMAlign,
     EMVector,
     EMEquiv,
     EMRound,
@@ -268,241 +283,143 @@ enum ETokens
     EMHi,
     EMCompare,
     EMGeom,
-    EMImageModifier,
     EMFBar,
-    EMAligned,
-    EMMemoryFence,
+    EMConst,
+    EMMemoryFenceSegments,
+    EMImageQuery,
+    EMSamplerQuery,
     EMSkip, // TBD remove
     EMNone
 };
 
+enum EScanContext {
+    EDefaultContext,
+    EMemoryScopeContext,
+    EImageOrderContext,
+    EInstModifierContext,
+    EInstModifierInstAtomicContext,
+    EInstModifierInstQueryContext,
+    EInstModifierInstFenceContext,
+};
+
 class Scanner : public StreamScannerBase
 {
-
-
 public:
-    explicit Scanner(std::istream& is,bool disableComments=true);
+    explicit Scanner(std::istream& is, bool disableComments=true);
 
-    ETokens            token()  const { return m_token; }
-    int                brigId() const { return m_brigId; }
-    SRef               stringValue() const { return SRef(m_tokStart,m_curPos); }
+    class Token {
+        friend class Scanner;
+        Scanner       *m_scanner;
+        std::streamoff m_lineStart;
+        int            m_lineNum;
+        SRef           m_text;
+        int            m_brigId;
+        ETokens        m_kind;
 
-    ETokens                   scan();
-    ETokens                   scanTargetOption();
-    ETokens                   scanModifier();
-    Brig::BrigImageOrder8_t  scanImageOrder();
-    Brig::BrigImageFormat8_t scanImageFormat();
+    public:
+        SRef    text()   const { return m_text; }
+        int     brigId() const { return m_brigId; }
+        ETokens kind()   const { return m_kind; }
+        SrcLoc  srcLoc() const;
+    };
 
-    void readSingleStringLiteral(std::string *outString);
+    typedef const Token CToken;
 
-    SRef readStringValue() {
-        SRef res(m_tokStart,m_curPos);
-        scan();
-        return res;
+    CToken& token() const { return *m_curToken; }
+
+    SrcLoc srcLoc(const CToken& t) const {
+      std::streamoff const posOfs = streamPosAt(t.m_text.begin);
+      assert(posOfs >= t.m_lineStart);
+      SrcLoc const res = { t.m_lineNum, static_cast<int>(posOfs - t.m_lineStart) };
+      return res;
     }
 
-    template <typename DstBrigType,
-              template<typename, typename> class Convertor>
-    typename DstBrigType::CType readIntValue();
+    CToken& peek(EScanContext ctx=EDefaultContext);
+    CToken& scan(EScanContext ctx=EDefaultContext);
 
-    template <typename DstBrigType,
-              template<typename, typename> class Convertor>
-    typename DstBrigType::CType readValue();
-
-    bool hasComments() const { return !m_comments.empty(); }
-
-    std::string grabComment() {
-        if (!hasComments()) {
-            return std::string();
-        }
-        std::string const res = m_comments.front();
-        m_comments.pop_front();
-        return res;
-    }
-
-    SrcLoc srcLoc() const { // SrcLoc at start of current token
-        SrcLoc const res = { m_lineNum, static_cast<int>(streamPos() - m_lineStart) };
-        return res;
-    }
+    void readSingleStringLiteral(std::string& outString);
 
     void syntaxError(const std::string& message, const SrcLoc& srcLoc) const {
         throw SyntaxError(message, srcLoc);
     }
 
+    void syntaxError(const std::string& message, CToken* t) const {
+        syntaxError(message, t->srcLoc());
+    }
+
     void syntaxError(const std::string& message) const {
-        syntaxError(message, srcLoc());
+        syntaxError(message, m_curToken ? m_curToken->srcLoc() : SrcLoc());
     }
 
-    void expect(ETokens t, const char* message=NULL) {
-        if (token() != t) {
-            throwTokenExpected(t, message);
+    void throwTokenExpected(ETokens token, const char* message, const SrcLoc& loc);
+
+    static EScanContext getTokenContext(ETokens token);
+
+    unsigned eatToken(ETokens token, const char* message=NULL) {
+        try {
+            CToken& t = scan(getTokenContext(token));
+            if (t.kind()!=token) {
+                throwTokenExpected(token, message, t.srcLoc());
+            }
+            return t.brigId();
+        } catch (const SyntaxError& e) {
+            throwTokenExpected(token, message, e.where());
+            return EEmpty;
         }
     }
 
-    void eatToken(ETokens token, const char* message=NULL) {
-        expect(token, message);
-        scan();
-    }
-
-    bool tryEatToken(ETokens t) {
-        if (token() == t) {
-            scan();
-            return true;
-        }
-        return false;
-    }
-
-    template <typename Value>
-    Value eatModifier(ETokens token, const char *errMsg=NULL) {
-        expect(token,errMsg);
-        Value const ret = brigId();
-        scanModifier();
-        return ret;
-    }
-
-    unsigned eatModifier(ETokens token, const char *errMsg=NULL) {
-        return eatModifier<unsigned>(token,errMsg);
-    }
-
-    template <typename Value>
-    Optional<Value> tryEatModifier(ETokens expectedModifier)
-    {
+    Optional<unsigned> tryEatToken(ETokens token) {
+        EScanContext const ctx = getTokenContext(token);
         Optional<unsigned> res;
-        if (token()==expectedModifier) {
-            res = brigId();
-            scanModifier();
+        if (peek(ctx).kind()==token) {
+            res = scan(ctx).brigId();
         }
         return res;
     }
 
-    Optional<unsigned> tryEatModifier(ETokens expectedModifier) {
-        return tryEatModifier<unsigned>(expectedModifier);
-    }
-
-    void throwTokenExpected(ETokens token, const char* message);
+    uint64_t readIntLiteral();
+    f16_t    readF16Literal();
+    f32_t    readF32Literal();
+    f64_t    readF64Literal();
+    bool         continueMLComment();
 
 private:
     Scanner& operator=(const Scanner&);
 
-    bool        m_disableComments;
-    ETokens     m_token;
-    int         m_brigId;
+    Token   m_pool[2]; // circular pool - one for current, one for peek
+    Token*  m_curToken;
+    Token*  m_peekToken;
 
-    int            m_lineNum;
-    std::streamoff m_lineStart;
-
-    void nextLine();
-
-    std::list<std::string> m_comments;
+    int                        m_lineNum;
+    std::streamoff             m_lineStart;
+    bool                       m_disableComments;
 
     class istringstreamalert;
-
     class Variant;
-    Variant readValueVariant();
 
-    void newComment(const char *init=NULL) {
-        if (!m_disableComments) {
-            m_comments.push_back(init ? std::string(init) : std::string());
-        }
-    }
-    void appendComment(const char *begin, const char *end) {
-        if (!m_disableComments) {
-            assert(!m_comments.empty());
-            m_comments.back().append(begin,end);
-        }
-    }
+    Token&       newToken();
+    Token&       scanNext(EScanContext ctx);
 
-    void skipWhitespaces();
-    void skipOneLinearComment();
-    void skipMultilineComment();
-};
+    void         readSingleStringLiteral(Token &t, std::string& outString);
+    ETokens      scanDefault(EScanContext ctx, Token &t);
+    ETokens      scanModifier(EScanContext ctx, Token &t);
+    Variant      readValueVariant();
+    void         nextLine(const char *atPos);
+    void         skipWhitespaces(Token& t);
+    const char*  skipOneLinearComment(const char* from, Token& t);
+    const char*  skipMultilineComment(const char* from, Token& t);
+    void         scanEmbeddedText(Token &t);
+//    bool         continueMLComment(Token &t);
 
-class Scanner::Variant
-{
-    union {
-        int64_t  m_int64;
-        uint64_t m_uint64;
-        uint16_t m_f16;
-        float    m_f32;
-        f64u_t   m_f64;
-    };
-    enum EKind {
-        EInvalid,
-        EInt64,
-        EUInt64,
-        EF16,
-        EF32,
-        EF64
-    } m_kind;
+    SrcLoc       srcLoc(const char* pos) const;
 
-public:
-    Variant() : m_kind(EInvalid) {}
-    explicit Variant(int64_t  i64)  : m_int64(i64), m_kind(EInt64) {}
-    explicit Variant(uint64_t u64)  : m_uint64(u64), m_kind(EUInt64) {}
-    explicit Variant(f16_t    f16)  : m_f16(f16.rawBits()), m_kind(EF16) {}
-    explicit Variant(float    f32)  : m_f32(f32), m_kind(EF32) {}
-    explicit Variant(f64_t    f64)  : m_f64(f64), m_kind(EF64) {}
-
-    bool isInteger() const {
-        return m_kind == EInt64 || m_kind == EUInt64;
-    }
-
-    template <typename DstBrigType,
-              template<typename, typename> class Convertor>
-    typename DstBrigType::CType convertInt() const {
-        switch(m_kind) {
-        case EInt64:  return ::HSAIL_ASM::convert<DstBrigType, BrigType<Brig::BRIG_TYPE_S64>, Convertor>(m_int64);
-        case EUInt64: return ::HSAIL_ASM::convert<DstBrigType, BrigType<Brig::BRIG_TYPE_U64>, Convertor>(m_uint64);
-        default: assert(false);
-        }
-        return typename DstBrigType::CType();
-    }
-
-    template <typename DstBrigType,
-              template<typename, typename> class Convertor>
-    typename DstBrigType::CType convert() const {
-        switch(m_kind) {
-        case EInt64:
-        case EUInt64: return convertInt<DstBrigType,Convertor>();
-        case EF16:    return ::HSAIL_ASM::convert<DstBrigType, BrigType<Brig::BRIG_TYPE_F16>, Convertor>(f16_t::fromRawBits(m_f16));
-        case EF32:    return ::HSAIL_ASM::convert<DstBrigType, BrigType<Brig::BRIG_TYPE_F32>, Convertor>(m_f32);
-        case EF64:    return ::HSAIL_ASM::convert<DstBrigType, BrigType<Brig::BRIG_TYPE_F64>, Convertor>(m_f64);
-        default: assert(false);
-        }
-        return typename DstBrigType::CType();;
+    void syntaxError(const char* pos, const std::string& message) const {
+        syntaxError(message, srcLoc(pos));
     }
 };
 
-template <typename DstBrigType,
-          template<typename, typename> class Convertor>
-typename DstBrigType::CType Scanner::readIntValue() {
-    try {
-        Variant const v = readValueVariant();
-        if (!v.isInteger()) {
-            syntaxError("integer constant expected");
-        }
-        typename DstBrigType::CType const res = v.convertInt<DstBrigType,Convertor>();
-        scan();
-        return res;
-    } catch (const ConversionError& e) {
-        syntaxError(e.what()); // translate it to syntax error
-    }
-    return typename DstBrigType::CType();
-}
-
-// more generic version
-template <typename DstBrigType,
-          template<typename, typename> class Convertor>
-typename DstBrigType::CType Scanner::readValue() {
-    try {
-        Variant const v = readValueVariant();
-        typename DstBrigType::CType const res = v.convert<DstBrigType,Convertor>();
-        scan();
-        return res;
-    } catch (const ConversionError& e) {
-        syntaxError(e.what()); // translate it to syntax error
-    }
-    return typename DstBrigType::CType();
+inline SrcLoc Scanner::Token::srcLoc() const {
+    return m_scanner->srcLoc(*this);
 }
 
 } // end namespace

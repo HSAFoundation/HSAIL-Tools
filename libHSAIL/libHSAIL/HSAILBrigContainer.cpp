@@ -1,36 +1,36 @@
 // University of Illinois/NCSA
 // Open Source License
-// 
+//
 // Copyright (c) 2013, Advanced Micro Devices, Inc.
 // All rights reserved.
-// 
+//
 // Developed by:
-// 
+//
 //     HSA Team
-// 
+//
 //     Advanced Micro Devices, Inc
-// 
+//
 //     www.amd.com
-// 
+//
 // Permission is hereby granted, free of charge, to any person obtaining a copy of
 // this software and associated documentation files (the "Software"), to deal with
 // the Software without restriction, including without limitation the rights to
 // use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies
 // of the Software, and to permit persons to whom the Software is furnished to do
 // so, subject to the following conditions:
-// 
+//
 //     * Redistributions of source code must retain the above copyright notice,
 //       this list of conditions and the following disclaimers.
-// 
+//
 //     * Redistributions in binary form must reproduce the above copyright notice,
 //       this list of conditions and the following disclaimers in the
 //       documentation and/or other materials provided with the distribution.
-// 
+//
 //     * Neither the names of the LLVM Team, University of Illinois at
 //       Urbana-Champaign, nor the names of its contributors may be used to
 //       endorse or promote products derived from this Software without specific
 //       prior written permission.
-// 
+//
 // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 // IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
 // FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SHALL THE
@@ -41,6 +41,8 @@
 #include "HSAILBrigContainer.h"
 #include "Brig.h"
 #include "HSAILItems.h"
+#include "HSAILScope.h"
+#include "HSAILBrigantine.h"
 
 #include <algorithm>
 #include <iostream>
@@ -48,33 +50,125 @@
 
 namespace HSAIL_ASM {
 
-const BrigSectionImpl& BrigContainer::sectionById(int id) const {
-    switch(id) {
-    case BRIG_SECTION_CODE:
-        return m_insts;
-    case BRIG_SECTION_DIRECTIVES:
-        return m_directives;
-    case BRIG_SECTION_OPERANDS:
-        return m_operands;
-    case BRIG_SECTION_DEBUG:
-        return m_dChunks;
-    case BRIG_SECTION_STRINGS:
-        return m_strings;
-    default:
-        assert(0);
-        return *(BrigSectionImpl*)0;
+BrigContainer::BrigContainer()
+{
+    m_sections.push_back(std::unique_ptr<BrigSectionImpl>(new DataSection(this)));
+    m_sections.push_back(std::unique_ptr<BrigSectionImpl>(new CodeSection(this)));
+    m_sections.push_back(std::unique_ptr<BrigSectionImpl>(new OperandSection(this)));
+}
+
+BrigContainer::BrigContainer(const void *dataData,
+              const void *codeData,
+              const void *operandData,
+              const void *debugData)
+{
+    m_sections.push_back(std::unique_ptr<BrigSectionImpl>(new DataSection(dataData, this)));
+    m_sections.push_back(std::unique_ptr<BrigSectionImpl>(new CodeSection(codeData, this)));
+    m_sections.push_back(std::unique_ptr<BrigSectionImpl>(new OperandSection(operandData, this)));
+    if (debugData) {
+        m_sections.push_back(std::unique_ptr<BrigSectionImpl>(new BrigSectionRaw(debugData, this)));
     }
 }
 
-BrigSectionImpl& BrigContainer::sectionById(int id)  {
-    return const_cast<BrigSectionImpl&>(const_cast<const BrigContainer*>(this)->sectionById(id));
+BrigContainer::BrigContainer(const Brig::BrigModule* brigModule) {
+    assert(brigModule->sectionCount >= Brig::BRIG_SECTION_INDEX_IMPLEMENTATION_DEFINED);
+    m_sections.push_back(std::unique_ptr<BrigSectionImpl>(new DataSection(brigModule->section[Brig::BRIG_SECTION_INDEX_DATA], this)));
+    m_sections.push_back(std::unique_ptr<BrigSectionImpl>(new CodeSection(brigModule->section[Brig::BRIG_SECTION_INDEX_CODE], this)));
+    m_sections.push_back(std::unique_ptr<BrigSectionImpl>(new OperandSection(brigModule->section[Brig::BRIG_SECTION_INDEX_OPERAND], this)));
+    for(unsigned i=3; i<brigModule->sectionCount; ++i) {
+        m_sections.push_back(std::unique_ptr<BrigSectionImpl>(new BrigSectionRaw(brigModule->section[i], this)));
+    }
+}
+
+SRef brigSectionNameById(int id)
+{
+  switch(id) {
+  case Brig::BRIG_SECTION_INDEX_DATA:
+    return SRef("hsa_data");
+  case Brig::BRIG_SECTION_INDEX_CODE:
+    return SRef("hsa_code");
+  case Brig::BRIG_SECTION_INDEX_OPERAND:
+    return SRef("hsa_operand");
+  default:
+    assert(0);
+    return SRef();
+  }
+}
+
+
+BrigSectionImpl::BrigSectionImpl(SRef name, class BrigContainer *container)
+    : m_container(container)
+{
+    // m_buffer.reserve(1024*1024);
+    unsigned headerByteCount = (unsigned)(sizeof(Brig::BrigSectionHeader) - 1 + name.length());
+    headerByteCount = (headerByteCount + ITEM_ALIGNMENT - 1) & ~(ITEM_ALIGNMENT - 1);
+    m_buffer.resize(headerByteCount);
+    m_data = (Brig::BrigSectionHeader*)&m_buffer[0];
+    secHeader()->byteCount = headerByteCount;
+    secHeader()->headerByteCount = headerByteCount;
+    secHeader()->nameLength = (unsigned)name.length();
+    memcpy(&secHeader()->name, name.begin, name.length());
+}
+
+void BrigContainer::initSectionRaw(int index, SRef name)
+{
+    assert(index >= Brig::BRIG_SECTION_INDEX_IMPLEMENTATION_DEFINED);
+    if (index >= getNumSections()) {
+        m_sections.resize(index+1);
+    }
+    m_sections[index] = std::unique_ptr<BrigSectionImpl>(new BrigSectionRaw(name, this));
+}
+
+int BrigContainer::verifySection(int index, SRef data, std::ostream &errs)
+{
+    if (data.length() == 0) {
+        if (index < Brig::BRIG_SECTION_INDEX_IMPLEMENTATION_DEFINED) {
+            errs << "Mandatory section #" << index << " is empty" << std::endl;
+            return 1;
+        } else {
+            return 0;
+        }
+    } else {
+        const Brig::BrigSectionHeader *header = (const Brig::BrigSectionHeader*)data.begin;
+        if (data.length() <= sizeof(Brig::BrigSectionHeader)
+            || header->headerByteCount < sizeof(Brig::BrigSectionHeader)
+            || data.length() < header->headerByteCount
+            || header->headerByteCount < 3*sizeof(uint32_t) + header->nameLength)
+        {
+            errs << "Malformed header in section #" << index << std::endl;
+            return 1;
+        }
+        if (data.length() != header->byteCount) {
+            errs << "Section byteCount mismatch in section #" << index << std::endl;
+            return 1;
+        }
+        if (index < Brig::BRIG_SECTION_INDEX_IMPLEMENTATION_DEFINED) {
+            if (SRef((char*)header->name, (char*)header->name + header->nameLength) != brigSectionNameById(index)) {
+                errs << "Section name mismatch in section #" << index << std::endl;
+                return 1;
+            }
+        }
+    }
+    return 0;
+}
+
+int BrigContainer::loadSection(int index, BrigSectionImpl::Buffer& data, std::ostream &errs)
+{
+    if (verifySection(index, data, errs)) {
+        return 1;
+    }
+    if (index >= Brig::BRIG_SECTION_INDEX_IMPLEMENTATION_DEFINED) {
+        initSectionRaw(index, "dummy"); // \todo1.0
+    }
+    sectionById(index).swapInData(data);
+    return 0;
 }
 
 class StringRefComparer
 {
-    StringSection& m_section;
+    DataSection& m_section;
 public:
-    StringRefComparer(StringSection* section) : m_section(*section) {}
+    StringRefComparer(DataSection* section) : m_section(*section) {}
     bool operator()(Offset testStrOfs,const SRef& key) {
         return m_section.getString(testStrOfs) < key;
     }
@@ -83,19 +177,19 @@ public:
     }
 };
 
-void StringSection::initStringSet()
+void DataSection::initStringSet()
 {
-    const char * const s_begin = getData(NUM_BYTES_RESERVED);
-    const char * const s_end   = getData(size());
-    size_t const hdrSize = offsetof(Brig::BrigString,bytes);
+    const char * const s_begin = getData(secHeader()->headerByteCount);
+    const char * const s_end   = getData(secHeader()->byteCount);
+    size_t const hdrSize = offsetof(Brig::BrigData,bytes);
     for (const char *p = s_begin; p < s_end;
-         p += hdrSize + align(reinterpret_cast<const Brig::BrigString*>(p)->byteCount,ITEM_ALIGNMENT)) { // TBD095 make this cleaner
+         p += hdrSize + align(reinterpret_cast<const Brig::BrigData*>(p)->byteCount,ITEM_ALIGNMENT)) { // TBD095 make this cleaner
          m_stringSet.push_back( getOffset(p) );
     }
     std::sort(m_stringSet.begin(),m_stringSet.end(),StringRefComparer(this));
 }
 
-Offset StringSection::addString(const SRef& newStr)
+Offset DataSection::addString(const SRef& newStr)
 {
     if (m_stringSet.empty() && !isEmpty()) {
         initStringSet();
@@ -108,262 +202,230 @@ Offset StringSection::addString(const SRef& newStr)
         return *i;
     }
 
+    Offset res = addStringImpl(newStr);
+    m_stringSet.insert(i, res);
+    return res;
+}
+
+Offset DataSection::addStringImpl(const SRef& newStr)
+{
     size_t const allocSize = align(newStr.length(),ITEM_ALIGNMENT);
-    size_t const hdrSize = offsetof(Brig::BrigString,bytes);
+    size_t const hdrSize = offsetof(Brig::BrigData,bytes);
 
     Offset const secEndOffset = (Offset)size();
-    Brig::BrigString* s = reinterpret_cast<Brig::BrigString*>(insertData(secEndOffset,static_cast<unsigned>(hdrSize + allocSize)));
+    Brig::BrigData* s = reinterpret_cast<Brig::BrigData*>(insertData(secEndOffset,static_cast<unsigned>(hdrSize + allocSize)));
 
     zeroPaddedCopy(s->bytes,newStr.begin,newStr.length(),allocSize);
     s->byteCount = static_cast<uint32_t>(newStr.length());
 
-    m_stringSet.insert(i,secEndOffset);
     return secEndOffset;
 }
+
 
 template <typename Item>
 class RefPatcher
 {
-    const std::map<Offset,Offset>& m_old2new;
+    typedef std::map<Offset,Offset> Map;
+    const Map& m_old2new;
 
-    template <typename I>
-    void patchRef(ItemRef<I> i) const {
-        Brig::BrigOperandOffset32_t const o = i.deref();
-        if (o!=0) {
-            std::map<Brig::BrigOperandOffset32_t,Brig::BrigOperandOffset32_t>::const_iterator const f = m_old2new.find(o);
+    void patchRef(Offset& ref) const {
+        if (ref!=0) {
+            Map::const_iterator f = m_old2new.find(ref);
             if (f!=m_old2new.end()) {
-                i.deref() = (*f).second;
+                ref = (*f).second;
             }
         }
     }
 
+    // \todo1.0: we are preventing deduping of lists in ListRef
+    // implementation and using this to make lists mutable.
+
+    // A better implementation would assume that lists are immutable and
+    // copy them duting update. However this is a rather elaborate task.
+
+    template<typename I>
+    void visit(ListRef<I> list, Item*) const {
+      int size = list.size();
+      for(int i=0; i<size; ++i) {
+        patchRef(list.writeAccess(i).deref());
+      }
+    }
+
     template <typename I>
-    void visit(ItemRef<I> ref,Item*) const { patchRef(ref); }
-    template <typename T>
-    void visit(T,...) const {}
+    void visit(ListRef<I> list, ...) const { }
+
+    template <typename I>
+    void visit(ItemRef<I> ref, Item*) const { patchRef(ref.deref()); }
+
+    template <typename I>
+    void visit(ItemRef<I>, ... ) const {}
 
 public:
     RefPatcher(const std::map<Offset,Offset>& map)
         : m_old2new(map) {}
 
     template <typename I>
-    void operator() ( ItemRef<I> ref, const char*, int x=0) const { visit(ref,reinterpret_cast<I*>(NULL)); }
+    void operator() ( ItemRef<I> ref, ...) const { visit(ref, reinterpret_cast<I*>(0)); }
 
-    template <typename I, typename T, size_t ValOffset>
-    void operator() ( TrailingRefs<I,T,ValOffset> values,const char*, int x=0) const {
-        for(unsigned i=0; i<values.size(); ++i) {
-            visit(values[i],reinterpret_cast<T*>(NULL));
-        }
-    }
+    template <typename I>
+    void operator() ( ListRef<I> ref, ...) const { visit(ref, reinterpret_cast<I*>(0)); }
 
     template <typename T>
-    void operator() ( T, const char*, int x=0) const {} // all others
+    void operator() ( const T&, ... ) const {} // all others
+};
+
+class CollectExternDefs
+{
+    Scope& m_scope;
+    template <typename Dir>
+    void record(Dir d) {
+        assert(isGlobalName(d.name()));
+        if (d.linkage()==Brig::BRIG_LINKAGE_PROGRAM) {
+            if (!d.modifier().isDefinition()) {
+                m_scope.add(d.name(),d);
+            } else {
+                m_scope.replaceOtherwiseAdd(d.name(),d);
+            }
+        }
+    }
+public:
+    CollectExternDefs(Scope& scope)
+        : m_scope(scope)
+    {}
+    Code operator()(DirectiveVariable v) {
+        record(v);
+        return v.next();
+    }
+    Code operator()(DirectiveFbarrier v) {
+        record(v);
+        return v.next();
+    }
+    Code operator()(DirectiveFunction fx) {
+        record(fx);
+        return fx.nextModuleEntry();
+    }
+    Code operator()(DirectiveIndirectFunction fx) {
+        record(fx);
+        return fx.nextModuleEntry();
+    }
+    Code operator()(DirectiveKernel k) {
+        record(k);
+        return k.nextModuleEntry();
+    }
+    Code operator()(DirectiveSignature sig) {
+        return sig.nextModuleEntry();
+    }
+    Code operator()(Code d) {
+        return d.next();
+    }
 };
 
 
-bool operator < (OperandReg r1,  OperandReg r2)
+class MakeDecl2DefMap
 {
-    // since strings are unique we can compare raw offsets instead of string text
-    return r1.brig()->reg < r2.brig()->reg;
-}
+    std::map<Offset,Offset>& m_decl2def;
+    Scope&                   m_overallScope;
 
-/*
-bool operator < (OperandIndirect i1,  OperandIndirect i2)
-{
-    OperandReg r1 = i1.reg();
-    OperandReg r2 = i2.reg();
+    std::unique_ptr<Scope>     m_moduleScope;
 
-    if (!r1) {
-        return !r2 ? i1.offset() < i2.offset() : true;
-    }
-    if (!r2) {
-        return false;
-    }
-    return r1 < r2 || ( !(r2 < r1) && i1.offset() < i2.offset() ) ;
-}*/
-
-class CopyIfNotThere
-{
-    typedef std::vector<Brig::BrigOperandOffset32_t>    SetContainer;
-
-    OperandsSection&  m_newSection;
-    std::map<Offset,Offset>& m_old2new; // old offset -> new offset
-
-    // one lookup table for each operand kind, this could be done using typelists
-    SetContainer             m_regLookup;
-    //SetContainer             m_indRegLookup;
-
-    void recordMapping(Offset oldOffset,Offset newOffset) {
-        bool const res = m_old2new.insert(std::make_pair(oldOffset,newOffset)).second;
-        assert(res);
-    }
-
-    Brig::BrigOperandOffset32_t copy(Operand o) {
-        Brig::BrigOperandOffset32_t secEnd = m_newSection.size();
-        m_newSection.insertAtOffset(secEnd,o);
-        recordMapping(o.brigOffset(),secEnd);
-        return secEnd;
-    }
-
-    template <typename Item>
-    class BrigItemLess : public std::binary_function< Brig::BrigOperandOffset32_t, Item, bool >
-    {
-        typename Item::MySection& m_section;
-    public:
-        BrigItemLess(typename Item::MySection& s) : m_section(s) {}
-        bool operator() ( Brig::BrigOperandOffset32_t o1, Item i2 ) const { return Item(&m_section,o1) < i2; }
-    };
-
-    template <typename Item>
-    void copyIfNotThere(Item item, std::vector<Brig::BrigOperandOffset32_t>& lookup) {
-        SetContainer::iterator found =
-            std::lower_bound(lookup.begin(),lookup.end(),item, BrigItemLess<Item>(m_newSection) );
-        if (found!=lookup.end()) {
-            Item foundItem(&m_newSection,*found);
-            if (!(item < foundItem)) {
-                recordMapping(item.brigOffset(),foundItem.brigOffset());
-                return;
+    template <typename Dir>
+    void record(Dir d) {
+        assert(m_moduleScope.get()!=NULL);
+        assert(isGlobalName(d.name()));
+        if (!d.modifier().isDefinition()) {
+            Dir decl = d;
+            bool const isFirstInModule = m_moduleScope->add(decl.name(),decl);
+            if (isFirstInModule && decl.linkage() == Brig::BRIG_LINKAGE_PROGRAM) {
+                Directive def = m_overallScope.get<Directive>(decl.name());
+                if (def) {
+                    m_decl2def[ decl.brigOffset() ] = def.brigOffset();
+                } // else // TBD report symbol not defined
+            }
+        } else {
+            Dir def = d;
+            Directive decl = m_moduleScope->get<Directive>(def.name());
+            if (decl) {
+                m_decl2def[ decl.brigOffset() ] = def.brigOffset();
+            } else {
+                m_moduleScope->add(def.name(),def);
             }
         }
-        Brig::BrigOperandOffset32_t ofs = copy(item);
-        lookup.insert(found,ofs);
+    }
+    void resetModuleScope() {
+        m_moduleScope.reset(new Scope(m_overallScope.container()));
     }
 
 public:
-    CopyIfNotThere(OperandsSection& newSection, std::map<Offset,Offset>& old2new)
-        : m_newSection(newSection)
-        , m_old2new(old2new) {}
-
-    void operator()( OperandReg o ) {
-        copyIfNotThere(o,m_regLookup);
+    MakeDecl2DefMap(std::map<Offset,Offset>& decl2def, Scope& overallScope)
+        : m_decl2def(decl2def)
+        , m_overallScope(overallScope) {
+        resetModuleScope();
     }
-	// TBD095 other operands collapse
-    /*void operator()( OperandIndirect o ) {
-        copyIfNotThere(o,m_indRegLookup);
-    }*/
-    void operator()( Operand o ) {
-        copy(o); // just copy the rest
+    Code operator()(DirectiveVersion v) {
+        resetModuleScope();
+        return v.next();
+    }
+    Code operator()(DirectiveVariable v) {
+        record(v);
+        return v.next();
+    }
+    Code operator()(DirectiveFbarrier v) {
+        record(v);
+        return v.next();
+    }
+    Code operator()(DirectiveFunction fx) {
+        record(fx);
+        return fx.nextModuleEntry();
+    }
+    Code operator()(DirectiveIndirectFunction fx) {
+        record(fx);
+        return fx.nextModuleEntry();
+    }
+    Code operator()(DirectiveKernel k) {
+        record(k);
+        return k.nextModuleEntry();
+    }
+    Code operator()(DirectiveSignature sig) {
+        return sig.nextModuleEntry();
+    }
+    Code operator()(Code d) {
+        return d.next();
     }
 };
 
-void BrigContainer::optimizeOperands()
-{
-    OperandsSection newSection(this);
-    newSection.reserve(operands().size());
-
-    std::map<Offset,Offset> old2new;
+void BrigContainer::patchDecl2Defs() {
+    std::map<Offset,Offset> decl2defMap;
     {
-        CopyIfNotThere copyIfNotThere(newSection,old2new);
-        for (Operand o = operands().begin(), e = operands().end(); o != e; o = o.next()) {
-            dispatchByItemKind(o,copyIfNotThere);
+        Scope overallScope(this);
+        {
+            CollectExternDefs collectDefs(overallScope);
+            for (Code d = code().begin(), e = code().end(); d != e; ) {
+                d = dispatchByItemKind<Code,Code>(d,collectDefs);
+            }
+        }
+        MakeDecl2DefMap makeDecl2DefMap(decl2defMap,overallScope);
+        for (Code d = code().begin(), e = code().end(); d != e; ) {
+            d = dispatchByItemKind<Code,Code>(d,makeDecl2DefMap);
         }
     }
 
-    // Patch all references using old2new map
-    // refs inbetween operands
-    RefPatcher<Operand> refPatcher(old2new);
-    for (Operand o = newSection.begin(), e = newSection.end(); o != e; o = o.next()) {
+    RefPatcher<Code> refPatcher(decl2defMap);
+    for (Operand o = operands().begin(), e = operands().end(); o != e; o = o.next()) {
         enumerateFields(o,refPatcher);
     }
-    // refs from instructions
-    for (Inst i = insts().begin(), e = insts().end(); i != e; i = i.next()) {
-        enumerateFields(i,refPatcher);
-    }
-    // refs from directives (DirectiveControl)
-    for (Directive d = directives().begin(), e = directives().end(); d != e; d = d.next()) {
-        enumerateFields(d,refPatcher);
-    }
-
-    operands().swapData(newSection);
 }
 
-// search for a BlockString with a name of "hsa_dwarf_debug", this marks
-// the beginning of a group of BlockNumerics which make up the elf container
-//
-// Input: any directive inside the debug section
-//        end of debug section
-// Returns: the directive following the matching BlockString (the beginning of
-//          the BlockNumerics), or the end directive of the section if no
-//          matching BlockString is found
-//
-static Directive findHsaDwarfDebugBlock( Directive d, Directive d_end )
-{
-    for ( ; d != d_end ; d = d.next() )
-    {
-        if  ( d.brig()->kind == Brig::BRIG_DIRECTIVE_BLOCK_STRING )
-        {
-            BlockString bStr( d );
-            if ( bStr.string() == "hsa_dwarf_debug" )
-                return d.next();
-        }
+const Brig::BrigModule*
+BrigContainer::getBrigModule() {
+    using namespace Brig;
+    m_brigModuleBuffer.resize(offsetof(BrigModule, section) + sizeof(BrigSectionHeader*) * getNumSections());
+    BrigModule* module = (BrigModule*)&m_brigModuleBuffer[0];
+    module->sectionCount = getNumSections();
+    for(int i=0; i<getNumSections(); ++i) {
+        module->section[i] = (BrigSectionHeader*)sectionById(i).getData(0);
     }
-    return d;
+    return module;
 }
 
-// extracts the BlockNumeric data, appending it to the accumulated dbg bytes
-//
-// Input: d: a BlockNumeric directive
-//        d_end: end of debug section
-//        the dbg info data container
-//
-// Returns: the first non-BlockNumeric directive following "d" or the end
-//          of the section
-//
-static Directive extractDataFromHsaDwarfDebugBlock( Directive d,
-                                                    Directive d_end,
-                                                    std::ostream & out )
-{
-    for ( ; d != d_end && (d.brig()->kind == Brig::BRIG_DIRECTIVE_BLOCK_NUMERIC); d = d.next() ) {
-        BlockNumeric bNumeric( d );
-        // append the blocknumeric's bytes to the dbg stream
-        //
-        out.write( (const char *)bNumeric.data().begin(), bNumeric.data().numElements() );
-    }
-    return d;
-}
-
-static Directive extractDataFromHsaDwarfDebugBlock( Directive d,
-                                                    Directive d_end,
-                                                    std::vector<char> & out )
-{
-    for ( ; d != d_end && (d.brig()->kind == Brig::BRIG_DIRECTIVE_BLOCK_NUMERIC); d = d.next() ) {
-        BlockNumeric bNumeric( d );
-        // append the blocknumeric's bytes to the dbg stream
-        //
-        out.insert(out.end(), bNumeric.data().begin(), bNumeric.data().end());
-    }
-    return d;
-}
-
-
-
-// The hsa BRIG DWARF debug information is an ELF disk-image bytestream stored
-// in a block in the Brig container's .debug section with a BlockString value
-// of "hsa_dwarf_debug".
-// Find this block, concatenate the byteValues of all the
-// BlockNumerics (all are Brig::BRIG_TYPE_B8), and write out to a binary file.
-//
-// format of hsa_dwarf_debug blocks (required!):
-// BlockStart, BlockString ("hsa_dwarf_debug"), BlockNumeric, ..., BlockEnd
-//
-// Any other formats/arrangements of blocks are skipped.
-//
-void BrigContainer::ExtractDebugInformationToStream( std::ostream & out )
-{
-    for ( Directive d = this->debugChunks().begin(), d_end = this->debugChunks().end(); d != d_end; )
-    {
-        d = findHsaDwarfDebugBlock( d, d_end );
-        d = extractDataFromHsaDwarfDebugBlock( d, d_end, out );
-    }
-}
-
-void BrigContainer::ExtractDebugInformationToVector( std::vector<char> & out )
-{
-    for ( Directive d = this->debugChunks().begin(), d_end = this->debugChunks().end(); d != d_end; )
-    {
-        d = findHsaDwarfDebugBlock( d, d_end );
-        d = extractDataFromHsaDwarfDebugBlock( d, d_end, out );
-    }
-}
 
 }

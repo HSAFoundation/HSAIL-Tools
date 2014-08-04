@@ -1,36 +1,36 @@
 // University of Illinois/NCSA
 // Open Source License
-// 
+//
 // Copyright (c) 2013, Advanced Micro Devices, Inc.
 // All rights reserved.
-// 
+//
 // Developed by:
-// 
+//
 //     HSA Team
-// 
+//
 //     Advanced Micro Devices, Inc
-// 
+//
 //     www.amd.com
-// 
+//
 // Permission is hereby granted, free of charge, to any person obtaining a copy of
 // this software and associated documentation files (the "Software"), to deal with
 // the Software without restriction, including without limitation the rights to
 // use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies
 // of the Software, and to permit persons to whom the Software is furnished to do
 // so, subject to the following conditions:
-// 
+//
 //     * Redistributions of source code must retain the above copyright notice,
 //       this list of conditions and the following disclaimers.
-// 
+//
 //     * Redistributions in binary form must reproduce the above copyright notice,
 //       this list of conditions and the following disclaimers in the
 //       documentation and/or other materials provided with the distribution.
-// 
+//
 //     * Neither the names of the LLVM Team, University of Illinois at
 //       Urbana-Champaign, nor the names of its contributors may be used to
 //       endorse or promote products derived from this Software without specific
 //       prior written permission.
-// 
+//
 // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 // IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
 // FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SHALL THE
@@ -49,7 +49,7 @@
 /// factored out when necessary.
 
 #include <iosfwd> // only forward dependencies from stdio
-#include <memory> // auto_ptr
+#include <memory> // unique_ptr
 
 #include "HSAILBrigContainer.h"
 
@@ -58,7 +58,10 @@ namespace HSAIL_ASM {
 enum BinaryFileFormat {
     FILE_FORMAT_AUTO = 0,
     FILE_FORMAT_BRIG = 1,
-    FILE_FORMAT_BIF  = 2
+    FILE_FORMAT_BIF  = 2,
+    FILE_FORMAT_MASK = 0xf,
+    FILE_FORMAT_ELF32 = 0,
+    FILE_FORMAT_ELF64 = 0x10
 };
 
 /// virtual base for the adapters
@@ -95,7 +98,7 @@ public:
     {
     }
 
-    virtual int pread(char* data, size_t numBytes, size_t ofs) const = 0;
+    virtual int pread(char* data, size_t numBytes, uint64_t ofs) const = 0;
 
     virtual ~ReadAdapter() = 0;
 };
@@ -117,47 +120,51 @@ struct BrigIO {
 
     // factory methods for the adapters
 
-    static std::auto_ptr<ReadAdapter> fileReadingAdapter(
+    static std::unique_ptr<ReadAdapter> fileReadingAdapter(
                     const char*                 fileName,
                     std::ostream&               errs = defaultErrs());
 
-    static std::auto_ptr<WriteAdapter> fileWritingAdapter(
+    static std::unique_ptr<WriteAdapter> fileWritingAdapter(
                     const char*                 fileName,
                     std::ostream&               errs = defaultErrs());
 
-    static std::auto_ptr<ReadAdapter> memoryReadingAdapter(
+    static std::unique_ptr<ReadAdapter> memoryReadingAdapter(
                     const char                 *buf,
                     size_t                      size,
                     std::ostream&               errs = defaultErrs());
 
-    static std::auto_ptr<WriteAdapter> memoryWritingAdapter(
+    static std::unique_ptr<WriteAdapter> memoryWritingAdapter(
                     char                       *buf,
                     size_t                      size,
+                    std::ostream&               errs = defaultErrs());
+
+    static std::unique_ptr<ReadAdapter>  istreamReadingAdapter(
+                    std::istream&               is,
                     std::ostream&               errs = defaultErrs());
 
     // normal API using adapter references
 
     static int save(BrigContainer&              src,
-                    BinaryFileFormat            fmt,
+                    int                         fmt,
                     WriteAdapter&               dst);
 
     static int load(BrigContainer&              dst,
-                    BinaryFileFormat            fmt,
+                    int                         fmt,
                     ReadAdapter&                src);
 
     // API taking ownership of the adapters, to  be used with the factory
     // methods above
 
     static int save(BrigContainer&               src,
-                    BinaryFileFormat             fmt,
-                    std::auto_ptr<WriteAdapter>  dst)
+                    int                          fmt,
+                    std::unique_ptr<WriteAdapter>  dst)
     {
         return !dst.get() || save(src, fmt, *dst);
     }
 
     static int load(BrigContainer&               dst,
-                    BinaryFileFormat             fmt,
-                    std::auto_ptr<ReadAdapter>   src)
+                    int                          fmt,
+                    std::unique_ptr<ReadAdapter>   src)
     {
         return !src.get() || load(dst, fmt, *src);
     }
@@ -165,7 +172,7 @@ struct BrigIO {
 
 // old style compatibility API
 
-template<BinaryFileFormat FORMAT> class BinaryStreamer {
+template<int FORMAT> class BinaryStreamer {
 public: // Elf emitting
 
     static int save(BrigContainer &c, WriteAdapter &s) {
@@ -193,12 +200,20 @@ public: // Elf reading
     static int load(BrigContainer &c, const char *fileName) {
         return BrigIO::load(c, FORMAT, BrigIO::fileReadingAdapter(fileName));
     }
+
+    static int load(BrigContainer &c, std::istream& is) {
+        return BrigIO::load(c, FORMAT, BrigIO::istreamReadingAdapter(is));
+    }
 };
 
-typedef BinaryStreamer<FILE_FORMAT_BIF>  BifStreamer;
-typedef BinaryStreamer<FILE_FORMAT_BRIG> BrigStreamer;
-typedef BinaryStreamer<FILE_FORMAT_AUTO> AutoBinaryStreamer;
+typedef BinaryStreamer<FILE_FORMAT_BIF |FILE_FORMAT_ELF32>  Bif32Streamer;
+typedef BinaryStreamer<FILE_FORMAT_BRIG|FILE_FORMAT_ELF32>  Brig32Streamer;
+typedef BinaryStreamer<FILE_FORMAT_BIF |FILE_FORMAT_ELF64>  Bif64Streamer;
+typedef BinaryStreamer<FILE_FORMAT_BRIG|FILE_FORMAT_ELF64>  Brig64Streamer;
+typedef BinaryStreamer<FILE_FORMAT_AUTO>                    AutoBinaryStreamer;
 
+typedef  Bif32Streamer BifStreamer;
+typedef Brig32Streamer BrigStreamer;
 
 }
 

@@ -1,36 +1,36 @@
 // University of Illinois/NCSA
 // Open Source License
-// 
+//
 // Copyright (c) 2013, Advanced Micro Devices, Inc.
 // All rights reserved.
-// 
+//
 // Developed by:
-// 
+//
 //     HSA Team
-// 
+//
 //     Advanced Micro Devices, Inc
-// 
+//
 //     www.amd.com
-// 
+//
 // Permission is hereby granted, free of charge, to any person obtaining a copy of
 // this software and associated documentation files (the "Software"), to deal with
 // the Software without restriction, including without limitation the rights to
 // use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies
 // of the Software, and to permit persons to whom the Software is furnished to do
 // so, subject to the following conditions:
-// 
+//
 //     * Redistributions of source code must retain the above copyright notice,
 //       this list of conditions and the following disclaimers.
-// 
+//
 //     * Redistributions in binary form must reproduce the above copyright notice,
 //       this list of conditions and the following disclaimers in the
 //       documentation and/or other materials provided with the distribution.
-// 
+//
 //     * Neither the names of the LLVM Team, University of Illinois at
 //       Urbana-Champaign, nor the names of its contributors may be used to
 //       endorse or promote products derived from this Software without specific
 //       prior written permission.
-// 
+//
 // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 // IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
 // FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SHALL THE
@@ -62,13 +62,14 @@ namespace HSAIL_ASM
 class Brigantine
 {
     BrigContainer&          m_container;
-    std::auto_ptr<Scope>    m_globalScope;
-    std::auto_ptr<Scope>    m_funcScope;
-    std::auto_ptr<Scope>    m_argScope;
+    std::unique_ptr<Scope>    m_globalScope;
+    std::unique_ptr<Scope>    m_funcScope;
+    std::unique_ptr<Scope>    m_argScope;
     DirectiveExecutable     m_func;
     unsigned                m_machine;
+    unsigned                m_profile;
 
-    typedef std::vector< std::pair< ItemRef<Directive>, SourceInfo > > RefList;
+    typedef std::vector< std::pair< ItemRef<Code>, SourceInfo > > RefList;
     typedef std::map<Brig::BrigStringOffset32_t, RefList> LabelMap;
 
     LabelMap m_labelMap; // string offset -> array of label refs
@@ -82,7 +83,7 @@ public:
     /// won't syncronize it's state with it and therefore it is up to the user to
     /// supply the container in a state that allows to 'continue' writing consistently.
     /// Most common case is an empty Brig container.
-    Brigantine(BrigContainer& container) : m_container(container), m_machine(0) {}
+    Brigantine(BrigContainer& container) : m_container(container), m_machine(Brig::BRIG_MACHINE_UNDEF), m_profile(Brig::BRIG_PROFILE_UNDEF) {}
     virtual ~Brigantine() {}
 
     /// start HSAIL program. While it doesn't write anything to the container it
@@ -101,19 +102,22 @@ public:
     /// @param machineModel - one of Brig::BrigMachineModel enum values
     /// @param profile - one of Brig::BrigProfile enum values
     /// @param srcInfo - (optional) source location
-    DirectiveVersion version(unsigned short major,unsigned short minor,
+    DirectiveVersion version(Brig::BrigVersion32_t major,Brig::BrigVersion32_t minor,
         Brig::BrigMachineModel8_t machineModel,Brig::BrigProfile8_t profile,
         const SourceInfo* srcInfo=NULL);
 
     /// emit DirectiveFunction to the container.
     /// @param name - function name, should include '&' in front.
-    /// @param declPfx - declaration prefix (see struct DeclPrefix)
     /// @param srcInfo - (optional) source location
     DirectiveFunction declFunc(const SRef& name,const SourceInfo* srcInfo=NULL);
 
+    /// emit DirectiveIndirectFunction to the container.
+    /// @param name - function name, should include '&' in front.
+    /// @param srcInfo - (optional) source location
+    DirectiveIndirectFunction declIndirectFunc(const SRef& name,const SourceInfo* srcInfo=NULL);
+
     /// emit DirectiveKernel to the container.
     /// @param name - kernel name, should include '&' in front.
-    /// @param declPfx - declaration prefix (see struct DeclPrefix)
     /// @param srcInfo - (optional) source location
     DirectiveKernel declKernel(const SRef& name,const SourceInfo* srcInfo=NULL);
 
@@ -125,12 +129,12 @@ public:
     /// add output param to function. Should be called after declFunc
     /// and before startBody.
     /// @param sym - symbol directive, returned from addSymbol
-    void addOutputParameter(DirectiveSymbol sym);
+    void addOutputParameter(DirectiveVariable sym);
 
     /// add input param to function/kernel. Should be called after declFunc/declKernel
     /// and before startBody.
     /// @param sym - symbol directive, returned from addSymbol
-    void addInputParameter(DirectiveSymbol sym);
+    void addInputParameter(DirectiveVariable sym);
 
     /// start function/kernel body.
     ///
@@ -142,45 +146,37 @@ public:
 
     /// start argument scope.
     /// @param srcInfo - (optional) source location
-    DirectiveArgScopeStart startArgScope(const SourceInfo* srcInfo=NULL);
+    DirectiveArgBlockStart startArgScope(const SourceInfo* srcInfo=NULL);
 
     /// end argument scope.
     /// @param srcInfo - (optional) source location
-    DirectiveArgScopeEnd endArgScope(const SourceInfo* srcInfo=NULL);
+    DirectiveArgBlockEnd endArgScope(const SourceInfo* srcInfo=NULL);
 
     /// @}
 
 
     /// @name Symbols
-    /// emit DirectiveSymbol/DirectiveImage/DirectiveSampler.
+    /// emit DirectiveVariable.
     /// @param name - symbol name
     /// @param srcInfo - (optional) source location
     /// @{
 
-    DirectiveSymbol   addSymbol(DirectiveSymbol sym);
+    DirectiveVariable   addSymbol(DirectiveVariable sym);
 
     DirectiveVariable addVariable(const SRef& name, Brig::BrigSegment8_t segment, unsigned dType,const SourceInfo* srcInfo=NULL);
     DirectiveVariable addArrayVariable(const SRef& name, uint64_t size, Brig::BrigSegment8_t segment, unsigned dType,const SourceInfo* srcInfo=NULL);
 
-    DirectiveImage    addImage   (const SRef& name, Brig::BrigSegment8_t segment=Brig::BRIG_SEGMENT_GLOBAL, const SourceInfo* srcInfo=NULL);
-    DirectiveSampler  addSampler (const SRef& name, Brig::BrigSegment8_t segment=Brig::BRIG_SEGMENT_GLOBAL, const SourceInfo* srcInfo=NULL);
+    DirectiveVariable addImage   (const SRef& name, Brig::BrigSegment8_t segment=Brig::BRIG_SEGMENT_GLOBAL, const SourceInfo* srcInfo=NULL);
+    DirectiveVariable addSampler (const SRef& name, Brig::BrigSegment8_t segment=Brig::BRIG_SEGMENT_GLOBAL, const SourceInfo* srcInfo=NULL);
 
     DirectiveFbarrier addFbarrier(const SRef& name,const SourceInfo* srcInfo=NULL);
-
-    /// emit DirectiveVariableInit.
-    /// @param type - Brig type of values stored in the initializer, should match type
-    /// of symbol
-    /// @param srcInfo - (optional) source location
-    DirectiveVariableInit createVariableInitializer(Brig::BrigType16_t type, const SourceInfo* srcInfo=NULL);
-    DirectiveImageInit    createImageInitializer(const SourceInfo* srcInfo=NULL);
-    DirectiveSamplerInit  createSamplerInitializer(const SourceInfo* srcInfo=NULL);
 
     /// append trailing zeroes to a symbol initializer. This is required by spec to match
     /// initializer size with declared dimension of symbol. If the symbol doesn't have associated initializer
     /// this routine creates one with type specified for the symbol. For nonarray symbols single zero value
     /// initializer is created.
-    /// @param sym - DirectiveSymbol.
-    void             appendTrailingZeroes(DirectiveSymbol sym);
+    /// @param sym - DirectiveVariable.
+    void             appendTrailingZeroes(DirectiveVariable sym);
 
     /// @}
 
@@ -188,16 +184,6 @@ public:
     /// This method also resolves all forward references to the label name.
     /// @param name - label name.
     DirectiveLabel   addLabel(const SRef& name,const SourceInfo* srcInfo=NULL);
-
-    DirectiveLabelInit    createLabelInitList(const SourceInfo* srcInfo=NULL);
-    DirectiveLabelTargets createLabelTargets(const SRef& labelName, const SourceInfo* srcInfo=NULL);
-
-    /// append label reference to the label list.
-    /// @param list - list of label references.
-    /// @param name - name of label being referenced, can be forward reference
-    /// (this is label with the name is not created yet)
-    /// @param srcInfo - (optional) source location.
-    bool             appendLabelRef(LabelList list,const SRef& name, const SourceInfo* srcInfo=NULL);
 
     /// emit comment for the following instruction.
     /// @param comment - any text.
@@ -208,10 +194,6 @@ public:
     /// @param name - any text.
     /// @param srcInfo - (optional) source location.
     DirectiveLabel   addExtension(const char *name,const SourceInfo* srcInfo=NULL);
-
-    // TBD make private
-    template <typename Dir>
-    Dir              createCodeRefDir(const SourceInfo* srcInfo=NULL);
 
     // TBD095 replace with addSampler, createSamplerInitializer
     /*void CreateSampler(const SRef& name,const int normalized,const Brig::BrigSamplerFilter filter,
@@ -234,10 +216,39 @@ public:
     /// @}
 
 
-    void setOperand(Inst inst, int i, Operand opnd);
-    void setOperandEx(Inst inst, int i, Operand opnd);
-    void appendOperand(Inst inst, Operand opnd);
+    void setOperands(Inst inst, ItemList operands);
+    //void setOperandEx(Inst inst, int i, Operand opnd);
 
+    template<typename Item>
+    Item append(const SourceInfo* srcInfo = NULL) {
+      Item item = m_container.append<Item>();
+      annotate(item,srcInfo);
+      return item;
+    }
+
+    template <typename ListOperand>
+    ListOperand createListOperand(const ItemList& list,const SourceInfo* srcInfo)
+    {
+      ListOperand operand = m_container.append<ListOperand>();
+      annotate(operand,srcInfo);
+      operand.elements() = list;
+      return operand;
+    }
+
+    OperandCodeList createCodeList(const ItemList& list, const SourceInfo* srcInfo=NULL) {
+      return createListOperand<OperandCodeList>(list, srcInfo);
+    }
+
+    OperandOperandList createOperandList(const ItemList& list, const SourceInfo* srcInfo=NULL) {
+      return createListOperand<OperandOperandList>(list, srcInfo);
+    }
+
+    OperandData createOperandData(SRef data, const SourceInfo* srcInfo=NULL) {
+        OperandData operand = m_container.append<OperandData>();
+        annotate(operand, srcInfo);
+        operand.data() = data;
+        return operand;
+    }
     /// @name Register operands
     /// emit OperandReg.
     /// @param name - register name including '$'.
@@ -249,17 +260,8 @@ public:
     /// @param o1..o4 - registers.
     /// @param srcInfo - (optional) source location.
     /// @{
-    OperandRegVector    createOperandRegVec(std::string o[],unsigned num,const SourceInfo* srcInfo=NULL);
-    /// @}
-
-    /// @name Function arguments
-    /// emit function argument reference.
-    /// @param arg - symbol directive.
-    /// @param argName - symbol name including '%' or '&' (search in scopes)
-    /// @param srcInfo - (optional) source location.
-    /// @{
-    OperandArgumentRef  createArgRef(DirectiveSymbol arg, const SourceInfo* srcInfo=NULL);
-    OperandArgumentRef  createArgRef(const SRef& argName, const SourceInfo* srcInfo=NULL);
+    //OperandRegVector    createOperandRegVec(std::string o[],unsigned num,const SourceInfo* srcInfo=NULL);
+    //OperandOperandList       createOperandVector(const SourceInfo* srcInfo=NULL);
     /// @}
 
     /// @name Argument list
@@ -270,13 +272,14 @@ public:
     /// @param till - end iterator
     /// @param srcInfo - (optional) source location.
     /// @{
-    OperandArgumentList createArgList(const SourceInfo* srcInfo=NULL);
-    /*OperandArgumentList createArgList(const ItemRange<DirectiveSymbol>& list, const SourceInfo* srcInfo=NULL);*/
+    /*OperandCodeList createArgList(const SourceInfo* srcInfo=NULL);
+    OperandCodeList createArgList(const ItemRange<DirectiveVariable>& list, const SourceInfo* srcInfo=NULL);
     template <typename Iterator>
-    OperandArgumentList createArgList(Iterator from, Iterator till, const SourceInfo* srcInfo=NULL);
+    OperandCodeList createArgList(Iterator from, Iterator till, const SourceInfo* srcInfo=NULL);
     /// @}
+    */
 
-    OperandFunctionList createFuncList(const SourceInfo* srcInfo);
+    OperandCodeList createFuncList(const SourceInfo* srcInfo);
 
     /// emit operand that reference label by name. Can reference forward labels. References to forward
     /// labels are recorded by brigantine and resolved at the moment when label created.
@@ -284,25 +287,22 @@ public:
     /// @param srcInfo - (optional) source location.
     Operand             createLabelRef(const SRef& labelName, const SourceInfo* srcInfo=NULL);
 
+    /// emit operand that reference label by name. Can reference forward labels. References to forward
+    /// labels are recorded by brigantine and resolved at the moment when label created.
+    /// @param labelName - label name
+    /// @param srcInfo - (optional) source location.
+    Operand             createLabelList(const std::vector<SRef>& labels, const SourceInfo* srcInfo=NULL);
+
     /// @name Function references
     /// emit function reference. Used for calls.
     /// @param fn - DirectiveFunction.
     /// @param fnName - function name including '&' (global name search)
     /// @param srcInfo - (optional) source location.
     /// @{
-    OperandFunctionRef  createFuncRef(DirectiveFunction fn, const SourceInfo* srcInfo=NULL);
-    OperandFunctionRef  createFuncRef(const SRef& fnName, const SourceInfo* srcInfo=NULL);
+    OperandCodeRef  createFuncRef(const SRef& fnName, const SourceInfo* srcInfo=NULL);
     /// @}
 
-    /// @name Function signature references
-    /// emit function signature reference. Used for indirect calls.
-    /// @param sig - DirectiveSignature.
-    /// @param fnName - signature name including '&' (global name search)
-    /// @param srcInfo - (optional) source location.
-    /// @{
-    OperandSignatureRef  createSigRef(DirectiveSignature sig, const SourceInfo* srcInfo=NULL);
-    OperandSignatureRef  createSigRef(const SRef& fnName, const SourceInfo* srcInfo=NULL);
-    /// @}
+    OperandCodeRef createSigRef(const SRef& fnName, const SourceInfo* srcInfo=NULL);
 
     /// emit function reference list. Used for indirect calls to enumerate possible call targets.
     /// @param list - ItemRange of Operand.
@@ -317,22 +317,29 @@ public:
     /// @param type - Brig type for the value.
     /// @param srcInfo - (optional) source location.
     /// @{
-    OperandImmed       createImmed(int8_t   v, Brig::BrigType16_t type, const SourceInfo* srcInfo=NULL);
-    OperandImmed       createImmed(int16_t  v, Brig::BrigType16_t type, const SourceInfo* srcInfo=NULL);
-    OperandImmed       createImmed(int32_t  v, Brig::BrigType16_t type, const SourceInfo* srcInfo=NULL);
-    OperandImmed       createImmed(int64_t  v, Brig::BrigType16_t type, const SourceInfo* srcInfo=NULL);
-    OperandImmed       createImmed(uint8_t  v, Brig::BrigType16_t type, const SourceInfo* srcInfo=NULL);
-    OperandImmed       createImmed(uint16_t v, Brig::BrigType16_t type, const SourceInfo* srcInfo=NULL);
-    OperandImmed       createImmed(uint32_t v, Brig::BrigType16_t type, const SourceInfo* srcInfo=NULL);
-    OperandImmed       createImmed(uint64_t v, Brig::BrigType16_t type, const SourceInfo* srcInfo=NULL);
-    OperandImmed       createImmed(f32_t    v, Brig::BrigType16_t type, const SourceInfo* srcInfo=NULL);
-    OperandImmed       createImmed(f64_t    v, Brig::BrigType16_t type, const SourceInfo* srcInfo=NULL);
-    OperandImmed       createImmed(const void * v, Brig::BrigType16_t type, const SourceInfo* srcInfo=NULL);
+
+    OperandData       createImmed(int64_t  v, Brig::BrigType16_t type, const SourceInfo* srcInfo=NULL) {
+      int numBytes = getBrigTypeNumBytes(type);
+      assert(numBytes <= 8);
+      return createImmed(SRef((const char*)&v, (const char*)&v + numBytes), srcInfo);
+    }
+    OperandData       createImmed(f32_t    v, Brig::BrigType16_t type, const SourceInfo* srcInfo=NULL) {
+      int numBytes = getBrigTypeNumBytes(type);
+      assert(numBytes == 4);
+      return createImmed(SRef((const char*)&v, (const char*)&v + sizeof(f32_t)), srcInfo);
+    }
+    OperandData       createImmed(f64_t    v, Brig::BrigType16_t type, const SourceInfo* srcInfo=NULL) {
+      int numBytes = getBrigTypeNumBytes(type);
+      assert(numBytes == 8);
+      return createImmed(SRef((const char*)&v, (const char*)&v + sizeof(f64_t)), srcInfo);
+    }
+
     /// @}
 
-    /// creates unitialized OperandImmed.
+    /// creates unitialized OperandData.
     /// @param srcInfo - (optional) source location
-    OperandImmed       createImmed(const SourceInfo* srcInfo=NULL);
+    OperandData       createImmed(const SourceInfo* srcInfo=NULL);
+    OperandData       createImmed(SRef data, const SourceInfo* srcInfo=NULL);
 
     /// @name Memory access operands creators.
 
@@ -342,21 +349,29 @@ public:
     /// @param offset - offset (optional, that is 0).
     /// @param srcInfo - (optional) source location.
     /// at least one of symName,reg, offset should be supplied upon call.
-    OperandAddress     createRef(const SRef& symName, const SRef& reg, int32_t offset=0, const SourceInfo* srcInfo=NULL);
-    OperandAddress     createRef(const SRef& symName, int32_t offset=0, const SourceInfo* srcInfo=NULL) {
-        return createRef(symName, SRef(), offset, srcInfo);
+    OperandAddress     createRef(const SRef& symName, OperandReg reg, int64_t offset=0, const SourceInfo* srcInfo=NULL);
+    OperandAddress     createRef(const SRef& symName, int64_t offset=0, const SourceInfo* srcInfo=NULL) {
+        return createRef(symName, OperandReg(), offset, srcInfo);
     }
+    OperandAddress     createRef(const SRef& symName, SRef& reg, int64_t offset=0, const SourceInfo* srcInfo=NULL) {
+        return createRef(symName, reg.empty() ? OperandReg() : createOperandReg(reg, srcInfo), offset, srcInfo);
+    }
+    OperandCodeRef         createDirectiveRef(const SRef& name,const SourceInfo* srcInfo=NULL);
+    OperandCodeRef         createCodeRef(Code c,const SourceInfo* srcInfo=NULL);
 
-    OperandRef         createDirectiveRef(const SRef& name,const SourceInfo* srcInfo=NULL);
-    OperandRef         createDirectiveRef(Directive d,const SourceInfo* srcInfo=NULL);
+    OperandString createOperandString(const SRef& string, const SourceInfo* srcInfo=NULL) {
+        OperandString operand = append<OperandString>(srcInfo);
+        operand.string() = string;
+        return operand;
+    }
 
     /// create 'width' operand.
     /// @param srcInfo - (optional) source location.
-    OperandImmed       createWidthOperand(const Optional<uint32_t>& width,const SourceInfo* srcInfo=NULL);
+    OperandData       createWidthOperand(const Optional<uint32_t>& width,const SourceInfo* srcInfo=NULL);
 
     /// create 'Wavesize' operand.
     /// @param srcInfo - (optional) source location.
-    OperandWavesize    createWaveSz(Brig::BrigType16_t type, const SourceInfo* srcInfo=NULL);
+    OperandWavesize    createWaveSz(const SourceInfo* srcInfo=NULL);
 
     /// @name Miscelaneous members
     /// @{
@@ -375,24 +390,10 @@ public:
     Dir            findInScopes(const SRef& name) const;
 
     /// return model.
-    unsigned       getMachineType() const;
-
-    /// store DWARF data.
-    /// @param dwarfData - data.
-    /// @param dwarfDataSize - size.
-    void           storeDWARF(const void* dwarfData, size_t dwarfDataSize);
-
-    /// store DWARF data.
-    /// @param dwarf - vector of data
-    template <typename T>
-    void           storeDWARF(const std::vector<T>& dwarf);
-    /// @}
-
-    DataItem       createData();
+    unsigned       getMachineModel() const { assert(m_machine == Brig::BRIG_MACHINE_SMALL || m_machine == Brig::BRIG_MACHINE_LARGE); return m_machine; }
+    unsigned       getProfile()      const { assert(m_profile == Brig::BRIG_PROFILE_BASE  || m_profile == Brig::BRIG_PROFILE_FULL);  return m_profile; }
 
 private:
-    Inst addInst(Inst i);
-
     template <typename Item>
     static void annotate(Item i, const SourceInfo* srcInfo) {
         if (srcInfo) {
@@ -402,20 +403,19 @@ private:
 
     DirectiveExecutable declFuncCommon(DirectiveExecutable func, const SRef& name, const SourceInfo* srcInfo);
 
-    void addSymbolToLocalScope(DirectiveSymbol sym);
-    void addSymbolToFunctionScope(DirectiveSymbol sym);
+    void addSymbolToLocalScope(DirectiveVariable sym);
+    void addSymbolToFunctionScope(DirectiveVariable sym);
     void addSymbolToGlobalScope(DirectiveExecutable sym);
-    void addSymbolToGlobalScope(DirectiveSymbol sym);
+    void addSymbolToGlobalScope(DirectiveVariable sym);
 
     bool checkForUnboundLabels();
-    void recordLabelRef(ItemRef<Directive> ref, const SRef& name, const SourceInfo*);
+    void recordLabelRef(ItemRef<Code> ref, const SRef& name, const SourceInfo*);
     void patchLabelRefs(DirectiveLabel label);
-    DirectiveLabelTargets findTargets(DirectiveLabel lbl);
 
     DirectiveLabel addLabelInternal(const SRef& name,const SourceInfo* srcInfo);
 
-    template <typename Value> // this routine converts Value v to the requested brig type and save it into immediate
-    OperandImmed createImmedT(Value v, Brig::BrigType16_t type, const SourceInfo* srcInfo=NULL);
+//    template <typename Value> // this routine converts Value v to the requested brig type and save it into immediate
+//    OperandData createImmedT(Value v, Brig::BrigType16_t type, const SourceInfo* srcInfo=NULL);
 
     void brigWriteError(const char *errMsg, const SourceInfo* srcInfo);
 
@@ -444,11 +444,11 @@ inline bool isGlobalName(const SRef& name) {
 }
 
 inline bool isLocalName(const char *name) {
-    return name[0]=='%';
+    return name[0]=='%' || name[0]==0; // Signature arg names can be empty
 }
 
 inline bool isLocalName(const SRef& name) {
-    return name.begin[0]=='%';
+    return name.length() == 0 || name.begin[0]=='%'; // Signature arg names can be empty
 }
 
 template <typename S>
@@ -468,22 +468,13 @@ S Brigantine::findInScopes(const SRef& name) const {
     return res;
 }
 
-template <typename Dir>
-Dir Brigantine::createCodeRefDir(const SourceInfo* srcInfo)
-{
-    Dir d = m_container.append<Dir>();
-    annotate(d,srcInfo);
-    d.code() = m_container.insts().end();
-    return d;
-}
-
 template <typename InstItem>
 InstItem Brigantine::addInst(unsigned opCode,const SourceInfo* srcInfo) {
     InstItem inst = m_container.append<InstItem>();
     annotate(inst,srcInfo);
     inst.opcode() = opCode;
     inst.type() = Brig::BRIG_TYPE_B32;
-    return addInst(inst);
+    return inst;
 }
 
 template <typename InstItem>
@@ -492,39 +483,6 @@ InstItem Brigantine::addInst(unsigned opCode,unsigned type,const SourceInfo* src
     inst.type() = type;
     return inst;
 }
-
-template<typename T> inline
-void Brigantine::storeDWARF(const std::vector<T>& dwarf) {
-    if (!dwarf.empty()) {
-        storeDWARF(&dwarf[0], dwarf.size() * sizeof(T));
-    }
-}
-
-template <typename Iterator>
-OperandArgumentList Brigantine::createArgList(Iterator from, Iterator till,const SourceInfo* srcInfo)
-{
-    OperandArgumentList list = m_container.append<OperandArgumentList>();
-    annotate(list,srcInfo);
-    Offset const size = (Offset)std::distance(from,till);
-    if (size != list.elements().resize(size)) {
-        brigWriteError("OperandArgumentList overflow", srcInfo);
-    }
-
-    Offset i = 0;
-    Iterator a = from;
-    while (a!=till) {
-        list.elements(i++) = *a++;
-    }
-    return list;
-}
-
-inline int getOperandsNum(Inst inst)
-{
-    int i=0;
-    while (i<5 && inst.operand(i)) ++i;
-    return i;
-}
-
 
 }
 

@@ -1,36 +1,36 @@
 // University of Illinois/NCSA
 // Open Source License
-// 
+//
 // Copyright (c) 2013, Advanced Micro Devices, Inc.
 // All rights reserved.
-// 
+//
 // Developed by:
-// 
+//
 //     HSA Team
-// 
+//
 //     Advanced Micro Devices, Inc
-// 
+//
 //     www.amd.com
-// 
+//
 // Permission is hereby granted, free of charge, to any person obtaining a copy of
 // this software and associated documentation files (the "Software"), to deal with
 // the Software without restriction, including without limitation the rights to
 // use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies
 // of the Software, and to permit persons to whom the Software is furnished to do
 // so, subject to the following conditions:
-// 
+//
 //     * Redistributions of source code must retain the above copyright notice,
 //       this list of conditions and the following disclaimers.
-// 
+//
 //     * Redistributions in binary form must reproduce the above copyright notice,
 //       this list of conditions and the following disclaimers in the
 //       documentation and/or other materials provided with the distribution.
-// 
+//
 //     * Neither the names of the LLVM Team, University of Illinois at
 //       Urbana-Champaign, nor the names of its contributors may be used to
 //       endorse or promote products derived from this Software without specific
 //       prior written permission.
-// 
+//
 // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 // IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
 // FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SHALL THE
@@ -53,6 +53,7 @@
 #include <algorithm>
 #include <cassert>
 #include <iosfwd>
+#include <memory>
 #include <limits>
 #include <climits>
 #include <stdint.h>
@@ -61,8 +62,7 @@ namespace HSAIL_ASM {
 
 typedef unsigned Offset;
 
-class Directive;
-class Inst;
+class Code;
 class Operand;
 
 /// this structure is used to pass source location for items. Text coordinates are zero based.
@@ -77,21 +77,11 @@ struct SourceInfo
     int column;
 };
 
-enum SectionID {
-    BRIG_SECTION_STRINGS,
-    BRIG_SECTION_DIRECTIVES,
-    BRIG_SECTION_CODE,
-    BRIG_SECTION_OPERANDS,
-    BRIG_SECTION_DEBUG,
-    NUM_BRIG_SECTIONS
-};
-
-
 template <typename Item> struct GetSectionID;
 
-template <> struct GetSectionID<Inst>      { static const SectionID id=BRIG_SECTION_CODE;       };
-template <> struct GetSectionID<Operand>   { static const SectionID id=BRIG_SECTION_OPERANDS;   };
-template <> struct GetSectionID<Directive> { static const SectionID id=BRIG_SECTION_DIRECTIVES; };
+template <> struct GetSectionID<Code>      { static const Brig::BrigSectionIndex id=Brig::BRIG_SECTION_INDEX_CODE;       };
+template <> struct GetSectionID<Operand>   { static const Brig::BrigSectionIndex id=Brig::BRIG_SECTION_INDEX_OPERAND;   };
+
 
 /// implementation of a Brig section. This is a buffer of plain raw data
 /// with insert/append/delete modificators.
@@ -103,10 +93,17 @@ class BrigSectionImpl
 public:
     typedef std::vector<char> Buffer; // TBD possibly switch to a more optimal container
 
-private:
-    class BrigContainer *m_container;
+    virtual void swapInData(Buffer& src) {
+        assert(hasOwnBuffer());
+        m_buffer.swap(src);
+        m_sourceInfo.clear();
+        syncWithBuffer();
+    }
 
-    SRef                   m_data;
+private:
+    class BrigContainer    *m_container;
+
+    const Brig::BrigSectionHeader* m_data;
 
     Buffer               m_buffer;
 
@@ -115,13 +112,12 @@ private:
 
     bool hasOwnBuffer() const { return !m_buffer.empty(); }
 
-    void syncPtrsWithBuffer() {
-        m_data = m_buffer;
-    }
-
-    void syncSizeAtHeader() {
-        assert(NUM_BYTES_RESERVED>=sizeof(uint32_t) && m_buffer.size() >= NUM_BYTES_RESERVED);
-        *reinterpret_cast<uint32_t*>(&m_buffer[0]) = static_cast<uint32_t>(m_buffer.size());
+    void syncWithBuffer() {
+      m_data = (Brig::BrigSectionHeader*)&m_buffer[0];
+      Offset end = static_cast<uint32_t>(m_buffer.size());
+      assert(secHeader()->headerByteCount > 0);
+      assert(secHeader()->headerByteCount <= end);
+      secHeader()->byteCount = end;
     }
 
 protected:
@@ -130,32 +126,27 @@ protected:
         assert(hasOwnBuffer() && other.hasOwnBuffer());
         m_buffer.swap(other.m_buffer);
         m_sourceInfo.swap(other.m_sourceInfo);
-        syncPtrsWithBuffer();
-        other.syncPtrsWithBuffer();
+        syncWithBuffer();
+        other.syncWithBuffer();
     }
 
 public:
 
+    Brig::BrigSectionHeader* secHeader() { return getData<Brig::BrigSectionHeader>(0); }
+    const Brig::BrigSectionHeader* secHeader() const { return getData<Brig::BrigSectionHeader>(0); }
+
     /// first bytes of section are NUM_BYTES_RESERVED nulls.
-    enum { NUM_BYTES_RESERVED = 4 };
     enum { ITEM_ALIGNMENT = 4 };
 
     /// constructor.
     /// @param container - parent container this section belongs to.
-    BrigSectionImpl(class BrigContainer *container=NULL)
-        : m_container(container)
-    {
-        m_buffer.resize(NUM_BYTES_RESERVED);
-        syncSizeAtHeader();
-        syncPtrsWithBuffer();
-    }
+    BrigSectionImpl(SRef name, class BrigContainer *container=NULL);
 
     /// constructor.
     /// @param container - parent container this section belongs to.
-    BrigSectionImpl(char *data, size_t size, class BrigContainer *container=NULL)
+    BrigSectionImpl(const void* ptr, class BrigContainer *container=NULL)
         : m_container(container)
-        , m_data(data, data+size)
-        //, m_dataEnd(data+size)
+        , m_data((const Brig::BrigSectionHeader*)ptr)
     {
     }
 
@@ -169,27 +160,32 @@ public:
     /// @}
 
     /// returns whether section doesnt' contain items.
-    bool isEmpty() const { return size() <= NUM_BYTES_RESERVED; }
+    bool isEmpty() const {
+      return size() <= secHeader()->headerByteCount;
+    }
 
     virtual void clear() {
         assert(hasOwnBuffer());
-        m_buffer.clear();
-        m_buffer.resize(NUM_BYTES_RESERVED);
-        syncSizeAtHeader();
+        m_buffer.resize(secHeader()->headerByteCount);
+        syncWithBuffer();
         m_sourceInfo.clear();
-        syncPtrsWithBuffer();
     }
 
-    void setData(const char* data, size_t numBytes) {
+    void setData(const void* data) {
         clear();
-        Buffer tmpBuf(data, data+numBytes);
+        const Brig::BrigSectionHeader* header = (const Brig::BrigSectionHeader*)data;
+        Buffer tmpBuf((const char*)data, (const char*)data + header->byteCount);
         m_buffer.swap(tmpBuf);
-        syncPtrsWithBuffer();
+        syncWithBuffer();
     }
 
     void reserve(size_t numBytes) {
         assert(hasOwnBuffer());
         m_buffer.reserve(numBytes);
+    }
+
+    SRef name() {
+      return SRef((const char*)secHeader()->name, (const char*)secHeader()->name + secHeader()->nameLength);
     }
 
     /// return offset from the beginning of the section for a data pointed by p.
@@ -207,8 +203,8 @@ public:
     const T* getData(Offset offset) const { return reinterpret_cast<const T*>(getData(offset)); }
     /// @}
 
-    char* getData(Offset offset) { return (char*)(m_data.begin + offset); }
-    const char* getData(Offset offset) const { return m_data.begin + offset; }
+    char* getData(Offset offset) { return (char*)m_data + offset; }
+    const char* getData(Offset offset) const { return (const char*)m_data + offset; }
 
     /// insert uninitialized data into the section.
     /// May invalidate pointers to the section data.
@@ -219,8 +215,7 @@ public:
         assert(hasOwnBuffer());
         assert(offset <= m_buffer.size());
         m_buffer.insert(m_buffer.begin() + offset,numBytes,fill);
-        syncSizeAtHeader();
-        syncPtrsWithBuffer();
+        syncWithBuffer();
         return getData(offset);
     }
 
@@ -233,8 +228,7 @@ public:
         assert(hasOwnBuffer());
         assert(offset <= m_buffer.size());
         m_buffer.insert(m_buffer.begin() + offset,start,end);
-        syncSizeAtHeader();
-        syncPtrsWithBuffer();
+        syncWithBuffer();
         return getData(offset);
     }
 
@@ -245,15 +239,14 @@ public:
         assert(hasOwnBuffer());
         assert(offset + numBytes <= m_buffer.size());
         m_buffer.erase(m_buffer.begin() + offset,m_buffer.begin() + offset + numBytes);
-        syncSizeAtHeader();
-        syncPtrsWithBuffer();
+        syncWithBuffer();
     }
 
     /// size of the section in bytes.
-    Offset size() const { return (Offset)m_data.length(); }
+    Offset size() const { return secHeader()->byteCount; }
 
     /// section data ptrs encapsulated in SRef
-    SRef data() const { return m_data; }
+    SRef data() const { return SRef((const char*)m_data, (const char*)m_data + size()); }
 
     /// insert item of specified type at the specified offset.
     /// @param Item - item wrapper type.
@@ -300,19 +293,18 @@ public:
 
     template <typename Item>
     unsigned grow(Item item, size_t reqSize) {
-        assert((item.brigOffset() + item.brig()->size) == size());
+        assert((item.brigOffset() + item.brig()->byteCount) == size());
 
-        Offset const oldNumBytes = item.brig()->size;
+        Offset const oldNumBytes = item.brig()->byteCount;
         Offset const newNumBytes = (Offset)std::min<size_t>(HSAIL_ASM::align(reqSize,ITEM_ALIGNMENT),(std::numeric_limits<uint16_t>::max)()-ITEM_ALIGNMENT);
 
         if (newNumBytes > oldNumBytes) {
             m_buffer.resize(item.brigOffset() + newNumBytes);
-            syncSizeAtHeader();
-            syncPtrsWithBuffer();
+            syncWithBuffer();
             memset(reinterpret_cast<char*>(item.brig()) + oldNumBytes, 0, newNumBytes - oldNumBytes);
-            item.brig()->size = static_cast<uint16_t>(newNumBytes);
+            item.brig()->byteCount = static_cast<uint16_t>(newNumBytes);
         }
-        return item.brig()->size;
+        return item.brig()->byteCount;
     }
 
     template<class Item>
@@ -329,6 +321,7 @@ public:
     }
 
     const SourceInfo* sourceInfo(Offset o) const {
+      if (o == 0) return NULL;
         SectionSourceInfo::const_iterator const p =
             std::lower_bound(m_sourceInfo.begin(),m_sourceInfo.end(),o,&BrigSectionImpl::xless);
         return p!=m_sourceInfo.end() && p->first==o ? &p->second : NULL;
@@ -365,6 +358,8 @@ private:
     }
 };
 
+SRef brigSectionNameById(int id);
+
 template <typename Item, int ID_>
 class BrigSection : public BrigSectionImpl
 {
@@ -373,12 +368,14 @@ public:
         ID = ID_
     };
 
-    BrigSection(class BrigContainer* c=NULL) :  BrigSectionImpl(c) { }
+    BrigSection(class BrigContainer* c=NULL)
+      :  BrigSectionImpl(brigSectionNameById(ID), c)
+    { }
 
-    BrigSection(char *data, size_t size, class BrigContainer *container=NULL)
-        : BrigSectionImpl(data,size,container) {}
+    BrigSection(const void* ptr, class BrigContainer *container=NULL)
+        : BrigSectionImpl(ptr,container) {}
 
-    Item begin() { return Item(this, NUM_BYTES_RESERVED); }
+    Item begin() { return Item(this, secHeader()->headerByteCount); }
     Item end() { return Item(this, size()); }
 
     void swapData(BrigSection& other) {
@@ -386,29 +383,54 @@ public:
     }
 };
 
-typedef BrigSection<Inst,     BRIG_SECTION_CODE>       CodeSection;
-typedef BrigSection<Directive,BRIG_SECTION_DIRECTIVES> DirectivesSection;
-typedef BrigSection<Operand,  BRIG_SECTION_OPERANDS>   OperandsSection;
-typedef BrigSection<Directive,BRIG_SECTION_DEBUG>      DebugChunksSection;
+class BrigSectionRaw: public BrigSectionImpl
+{
+public:
 
-class StringSection : public BrigSectionImpl
+    BrigSectionRaw(SRef name, class BrigContainer* c=NULL) :  BrigSectionImpl(name, c) { }
+
+    BrigSectionRaw(const void* data, class BrigContainer *container=NULL)
+        : BrigSectionImpl(data, container) {}
+
+    void swapData(BrigSectionRaw& other) {
+        BrigSectionImpl::swapData(other);
+    }
+
+    SRef payload() const {
+        return SRef(getData<char>(secHeader()->headerByteCount),
+               getData<char>(secHeader()->byteCount));
+    }
+};
+
+typedef BrigSection<Code,     Brig::BRIG_SECTION_INDEX_CODE>                   CodeSection;
+typedef BrigSection<Operand,  Brig::BRIG_SECTION_INDEX_OPERAND>                OperandSection;
+
+class DataSection : public BrigSectionImpl
 {
     enum {
-        ID = BRIG_SECTION_STRINGS
+        ID = Brig::BRIG_SECTION_INDEX_DATA
     };
+
     std::vector< Offset > m_stringSet; // ordered by strings they point to
     void initStringSet();
-public:
-    StringSection(class BrigContainer *container=NULL)
-        : BrigSectionImpl(container) {}
 
-    StringSection(char *data, size_t size, class BrigContainer *container=NULL)
-        : BrigSectionImpl(data,size,container) {}
+public:
+    DataSection(class BrigContainer *container=NULL)
+      : BrigSectionImpl(brigSectionNameById(ID), container) {}
+
+    DataSection(const void* ptr, class BrigContainer *container=NULL)
+        : BrigSectionImpl(ptr,container)
+    {
+    }
 
     Offset addString(const SRef& newStr);
+
+    // add without deduplication
+    Offset addStringImpl(const SRef& newStr);
+
     SRef getString(Offset offset) const {
         assert(offset);
-        const Brig::BrigString* s = getData<const Brig::BrigString>(offset);
+        const Brig::BrigData* s = getData<const Brig::BrigData>(offset);
         const char *begin = reinterpret_cast<const char*>(s->bytes);
         return SRef(begin,begin + s->byteCount);
     }
@@ -418,12 +440,35 @@ public:
         m_stringSet.clear();
     }
 
-    void swapData(StringSection& other) {
+    void swapData(DataSection& other) {
         BrigSectionImpl::swapData(other);
         m_stringSet.swap(other.m_stringSet);
     }
 
+    virtual void swapInData(Buffer& src) {
+        BrigSectionImpl::swapInData(src);
+        m_stringSet.clear();
+    }
+
     const static size_t maxStringLen = UINT_MAX;
+};
+
+template<int id>
+class BrigContainerSectionByIndex;
+
+template<>
+class BrigContainerSectionByIndex<Brig::BRIG_SECTION_INDEX_DATA> {
+    typedef DataSection type;
+};
+
+template<>
+class BrigContainerSectionByIndex<Brig::BRIG_SECTION_INDEX_CODE> {
+    typedef CodeSection type;
+};
+
+template<>
+class BrigContainerSectionByIndex<Brig::BRIG_SECTION_INDEX_OPERAND> {
+    typedef OperandSection type;
 };
 
 /// container for Brig sections. This is a basically a set of sections that
@@ -431,39 +476,20 @@ public:
 class BrigContainer {
     // INSTANCE DATA
 private:
-    StringSection       m_strings;
-    CodeSection         m_insts;
-    DirectivesSection   m_directives;
-    OperandsSection     m_operands;
-    DebugChunksSection  m_dChunks;
+    std::vector< std::unique_ptr<BrigSectionImpl> > m_sections;
+
+    std::vector<char> m_brigModuleBuffer;
 
 public:
 
-    BrigContainer() {
-        m_strings.container(this);
-        m_insts.container(this);
-        m_directives.container(this);
-        m_operands.container(this);
-        m_dChunks.container(this);
-    }
+    BrigContainer();
 
-    BrigContainer(char *stringData,     size_t stringsSize,
-                  char *directivesData, size_t directivesSize,
-                  char *instData,       size_t instSize,
-                  char *operandData,    size_t operandSize,
-                  char *debugData,      size_t debugSize)
-        : m_strings(stringData,stringsSize)
-        , m_insts(instData,instSize)
-        , m_directives(directivesData,directivesSize)
-        , m_operands(operandData,operandSize)
-        , m_dChunks(debugData,debugSize)
-    {
-        m_strings.container(this);
-        m_insts.container(this);
-        m_directives.container(this);
-        m_operands.container(this);
-        m_dChunks.container(this);
-    }
+    BrigContainer(const void *dataData,
+                  const void *codeData,
+                  const void *operandData,
+                  const void *debugData = 0);
+
+    BrigContainer(const Brig::BrigModule* brigModule);
 
     int validate(std::string *outErrorMessage, const SourceInfo **outSourceInfo);
     // Validate the structure of this BRIG container.
@@ -473,92 +499,104 @@ public:
     // if such information is available. Return zero on success, or a non-zero error code
     // in case of an error.
 
-    CodeSection&               insts();
+    inline int getNumSections() const { return (int)m_sections.size(); }
+
+    DataSection&               strings();
     CodeSection&               code();
-    DirectivesSection&         directives();
-    OperandsSection&           operands();
-    DebugChunksSection&        debugChunks();
-    StringSection&             strings();
+    OperandSection&            operands();
+    BrigSectionRaw&            debugInfo();
 
-    const CodeSection&         insts()       const;
+    const DataSection&         strings()     const;
     const CodeSection&         code()        const;
-    const DirectivesSection&   directives()  const;
-    const OperandsSection&     operands()    const;
-    const DebugChunksSection&  debugChunks() const;
-    const StringSection&       strings()     const;
+    const OperandSection&      operands()    const;
+    const BrigSectionRaw&      debugInfo()   const;
 
-    template <SectionID id>        BrigSectionImpl& sectionById();
-    template <SectionID id>  const BrigSectionImpl& sectionById() const;
-
-    BrigSectionImpl&           sectionById(int id);
-    const BrigSectionImpl&     sectionById(int id) const;
-
-    template <typename Item>       BrigSectionImpl& section() {
-        return sectionById< GetSectionID< typename Item::Kind >::id >();
+    BrigSectionImpl&           sectionById(int id) {
+        return *m_sections[id];
     }
-    template <typename Item> const BrigSectionImpl& section() const {
-        return sectionById< GetSectionID< typename Item::Kind >::id >();
+
+    const BrigSectionImpl&     sectionById(int id) const {
+        return *m_sections[id];
     }
 
     // Append a default-initialized item (i.e. an instruction, operand, directive or debug info) to
     // a corresponding section of this container, and return the appropriate item proxy.
     template<typename Item> Item append() {
-        return section< typename Item::Kind >().template append<Item>();
+        return sectionById(Item::SECTION).template append<Item>();
     }
 
     // the same with source info
     template<typename Item> Item append(const SourceInfo& si) {
-        return section< typename Item::Kind >().template append<Item>(si);
+        return sectionById(Item::SECTION).template append<Item>(si);
     }
 
     template<typename Item>
     const SourceInfo* sourceInfo( const Item& i ) const {
-        return section< typename Item::Kind >().sourceInfo(i);
+        return sectionById(Item::SECTION).sourceInfo(i);
     }
 
     Offset addString(const SRef& s) { return strings().addString(s); }
-    SRef getString(Offset offset) const { return m_strings.getString(offset); }
+    SRef getString(Offset offset) const { return strings().getString(offset); }
 
-    void optimizeOperands();
-    void ExtractDebugInformationToStream( std::ostream & out );
-    void ExtractDebugInformationToVector( std::vector<char> & out );
+    void patchDecl2Defs();
+    //void optimizeOperands();
 
     void clear() {
-        m_strings.clear();
-        m_insts.clear();
-        m_directives.clear();
-        m_operands.clear();
-        m_dChunks.clear();
+        strings().clear();
+        code().clear();
+        operands().clear();
+        m_sections.resize(Brig::BRIG_SECTION_INDEX_IMPLEMENTATION_DEFINED);
     }
+
+    static int verifySection(int index, SRef data, std::ostream &errs);
+
+    int loadSection(int index, BrigSectionImpl::Buffer& data, std::ostream &errs);
+
+    void initSectionRaw(int index, SRef name);
+
+    const Brig::BrigModule* getBrigModule();
 };
 
 // non-const
-inline CodeSection&                        BrigContainer::insts()              { return m_insts; }
-inline CodeSection&                        BrigContainer::code()               { return m_insts; }
-inline DirectivesSection&                  BrigContainer::directives()         { return m_directives; }
-inline OperandsSection&                    BrigContainer::operands()           { return m_operands; }
-inline DebugChunksSection&                 BrigContainer::debugChunks()        { return m_dChunks; }
-inline StringSection&                      BrigContainer::strings()            { return m_strings; }
+inline DataSection& BrigContainer::strings()  {
+    return static_cast<DataSection&>(
+        sectionById(Brig::BRIG_SECTION_INDEX_DATA));
+}
 
-template <> inline BrigSectionImpl&        BrigContainer::sectionById<BRIG_SECTION_CODE>()       { return m_insts; }
-template <> inline BrigSectionImpl&        BrigContainer::sectionById<BRIG_SECTION_DIRECTIVES>() { return m_directives; }
-template <> inline BrigSectionImpl&        BrigContainer::sectionById<BRIG_SECTION_OPERANDS>()   { return m_operands; }
-template <> inline BrigSectionImpl&        BrigContainer::sectionById<BRIG_SECTION_DEBUG>()      { return m_dChunks; }
-template <> inline BrigSectionImpl&        BrigContainer::sectionById<BRIG_SECTION_STRINGS>()    { return m_strings; }
+inline CodeSection& BrigContainer::code() {
+    return static_cast<CodeSection&>(
+        sectionById(Brig::BRIG_SECTION_INDEX_CODE));
+}
+inline OperandSection& BrigContainer::operands() {
+    return static_cast<OperandSection&>(
+        sectionById(Brig::BRIG_SECTION_INDEX_OPERAND));
+}
+
+inline BrigSectionRaw& BrigContainer::debugInfo() {
+    return static_cast<BrigSectionRaw&>(
+        sectionById(Brig::BRIG_SECTION_INDEX_IMPLEMENTATION_DEFINED));
+}
 
 // const
-inline const CodeSection&                  BrigContainer::insts()              const { return m_insts; }
-inline const CodeSection&                  BrigContainer::code()               const { return m_insts; }
-inline const DirectivesSection&            BrigContainer::directives()         const { return m_directives; }
-inline const OperandsSection&              BrigContainer::operands()           const { return m_operands; }
-inline const DebugChunksSection&           BrigContainer::debugChunks()        const { return m_dChunks; }
-inline const StringSection&                BrigContainer::strings()            const { return m_strings; }
+inline const DataSection& BrigContainer::strings() const {
+    return static_cast<const DataSection&>(
+        sectionById(Brig::BRIG_SECTION_INDEX_DATA));
+}
 
-template <> inline const BrigSectionImpl&  BrigContainer::sectionById<BRIG_SECTION_CODE>()       const { return m_insts; }
-template <> inline const BrigSectionImpl&  BrigContainer::sectionById<BRIG_SECTION_DIRECTIVES>() const { return m_directives; }
-template <> inline const BrigSectionImpl&  BrigContainer::sectionById<BRIG_SECTION_OPERANDS>()   const { return m_operands; }
-template <> inline const BrigSectionImpl&  BrigContainer::sectionById<BRIG_SECTION_DEBUG>()      const { return m_dChunks; }
-template <> inline const BrigSectionImpl&  BrigContainer::sectionById<BRIG_SECTION_STRINGS>()    const { return m_strings; }
+inline const CodeSection& BrigContainer::code() const {
+    return static_cast<const CodeSection&>(
+        sectionById(Brig::BRIG_SECTION_INDEX_CODE));
+}
+
+inline const OperandSection& BrigContainer::operands() const {
+    return static_cast<const OperandSection&>(
+        sectionById(Brig::BRIG_SECTION_INDEX_OPERAND));
+}
+
+inline const BrigSectionRaw& BrigContainer::debugInfo() const {
+    return static_cast<const BrigSectionRaw&>(
+        sectionById(Brig::BRIG_SECTION_INDEX_IMPLEMENTATION_DEFINED));
+}
 
 } // namespace HSAIL_ASM
 

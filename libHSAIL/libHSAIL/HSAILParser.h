@@ -1,36 +1,36 @@
 // University of Illinois/NCSA
 // Open Source License
-// 
+//
 // Copyright (c) 2013, Advanced Micro Devices, Inc.
 // All rights reserved.
-// 
+//
 // Developed by:
-// 
+//
 //     HSA Team
-// 
+//
 //     Advanced Micro Devices, Inc
-// 
+//
 //     www.amd.com
-// 
+//
 // Permission is hereby granted, free of charge, to any person obtaining a copy of
 // this software and associated documentation files (the "Software"), to deal with
 // the Software without restriction, including without limitation the rights to
 // use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies
 // of the Software, and to permit persons to whom the Software is furnished to do
 // so, subject to the following conditions:
-// 
+//
 //     * Redistributions of source code must retain the above copyright notice,
 //       this list of conditions and the following disclaimers.
-// 
+//
 //     * Redistributions in binary form must reproduce the above copyright notice,
 //       this list of conditions and the following disclaimers in the
 //       documentation and/or other materials provided with the distribution.
-// 
+//
 //     * Neither the names of the LLVM Team, University of Illinois at
 //       Urbana-Champaign, nor the names of its contributors may be used to
 //       endorse or promote products derived from this Software without specific
 //       prior written permission.
-// 
+//
 // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 // IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
 // FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SHALL THE
@@ -53,6 +53,8 @@ namespace HSAIL_ASM
 
 Inst parseMnemo(const char* str, Brigantine& bw);
 
+struct ModuleStatementPrefix;
+
 class Parser
 {
 public:
@@ -61,60 +63,64 @@ public:
     void parseSource();
 
 private:
-    Scanner&   m_scanner;
-    Brigantine m_bw;
-    bool       m_gcnEnabled;
+    Scanner&    m_scanner;
+    Brigantine  m_bw;
+    bool        m_gcnEnabled;
+    std::string m_srcFileName;
 
     Parser& operator=(const Parser&);
 
-    ETokens token();
-    void    scan();
-    void    expect(ETokens token, const char* message = 0);
-    void    eatToken(ETokens token, const char* message = 0);
-    bool    tryEatToken(ETokens token);
-    void    throwTokenExpected(ETokens token, const char* message);
-    void    syntaxError(const std::string& message,const SourceInfo* srcInfo=NULL);
-    SourceInfo tokenSourceInfo() const;
+    Scanner::CToken& scan()  { return m_scanner.scan(); }
+    Scanner::CToken& peek()  { return m_scanner.peek(); }
+    Scanner::CToken& token() { return m_scanner.token(); }
+
+    unsigned           eatToken(ETokens token, const char* message = 0) { return m_scanner.eatToken(token, message); }
+    Optional<unsigned> tryEatToken(ETokens token)                       { return m_scanner.tryEatToken(token); }
+
+    void syntaxError(const std::string& message, const SourceInfo* srcInfo=NULL);
+    void syntaxError(const std::string& message, Scanner::CToken& token);
+
+    //void    scan();
+    //void    expect(ETokens token, const char* message = 0);
+    //void    throwTokenExpected(ETokens token, const char* message);
+    //SourceInfo tokenSourceInfo() const;
 
     void parseProgram();
     void parseVersion();
     void parseTopLevelStatement();
     Optional<uint16_t> tryParseFBar();
-    void parseKernel(const struct DeclPrefix* declPrefix=NULL);
-    void parseFunction(const struct DeclPrefix* declPrefix=NULL);
-    void parseSigArgs(Scanner& s,DirectiveSignatureArguments types, DirectiveSignatureArguments::ArgKind argKind);
-    void parseSignature();
+    //void parseSigArgs(Scanner& s,DirectiveSignatureArguments types, DirectiveSignatureArguments::ArgKind argKind);
+    //void parseSignature();
     int  parseCodeBlock(); // returns the number of instructions inside
     int  parseBodyStatement(); // returns the number of instructions inside
     void parseLabel();
     Inst parseInst();
 
-    DirectiveSymbol parseDecl(bool isArg, bool isLocal);
-    DirectiveSymbol parseDecl(bool isArg, bool isLocal,const struct DeclPrefix& declPfx);
-    struct DeclPrefix parseDeclPrefix();
 
-    Directive parseVariableInitializer(Brig::BrigType16_t type, bool asArray, unsigned expectedSize);
-    DirectiveImageInit    parseImageInitializer();
-    DirectiveSamplerInit  parseSamplerInitializer();
+    OperandData                 parseVariableInitializer(Brig::BrigType16_t type, unsigned expectedSize);
+    OperandOperandList          parseOpaqueInitializer(Brig::BrigType16_t type, unsigned expectedSize);
+    Operand    parseImageProperties(Brig::BrigType16_t type);
+    Operand    parseSamplerProperties();
 
-    DirectiveFbarrier parseFbarrier(bool isLocal);
+
+    void parseExecutable(ETokens kw, const ModuleStatementPrefix* modPfx);
+    DirectiveVariable parseVariable(bool nameRequired = true, const ModuleStatementPrefix* modPfx = 0);
+    void parseFbarrier(const ModuleStatementPrefix* modPfx = 0);
 
     void parseDebug();
     void parsePragma();
+    void parseEmbeddedText();
     void parseRTI();
     void parseLocation();
     void parseExtension();
     void parseFileDecl();
     void parseControl();
 
-    unsigned parseValueList(Brig::BrigType16_t type, class ArbitraryData& data, unsigned maxValues=0);
-
-    void parseBlock();
-
-    typedef void (Parser::*OperandParser)(Inst);
+    typedef ItemList (Parser::*OperandParser)(Inst);
     static OperandParser getOperandParser(Brig::BrigOpcode16_t opcode);
 
     Inst parseInstLdSt();
+    Inst parseInstLane();
     Inst parseInstCombineExpand(unsigned operandIdx);
     Inst parseInstImage();
 
@@ -124,63 +130,34 @@ private:
 
     void checkVxIsValid(int Vx, Operand o);
 
-    void parseOperands(Inst inst);
-    void parseLdcOperands(Inst inst);
-    void parseCallOperands(Inst inst);
-    void parseRdImageOperands(Inst inst);
-    void parseAtomicImageOperands(Inst inst);
-    void parseAtomicNoRetImageOperands(Inst inst);
-    void parseQueryOperands(Inst inst);
-    void parseNoOperands(Inst inst);
+    ItemList parseOperands(Inst inst);
+    ItemList parseCallOperands(Inst inst);
+    ItemList parseSbrOperands(Inst inst);
+    ItemList parseNoOperands(Inst inst);
 
     Operand parseOperandGeneric(unsigned requiredType);
 
-    void parseOperandGeneric(Inst inst, unsigned opndIdx);
+    Operand parseOperandGeneric(Inst inst, unsigned opndIdx);
     Operand parseConstantGeneric(unsigned requiredType);
-    void validateImmType(unsigned required, unsigned actual);
 
-    OperandRef parseOperandRef();
+    void parseImmediate(ArbitraryData *data, unsigned requiredType, size_t pos);
+
+    OperandCodeRef parseOperandRef();
     OperandReg parseOperandReg();
-    Operand parseOperandRegVector();
+    Operand parseOperandVector(unsigned requiredType);
 
     Operand parseLabelOperand();
-    OperandFunctionRef parseFunctionRef();
+    OperandCodeRef parseFunctionRef();
     Operand parseSigRef();
 
     Operand parseOperandInBraces();
     Operand parseActualParamList();
 
-    Operand parseObjectOperand();
-    void parseAddress(SRef& reg, int32_t& offset);
+    void parseAddress(SRef& reg, int64_t& offset);
 
-    unsigned parseLabelList(LabelList list, unsigned expectedSize);
-
-    void storeComments(Inst before=Inst());
+    void parseSLComment();
+    void parseMLComment();
 };
-
-inline ETokens Parser::token() {
-    return m_scanner.token();
-}
-
-inline void Parser::scan() {
-    m_scanner.scan();
-}
-
-inline void Parser::expect(ETokens token, const char* message) {
-    m_scanner.expect(token,message);
-}
-
-inline void Parser::eatToken(ETokens token, const char* message) {
-    m_scanner.eatToken(token,message);
-}
-
-inline bool Parser::tryEatToken(ETokens token) {
-    return m_scanner.tryEatToken(token);
-}
-
-inline void Parser::throwTokenExpected(ETokens token, const char* message) {
-    m_scanner.throwTokenExpected(token,message);
-}
 
 inline void Parser::syntaxError(const std::string& message,const SourceInfo* srcInfo) {
     if (srcInfo) {
@@ -191,15 +168,14 @@ inline void Parser::syntaxError(const std::string& message,const SourceInfo* src
     }
 }
 
-inline SourceInfo tokenSourceInfo(const Scanner& scanner)
-{
-    SrcLoc const srcLoc = scanner.srcLoc();
+inline SourceInfo sourceInfo(const Scanner::Token& t) {
+    SrcLoc const srcLoc = t.srcLoc();
     return SourceInfo(srcLoc.line,srcLoc.column);
 }
 
-inline SourceInfo Parser::tokenSourceInfo() const
-{
-    return HSAIL_ASM::tokenSourceInfo(m_scanner);
+inline void Parser::syntaxError(const std::string& message, Scanner::CToken& token) {
+    SourceInfo const srcInfo = sourceInfo(token);
+    syntaxError(message, &srcInfo);
 }
 
 } // end namespace

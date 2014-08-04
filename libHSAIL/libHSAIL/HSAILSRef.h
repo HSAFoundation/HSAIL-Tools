@@ -66,23 +66,52 @@ public:
     SRef(const std::vector<char>& rhs) : begin(rhs.empty() ? 0 : &rhs[0]), end(rhs.empty() ? 0 : &rhs[0] + rhs.size()) { }
     explicit SRef(const char *begin_) : begin(begin_), end(begin_ + strlen(begin_)) { }
     bool empty() const { return begin == end; }
-    std::ptrdiff_t length() const { return end - begin; }
+    std::size_t length() const { return end - begin; }
     static int compare(const SRef& lhs, const SRef& rhs) {
-        std::ptrdiff_t lhsLen = lhs.end-lhs.begin;
-        std::ptrdiff_t rhsLen = rhs.end-rhs.begin;
+        std::size_t lhsLen = lhs.length();
+        std::size_t rhsLen = rhs.length();
         int rc = memcmp(lhs.begin, rhs.begin, (std::min)(lhsLen, rhsLen));
         if (rc) return rc;
-        return (int)(lhsLen-rhsLen);
+        if (lhsLen == rhsLen) {
+            return 0;
+        } else if (lhsLen < rhsLen) {
+            return -1;
+        } else {
+            return 1;
+        }
     }
     static int compare(const char* lhs, const SRef& rhs) {
-        std::ptrdiff_t rhsLen = rhs.end-rhs.begin;
+        std::size_t rhsLen = rhs.length();
         int rc = strncmp(lhs, rhs.begin, rhsLen);
         if (rc) return rc;
         return lhs[rhsLen] == 0 ? 0 : 1;
     }
+    char operator[](std::ptrdiff_t index) const { /* \todo assert(index < length()); */ return begin[index]; }
     operator std::string() const { return std::string(begin,end); }
 
     operator bool_type() const { return !empty() ? &SRef::toCompare : NULL; }
+
+    SRef substr(int start) const {
+        return SRef(
+            end - begin >= start ? begin + start : end,
+            end);
+    }
+    SRef rsubstr(int start) const {
+        return SRef(
+            begin,
+            end - begin >= start ? end - start : begin);
+    }
+    SRef substr(int start, int num) const {
+        return SRef(
+            end - begin >= start ? begin + start : end,
+            end - begin >= start + num ? begin + start + num : end);
+    }
+
+    template<typename T>
+    static inline SRef array(const T* value, size_t numElem = 1) {
+        const char* begin = (const char*) value;
+        return SRef(begin, begin + sizeof(T) * numElem);
+    }
 };
 
 inline bool operator>(const SRef& lhs, const SRef& rhs)  { return SRef::compare(lhs, rhs) > 0; }
