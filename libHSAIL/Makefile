@@ -10,7 +10,7 @@ else
 _GCC = 1
 endif
 
-LIBS :=
+LIBS := $(_LIBS)
 LIBPATHS :=
 ARFLAGS =
 
@@ -64,11 +64,17 @@ else
 LLVM_SUBDIR = Debug
 endif
 
+ifdef _STATIC
+VCRT := -MT
+else
+VCRT := -MD
+endif
+
 ifdef _DBG
 CONFIG := $(CONFIG)_dbg
-override CXXFLAGS += -Z7 -Od -D_DEBUG -MDd
+override CXXFLAGS += -Z7 -Od -D_DEBUG $(VCRT)d
 else
-override CXXFLAGS += -MD
+override CXXFLAGS += $(VCRT)
 endif
 
 ifdef _M64
@@ -132,6 +138,8 @@ OBJ_SUFFIX = .o
 LIB_SUFFIX = .a
 LIB_PREFIX = lib
 
+override CXXFLAGS += -std=c++11
+
 ifdef _OPT
 override CXXFLAGS += -O3 -DNDEBUG
 CONFIG := $(CONFIG)_opt
@@ -173,7 +181,7 @@ endif # _GCC
 
 BUILD_DIR ?= build_$(CONFIG)
 
-INCLUDES = -I$(LIBHSAIL_DIR) $(LLVM_INCFLAGS) -D__STDC_LIMIT_MACROS -D__STDC_CONSTANT_MACROS
+INCLUDES = -I$(LIBHSAIL_DIR)/generated -I$(LIBHSAIL_DIR) $(LLVM_INCFLAGS) -D__STDC_LIMIT_MACROS -D__STDC_CONSTANT_MACROS
 
 ifdef LLVM_CONFIG
 LLVM_INCFLAGS = -I$(shell $(LLVM_CONFIG) --includedir)
@@ -203,7 +211,7 @@ else
 $(info LLVM_LIBDIR=$(LLVM_LIBDIR))
 LLVM_LIB = $(LLVM_LIBDIR)/$(LIB_PREFIX)LLVMSupport$(LIB_SUFFIX) $(LLVM_LIBDIR)/$(LIB_PREFIX)LLVMObject$(LIB_SUFFIX)
 LIBPATHS += $(LLVM_LIBDIR)
-LIBS := LLVMSupport LLVMObject $(LIBS)
+LIBS := LLVMSupport LLVMObject tinfo $(LIBS)
 endif
 
 LLVM_INCFLAGS ?= -I$(LLVM_SRC)/include -I$(LLVM_BUILD)/include
@@ -220,7 +228,9 @@ LIBHSAIL_LIB  = $(BUILD_DIR)/$(LIB_PREFIX)hsail$(LIB_SUFFIX)
 LIBHSAIL_SRCS = $(wildcard $(LIBHSAIL_DIR)/*.cpp)
 LIBHSAIL_OBJS = $(LIBHSAIL_SRCS:%.cpp=$(BUILD_DIR)/o_%$(OBJ_SUFFIX))
 
+ifdef _GCC
 -include $(LIBHSAIL_SRCS:%.cpp=$(BUILD_DIR)/o_%.d)
+endif
 
 $(LIBHSAIL_OBJS) : | $(BUILD_DIR)/o_$(LIBHSAIL_DIR)/.dummy
 
@@ -258,7 +268,9 @@ LIBBRIGDWARF_LIB  = $(BUILD_DIR)/$(LIB_PREFIX)brigdwarf$(LIB_SUFFIX)
 LIBBRIGDWARF_SRCS = $(wildcard $(LIBBRIGDWARF_DIR)/*.cpp)
 LIBBRIGDWARF_OBJS = $(LIBBRIGDWARF_SRCS:%.cpp=$(BUILD_DIR)/o_%$(OBJ_SUFFIX))
 
+ifdef _GCC
 -include $(LIBBRIGDWARF_SRCS:%.cpp=$(BUILD_DIR)/o_%.d)
+endif
 
 $(LIBBRIGDWARF_OBJS) : | $(BUILD_DIR)/o_$(LIBBRIGDWARF_DIR)/.dummy
 
@@ -278,7 +290,9 @@ HSAILASM_EXE  = $(BUILD_DIR)/hsailasm$(EXE_SUFFIX)
 HSAILASM_SRCS = $(wildcard $(HSAILASM_DIR)/*.cpp)
 HSAILASM_OBJS = $(HSAILASM_SRCS:%.cpp=$(BUILD_DIR)/o_%$(OBJ_SUFFIX))
 
+ifdef _GCC
 -include $(HSAILASM_SRCS:%.cpp=$(BUILD_DIR)/o_%.d)
+endif
 
 $(HSAILASM_OBJS) : | $(BUILD_DIR)/o_$(HSAILASM_DIR)/.dummy
 
