@@ -1,6 +1,6 @@
 typedef uint32_t BrigVersion32_t;
 
-enum BrigVersion { //.nowrap //.nodump
+enum BrigVersion { //.nowrap //.nodump //.nollvm
     BRIG_VERSION_HSAIL_MAJOR = 0,
     BRIG_VERSION_HSAIL_MINOR = 20140528,
     BRIG_VERSION_BRIG_MAJOR = 0,
@@ -86,6 +86,7 @@ typedef uint8_t BrigVariableModifier8_t;
 typedef uint8_t BrigWidth8_t;
 
 enum BrigKinds {
+    //.nollvm
     //.wname={ s/^BRIG_KIND//; MACRO2Name($_) }
     //.mnemo=$wname{ $wname }
     //.sizeof=$wname{ "sizeof(".$structs->{"Brig".$wname}->{rawbrig}.")" }
@@ -164,9 +165,9 @@ enum BrigAlignment {
     //.rbytes=$bytes{ $bytes }
     //.rbytes_switch //.rbytes_reverse //.rbytes_proto="Brig::BrigAlignment num2align(uint64_t arg)"
     //.rbytes_default="return BRIG_ALIGNMENT_LAST"
-    //.print={ "_align(".$x->{bytes}.")" }
-    BRIG_ALIGNMENT_NONE = 0, //.no_mnemo //.print=""
-    BRIG_ALIGNMENT_1 = 1,  //.mnemo="" //.print=""
+    //.print=$bytes{ $bytes>1 ? "_align($bytes)" : "" }
+    BRIG_ALIGNMENT_NONE = 0, //.no_mnemo
+    BRIG_ALIGNMENT_1 = 1,  //.mnemo=""
     BRIG_ALIGNMENT_2 = 2,
     BRIG_ALIGNMENT_4 = 3,
     BRIG_ALIGNMENT_8 = 4,
@@ -198,6 +199,7 @@ enum BrigAtomicOperation { //.tdcaption="Atomic Operations"
     //.mnemo={ s/^BRIG_ATOMIC_//;lc }
     //.mnemo_token=_EMAtomicOp
     //.mnemo_context=EInstModifierInstAtomicContext
+    //.print=$mnemo{ "_$mnemo" }
     BRIG_ATOMIC_ADD = 0,
     BRIG_ATOMIC_AND = 1,
     BRIG_ATOMIC_CAS = 2,
@@ -224,6 +226,7 @@ enum BrigAtomicOperation { //.tdcaption="Atomic Operations"
 enum BrigCompareOperation { //.tdcaption="Comparison Operators"
     //.mnemo={ s/^BRIG_COMPARE_//;lc }
     //.mnemo_token=_EMCompare
+    //.print=$mnemo{ "_$mnemo" }
     BRIG_COMPARE_EQ = 0,
     BRIG_COMPARE_NE = 1,
     BRIG_COMPARE_LT = 2,
@@ -257,6 +260,7 @@ enum BrigCompareOperation { //.tdcaption="Comparison Operators"
 enum BrigControlDirective {
     //.mnemo={ s/^BRIG_CONTROL_//;lc }
     //.mnemo_token=EControl
+    //.print=$mnemo{ $mnemo }
     BRIG_CONTROL_NONE = 0, //.skip
     BRIG_CONTROL_ENABLEBREAKEXCEPTIONS = 1,
     BRIG_CONTROL_ENABLEDETECTEXCEPTIONS = 2,
@@ -279,6 +283,7 @@ enum BrigImageChannelOrder {
     //.mnemo={ s/^BRIG_CHANNEL_ORDER_?//;lc }
     //.mnemo_token=EImageOrder
     //.mnemo_context=EImageOrderContext
+    //.print=$mnemo{ $mnemo }
 
     BRIG_CHANNEL_ORDER_A = 0,
     BRIG_CHANNEL_ORDER_R = 1,
@@ -308,6 +313,7 @@ enum BrigImageChannelOrder {
 enum BrigImageChannelType {
     //.mnemo={ s/^BRIG_CHANNEL_TYPE_//;lc }
     //.mnemo_token=EImageFormat
+    //.print=$mnemo{ $mnemo }
 
     BRIG_CHANNEL_TYPE_SNORM_INT8 = 0,
     BRIG_CHANNEL_TYPE_SNORM_INT16 = 1,
@@ -354,6 +360,7 @@ enum BrigImageGeometry { //.tdcaption="Geometry"
 
 enum BrigImageQuery {
     //.mnemo={ s/^BRIG_IMAGE_QUERY_//;lc }
+    //.print=$mnemo{ $mnemo }
     BRIG_IMAGE_QUERY_WIDTH = 0,
     BRIG_IMAGE_QUERY_HEIGHT = 1,
     BRIG_IMAGE_QUERY_DEPTH = 2,
@@ -374,6 +381,7 @@ enum BrigLinkage {
 enum BrigMachineModel {
     //.mnemo={ s/^BRIG_MACHINE_//; '$'.lc }
     //.mnemo_token=ETargetMachine
+    //.print=$mnemo{ $mnemo }
     BRIG_MACHINE_SMALL = 0, // 32-bit model (all addresses are 32 bits;
     // a pointer fits into an s register)
     BRIG_MACHINE_LARGE = 1, // 64-bit model (all addresses are 64 bits;
@@ -389,6 +397,7 @@ enum BrigMemoryModifierMask { //.tddef=0
 enum BrigMemoryOrder {
     //.mnemo={ s/^BRIG_MEMORY_ORDER_//; lc }
     //.mnemo_token=_EMMemoryOrder
+    //.print=$mnemo{ "_$mnemo" }
     BRIG_MEMORY_ORDER_NONE = 0, //.mnemo=""
     BRIG_MEMORY_ORDER_RELAXED = 1, //.mnemo=rlx
     BRIG_MEMORY_ORDER_SC_ACQUIRE = 2, //.mnemo=scacq
@@ -401,6 +410,7 @@ enum BrigMemoryOrder {
 enum BrigMemoryScope {
     //.mnemo={ s/^BRIG_MEMORY_SCOPE_//; lc }
     //.mnemo_token=_EMMemoryScope
+    //.print=$mnemo{ $mnemo }
     BRIG_MEMORY_SCOPE_NONE = 0, //.mnemo=""
     BRIG_MEMORY_SCOPE_WORKITEM = 1, //.mnemo=wi
     BRIG_MEMORY_SCOPE_WAVEFRONT = 2, //.mnemo=wv
@@ -414,6 +424,7 @@ enum BrigMemoryScope2 { // tbd HACK!
     //.mnemo_token=EMemoryScope
     //.mnemo_scanner=Instructions
     //.mnemo_context=EMemoryScopeContext
+    //.nollvm
     BRIG_MEMORY_SCOPE2_NONE = 0, //.mnemo=""
     BRIG_MEMORY_SCOPE2_WORKITEM = 1, //.mnemo=wi
     BRIG_MEMORY_SCOPE2_WAVEFRONT = 2, //.mnemo=wv
@@ -458,6 +469,8 @@ enum BrigOpcode { //.tdcaption="Instruction Opcodes"
 
     //.numdst={undef}
     //.numdst_switch //.numdst_proto="int instNumDstOperands(Brig::BrigOpcode16_t arg)" //.numdst_default="return 1"
+
+    //.print=$mnemo{ $mnemo }
     BRIG_OPCODE_NOP = 0, //.k=NOP //.hasType=false
     BRIG_OPCODE_ABS = 1, //.k=BASIC_OR_MOD
     BRIG_OPCODE_ADD = 2, //.k=BASIC_OR_MOD
@@ -636,6 +649,7 @@ enum BrigOpcode { //.tdcaption="Instruction Opcodes"
 enum BrigPack { //.tdcaption="Packing"
     //.mnemo={ s/^BRIG_PACK_//;s/SAT$/_sat/;lc }
     //.mnemo_token=_EMPacking
+    //.print=$mnemo{ "_$mnemo" }
     BRIG_PACK_NONE = 0, //.mnemo=""
     BRIG_PACK_PP = 1,
     BRIG_PACK_PS = 2,
@@ -654,6 +668,7 @@ enum BrigPack { //.tdcaption="Packing"
 enum BrigProfile {
     //.mnemo={ s/^BRIG_PROFILE_//;'$'.lc }
     //.mnemo_token=ETargetProfile
+    //.print=$mnemo{ $mnemo }
     BRIG_PROFILE_BASE = 0,
     BRIG_PROFILE_FULL = 1,
 
@@ -662,9 +677,9 @@ enum BrigProfile {
 
 enum BrigRegisterKind {
     //.mnemo={ s/^BRIG_REGISTER_//;'$'.lc(substr($_,0,1)) }
-
     //.bits={ }
     //.bits_switch //.bits_proto="unsigned getRegBits(Brig::BrigRegisterKind16_t arg)" //.bits_default="return (unsigned)-1"
+    //.nollvm
     BRIG_REGISTER_CONTROL = 0, //.bits=1
     BRIG_REGISTER_SINGLE = 1,  //.bits=32
     BRIG_REGISTER_DOUBLE = 2,  //.bits=64
@@ -711,12 +726,14 @@ enum BrigSamplerAddressing {
 enum BrigSamplerCoordNormalization {
     //.mnemo={ s/^BRIG_COORD_//;lc }
     //.mnemo_token=ESamplerCoord
+    //.print=$mnemo{ $mnemo }
     BRIG_COORD_UNNORMALIZED = 0,
     BRIG_COORD_NORMALIZED = 1
 };
 
 enum BrigSamplerFilter {
     //.mnemo={ s/^BRIG_FILTER_//;lc }
+    //.print=$mnemo{ $mnemo }
     BRIG_FILTER_NEAREST = 0,
     BRIG_FILTER_LINEAR = 1
 };
@@ -724,12 +741,13 @@ enum BrigSamplerFilter {
 enum BrigSamplerQuery {
     //.mnemo={ s/^BRIG_SAMPLER_QUERY_//;lc }
     //.mnemo_token=_EMSamplerQuery
+    //.print=$mnemo{ $mnemo }
     BRIG_SAMPLER_QUERY_ADDRESSING = 0,
     BRIG_SAMPLER_QUERY_COORD = 1,
     BRIG_SAMPLER_QUERY_FILTER = 2
 };
 
-enum BrigSectionIndex {
+enum BrigSectionIndex { //.nollvm
     //.mnemo={ s/^BRIG_SECTION_INDEX_/HSA_/;lc }
     BRIG_SECTION_INDEX_DATA = 0,
     BRIG_SECTION_INDEX_CODE = 1,
@@ -741,7 +759,7 @@ enum BrigSectionIndex {
 };
 
 enum BrigSegCvtModifierMask {
-    BRIG_SEG_CVT_NONULL = 1 //.mnemo="nonull"
+    BRIG_SEG_CVT_NONULL = 1 //.mnemo="nonull" //.print="_nonull"
 };
 
 enum BrigSegment {
@@ -762,7 +780,7 @@ enum BrigSegment {
 };
 
 enum BrigPackedTypeBits {
-    //.nodump
+    //.nodump //.nollvm
     BRIG_TYPE_PACK_SHIFT = 5,
     BRIG_TYPE_BASE_MASK = (1 << BRIG_TYPE_PACK_SHIFT) - 1,
     BRIG_TYPE_PACK_MASK = 3 << BRIG_TYPE_PACK_SHIFT,
@@ -786,7 +804,7 @@ enum BrigTypeX {
     //.dispatch_arg="type" //.dispatch_default="return v.visitNone(type)"
     //.tdname=BrigType
     //.print=$mnemo{ "_$mnemo" }
-    BRIG_TYPE_NONE = 0, //.mnemo=""
+    BRIG_TYPE_NONE = 0, //.mnemo="" //.print=""
     BRIG_TYPE_U8 = 1, //.ctype=uint8_t // unsigned integer 8 bits
     BRIG_TYPE_U16 = 2, //.ctype=uint16_t // unsigned integer 16 bits
     BRIG_TYPE_U32 = 3, //.ctype=uint32_t // unsigned integer 32 bits
@@ -850,6 +868,7 @@ enum BrigVariableModifierMask {
 };
 
 enum BrigWidth { //.tddef=1
+    //.print={ s/^BRIG_WIDTH_//; "_width($_)" }
     BRIG_WIDTH_NONE = 0,
     BRIG_WIDTH_1 = 1,
     BRIG_WIDTH_2 = 2,
@@ -1267,6 +1286,7 @@ enum BrigMemoryFenceSegments { // for internal use only
     //.mnemo={ s/^BRIG_MEMORY_FENCE_SEGMENT_//;lc }
     //.mnemo_token=_EMMemoryFenceSegments
     //.mnemo_context=EInstModifierInstFenceContext
+    //.nollvm
     BRIG_MEMORY_FENCE_SEGMENT_GLOBAL = 0,
     BRIG_MEMORY_FENCE_SEGMENT_GROUP = 1,
     BRIG_MEMORY_FENCE_SEGMENT_IMAGE = 2,

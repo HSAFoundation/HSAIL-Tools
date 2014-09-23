@@ -332,6 +332,19 @@ sub calcAttrs {
 calcAttrs $enums, "entries";
 calcAttrs $structs, "fields";
 
+for my $en (values %$enums) {
+  my @names = map { $_->{name} } @{$en->{entries}};
+  next unless @names;
+  my $cprefix = $names[0];
+  $cprefix =~ s/^(.*_).*/$1/;
+  for my $n (@names) {
+    chop $cprefix while
+        (substr($n,0,length($cprefix)) ne $cprefix
+        or substr($n,length($cprefix)) !~ /^[a-z_]/i);
+  }
+  $en->{cplen} = length($cprefix);
+}
+
 for my $s (@wstructs) {
     my $p = $s;
     my %seen;
@@ -1150,6 +1163,7 @@ sub makeLLVMEnums {
     printf $textLicense . "\n";
 
     for my $en (sort { $a->{name} cmp $b->{name} } values %$enums) {
+      next if $en->{nollvm};
       my $tdtype = $en->{tdtype} // "i32";
       my $tddef = $en->{tddef};
       my $tdname = $en->{tdname} // $en->{name};
@@ -1160,17 +1174,9 @@ sub makeLLVMEnums {
         print "Operand<$tdtype> {\n";
       }
       print "  let PrintMethod = \"print$tdname\";\n";
-      my @names = map { $_->{name} } @{$en->{entries}};
-      next unless @names;
-      my $cprefix = @names[0];
-      $cprefix =~ s/^(.*_).*/$1/;
-      for my $n (@names) {
-        chop $cprefix while
-            (substr($n,0,length($cprefix)) ne $cprefix
-            or substr($n,length($cprefix)) !~ /^[a-z_]/i);
-      }
-      for my $n (@names) {
-        my $nn = substr($n,length($cprefix));
+      for my $i (@{$en->{entries}}) {
+        my $n = $i->{name};
+        my $nn = substr($n, $en->{cplen});
         print "  int $nn = ",gvalue($n),";\n";
       }
       print "}\n\n";
@@ -1179,18 +1185,16 @@ sub makeLLVMEnums {
 
 sub makeLLVMPrinters {
     for my $en (sort { $a->{name} cmp $b->{name} } values %$enums) {
-      next unless $en->{print};
+      next if $en->{nollvm};
       my $tdname = $en->{tdname} // $en->{name};
       print "void HSAILInstPrinter::print$tdname";
       print "(const MCInst *MI, unsigned OpNo, raw_ostream &O) {\n";
       print "  switch(MI->getOperand(OpNo).getImm()) {\n";
       for my $i (@{$en->{entries}}) {
         next if $i->{skip};
-        my $text;
-        if (exists $i->{print}) { $text = $i->{print} ne "" ? "\"$i->{print}\"" : "" }
-        elsif (exists $i->{mnemo}) { $text = $i->{mnemo} ne "" ? "\"_$i->{mnemo}\"" : ""; }
-        if ($text eq "") { next; }
-        print "    case ",$i->{name},": O << $text; break;\n";
+        my $text = $i->{print} // substr($i->{name}, $en->{cplen});
+        next if $text eq "";
+        print "    case ",$i->{name},": O << \"$text\"; break;\n";
       }
       print "  }\n";
       print "}\n\n";
