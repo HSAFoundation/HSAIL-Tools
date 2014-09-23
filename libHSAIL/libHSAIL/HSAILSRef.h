@@ -46,6 +46,7 @@
 #include <cstring>
 #include <vector>
 #include <iosfwd>
+#include <algorithm>
 
 namespace HSAIL_ASM {
 

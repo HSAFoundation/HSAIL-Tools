@@ -34,6 +34,7 @@ CLEAN_BUILD_DIR = rm -rf $(BUILD_DIR)
 WITH_LIBBRIGDWARF=1
 override CXXFLAGS += -fPIC -fno-rtti
 LIBS +=  dl pthread
+LLVMEXTRALIBS := tinfo
 CONFIG := linux
 EXE_SUFFIX :=
 endif
@@ -211,7 +212,7 @@ else
 $(info LLVM_LIBDIR=$(LLVM_LIBDIR))
 LLVM_LIB = $(LLVM_LIBDIR)/$(LIB_PREFIX)LLVMSupport$(LIB_SUFFIX) $(LLVM_LIBDIR)/$(LIB_PREFIX)LLVMObject$(LIB_SUFFIX)
 LIBPATHS += $(LLVM_LIBDIR)
-LIBS := LLVMSupport LLVMObject tinfo $(LIBS)
+LIBS := LLVMSupport LLVMObject $(LLVMEXTRALIBS) $(LIBS)
 endif
 
 LLVM_INCFLAGS ?= -I$(LLVM_SRC)/include -I$(LLVM_BUILD)/include

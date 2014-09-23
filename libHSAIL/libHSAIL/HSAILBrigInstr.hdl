@@ -340,9 +340,6 @@ OperandProp operand =
           tseg),            // 1+2+3+4
                             // 4) opaque symbols used in address must match instruction type
 
-    (roimage, rwimage, woimage).(itype, stype),  //F: should be removed as soon as image support is implemented
-    sampler.samp,                                //F: should be removed as soon as image support is implemented
-
     (imm0T2, imm0T3).u32,
     (reg, vec.2, vec.3, vec.4, imm, cnst).(b1, b32, b64, u32, u64, s32, s64, p2u, dtype, stype, ctype),
     reg.(samp, sig32, sig64, itype);
@@ -355,9 +352,6 @@ Alias imm    = imm.dtype;
 Alias cnst   = cnst.dtype;
 
 Alias vector = vec.(2, 3, 4);
-
-Alias image.itype = (roimage, rwimage, woimage).itype; //F: should be removed as soon as image support is implemented
-Alias image.stype = (roimage, rwimage, woimage).stype; //F: should be removed as soon as image support is implemented
 
 Clone  d0, d1, s0, s1, s2, s3, s4;
 
@@ -1445,8 +1439,8 @@ Req rdimage
     geometry = 1d, 2d, 3d, 1da, 2da, 2ddepth, 2dadepth;
     eqclass  = any;
 
-    s1 = (reg, image).itype;
-    s2 = (reg, sampler).samp;
+    s1 = reg.itype;
+    s2 = reg.samp;
     s4 = null;
 
     { geometry = 1d       ? d0 = vec.4; s3 = reg.ctype   }
@@ -1482,7 +1476,7 @@ Req ld.image
     { geometry = 2dadepth ? d0 = reg;   s2 = vec.3.ctype }
     ;
 
-    s1 = (reg, image).itype;
+    s1 = reg.itype;
     s3 = null;
     s4 = null;
 }
@@ -1499,7 +1493,7 @@ Req st.image
     { geometry = 2dadepth ? s0 = reg;   s2 = vec.3.ctype }
     ;
 
-    s1 = (reg, image).itype;
+    s1 = reg.itype;
     s3 = null;
     s4 = null;
 }
@@ -1524,7 +1518,7 @@ Req queryimage
     ;
 
     d0 = reg;
-    s1 = (reg, image).itype;
+    s1 = reg.itype;
     s2 = null;
     s3 = null;
     s4 = null;
@@ -1536,7 +1530,7 @@ Req querysampler
     sprop = any;
 
     d0 = reg;
-    s1 = (reg, sampler).samp;
+    s1 = reg.samp;
     s2 = null;
     s3 = null;
     s4 = null;
@@ -2213,6 +2207,18 @@ Inst gcnmin3(Basic, gcn.arithmetic, gcn_min_max_med3)
 Inst gcnmed3(Basic, gcn.arithmetic, gcn_min_max_med3)
 Inst gcnmax3(Basic, gcn.arithmetic, gcn_min_max_med3)
 Inst gcnbfm (Basic, gcn.arithmetic, gcn_bfm)
+
+// ============================================================================
+// GCN DIVRELAXED, DIVRELAXEDNARROW
+
+Req gcn_div_relaxed
+{
+    type = f(32);
+    d0.s1.s2;
+}
+
+Inst gcndivrelaxed(Basic, gcn.arithmetic, gcn_div_relaxed)
+Inst gcndivrelaxednarrow(Basic, gcn.arithmetic, gcn_div_relaxed)
 
 // ============================================================================
 // GCN FLDEXP, FREXP_EXP, FREXP_MANT, FREXP_PREOP

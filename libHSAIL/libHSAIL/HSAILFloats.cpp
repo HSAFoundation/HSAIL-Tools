@@ -41,11 +41,12 @@
 #include "HSAILFloats.h"
 #include "HSAILSRef.h"
 #include <strstream>
-#include <iostream>
+#include <iosfwd>
 #include <sstream>
 #include <string>
 #include <iomanip>
 #include <cassert>
+#include <algorithm>
 
 #include <cmath> // for tests
 #ifdef ANDROID
@@ -303,7 +304,7 @@ static f64_t ldexp(f64_t v, int exp)
 }
 
 template <typename Float>
-int testc99()
+int testc99(std::ostream& err)
 {
     typedef IEEE754Traits<Float> Traits;
 
@@ -328,14 +329,14 @@ int testc99()
             Float const res = readC99<Float>(SRef(&r[0],&r[0] + r.length()));
             if (res!=v) {
                 ++errors;
-                std::cerr << "C99 test failed on e=" << e << ", value=" << v.floatValue() << std::endl;
+                err << "C99 test failed on e=" << e << ", value=" << v.floatValue() << std::endl;
             }
         }
     }
     return errors;
 }
 
-int testf16vsf32()
+int testf16vsf32(std::ostream& err)
 {
     typedef IEEE754Traits<f16_t> F16T;
     typedef IEEE754Traits<f32_t> F32T;
@@ -353,19 +354,19 @@ int testf16vsf32()
             f32_t src = ldexp(m[i],e);
             f16_t f16 = f16_t(src);
             float diff = f16.floatValue() - src.floatValue();
-            float treshould = ldexp(1.0f,std::max(e-F16T::mntsWidth,F16T::minExp - F16T::mntsWidth));
+            float treshould = ldexp(1.0f,(std::max)(e-F16T::mntsWidth,F16T::minExp - F16T::mntsWidth));
             if ( fabs(diff) > treshould ) {
                 ++errors;
-                std::cerr << "testf16vsf32 test failed on e=" << e << ", value=" << src.floatValue() << std::endl;
+                err << "testf16vsf32 test failed on e=" << e << ", value=" << src.floatValue() << std::endl;
             }
         }
     }
     return errors;
 }
 
-template int testc99<f64_t>();
-template int testc99<f32_t>();
-template int testc99<f16_t>();
+template int testc99<f64_t>(std::ostream&);
+template int testc99<f32_t>(std::ostream&);
+template int testc99<f16_t>(std::ostream&);
 
 template std::string toC99str(f16_t v);
 template std::string toC99str(f32_t v);
@@ -375,11 +376,11 @@ template f16_t  readC99(const SRef& s);
 template f32_t  readC99(const SRef& s);
 template f64_t  readC99(const SRef& s);
 
-int testFloatRelatedCode() {
-     return testc99<f64_t>()
-     + testc99<f32_t>()
-     + testc99<f16_t>()
-     + testf16vsf32();
+int testFloatRelatedCode(std::ostream& err) {
+     return testc99<f64_t>(err)
+     + testc99<f32_t>(err)
+     + testc99<f16_t>(err)
+     + testf16vsf32(err);
 }
 
 } // end namespace

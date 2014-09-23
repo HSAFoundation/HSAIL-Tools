@@ -115,7 +115,7 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_SCL_SECURE_NO_WARNINGS;_CRT_SECURE_NO_WARNINGS;_CRT_SECURE_NO_DEPRECATE;_CRT_NONSTDC_NO_WARNINGS;_CRT_NONSTDC_NO_DEPRECATE;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
-      <AdditionalIncludeDirectories>$(SolutionDir)build\all$(SUFFIX)\libHSAIL\;$(ProjectDir)..\libHSAIL;$(ProjectDir)..\libHSAIL\generated;$(ProjectDir)..;$(ProjectDir)..\libBRIGdwarf;..\..\llvm\include;..\..\llvm\win32\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)build\all$(SUFFIX)\libHSAIL\;$(ProjectDir)..\libHSAIL;$(ProjectDir)..\libHSAIL\generated;$(ProjectDir)..;$(ProjectDir)..\libBRIGdwarf;..\..\..\..\opencl\compiler\llvm\include;..\..\..\..\opencl\compiler\llvm\win32\include</AdditionalIncludeDirectories>
       <TreatWarningAsError>true</TreatWarningAsError>
       <InlineFunctionExpansion>Default</InlineFunctionExpansion>
     </ClCompile>
@@ -134,7 +134,7 @@
       <Optimization>MaxSpeed</Optimization>
       <PreprocessorDefinitions>WIN32;_SCL_SECURE_NO_WARNINGS;_CRT_SECURE_NO_WARNINGS;_CRT_SECURE_NO_DEPRECATE;_CRT_NONSTDC_NO_WARNINGS;_CRT_NONSTDC_NO_DEPRECATE;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
-      <AdditionalIncludeDirectories>$(SolutionDir)build\all$(SUFFIX)\libHSAIL\;$(ProjectDir)..\libHSAIL;$(ProjectDir)..\libHSAIL\generated;$(ProjectDir)..;$(ProjectDir)..\libBRIGdwarf;..\..\llvm\include;..\..\llvm\win32\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)build\all$(SUFFIX)\libHSAIL\;$(ProjectDir)..\libHSAIL;$(ProjectDir)..\libHSAIL\generated;$(ProjectDir)..;$(ProjectDir)..\libBRIGdwarf;..\..\..\..\opencl\compiler\llvm\include;..\..\..\..\opencl\compiler\llvm\win32\include</AdditionalIncludeDirectories>
       <TreatWarningAsError>true</TreatWarningAsError>
       <InlineFunctionExpansion>Default</InlineFunctionExpansion>
       <BasicRuntimeChecks>Default</BasicRuntimeChecks>
@@ -154,7 +154,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_SCL_SECURE_NO_WARNINGS;_CRT_SECURE_NO_WARNINGS;_CRT_SECURE_NO_DEPRECATE;_CRT_NONSTDC_NO_WARNINGS;_CRT_NONSTDC_NO_DEPRECATE;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(SolutionDir)build\all$(SUFFIX)\libHSAIL\;$(ProjectDir)..\libHSAIL;$(ProjectDir)..\libHSAIL\generated;$(ProjectDir)..;$(ProjectDir)..\libBRIGdwarf;..\..\llvm\include;..\..\llvm\win32\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)build\all$(SUFFIX)\libHSAIL\;$(ProjectDir)..\libHSAIL;$(ProjectDir)..\libHSAIL\generated;$(ProjectDir)..;$(ProjectDir)..\libBRIGdwarf;..\..\..\..\opencl\compiler\llvm\include;..\..\..\..\opencl\compiler\llvm\win32\include</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <TreatWarningAsError>true</TreatWarningAsError>
     </ClCompile>
@@ -172,7 +172,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>MaxSpeed</Optimization>
       <PreprocessorDefinitions>WIN32;_SCL_SECURE_NO_WARNINGS;_CRT_SECURE_NO_WARNINGS;_CRT_SECURE_NO_DEPRECATE;_CRT_NONSTDC_NO_WARNINGS;_CRT_NONSTDC_NO_DEPRECATE;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(SolutionDir)build\all$(SUFFIX)\libHSAIL\;$(ProjectDir)..\libHSAIL;$(ProjectDir)..\libHSAIL\generated;$(ProjectDir)..;$(ProjectDir)..\libBRIGdwarf;..\..\llvm\include;..\..\llvm\win32\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)build\all$(SUFFIX)\libHSAIL\;$(ProjectDir)..\libHSAIL;$(ProjectDir)..\libHSAIL\generated;$(ProjectDir)..;$(ProjectDir)..\libBRIGdwarf;..\..\..\..\opencl\compiler\llvm\include;..\..\..\..\opencl\compiler\llvm\win32\include</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <TreatWarningAsError>true</TreatWarningAsError>
       <BasicRuntimeChecks>Default</BasicRuntimeChecks>
@@ -194,7 +194,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;_SCL_SECURE_NO_WARNINGS;_CRT_SECURE_NO_WARNINGS;_CRT_SECURE_NO_DEPRECATE;_CRT_NONSTDC_NO_WARNINGS;_CRT_NONSTDC_NO_DEPRECATE;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
-      <AdditionalIncludeDirectories>$(SolutionDir)build\all$(SUFFIX)\libHSAIL\;$(ProjectDir)..\libHSAIL;$(ProjectDir)..\libHSAIL\generated;$(ProjectDir)..;$(ProjectDir)..\libBRIGdwarf;..\..\llvm\include;..\..\llvm\win32\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)build\all$(SUFFIX)\libHSAIL\;$(ProjectDir)..\libHSAIL;$(ProjectDir)..\libHSAIL\generated;$(ProjectDir)..;$(ProjectDir)..\libBRIGdwarf;..\..\..\..\opencl\compiler\llvm\include;..\..\..\..\opencl\compiler\llvm\win32\include</AdditionalIncludeDirectories>
       <TreatWarningAsError>true</TreatWarningAsError>
     </ClCompile>
     <Link>
@@ -215,7 +215,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;_SCL_SECURE_NO_WARNINGS;_CRT_SECURE_NO_WARNINGS;_CRT_SECURE_NO_DEPRECATE;_CRT_NONSTDC_NO_WARNINGS;_CRT_NONSTDC_NO_DEPRECATE;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(SolutionDir)build\all$(SUFFIX)\libHSAIL\;$(ProjectDir)..\libHSAIL;$(ProjectDir)..\libHSAIL\generated;$(ProjectDir)..;$(ProjectDir)..\libBRIGdwarf;..\..\llvm\include;..\..\llvm\win32\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)build\all$(SUFFIX)\libHSAIL\;$(ProjectDir)..\libHSAIL;$(ProjectDir)..\libHSAIL\generated;$(ProjectDir)..;$(ProjectDir)..\libBRIGdwarf;..\..\..\..\opencl\compiler\llvm\include;..\..\..\..\opencl\compiler\llvm\win32\include</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <TreatWarningAsError>true</TreatWarningAsError>
     </ClCompile>

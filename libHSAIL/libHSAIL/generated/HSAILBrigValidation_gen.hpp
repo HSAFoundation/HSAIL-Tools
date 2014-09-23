@@ -252,9 +252,9 @@ bool ValidatorImpl::ValidateBrigInstFields(Inst item) const
        {
            InstAddr it = item;
 
-           validate_BrigOpcode(item, it.brig()->opcode, "InstAddr", "opcode");
-           validate_BrigType(item, it.brig()->type, "InstAddr", "type");
-           validate_BrigDataOffsetOperandList(item, it.brig()->operands, "InstAddr", "operands");
+           validate_BrigOpcode(item, it.brig()->base.opcode, "InstAddr", "opcode");
+           validate_BrigType(item, it.brig()->base.type, "InstAddr", "type");
+           validate_BrigDataOffsetOperandList(item, it.brig()->base.operands, "InstAddr", "operands");
            validate_BrigSegment(item, it.brig()->segment, "InstAddr", "segment");
            for (unsigned i = 0; i < 3; i++) {
                validate_fld_Reserved(item, it.brig()->reserved[i], "InstAddr", "reserved");
@@ -266,9 +266,9 @@ bool ValidatorImpl::ValidateBrigInstFields(Inst item) const
        {
            InstAtomic it = item;
 
-           validate_BrigOpcode(item, it.brig()->opcode, "InstAtomic", "opcode");
-           validate_BrigType(item, it.brig()->type, "InstAtomic", "type");
-           validate_BrigDataOffsetOperandList(item, it.brig()->operands, "InstAtomic", "operands");
+           validate_BrigOpcode(item, it.brig()->base.opcode, "InstAtomic", "opcode");
+           validate_BrigType(item, it.brig()->base.type, "InstAtomic", "type");
+           validate_BrigDataOffsetOperandList(item, it.brig()->base.operands, "InstAtomic", "operands");
            validate_BrigSegment(item, it.brig()->segment, "InstAtomic", "segment");
            validate_BrigMemoryOrder(item, it.brig()->memoryOrder, "InstAtomic", "memoryOrder");
            validate_BrigMemoryScope(item, it.brig()->memoryScope, "InstAtomic", "memoryScope");
@@ -284,9 +284,9 @@ bool ValidatorImpl::ValidateBrigInstFields(Inst item) const
        {
            InstBasic it = item;
 
-           validate_BrigOpcode(item, it.brig()->opcode, "InstBasic", "opcode");
-           validate_BrigType(item, it.brig()->type, "InstBasic", "type");
-           validate_BrigDataOffsetOperandList(item, it.brig()->operands, "InstBasic", "operands");
+           validate_BrigOpcode(item, it.brig()->base.opcode, "InstBasic", "opcode");
+           validate_BrigType(item, it.brig()->base.type, "InstBasic", "type");
+           validate_BrigDataOffsetOperandList(item, it.brig()->base.operands, "InstBasic", "operands");
        }
        break;
 
@@ -294,9 +294,9 @@ bool ValidatorImpl::ValidateBrigInstFields(Inst item) const
        {
            InstBr it = item;
 
-           validate_BrigOpcode(item, it.brig()->opcode, "InstBr", "opcode");
-           validate_BrigType(item, it.brig()->type, "InstBr", "type");
-           validate_BrigDataOffsetOperandList(item, it.brig()->operands, "InstBr", "operands");
+           validate_BrigOpcode(item, it.brig()->base.opcode, "InstBr", "opcode");
+           validate_BrigType(item, it.brig()->base.type, "InstBr", "type");
+           validate_BrigDataOffsetOperandList(item, it.brig()->base.operands, "InstBr", "operands");
            validate_BrigWidth(item, it.brig()->width, "InstBr", "width");
            for (unsigned i = 0; i < 3; i++) {
                validate_fld_Reserved(item, it.brig()->reserved[i], "InstBr", "reserved");
@@ -308,9 +308,9 @@ bool ValidatorImpl::ValidateBrigInstFields(Inst item) const
        {
            InstCmp it = item;
 
-           validate_BrigOpcode(item, it.brig()->opcode, "InstCmp", "opcode");
-           validate_BrigType(item, it.brig()->type, "InstCmp", "type");
-           validate_BrigDataOffsetOperandList(item, it.brig()->operands, "InstCmp", "operands");
+           validate_BrigOpcode(item, it.brig()->base.opcode, "InstCmp", "opcode");
+           validate_BrigType(item, it.brig()->base.type, "InstCmp", "type");
+           validate_BrigDataOffsetOperandList(item, it.brig()->base.operands, "InstCmp", "operands");
            validate_BrigType(item, it.brig()->sourceType, "InstCmp", "sourceType");
            validate_BrigAluModifier(item, it.brig()->modifier, "InstCmp", "modifier");
            validate_BrigCompareOperation(item, it.brig()->compare, "InstCmp", "compare");
@@ -323,9 +323,9 @@ bool ValidatorImpl::ValidateBrigInstFields(Inst item) const
        {
            InstCvt it = item;
 
-           validate_BrigOpcode(item, it.brig()->opcode, "InstCvt", "opcode");
-           validate_BrigType(item, it.brig()->type, "InstCvt", "type");
-           validate_BrigDataOffsetOperandList(item, it.brig()->operands, "InstCvt", "operands");
+           validate_BrigOpcode(item, it.brig()->base.opcode, "InstCvt", "opcode");
+           validate_BrigType(item, it.brig()->base.type, "InstCvt", "type");
+           validate_BrigDataOffsetOperandList(item, it.brig()->base.operands, "InstCvt", "operands");
            validate_BrigType(item, it.brig()->sourceType, "InstCvt", "sourceType");
            validate_BrigAluModifier(item, it.brig()->modifier, "InstCvt", "modifier");
        }
@@ -335,9 +335,9 @@ bool ValidatorImpl::ValidateBrigInstFields(Inst item) const
        {
            InstImage it = item;
 
-           validate_BrigOpcode(item, it.brig()->opcode, "InstImage", "opcode");
-           validate_BrigType(item, it.brig()->type, "InstImage", "type");
-           validate_BrigDataOffsetOperandList(item, it.brig()->operands, "InstImage", "operands");
+           validate_BrigOpcode(item, it.brig()->base.opcode, "InstImage", "opcode");
+           validate_BrigType(item, it.brig()->base.type, "InstImage", "type");
+           validate_BrigDataOffsetOperandList(item, it.brig()->base.operands, "InstImage", "operands");
            validate_BrigType(item, it.brig()->imageType, "InstImage", "imageType");
            validate_BrigType(item, it.brig()->coordType, "InstImage", "coordType");
            validate_BrigImageGeometry(item, it.brig()->geometry, "InstImage", "geometry");
@@ -350,9 +350,9 @@ bool ValidatorImpl::ValidateBrigInstFields(Inst item) const
        {
            InstLane it = item;
 
-           validate_BrigOpcode(item, it.brig()->opcode, "InstLane", "opcode");
-           validate_BrigType(item, it.brig()->type, "InstLane", "type");
-           validate_BrigDataOffsetOperandList(item, it.brig()->operands, "InstLane", "operands");
+           validate_BrigOpcode(item, it.brig()->base.opcode, "InstLane", "opcode");
+           validate_BrigType(item, it.brig()->base.type, "InstLane", "type");
+           validate_BrigDataOffsetOperandList(item, it.brig()->base.operands, "InstLane", "operands");
            validate_BrigType(item, it.brig()->sourceType, "InstLane", "sourceType");
            validate_BrigWidth(item, it.brig()->width, "InstLane", "width");
            validate_fld_Reserved(item, it.brig()->reserved, "InstLane", "reserved");
@@ -363,9 +363,9 @@ bool ValidatorImpl::ValidateBrigInstFields(Inst item) const
        {
            InstMem it = item;
 
-           validate_BrigOpcode(item, it.brig()->opcode, "InstMem", "opcode");
-           validate_BrigType(item, it.brig()->type, "InstMem", "type");
-           validate_BrigDataOffsetOperandList(item, it.brig()->operands, "InstMem", "operands");
+           validate_BrigOpcode(item, it.brig()->base.opcode, "InstMem", "opcode");
+           validate_BrigType(item, it.brig()->base.type, "InstMem", "type");
+           validate_BrigDataOffsetOperandList(item, it.brig()->base.operands, "InstMem", "operands");
            validate_BrigSegment(item, it.brig()->segment, "InstMem", "segment");
            validate_BrigAlignment(item, it.brig()->align, "InstMem", "align");
            validate_fld_EquivClass(item, it.brig()->equivClass, "InstMem", "equivClass");
@@ -381,9 +381,9 @@ bool ValidatorImpl::ValidateBrigInstFields(Inst item) const
        {
            InstMemFence it = item;
 
-           validate_BrigOpcode(item, it.brig()->opcode, "InstMemFence", "opcode");
-           validate_BrigType(item, it.brig()->type, "InstMemFence", "type");
-           validate_BrigDataOffsetOperandList(item, it.brig()->operands, "InstMemFence", "operands");
+           validate_BrigOpcode(item, it.brig()->base.opcode, "InstMemFence", "opcode");
+           validate_BrigType(item, it.brig()->base.type, "InstMemFence", "type");
+           validate_BrigDataOffsetOperandList(item, it.brig()->base.operands, "InstMemFence", "operands");
            validate_BrigMemoryOrder(item, it.brig()->memoryOrder, "InstMemFence", "memoryOrder");
            validate_BrigMemoryScope(item, it.brig()->globalSegmentMemoryScope, "InstMemFence", "globalSegmentMemoryScope");
            validate_BrigMemoryScope(item, it.brig()->groupSegmentMemoryScope, "InstMemFence", "groupSegmentMemoryScope");
@@ -395,9 +395,9 @@ bool ValidatorImpl::ValidateBrigInstFields(Inst item) const
        {
            InstMod it = item;
 
-           validate_BrigOpcode(item, it.brig()->opcode, "InstMod", "opcode");
-           validate_BrigType(item, it.brig()->type, "InstMod", "type");
-           validate_BrigDataOffsetOperandList(item, it.brig()->operands, "InstMod", "operands");
+           validate_BrigOpcode(item, it.brig()->base.opcode, "InstMod", "opcode");
+           validate_BrigType(item, it.brig()->base.type, "InstMod", "type");
+           validate_BrigDataOffsetOperandList(item, it.brig()->base.operands, "InstMod", "operands");
            validate_BrigAluModifier(item, it.brig()->modifier, "InstMod", "modifier");
            validate_BrigPack(item, it.brig()->pack, "InstMod", "pack");
            validate_fld_Reserved(item, it.brig()->reserved, "InstMod", "reserved");
@@ -408,9 +408,9 @@ bool ValidatorImpl::ValidateBrigInstFields(Inst item) const
        {
            InstQueryImage it = item;
 
-           validate_BrigOpcode(item, it.brig()->opcode, "InstQueryImage", "opcode");
-           validate_BrigType(item, it.brig()->type, "InstQueryImage", "type");
-           validate_BrigDataOffsetOperandList(item, it.brig()->operands, "InstQueryImage", "operands");
+           validate_BrigOpcode(item, it.brig()->base.opcode, "InstQueryImage", "opcode");
+           validate_BrigType(item, it.brig()->base.type, "InstQueryImage", "type");
+           validate_BrigDataOffsetOperandList(item, it.brig()->base.operands, "InstQueryImage", "operands");
            validate_BrigType(item, it.brig()->imageType, "InstQueryImage", "imageType");
            validate_BrigImageGeometry(item, it.brig()->geometry, "InstQueryImage", "geometry");
            validate_BrigImageQuery(item, it.brig()->imageQuery, "InstQueryImage", "imageQuery");
@@ -421,9 +421,9 @@ bool ValidatorImpl::ValidateBrigInstFields(Inst item) const
        {
            InstQuerySampler it = item;
 
-           validate_BrigOpcode(item, it.brig()->opcode, "InstQuerySampler", "opcode");
-           validate_BrigType(item, it.brig()->type, "InstQuerySampler", "type");
-           validate_BrigDataOffsetOperandList(item, it.brig()->operands, "InstQuerySampler", "operands");
+           validate_BrigOpcode(item, it.brig()->base.opcode, "InstQuerySampler", "opcode");
+           validate_BrigType(item, it.brig()->base.type, "InstQuerySampler", "type");
+           validate_BrigDataOffsetOperandList(item, it.brig()->base.operands, "InstQuerySampler", "operands");
            validate_BrigSamplerQuery(item, it.brig()->samplerQuery, "InstQuerySampler", "samplerQuery");
            for (unsigned i = 0; i < 3; i++) {
                validate_fld_Reserved(item, it.brig()->reserved[i], "InstQuerySampler", "reserved");
@@ -435,9 +435,9 @@ bool ValidatorImpl::ValidateBrigInstFields(Inst item) const
        {
            InstQueue it = item;
 
-           validate_BrigOpcode(item, it.brig()->opcode, "InstQueue", "opcode");
-           validate_BrigType(item, it.brig()->type, "InstQueue", "type");
-           validate_BrigDataOffsetOperandList(item, it.brig()->operands, "InstQueue", "operands");
+           validate_BrigOpcode(item, it.brig()->base.opcode, "InstQueue", "opcode");
+           validate_BrigType(item, it.brig()->base.type, "InstQueue", "type");
+           validate_BrigDataOffsetOperandList(item, it.brig()->base.operands, "InstQueue", "operands");
            validate_BrigSegment(item, it.brig()->segment, "InstQueue", "segment");
            validate_BrigMemoryOrder(item, it.brig()->memoryOrder, "InstQueue", "memoryOrder");
            validate_fld_Reserved(item, it.brig()->reserved, "InstQueue", "reserved");
@@ -448,9 +448,9 @@ bool ValidatorImpl::ValidateBrigInstFields(Inst item) const
        {
            InstSeg it = item;
 
-           validate_BrigOpcode(item, it.brig()->opcode, "InstSeg", "opcode");
-           validate_BrigType(item, it.brig()->type, "InstSeg", "type");
-           validate_BrigDataOffsetOperandList(item, it.brig()->operands, "InstSeg", "operands");
+           validate_BrigOpcode(item, it.brig()->base.opcode, "InstSeg", "opcode");
+           validate_BrigType(item, it.brig()->base.type, "InstSeg", "type");
+           validate_BrigDataOffsetOperandList(item, it.brig()->base.operands, "InstSeg", "operands");
            validate_BrigSegment(item, it.brig()->segment, "InstSeg", "segment");
            for (unsigned i = 0; i < 3; i++) {
                validate_fld_Reserved(item, it.brig()->reserved[i], "InstSeg", "reserved");
@@ -462,9 +462,9 @@ bool ValidatorImpl::ValidateBrigInstFields(Inst item) const
        {
            InstSegCvt it = item;
 
-           validate_BrigOpcode(item, it.brig()->opcode, "InstSegCvt", "opcode");
-           validate_BrigType(item, it.brig()->type, "InstSegCvt", "type");
-           validate_BrigDataOffsetOperandList(item, it.brig()->operands, "InstSegCvt", "operands");
+           validate_BrigOpcode(item, it.brig()->base.opcode, "InstSegCvt", "opcode");
+           validate_BrigType(item, it.brig()->base.type, "InstSegCvt", "type");
+           validate_BrigDataOffsetOperandList(item, it.brig()->base.operands, "InstSegCvt", "operands");
            validate_BrigType(item, it.brig()->sourceType, "InstSegCvt", "sourceType");
            validate_BrigSegment(item, it.brig()->segment, "InstSegCvt", "segment");
            validate_BrigSegCvtModifier(item, it.brig()->modifier, "InstSegCvt", "modifier");
@@ -475,9 +475,9 @@ bool ValidatorImpl::ValidateBrigInstFields(Inst item) const
        {
            InstSignal it = item;
 
-           validate_BrigOpcode(item, it.brig()->opcode, "InstSignal", "opcode");
-           validate_BrigType(item, it.brig()->type, "InstSignal", "type");
-           validate_BrigDataOffsetOperandList(item, it.brig()->operands, "InstSignal", "operands");
+           validate_BrigOpcode(item, it.brig()->base.opcode, "InstSignal", "opcode");
+           validate_BrigType(item, it.brig()->base.type, "InstSignal", "type");
+           validate_BrigDataOffsetOperandList(item, it.brig()->base.operands, "InstSignal", "operands");
            validate_BrigType(item, it.brig()->signalType, "InstSignal", "signalType");
            validate_BrigMemoryOrder(item, it.brig()->memoryOrder, "InstSignal", "memoryOrder");
            validate_BrigAtomicOperation(item, it.brig()->signalOperation, "InstSignal", "signalOperation");
@@ -488,9 +488,9 @@ bool ValidatorImpl::ValidateBrigInstFields(Inst item) const
        {
            InstSourceType it = item;
 
-           validate_BrigOpcode(item, it.brig()->opcode, "InstSourceType", "opcode");
-           validate_BrigType(item, it.brig()->type, "InstSourceType", "type");
-           validate_BrigDataOffsetOperandList(item, it.brig()->operands, "InstSourceType", "operands");
+           validate_BrigOpcode(item, it.brig()->base.opcode, "InstSourceType", "opcode");
+           validate_BrigType(item, it.brig()->base.type, "InstSourceType", "type");
+           validate_BrigDataOffsetOperandList(item, it.brig()->base.operands, "InstSourceType", "operands");
            validate_BrigType(item, it.brig()->sourceType, "InstSourceType", "sourceType");
            validate_fld_Reserved(item, it.brig()->reserved, "InstSourceType", "reserved");
        }

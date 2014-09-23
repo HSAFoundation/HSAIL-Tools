@@ -229,6 +229,30 @@ const char* imageChannelType2str(unsigned arg) {
     }
 }
 
+bool isBrigGeometryDepth(unsigned geo) {
+  using namespace Brig;
+  switch( geo ) {
+    case BRIG_GEOMETRY_2DADEPTH         : return true;
+    case BRIG_GEOMETRY_2DDEPTH          : return true;
+    default : return false;
+    }
+}
+
+unsigned getBrigGeometryDim(unsigned geo) {
+  using namespace Brig;
+  switch( geo ) {
+    case BRIG_GEOMETRY_1D               : return 1;
+    case BRIG_GEOMETRY_1DA              : return 2;
+    case BRIG_GEOMETRY_1DB              : return 1;
+    case BRIG_GEOMETRY_2D               : return 2;
+    case BRIG_GEOMETRY_2DA              : return 3;
+    case BRIG_GEOMETRY_2DADEPTH         : return 3;
+    case BRIG_GEOMETRY_2DDEPTH          : return 2;
+    case BRIG_GEOMETRY_3D               : return 3;
+    default : assert(0); return 0;
+    }
+}
+
 const char* imageGeometry2str(unsigned arg) {
   using namespace Brig;
   switch( arg ) {
@@ -255,6 +279,106 @@ const char* imageQuery2str(unsigned arg) {
     case BRIG_IMAGE_QUERY_HEIGHT        : return "height";
     case BRIG_IMAGE_QUERY_WIDTH         : return "width";
     default : return NULL;
+    }
+}
+
+bool isBodyOnly(Directive d) {
+  using namespace Brig;
+  switch( d.kind() ) {
+    case BRIG_KIND_DIRECTIVE_ARG_BLOCK_END : return true;
+    case BRIG_KIND_DIRECTIVE_ARG_BLOCK_START : return true;
+    case BRIG_KIND_DIRECTIVE_COMMENT    : return false;
+    case BRIG_KIND_DIRECTIVE_CONTROL    : return true;
+    case BRIG_KIND_DIRECTIVE_EXTENSION  : return false;
+    case BRIG_KIND_DIRECTIVE_FBARRIER   : return false;
+    case BRIG_KIND_DIRECTIVE_FUNCTION   : return false;
+    case BRIG_KIND_DIRECTIVE_INDIRECT_FUNCTION : return false;
+    case BRIG_KIND_DIRECTIVE_KERNEL     : return false;
+    case BRIG_KIND_DIRECTIVE_LABEL      : return true;
+    case BRIG_KIND_DIRECTIVE_LOC        : return false;
+    case BRIG_KIND_DIRECTIVE_PRAGMA     : return false;
+    case BRIG_KIND_DIRECTIVE_SIGNATURE  : return false;
+    case BRIG_KIND_DIRECTIVE_VARIABLE   : return false;
+    case BRIG_KIND_DIRECTIVE_VERSION    : return false;
+    case BRIG_KIND_INST_ADDR            : return false;
+    case BRIG_KIND_INST_ATOMIC          : return false;
+    case BRIG_KIND_INST_BASIC           : return false;
+    case BRIG_KIND_INST_BR              : return false;
+    case BRIG_KIND_INST_CMP             : return false;
+    case BRIG_KIND_INST_CVT             : return false;
+    case BRIG_KIND_INST_IMAGE           : return false;
+    case BRIG_KIND_INST_LANE            : return false;
+    case BRIG_KIND_INST_MEM             : return false;
+    case BRIG_KIND_INST_MEM_FENCE       : return false;
+    case BRIG_KIND_INST_MOD             : return false;
+    case BRIG_KIND_INST_QUERY_IMAGE     : return false;
+    case BRIG_KIND_INST_QUERY_SAMPLER   : return false;
+    case BRIG_KIND_INST_QUEUE           : return false;
+    case BRIG_KIND_INST_SEG             : return false;
+    case BRIG_KIND_INST_SEG_CVT         : return false;
+    case BRIG_KIND_INST_SIGNAL          : return false;
+    case BRIG_KIND_INST_SOURCE_TYPE     : return false;
+    case BRIG_KIND_OPERAND_ADDRESS      : return false;
+    case BRIG_KIND_OPERAND_CODE_LIST    : return false;
+    case BRIG_KIND_OPERAND_CODE_REF     : return false;
+    case BRIG_KIND_OPERAND_DATA         : return false;
+    case BRIG_KIND_OPERAND_IMAGE_PROPERTIES : return false;
+    case BRIG_KIND_OPERAND_OPERAND_LIST : return false;
+    case BRIG_KIND_OPERAND_REG          : return false;
+    case BRIG_KIND_OPERAND_SAMPLER_PROPERTIES : return false;
+    case BRIG_KIND_OPERAND_STRING       : return false;
+    case BRIG_KIND_OPERAND_WAVESIZE     : return false;
+    default : assert(false); return false;
+    }
+}
+
+bool isToplevelOnly(Directive d) {
+  using namespace Brig;
+  switch( d.kind() ) {
+    case BRIG_KIND_DIRECTIVE_ARG_BLOCK_END : return false;
+    case BRIG_KIND_DIRECTIVE_ARG_BLOCK_START : return false;
+    case BRIG_KIND_DIRECTIVE_COMMENT    : return false;
+    case BRIG_KIND_DIRECTIVE_CONTROL    : return false;
+    case BRIG_KIND_DIRECTIVE_EXTENSION  : return true;
+    case BRIG_KIND_DIRECTIVE_FBARRIER   : return false;
+    case BRIG_KIND_DIRECTIVE_FUNCTION   : return true;
+    case BRIG_KIND_DIRECTIVE_INDIRECT_FUNCTION : return true;
+    case BRIG_KIND_DIRECTIVE_KERNEL     : return true;
+    case BRIG_KIND_DIRECTIVE_LABEL      : return false;
+    case BRIG_KIND_DIRECTIVE_LOC        : return false;
+    case BRIG_KIND_DIRECTIVE_PRAGMA     : return false;
+    case BRIG_KIND_DIRECTIVE_SIGNATURE  : return true;
+    case BRIG_KIND_DIRECTIVE_VARIABLE   : return false;
+    case BRIG_KIND_DIRECTIVE_VERSION    : return true;
+    case BRIG_KIND_INST_ADDR            : return false;
+    case BRIG_KIND_INST_ATOMIC          : return false;
+    case BRIG_KIND_INST_BASIC           : return false;
+    case BRIG_KIND_INST_BR              : return false;
+    case BRIG_KIND_INST_CMP             : return false;
+    case BRIG_KIND_INST_CVT             : return false;
+    case BRIG_KIND_INST_IMAGE           : return false;
+    case BRIG_KIND_INST_LANE            : return false;
+    case BRIG_KIND_INST_MEM             : return false;
+    case BRIG_KIND_INST_MEM_FENCE       : return false;
+    case BRIG_KIND_INST_MOD             : return false;
+    case BRIG_KIND_INST_QUERY_IMAGE     : return false;
+    case BRIG_KIND_INST_QUERY_SAMPLER   : return false;
+    case BRIG_KIND_INST_QUEUE           : return false;
+    case BRIG_KIND_INST_SEG             : return false;
+    case BRIG_KIND_INST_SEG_CVT         : return false;
+    case BRIG_KIND_INST_SIGNAL          : return false;
+    case BRIG_KIND_INST_SOURCE_TYPE     : return false;
+    case BRIG_KIND_OPERAND_ADDRESS      : return false;
+    case BRIG_KIND_OPERAND_CODE_LIST    : return false;
+    case BRIG_KIND_OPERAND_CODE_REF     : return false;
+    case BRIG_KIND_OPERAND_DATA         : return false;
+    case BRIG_KIND_OPERAND_IMAGE_PROPERTIES : return false;
+    case BRIG_KIND_OPERAND_OPERAND_LIST : return false;
+    case BRIG_KIND_OPERAND_REG          : return false;
+    case BRIG_KIND_OPERAND_SAMPLER_PROPERTIES : return false;
+    case BRIG_KIND_OPERAND_STRING       : return false;
+    case BRIG_KIND_OPERAND_WAVESIZE     : return false;
+    default : assert(false); return false;
     }
 }
 
@@ -317,13 +441,13 @@ int size_of_brig_record(unsigned arg) {
     case BRIG_KIND_DIRECTIVE_CONTROL    : return sizeof(BrigDirectiveControl);
     case BRIG_KIND_DIRECTIVE_EXTENSION  : return sizeof(BrigDirectiveExtension);
     case BRIG_KIND_DIRECTIVE_FBARRIER   : return sizeof(BrigDirectiveFbarrier);
-    case BRIG_KIND_DIRECTIVE_FUNCTION   : return sizeof(BrigDirectiveFunction);
-    case BRIG_KIND_DIRECTIVE_INDIRECT_FUNCTION : return sizeof(BrigDirectiveIndirectFunction);
-    case BRIG_KIND_DIRECTIVE_KERNEL     : return sizeof(BrigDirectiveKernel);
+    case BRIG_KIND_DIRECTIVE_FUNCTION   : return sizeof(BrigDirectiveExecutable);
+    case BRIG_KIND_DIRECTIVE_INDIRECT_FUNCTION : return sizeof(BrigDirectiveExecutable);
+    case BRIG_KIND_DIRECTIVE_KERNEL     : return sizeof(BrigDirectiveExecutable);
     case BRIG_KIND_DIRECTIVE_LABEL      : return sizeof(BrigDirectiveLabel);
     case BRIG_KIND_DIRECTIVE_LOC        : return sizeof(BrigDirectiveLoc);
     case BRIG_KIND_DIRECTIVE_PRAGMA     : return sizeof(BrigDirectivePragma);
-    case BRIG_KIND_DIRECTIVE_SIGNATURE  : return sizeof(BrigDirectiveSignature);
+    case BRIG_KIND_DIRECTIVE_SIGNATURE  : return sizeof(BrigDirectiveExecutable);
     case BRIG_KIND_DIRECTIVE_VARIABLE   : return sizeof(BrigDirectiveVariable);
     case BRIG_KIND_DIRECTIVE_VERSION    : return sizeof(BrigDirectiveVersion);
     case BRIG_KIND_INST_ADDR            : return sizeof(BrigInstAddr);
@@ -355,106 +479,6 @@ int size_of_brig_record(unsigned arg) {
     case BRIG_KIND_OPERAND_STRING       : return sizeof(BrigOperandString);
     case BRIG_KIND_OPERAND_WAVESIZE     : return sizeof(BrigOperandWavesize);
     default : return -1;
-    }
-}
-
-bool isToplevelOnly(Directive d) {
-  using namespace Brig;
-  switch( d.brig()->kind ) {
-    case BRIG_KIND_DIRECTIVE_ARG_BLOCK_END : return false;
-    case BRIG_KIND_DIRECTIVE_ARG_BLOCK_START : return false;
-    case BRIG_KIND_DIRECTIVE_COMMENT    : return false;
-    case BRIG_KIND_DIRECTIVE_CONTROL    : return false;
-    case BRIG_KIND_DIRECTIVE_EXTENSION  : return true;
-    case BRIG_KIND_DIRECTIVE_FBARRIER   : return false;
-    case BRIG_KIND_DIRECTIVE_FUNCTION   : return true;
-    case BRIG_KIND_DIRECTIVE_INDIRECT_FUNCTION : return true;
-    case BRIG_KIND_DIRECTIVE_KERNEL     : return true;
-    case BRIG_KIND_DIRECTIVE_LABEL      : return false;
-    case BRIG_KIND_DIRECTIVE_LOC        : return false;
-    case BRIG_KIND_DIRECTIVE_PRAGMA     : return false;
-    case BRIG_KIND_DIRECTIVE_SIGNATURE  : return true;
-    case BRIG_KIND_DIRECTIVE_VARIABLE   : return false;
-    case BRIG_KIND_DIRECTIVE_VERSION    : return true;
-    case BRIG_KIND_INST_ADDR            : return false;
-    case BRIG_KIND_INST_ATOMIC          : return false;
-    case BRIG_KIND_INST_BASIC           : return false;
-    case BRIG_KIND_INST_BR              : return false;
-    case BRIG_KIND_INST_CMP             : return false;
-    case BRIG_KIND_INST_CVT             : return false;
-    case BRIG_KIND_INST_IMAGE           : return false;
-    case BRIG_KIND_INST_LANE            : return false;
-    case BRIG_KIND_INST_MEM             : return false;
-    case BRIG_KIND_INST_MEM_FENCE       : return false;
-    case BRIG_KIND_INST_MOD             : return false;
-    case BRIG_KIND_INST_QUERY_IMAGE     : return false;
-    case BRIG_KIND_INST_QUERY_SAMPLER   : return false;
-    case BRIG_KIND_INST_QUEUE           : return false;
-    case BRIG_KIND_INST_SEG             : return false;
-    case BRIG_KIND_INST_SEG_CVT         : return false;
-    case BRIG_KIND_INST_SIGNAL          : return false;
-    case BRIG_KIND_INST_SOURCE_TYPE     : return false;
-    case BRIG_KIND_OPERAND_ADDRESS      : return false;
-    case BRIG_KIND_OPERAND_CODE_LIST    : return false;
-    case BRIG_KIND_OPERAND_CODE_REF     : return false;
-    case BRIG_KIND_OPERAND_DATA         : return false;
-    case BRIG_KIND_OPERAND_IMAGE_PROPERTIES : return false;
-    case BRIG_KIND_OPERAND_OPERAND_LIST : return false;
-    case BRIG_KIND_OPERAND_REG          : return false;
-    case BRIG_KIND_OPERAND_SAMPLER_PROPERTIES : return false;
-    case BRIG_KIND_OPERAND_STRING       : return false;
-    case BRIG_KIND_OPERAND_WAVESIZE     : return false;
-    default : assert(false); return false;
-    }
-}
-
-bool isBodyOnly(Directive d) {
-  using namespace Brig;
-  switch( d.brig()->kind ) {
-    case BRIG_KIND_DIRECTIVE_ARG_BLOCK_END : return true;
-    case BRIG_KIND_DIRECTIVE_ARG_BLOCK_START : return true;
-    case BRIG_KIND_DIRECTIVE_COMMENT    : return false;
-    case BRIG_KIND_DIRECTIVE_CONTROL    : return true;
-    case BRIG_KIND_DIRECTIVE_EXTENSION  : return false;
-    case BRIG_KIND_DIRECTIVE_FBARRIER   : return false;
-    case BRIG_KIND_DIRECTIVE_FUNCTION   : return false;
-    case BRIG_KIND_DIRECTIVE_INDIRECT_FUNCTION : return false;
-    case BRIG_KIND_DIRECTIVE_KERNEL     : return false;
-    case BRIG_KIND_DIRECTIVE_LABEL      : return true;
-    case BRIG_KIND_DIRECTIVE_LOC        : return false;
-    case BRIG_KIND_DIRECTIVE_PRAGMA     : return false;
-    case BRIG_KIND_DIRECTIVE_SIGNATURE  : return false;
-    case BRIG_KIND_DIRECTIVE_VARIABLE   : return false;
-    case BRIG_KIND_DIRECTIVE_VERSION    : return false;
-    case BRIG_KIND_INST_ADDR            : return false;
-    case BRIG_KIND_INST_ATOMIC          : return false;
-    case BRIG_KIND_INST_BASIC           : return false;
-    case BRIG_KIND_INST_BR              : return false;
-    case BRIG_KIND_INST_CMP             : return false;
-    case BRIG_KIND_INST_CVT             : return false;
-    case BRIG_KIND_INST_IMAGE           : return false;
-    case BRIG_KIND_INST_LANE            : return false;
-    case BRIG_KIND_INST_MEM             : return false;
-    case BRIG_KIND_INST_MEM_FENCE       : return false;
-    case BRIG_KIND_INST_MOD             : return false;
-    case BRIG_KIND_INST_QUERY_IMAGE     : return false;
-    case BRIG_KIND_INST_QUERY_SAMPLER   : return false;
-    case BRIG_KIND_INST_QUEUE           : return false;
-    case BRIG_KIND_INST_SEG             : return false;
-    case BRIG_KIND_INST_SEG_CVT         : return false;
-    case BRIG_KIND_INST_SIGNAL          : return false;
-    case BRIG_KIND_INST_SOURCE_TYPE     : return false;
-    case BRIG_KIND_OPERAND_ADDRESS      : return false;
-    case BRIG_KIND_OPERAND_CODE_LIST    : return false;
-    case BRIG_KIND_OPERAND_CODE_REF     : return false;
-    case BRIG_KIND_OPERAND_DATA         : return false;
-    case BRIG_KIND_OPERAND_IMAGE_PROPERTIES : return false;
-    case BRIG_KIND_OPERAND_OPERAND_LIST : return false;
-    case BRIG_KIND_OPERAND_REG          : return false;
-    case BRIG_KIND_OPERAND_SAMPLER_PROPERTIES : return false;
-    case BRIG_KIND_OPERAND_STRING       : return false;
-    case BRIG_KIND_OPERAND_WAVESIZE     : return false;
-    default : assert(false); return false;
     }
 }
 
@@ -527,6 +551,29 @@ const char* memoryScope22str(unsigned arg) {
     }
 }
 
+bool instHasType(Brig::BrigOpcode16_t arg) {
+  using namespace Brig;
+  switch( arg ) {
+    case BRIG_OPCODE_ARRIVEFBAR         : return false;
+    case BRIG_OPCODE_BARRIER            : return false;
+    case BRIG_OPCODE_BR                 : return false;
+    case BRIG_OPCODE_CALL               : return false;
+    case BRIG_OPCODE_GCNMADS            : return false;
+    case BRIG_OPCODE_GCNMADU            : return false;
+    case BRIG_OPCODE_GCNMQSAD4          : return false;
+    case BRIG_OPCODE_GCNREGIONALLOC     : return false;
+    case BRIG_OPCODE_INITFBAR           : return false;
+    case BRIG_OPCODE_JOINFBAR           : return false;
+    case BRIG_OPCODE_LEAVEFBAR          : return false;
+    case BRIG_OPCODE_NOP                : return false;
+    case BRIG_OPCODE_RELEASEFBAR        : return false;
+    case BRIG_OPCODE_RET                : return false;
+    case BRIG_OPCODE_WAITFBAR           : return false;
+    case BRIG_OPCODE_WAVEBARRIER        : return false;
+    default : return true;
+    }
+}
+
 const char* opcode2str(unsigned arg) {
   using namespace Brig;
   switch( arg ) {
@@ -585,6 +632,8 @@ const char* opcode2str(unsigned arg) {
     case BRIG_OPCODE_GCNB4XCHG          : return "gcn_b4xchg";
     case BRIG_OPCODE_GCNBFM             : return "gcn_bfm";
     case BRIG_OPCODE_GCNCONSUME         : return "gcn_atomic_consume";
+    case BRIG_OPCODE_GCNDIVRELAXED      : return "gcn_divrelaxed";
+    case BRIG_OPCODE_GCNDIVRELAXEDNARROW : return "gcn_divrelaxednarrow";
     case BRIG_OPCODE_GCNFLDEXP          : return "gcn_fldexp";
     case BRIG_OPCODE_GCNFREXP_EXP       : return "gcn_frexp_exp";
     case BRIG_OPCODE_GCNFREXP_MANT      : return "gcn_frexp_mant";
@@ -704,29 +753,6 @@ const char* opcode2str(unsigned arg) {
     }
 }
 
-bool instHasType(Brig::BrigOpcode16_t arg) {
-  using namespace Brig;
-  switch( arg ) {
-    case BRIG_OPCODE_ARRIVEFBAR         : return false;
-    case BRIG_OPCODE_BARRIER            : return false;
-    case BRIG_OPCODE_BR                 : return false;
-    case BRIG_OPCODE_CALL               : return false;
-    case BRIG_OPCODE_GCNMADS            : return false;
-    case BRIG_OPCODE_GCNMADU            : return false;
-    case BRIG_OPCODE_GCNMQSAD4          : return false;
-    case BRIG_OPCODE_GCNREGIONALLOC     : return false;
-    case BRIG_OPCODE_INITFBAR           : return false;
-    case BRIG_OPCODE_JOINFBAR           : return false;
-    case BRIG_OPCODE_LEAVEFBAR          : return false;
-    case BRIG_OPCODE_NOP                : return false;
-    case BRIG_OPCODE_RELEASEFBAR        : return false;
-    case BRIG_OPCODE_RET                : return false;
-    case BRIG_OPCODE_WAITFBAR           : return false;
-    case BRIG_OPCODE_WAVEBARRIER        : return false;
-    default : return true;
-    }
-}
-
 int instNumDstOperands(Brig::BrigOpcode16_t arg) {
   using namespace Brig;
   switch( arg ) {
@@ -787,17 +813,6 @@ const char* profile2str(unsigned arg) {
     }
 }
 
-const char* registerKind2str(unsigned arg) {
-  using namespace Brig;
-  switch( arg ) {
-    case BRIG_REGISTER_CONTROL          : return "$c";
-    case BRIG_REGISTER_DOUBLE           : return "$d";
-    case BRIG_REGISTER_QUAD             : return "$q";
-    case BRIG_REGISTER_SINGLE           : return "$s";
-    default : return NULL;
-    }
-}
-
 unsigned getRegBits(Brig::BrigRegisterKind16_t arg) {
   using namespace Brig;
   switch( arg ) {
@@ -806,6 +821,17 @@ unsigned getRegBits(Brig::BrigRegisterKind16_t arg) {
     case BRIG_REGISTER_QUAD             : return 128;
     case BRIG_REGISTER_SINGLE           : return 32;
     default : return (unsigned)-1;
+    }
+}
+
+const char* registerKind2str(unsigned arg) {
+  using namespace Brig;
+  switch( arg ) {
+    case BRIG_REGISTER_CONTROL          : return "$c";
+    case BRIG_REGISTER_DOUBLE           : return "$d";
+    case BRIG_REGISTER_QUAD             : return "$q";
+    case BRIG_REGISTER_SINGLE           : return "$s";
+    default : return NULL;
     }
 }
 
@@ -832,6 +858,7 @@ const char* round2str(unsigned arg) {
     case BRIG_ROUND_INTEGER_SIGNALLING_ZERO_SAT : return "szeroi_sat";
     case BRIG_ROUND_INTEGER_ZERO        : return "zeroi";
     case BRIG_ROUND_INTEGER_ZERO_SAT    : return "zeroi_sat";
+    case BRIG_ROUND_NONE                : return "2";
     default : return NULL;
     }
 }
@@ -1450,6 +1477,8 @@ const char* anyEnum2str( Brig::BrigOpcode arg ) {
     case BRIG_OPCODE_GCNB4XCHG          : return "BRIG_OPCODE_GCNB4XCHG";
     case BRIG_OPCODE_GCNBFM             : return "BRIG_OPCODE_GCNBFM";
     case BRIG_OPCODE_GCNCONSUME         : return "BRIG_OPCODE_GCNCONSUME";
+    case BRIG_OPCODE_GCNDIVRELAXED      : return "BRIG_OPCODE_GCNDIVRELAXED";
+    case BRIG_OPCODE_GCNDIVRELAXEDNARROW : return "BRIG_OPCODE_GCNDIVRELAXEDNARROW";
     case BRIG_OPCODE_GCNFLDEXP          : return "BRIG_OPCODE_GCNFLDEXP";
     case BRIG_OPCODE_GCNFREXP_EXP       : return "BRIG_OPCODE_GCNFREXP_EXP";
     case BRIG_OPCODE_GCNFREXP_MANT      : return "BRIG_OPCODE_GCNFREXP_MANT";

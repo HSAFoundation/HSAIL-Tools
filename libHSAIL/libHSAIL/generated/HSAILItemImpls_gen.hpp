@@ -47,25 +47,27 @@ const char* compareOperation2str(unsigned arg);
 const char* controlDirective2str(unsigned arg);
 const char* imageChannelOrder2str(unsigned arg);
 const char* imageChannelType2str(unsigned arg);
+bool isBrigGeometryDepth(unsigned geo);
+unsigned getBrigGeometryDim(unsigned geo);
 const char* imageGeometry2str(unsigned arg);
 const char* imageQuery2str(unsigned arg);
+bool isBodyOnly(Directive d);
+bool isToplevelOnly(Directive d);
 const char* kinds2str(unsigned arg);
 int size_of_brig_record(unsigned arg);
-bool isToplevelOnly(Directive d);
-bool isBodyOnly(Directive d);
 const char* linkage2str(unsigned arg);
 const char* machineModel2str(unsigned arg);
 const char* memoryFenceSegments2str(unsigned arg);
 const char* memoryOrder2str(unsigned arg);
 const char* memoryScope2str(unsigned arg);
 const char* memoryScope22str(unsigned arg);
-const char* opcode2str(unsigned arg);
 bool instHasType(Brig::BrigOpcode16_t arg);
+const char* opcode2str(unsigned arg);
 int instNumDstOperands(Brig::BrigOpcode16_t arg);
 const char* pack2str(unsigned arg);
 const char* profile2str(unsigned arg);
-const char* registerKind2str(unsigned arg);
 unsigned getRegBits(Brig::BrigRegisterKind16_t arg);
+const char* registerKind2str(unsigned arg);
 const char* round2str(unsigned arg);
 const char* samplerAddressing2str(unsigned arg);
 const char* samplerCoordNormalization2str(unsigned arg);
@@ -111,8 +113,6 @@ const char* anyEnum2str( Brig::BrigWidth arg );
 inline ValRef<uint16_t> AluModifier::allBits() { return valRef(&brig()->allBits); }
 inline BFValRef<Brig::BrigRound8_t,0,5> AluModifier::round() { return bFValRef<Brig::BrigRound8_t,0,5>(&brig()->allBits); }
 inline BitValRef<5> AluModifier::ftz() { return bitValRef<5>(&brig()->allBits); }
-inline ValRef<uint16_t> Code::byteCount() { return valRef(&brig()->byteCount); }
-inline EnumValRef<Brig::BrigKinds,uint16_t> Code::kind() { return enumValRef<Brig::BrigKinds,uint16_t>(&brig()->kind); }
 inline StrRef DirectiveComment::name() { return strRef(&brig()->name); }
 inline EnumValRef<Brig::BrigControlDirective,uint16_t> DirectiveControl::control() { return enumValRef<Brig::BrigControlDirective,uint16_t>(&brig()->control); }
 inline ListRef<Operand> DirectiveControl::operands() { return listRef<Operand>(&brig()->operands); }
@@ -201,8 +201,6 @@ inline ValRef<uint8_t> ExecutableModifier::allBits() { return valRef(&brig()->al
 inline BitValRef<0> ExecutableModifier::isDefinition() { return bitValRef<0>(&brig()->allBits); }
 inline ValRef<uint8_t> MemoryModifier::allBits() { return valRef(&brig()->allBits); }
 inline BitValRef<0> MemoryModifier::isConst() { return bitValRef<0>(&brig()->allBits); }
-inline ValRef<uint16_t> Operand::byteCount() { return valRef(&brig()->byteCount); }
-inline EnumValRef<Brig::BrigKinds,uint16_t> Operand::kind() { return enumValRef<Brig::BrigKinds,uint16_t>(&brig()->kind); }
 inline ItemRef<DirectiveVariable> OperandAddress::symbol() { return itemRef<DirectiveVariable>(&brig()->symbol); }
 inline ItemRef<OperandReg> OperandAddress::reg() { return itemRef<OperandReg>(&brig()->reg); }
 inline UInt64 OperandAddress::offset() { return subItem<UInt64>(&brig()->offset); }

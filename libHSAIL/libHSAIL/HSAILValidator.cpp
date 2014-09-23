@@ -49,7 +49,7 @@
 #include "Brig.h"
 
 #include <ctype.h>
-#include <iostream>
+#include <iosfwd>
 #include <sstream>
 #include <vector>
 #include <algorithm>
@@ -67,6 +67,10 @@ using Brig::BRIG_MACHINE_LARGE;
 using Brig::BRIG_PROFILE_FULL;
 using Brig::BrigUInt64;
 
+using Brig::BRIG_SECTION_INDEX_DATA;
+using Brig::BRIG_SECTION_INDEX_CODE;
+using Brig::BRIG_SECTION_INDEX_OPERAND;
+
 // ============================================================================
 // ============================================================================
 //============================================================================
@@ -77,11 +81,7 @@ namespace HSAIL_ASM {
 // BRIG Sections
 
 enum {
-    BRIG_SEC_CODE        = 0,
-    BRIG_SEC_OPERANDS    = 1,
-    BRIG_SEC_DATA        = 2,
-
-    BRIG_NUM_SECTIONS    = 3,
+    BRIG_NUM_SECTIONS       = Brig::BRIG_SECTION_INDEX_BEGIN_IMPLEMENTATION_DEFINED,
     BRIG_MIN_DATA_ITEM_SIZE = 4
 };
 
@@ -102,6 +102,9 @@ private:
 
 public:
     BrigFormatError() {}
+    BrigFormatError(SRef s, int code = ERRCODE_STD) :
+        msg(s.begin, s.end), errCode(code), section(-1), offset(0)
+    { };
     BrigFormatError(int sec, unsigned off, SRef s, int code = ERRCODE_STD) :
         msg(s.begin, s.end), errCode(code), section(sec), offset(off)
     {
@@ -128,11 +131,11 @@ void PropValidator::validate(Inst inst, int operandIdx, bool cond, SRef msg)
         if (0 <= operandIdx && operandIdx <= 4 && inst.operand(operandIdx))
         {
             Operand opr = inst.operand(operandIdx);
-            throw BrigFormatError(BRIG_SEC_OPERANDS, opr.brigOffset(), msg, code);
+            throw BrigFormatError(BRIG_SECTION_INDEX_OPERAND, opr.brigOffset(), msg, code);
         }
         else
         {
-            throw BrigFormatError(BRIG_SEC_CODE, inst.brigOffset(), msg, code);
+            throw BrigFormatError(BRIG_SECTION_INDEX_CODE, inst.brigOffset(), msg, code);
         }
     }
 }
@@ -306,124 +309,124 @@ struct BrigHelper
 {
 public: // Brig Object Kind Identification
 
-    static bool isSbr(Directive d)
+    static bool isSbr(Code d)
     {
         return DirectiveExecutable(d);
     }
 
-    static bool isFunc(Directive d)
+    static bool isFunc(Code d)
     {
         return DirectiveFunction(d) || DirectiveIndirectFunction(d);
     }
 
-    static bool isSignature(Directive d)
+    static bool isSignature(Code d)
     {
         return DirectiveSignature(d);
     }
 
-    static bool isKernel(Directive d)
+    static bool isKernel(Code d)
     {
         return DirectiveKernel(d);
     }
 
-    static bool isVar(Directive d)
+    static bool isVar(Code d)
     {
         return DirectiveVariable(d);
     }
 
-    static bool isFbar(Directive d)
+    static bool isFbar(Code d)
     {
         return DirectiveFbarrier(d);
     }
 
-    static bool isLabel(Directive d)
+    static bool isLabel(Code d)
     {
         return DirectiveLabel(d);
     }
 
 public: // Brig Object Properties
 
-    static char getNamePref(Directive d)
+    static char getNamePref(Code d)
     {
         string name = getName(d);
         return name.empty()? 0 : name[0];
     }
 
-    static bool isArgSeg(Directive d)
+    static bool isArgSeg(Code d)
     {
         assert(isVar(d) || isFbar(d));
-        return getSegment(d) == Brig::BRIG_SEGMENT_ARG;
+        return getSegment(Directive(d)) == Brig::BRIG_SEGMENT_ARG;
     }
 
-    static bool isKernArgSeg(Directive d)
+    static bool isKernArgSeg(Code d)
     {
         assert(isVar(d) || isFbar(d));
-        return getSegment(d) == Brig::BRIG_SEGMENT_KERNARG;
+        return getSegment(Directive(d)) == Brig::BRIG_SEGMENT_KERNARG;
     }
 
-    static bool isSpillSeg(Directive d)
+    static bool isSpillSeg(Code d)
     {
         assert(isVar(d) || isFbar(d));
-        return getSegment(d) == Brig::BRIG_SEGMENT_SPILL;
+        return getSegment(Directive(d)) == Brig::BRIG_SEGMENT_SPILL;
     }
 
-    static bool isGlobalSeg(Directive d)
+    static bool isGlobalSeg(Code d)
     {
         assert(isVar(d) || isFbar(d));
-        return getSegment(d) == Brig::BRIG_SEGMENT_GLOBAL;
+        return getSegment(Directive(d)) == Brig::BRIG_SEGMENT_GLOBAL;
     }
 
-    static bool isGroupSeg(Directive d)
+    static bool isGroupSeg(Code d)
     {
         assert(isVar(d) || isFbar(d));
-        return getSegment(d) == Brig::BRIG_SEGMENT_GROUP;
+        return getSegment(Directive(d)) == Brig::BRIG_SEGMENT_GROUP;
     }
 
-    static bool isPrivateSeg(Directive d)
+    static bool isPrivateSeg(Code d)
     {
         assert(isVar(d) || isFbar(d));
-        return getSegment(d) == Brig::BRIG_SEGMENT_PRIVATE;
+        return getSegment(Directive(d)) == Brig::BRIG_SEGMENT_PRIVATE;
     }
 
-    static bool isReadonlySeg(Directive d)
+    static bool isReadonlySeg(Code d)
     {
         assert(isVar(d) || isFbar(d));
-        return getSegment(d) == Brig::BRIG_SEGMENT_READONLY;
+        return getSegment(Directive(d)) == Brig::BRIG_SEGMENT_READONLY;
     }
 
-    static bool isProgLinkage(Directive d)
+    static bool isProgLinkage(Code d)
     {
         return getSymLinkage(d) == Brig::BRIG_LINKAGE_PROGRAM;
     }
 
-    static bool isModuleLinkage(Directive d)
+    static bool isModuleLinkage(Code d)
     {
         return getSymLinkage(d) == Brig::BRIG_LINKAGE_MODULE;
     }
 
-    static bool isFuncLinkage(Directive d)
+    static bool isFuncLinkage(Code d)
     {
         return getSymLinkage(d) == Brig::BRIG_LINKAGE_FUNCTION;
     }
 
-    static bool isArgLinkage(Directive d)
+    static bool isArgLinkage(Code d)
     {
         return getSymLinkage(d) == Brig::BRIG_LINKAGE_ARG;
     }
 
-    static bool isNoneLinkage(Directive d)
+    static bool isNoneLinkage(Code d)
     {
         return getSymLinkage(d) == Brig::BRIG_LINKAGE_NONE;
     }
 
-    static uint64_t getArraySize(Directive d)
+    static uint64_t getArraySize(Code d)
     {
         if (DirectiveVariable sym = d) return sym.dim();
         assert(false);
         return 0;
     }
 
-    static unsigned getAlignment(Directive d)
+    static unsigned getAlignment(Code d)
     {
         assert(isVar(d));
         if (DirectiveVariable sym = d) return sym.align();
@@ -431,49 +434,49 @@ public: // Brig Object Properties
         return Brig::BRIG_ALIGNMENT_LAST;
     }
 
-    static unsigned getAllocation(Directive d)
+    static unsigned getAllocation(Code d)
     {
         assert(isVar(d) || isFbar(d));
         if (DirectiveVariable sym = d) return sym.allocation();
         return Brig::BRIG_ALLOCATION_NONE;
     }
 
-    static bool isConst(Directive d)
+    static bool isConst(Code d)
     {
         if (DirectiveVariable sym = d) return sym.modifier().isConst();
         assert(false);
         return false;
     }
 
-    static bool isArray(Directive d)
+    static bool isArray(Code d)
     {
         if (DirectiveVariable sym = d) return sym.modifier().isArray();
         assert(false);
         return false;
     }
 
-    static bool isFlex(Directive d)
+    static bool isFlex(Code d)
     {
         if (DirectiveVariable sym = d) return sym.modifier().isFlexArray();
         assert(false);
         return false;
     }
 
-    static bool isInitialized(Directive d)
+    static bool isInitialized(Code d)
     {
         if (DirectiveVariable sym = d) return sym.init();
         return false;
     }
 
-    static Directive getInitializer(Directive d)
+/*    static Directive getInitializer(Code d)
     {
         assert(isVar(d));
 
         if (DirectiveVariable sym = d) return sym.init();
         return Directive();
     }
-
-    static unsigned getParamNum(Directive d)
+*/
+    static unsigned getParamNum(Code d)
     {
         if (DirectiveExecutable exec = d) return exec.inArgCount() + exec.outArgCount();
 
@@ -481,7 +484,7 @@ public: // Brig Object Properties
         return 0;
     }
 
-    static unsigned getInParamNum(Directive d)
+    static unsigned getInParamNum(Code d)
     {
         if (DirectiveExecutable exec = d) return exec.inArgCount();
 
@@ -489,7 +492,7 @@ public: // Brig Object Properties
         return 0;
     }
 
-    static unsigned getOutParamNum(Directive d)
+    static unsigned getOutParamNum(Code d)
     {
         if (DirectiveExecutable exec = d) return exec.outArgCount();
 
@@ -497,23 +500,23 @@ public: // Brig Object Properties
         return 0;
     }
 
-    static Code getFirstInParam(Directive d)
+    static Code getFirstInParam(Code d)
     {
         if (DirectiveExecutable exec = d) return exec.firstInArg();
 
         assert(false);
-        return Directive();
+        return Code();
     }
 
-    static Code getFirstOutParam(Directive d)
+    static Code getFirstOutParam(Code d)
     {
         if (DirectiveExecutable exec = d) return exec.next();
 
         assert(false);
-        return Directive();
+        return Code();
     }
 
-    static unsigned getScopedSize(Directive d)
+    static unsigned getScopedSize(Code d)
     {
         if (DirectiveExecutable exec = d) return exec.codeBlockEntryCount();
 
@@ -521,7 +524,7 @@ public: // Brig Object Properties
         return 0;
     }
 
-    static Code getFirstScoped(Directive d)
+    static Code getFirstScoped(Code d)
     {
     	if (DirectiveExecutable dfc = d) return dfc.firstCodeBlockEntry();
 
@@ -529,7 +532,7 @@ public: // Brig Object Properties
         return d.next();
     }
 
-    static Code getNextTopLevel(Directive d)
+    static Code getNextTopLevel(Code d)
     {
         if (DirectiveExecutable exec = d) return exec.nextModuleEntry();
         else return d.next();
@@ -553,7 +556,7 @@ class ValidatorContext : public BrigHelper
 {
 private:
     typedef set<SRef> NameSet;
-    typedef map<SRef, Directive> NameMap;
+    typedef map<SRef, Code> NameMap;
     typedef map<Offset, Inst> LabelMap;
 
     enum State
@@ -584,7 +587,7 @@ private:
     unsigned sbrEndOffset;      // End offset of current function/kernel scope
 
 private:
-    BrigContainer &brig;        // BRIG container being validated //F should validate module, not container
+    BrigContainer &brig;        // BRIG container being validated
 
 private: // Context state
     State    state;     // context state: module/sbr/block scope
@@ -595,12 +598,14 @@ private: // Enabled extensions
 
     // Labels may be defined in two places:
     // - in an argument block.
-    //   Instructions in this block may only refer these labels.
     // - in func/kernel body, but outside of argument blocks.
-    //   Instructions func/kernel body may only refer these labels.
-    //   These labels may be used ONLY by directives and code outside of argument blocks.
-    // A weird thing is both kinds of labels share a single namespace, so
-    // a label with the same name cannot be defined both inside and outside of an argument block.
+    //
+    // Instructions in an arg block may only refer labels defined in the same arg block.
+    // Instructions outside of arg blocks may only refer labels defined outside arg blocks.
+    // Pragma directive placed inside a code block may refer any labels defined in this block
+    //
+    // Note that labels share a single namespace, so a label with the same name
+    // cannot be defined both inside and outside of an argument block.
     // Consequently, there is only one 'labelNames'
 private:
     set<Offset> argLabelsDef;   // d-offset of visible arg-scope label definition
@@ -643,11 +648,22 @@ public:
     //-------------------------------------------------------------------------
     // PUBLIC API TO CONTROL CONTEXT
     //-------------------------------------------------------------------------
-    // Validation of order:
+    // Validation of order in a module:
     // 1. annotations
     // 2. version
     // 3. extension and annotations
     // 4. statements and annotations
+    //-------------------------------------------------------------------------
+    // Validation of order in a code block:
+    // 1. control directives and annotations
+    // 2. variable/fbarrier devinition and annotations
+    // 3. extension and annotations
+    // 4. statements and annotations
+    //-------------------------------------------------------------------------
+    // Validation of order in an arg block:
+    // 1. variable devinition and annotations
+    // 2. statements and annotations
+    //-------------------------------------------------------------------------
 
     void notifyModuleStart()        { assert(state == STATE_INVALID);        state = STATE_ANN_SCOPE;       }
     void notifyModuleEnd()          { assert(isMdlScope());                  state = STATE_INVALID;         }
@@ -726,14 +742,14 @@ public:
         clearSymbols();
     }
 
-    void startSbr(Directive d)
+    void startSbr(Code d)
     {
         notifySbrStart();
 
         sbrStartOffset = d.brigOffset();
         sbrEndOffset   = getNextTopLevel(d).brigOffset();
 
-        Directive arg = d.next();
+        Code arg = d.next();
         for (unsigned argsNum = getOutParamNum(d); argsNum > 0; --argsNum)
         {
             assert(arg);
@@ -794,7 +810,6 @@ public:
         setLabelDef(lab);
     }
 
-    //F Pass reference to instruction to refer it in case of an error
     void checkLabelUse(Code owner, DirectiveLabel lab)
     {
         assert(owner);
@@ -806,19 +821,19 @@ public:
         }
     }
 
-    void defineOutArg(Directive d, Directive owner)
+    void defineOutArg(Code d, Code owner)
     {
         if (isFunc(owner)) outArgDefs.insert(d.brigOffset());
         defineVar(d, owner);
     }
 
-    void defineInArg(Directive d, Directive owner)
+    void defineInArg(Code d, Code owner)
     {
         if (isFunc(owner)) inArgDefs.insert(d.brigOffset());
         defineVar(d, owner);
     }
 
-    void defineVar(Directive d, Directive owner = Directive())
+    void defineVar(Code d, Code owner = Code())
     {
         assert(isVar(d) || isFbar(d));
 
@@ -876,7 +891,7 @@ public:
         }
         else if (getNamePref(d) == '%')
         {
-            addLocalSym(d, owner);
+            addLocalSym(d, isArgument);
         }
         else
         {
@@ -884,31 +899,14 @@ public:
         }
     }
 
-    void checkVarUse(Operand opr, Directive d)
+    void checkVarUse(Operand opr, Code d)
     {
         assert(isVar(d) || isFbar(d));
 
         checkSymUse(opr, d);
     }
 
-    //FF
-    // General requirements:
-    //     + within an arg block there must be exactly one call operation
-    // Requirements for formal arguments:
-    //     - For input formal arguments, it is undefined if they are accessed by any operation other than a st operation.
-    //     - For the output formal argument, it is undefined if it is accessed by any operation other than a ld operation.
-    // Requirements for actual arguments:
-    //     - For actual arguments that correspond to the input formal arguments, it is undefined
-    //       if they are accessed by any operation other than a st operation that is post-dominated by the call operation.
-    //     - For the actual argument that corresponds to the output formal argument, it is undefined if it is accessed
-    //       by any operation other than a ld operation that is dominated by the call operation.
-    //     + Each actual argument must appear exactly once as either an input actual
-    //       argument or output actual argument of the call operation. It is an error if an actual
-    //       argument does not appear as one of the call operations input or output arguments,
-    //       appears more than once as an input or output argument, or appears as both an input
-    //       and output argument.
-
-    bool isTransientArg(Directive d) // True for arg variables defined inside an arg scope
+    bool isTransientArg(Code d) // True for arg variables defined inside an arg scope
     {
         assert(isVar(d));
         Offset off = d.brigOffset();
@@ -927,7 +925,7 @@ public:
         return outArgDefs.count(d.brigOffset()) != 0;
     }
 
-    void registerCallArg(Inst inst, Directive arg, bool isOutArgs)
+    void registerCallArg(Inst inst, Code arg, bool isOutArgs)
     {
         Offset off = arg.brigOffset();
 
@@ -937,7 +935,7 @@ public:
         callArgs.erase(off);
     }
 
-    void defineSbr(Directive d)
+    void defineSbr(Code d)
     {
         assert(d);
         assert(isMdlScope());
@@ -950,7 +948,7 @@ public:
         checkSymUse(opr, f);
     }
 
-    void markSymUsed(Directive d)
+    void markSymUsed(Code d)
     {
         assert(d);
         assert(isVar(d) || isFbar(d) || isSbr(d));
@@ -962,7 +960,7 @@ public:
     // Register a definition or declaration of a global symbol.
     // The purpose is to identify directive which should be used for all references
     // to this symbol - the first definition (or first declaration if there are no definitions).
-    void registerGlobalSym(Directive d)
+    void registerGlobalSym(Code d)
     {
         assert(isVar(d) || isFbar(d) || isSbr(d));
 
@@ -976,7 +974,7 @@ public:
 
     // Check if the specified directive is the one which must be used for
     // all references to the corresponding symbol
-    bool isValidGlobalReference(Directive d)
+    bool isValidGlobalReference(Code d)
     {
         assert(isVar(d) || isFbar(d) || isSbr(d));
 
@@ -1062,9 +1060,7 @@ private:
 
         for (LabelMap::iterator it = uses.begin(); it != uses.end(); ++it)
         {
-            //F: should refer invalid instruction rather than the label itself
-            validate(it->second, defs.count(it->first) > 0,
-                     "Invalid reference to label defined in another scope");
+            validate(it->second, defs.count(it->first) > 0, "Invalid reference to label defined in another scope");
         }
     }
 
@@ -1078,7 +1074,7 @@ private:
         }
     }
 
-    void dumpDefinedLabels()
+    /*void dumpDefinedLabels()
     {
         set<Offset> &defs = getLabelDefs();
 
@@ -1092,7 +1088,7 @@ private:
             std::cerr << "    " << lab.name() << " = &(" << lab.next().brigOffset() << ")\n";
         }
         std::cerr << "\n";
-    }
+    }*/
 
 private:
     //-------------------------------------------------------------------------
@@ -1100,27 +1096,27 @@ private:
     //-------------------------------------------------------------------------
 
     // Local symbols cannot be declared, only defined.
-    // Consequently, we only check that the symbol is defined only once.
-    void addLocalSym(Directive d, bool isArgument)
+    // Consequently, we only check that the symbol is not redefined
+    void addLocalSym(Code d, bool isArgument)
     {
         assert(isVar(d) || isFbar(d));
 
         validate(d, isSbrScope() || isArgScope(),
                  "Variables starting with '%' must be defined in kernels or functions");
 
-        if (isArgScope()) // Add BOTH arg and non-arg variables
+        if (isArgScope())
         {
+            assert(isArgSeg(d)); // already validated
+
             validate(d, argVarNames.count(getName(d)) == 0, "Invalid variable redefinition");
             argVarDefs.insert(d.brigOffset());
             argVarNames.insert(getName(d));
             callArgs.insert(d.brigOffset());
         }
-
-        // NB: non-arg variables defined in an arg scope logically belong to both
-        //     arg scope and sbr scope, so these variables are added to BOTH lists
-
-        if (isArgument || !isArgSeg(d)) // Add all variables except for args defined in arg scope
+        else
         {
+            assert(isArgument || !isArgSeg(d));
+
             validate(d, sbrVarNames.count(getName(d)) == 0, SRef(isArgument? "Duplicate argument declaration" : "Invalid variable redefinition"));
             sbrVarDefs.insert(d.brigOffset());
             sbrVarNames.insert(getName(d));
@@ -1131,7 +1127,7 @@ private:
     // Consequently, we check that:
     // - the symbol is defined only once;
     // - if there are several declarations (and possibly a definition), they are identical.
-    void addGlobalSym(Directive d)
+    void addGlobalSym(Code d)
     {
         assert(isVar(d) || isFbar(d) || isSbr(d));
 
@@ -1141,7 +1137,7 @@ private:
         validateDecl(d, modSymDesc);
     }
 
-    void validateDecl(Directive d, NameMap &desc)
+    void validateDecl(Code d, NameMap &desc)
     {
         assert(isVar(d) || isFbar(d) || isSbr(d));
 
@@ -1151,7 +1147,7 @@ private:
         }
         else                                // This must be a redefinition of the same entity
         {
-            Directive prev = desc[getName(d)];
+            Code prev = desc[getName(d)];
 
             validate(d, d.kind() == prev.kind(),
                      "Invalid identifier redefinition");
@@ -1171,7 +1167,7 @@ private:
         }
     }
 
-    void checkSymUse(Operand opr, Directive d)
+    void checkSymUse(Operand opr, Code d)
     {
         assert(isVar(d) || isFbar(d) || isSbr(d));
 
@@ -1202,7 +1198,7 @@ private:
         }
     }
 
-    bool eqDecl(Directive d1, Directive d2)
+    bool eqDecl(Code d1, Code d2)
     {
         assert(d1.kind() == d2.kind());
 
@@ -1231,15 +1227,15 @@ private:
 
     // Module declarations are compatible only with Module declarations and definitions
     // Program declarations are compatible only with program declarations and definitions (this is checked elsewhere)
-    bool eqSbrDecl(Directive sbr1, Directive sbr2)
+    bool eqSbrDecl(Code sbr1, Code sbr2)
     {
         if (getSymLinkage(sbr1) != getSymLinkage(sbr2)) return false;
 
         if (getInParamNum(sbr1)  == getInParamNum(sbr2) &&
             getOutParamNum(sbr1) == getOutParamNum(sbr2))
         {
-            Directive arg1 = sbr1.next();
-            Directive arg2 = sbr2.next();
+            Code arg1 = sbr1.next();
+            Code arg2 = sbr2.next();
 
             for (unsigned i = getParamNum(sbr1); i > 0; --i)
             {
@@ -1266,7 +1262,10 @@ private:
             isArray(var1) != isArray(var2))
             return false;
 
-        if (!isArg) //FF add note to issues
+        // NB: linkage and allocation rules for formal arguments are different
+        //     for function/kernel definitions and declarations.
+        //     These rules are validated elsewhere
+        if (!isArg)
         {
             if (var1.allocation()   != var2.allocation())   return false;
             if (getSymLinkage(var1) != getSymLinkage(var2)) return false;
@@ -1301,7 +1300,7 @@ private:
         NameMap::iterator it = modSymDesc.begin();
         for (; it != modSymDesc.end(); ++it)
         {
-            Directive d = it->second;
+            Code d = it->second;
             if (isDecl(d) && isModuleLinkage(d) && modSymUsed.count(getName(d)) > 0)
             {
                 if (isKernel(d)) validate(d,  false, "Kernel must be defined because it is used by module code");
@@ -1353,12 +1352,12 @@ private:
 private:
     void validate(Code c, bool cond, SRef msg) const
     {
-        if (!cond) throw BrigFormatError(BRIG_SEC_CODE, c.brigOffset(), msg);
+        if (!cond) throw BrigFormatError(BRIG_SECTION_INDEX_CODE, c.brigOffset(), msg);
     }
 
     void validate(Operand opr, bool cond, SRef msg) const
     {
-        if (!cond) throw BrigFormatError(BRIG_SEC_OPERANDS, opr.brigOffset(), msg);
+        if (!cond) throw BrigFormatError(BRIG_SECTION_INDEX_OPERAND, opr.brigOffset(), msg);
     }
 };
 
@@ -1428,7 +1427,11 @@ public:
         unsigned offset = err.getOffset();
         const SourceInfo* si = getSourceInfo(section, offset);
 
-        if (is && si)
+        if (section == -1)
+        {
+            return err.what();
+        }
+        else if (is && si)
         {
             ostringstream s;
             SrcLoc const srcLoc = { si->line, si->column };
@@ -1450,13 +1453,10 @@ private:
 
     void validateBrigFormat()
     {
-        ///F add validation of:
-        ///F - module struct
-        ///F - BrigSectionHeader
-
-        validateSection(BRIG_SEC_DATA);
-        validateSection(BRIG_SEC_CODE);
-        validateSection(BRIG_SEC_OPERANDS);
+        validateModule();
+        validateSection(BRIG_SECTION_INDEX_DATA);
+        validateSection(BRIG_SECTION_INDEX_CODE);
+        validateSection(BRIG_SECTION_INDEX_OPERAND);
     }
 
     //-------------------------------------------------------------------------
@@ -1551,7 +1551,7 @@ private:
         {
             if (Inst inst = code)
             {
-                validate(inst, inst.operands().size() <= 5, "Instruction cannot have more than 5 operands");
+                validate(inst, getOperandsNum(inst) <= 5, "Instruction cannot have more than 5 operands");
 
                 instValidator.validateInst(inst);
 
@@ -1594,7 +1594,7 @@ private:
                 }
                 else
                 {
-                    validateDef(d, context);
+                    validateDefUse(d, context);
                 }
             }
 
@@ -1604,7 +1604,7 @@ private:
         context.endModule();
     }
 
-    void validateSbr(Directive d, ValidatorContext &context) const
+    void validateSbr(Code d, ValidatorContext &context) const
     {
         bool unreachableCode = false;
 
@@ -1623,14 +1623,14 @@ private:
             {
                 if (DirectiveLabel(scoped)) unreachableCode = false;
 
-                validateDef(scoped, context);
+                validateDefUse(scoped, context);
             }
             else if (Inst i = p)
             {
                 context.validateExtensionOpcode(i);
 
                 // Check that all symbols referred to by operands are visible in the current context
-                unsigned numOperands  = i.operands().size();
+                unsigned numOperands  = getOperandsNum(i);
                 for (unsigned idx = 0; idx < numOperands; ++idx)
                 {
                     Operand opr = i.operand(idx);
@@ -1645,7 +1645,7 @@ private:
                 validateSpecInst(i, context);
 
                 // Set flag indicating if next instruction is unreachable
-                unreachableCode = (i.opcode() == Brig::BRIG_OPCODE_BR || i.opcode() == Brig::BRIG_OPCODE_RET);
+                unreachableCode = isTermInst(i.opcode());
             }
         }
         context.endSbr();
@@ -1686,7 +1686,7 @@ private:
         return d.next();
     }
 
-    void validateDef(Directive d, ValidatorContext &context) const
+    void validateDefUse(Code d, ValidatorContext &context) const
     {
         if (isLabel(d))
         {
@@ -1705,12 +1705,10 @@ private:
                 Operand opr = p.operands()[i];
                 if (OperandCodeRef ref = opr)
                 {
-                    Directive sym = ref.ref();
-                    validateSymUse(d, opr, sym, context);
+                    validateSymUse(d, opr, ref.ref(), context);
                 }
             }
         }
-
     }
 
     void validateUse(Inst inst, Operand opr, ValidatorContext &context) const
@@ -1750,7 +1748,7 @@ private:
         }
     }
 
-    void validateSymUse(Code owner, Operand opr, Directive sym, ValidatorContext &context) const
+    void validateSymUse(Code owner, Operand opr, Code sym, ValidatorContext &context) const
     {
         if (isSbr(sym))
         {
@@ -1787,7 +1785,7 @@ private:
         unsigned size = list.elements().size();
         for (unsigned i = 0; i < size; ++i)
         {
-            Directive sym = list.elements()[i];
+            Code sym = list.elements()[i];
             assert(sym); // already validated on first steps
 
             if (isFunc(sym) || isVar(sym) || isLabel(sym))
@@ -1807,7 +1805,7 @@ private:
         unsigned size = arglist.elements().size();
         for (unsigned n = 0; n < size; ++n)
         {
-            Directive ref = arglist.elements()[n];
+            Code ref = arglist.elements()[n];
             context.registerCallArg(inst, ref, isOutArgs);
         }
     }
@@ -1836,9 +1834,16 @@ private:
     //-------------------------------------------------------------------------
     // Low-level Brig format validation
 
+    void validateModule() const
+    {
+        const Brig::BrigModule* module = getBrigModule();
+
+        if (module->sectionCount < 3) throw BrigFormatError("Module must include at least 3 sections");
+    }
+
     void validateSection(int section)
     {
-        Brig::BrigSectionHeader* header = getSectionHeader(section);
+        const Brig::BrigSectionHeader* header = getSectionHeader(section);
 
         uint32_t secSize = header->byteCount;
         uint32_t hdrSize = header->headerByteCount;
@@ -1880,56 +1885,29 @@ private:
 
     void validatePadding(int section, unsigned offset) const
     {
-        if (section == BRIG_SEC_DATA)
+        if (section == BRIG_SECTION_INDEX_DATA)
         {
-            uint32_t dataSize = getSectionData<uint32_t>(section, offset);
-            uint32_t itemSize = ((dataSize + 7) / 4) * 4;
+            const Brig::BrigData* data = getDataItem(offset);
+            unsigned size = getItemSize(section, offset) - offsetof(Brig::BrigData, bytes);
 
-            for (unsigned i = offset + 4 + dataSize; i < offset + itemSize; ++i)
+            for (unsigned i = data->byteCount; i < size; ++i)
             {
-                validate(section, offset, getSectionData<uint8_t>(section, i) == 0, "Padding bytes at the end of string elements must be 0");
+                validate(section, offset, data->bytes[i] == 0, "Padding bytes at the end of hsa_data items must be 0");
             }
-        }
-    }
-
-    unsigned getItemSize(int section, unsigned offset) const
-    {
-        if (section == BRIG_SEC_DATA)
-        {
-            return ((getSectionData<uint32_t>(section, offset) + 7) / 4) * 4;
-        }
-        else
-        {
-            return getSectionData<uint16_t>(section, offset);
         }
     }
 
     unsigned getMinItemSize(int section, unsigned offset) const
     {
-        if (section == BRIG_SEC_DATA) return BRIG_MIN_DATA_ITEM_SIZE;
+        if (section == BRIG_SECTION_INDEX_DATA) return BRIG_MIN_DATA_ITEM_SIZE;
 
-        uint16_t itemKind = getSectionData<uint16_t>(section, offset + sizeof(uint16_t));
-        int result = size_of_brig_record(itemKind);
-        validate(section, offset, result > 0, "Invalid item kind");
-        return result;
+        int size = size_of_brig_record(getItemKind(section, offset));
+        validate(section, offset, size > 0, "Invalid item kind");
+        return size;
     }
 
     //-------------------------------------------------------------------------
     // Validation of Complex Items
-
-    // Validate reference to data in string section:
-    // - offset must be a valid offset to string section
-    // - required data size = item data size
-    //void validateStringData(Directive d, unsigned offset, unsigned type, unsigned length, const char* structName, const char* fieldName)
-    //{
-    //    assert(type != Brig::BRIG_TYPE_B1); // b1 is not allowed in initializers and block directives
-    //
-    //    validateOffset(d, BRIG_SEC_DATA, offset, structName, fieldName);
-    //
-    //    uint32_t dataSize = getSectionData<uint32_t>(BRIG_SEC_DATA, offset);
-    //
-    //    if ((getBrigTypeNumBits(type) / 8 ) * length != dataSize) validate(d, false, "Expected size of " + string(structName) + "." + fieldName + " does not match actual data size");
-    //}
 
     void validateControlDirective(DirectiveControl d)
     {
@@ -1951,8 +1929,7 @@ private:
                 assert(type == BRIG_TYPE_U32 || type == BRIG_TYPE_U64);
 
                 validate(imm, getImmSize(imm) == getBrigTypeNumBits(type), "Invalid size of immediate value");
-                SRef data = imm.data();
-                uint64_t val = (type == BRIG_TYPE_U32)? *(uint32_t*)data.begin : *(uint64_t*)data.begin; //F
+                uint64_t val = (type == BRIG_TYPE_U32)? getImmAsU32(imm) : getImmAsU64(imm);
                 const char* err = validateCtlDirOperandBounds(d.control(), i, val);
                 if (err) validate(opr, false, SRef(err));
             }
@@ -1973,8 +1950,7 @@ private:
             OperandData imm = d.operands()[0];
             assert(imm);
 
-            SRef data = imm.data();
-            uint32_t val = *(uint32_t*)data.begin; //F
+            uint32_t val = getImmAsU32(imm);
 
             validate(d, (val & 0x1F) == 0, "Exception bits 0 to 4 must be zero for the base profile");
         }
@@ -1998,7 +1974,7 @@ private:
             }
             else if (OperandCodeRef ref = opr)
             {
-                Directive sym = ref.ref();
+                Code sym = ref.ref();
                 validate(d, DirectiveVariable(sym) ||
                             DirectiveFbarrier(sym) ||
                             DirectiveLabel(sym) ||
@@ -2011,7 +1987,7 @@ private:
         }
     }
 
-    void validateDirective(Directive d)
+    void validateDirective(Code d)
     {
         assert(d);
 
@@ -2225,7 +2201,7 @@ private:
         validateReg(r, r);
     }
 
-    template <class DirectiveName> bool isDirectiveKind(Directive d) const
+    template <class DirectiveName> bool isDirectiveKind(Code d) const
     {
         return DirectiveName(d);
     }
@@ -2264,7 +2240,7 @@ private:
 
     //-------------------------------------------------------------------------
 
-    void validateName(Directive d, const char* pref) const
+    void validateName(Code d, const char* pref) const
     {
         string name = getName(d);
 
@@ -2279,22 +2255,22 @@ private:
                    (name.length() == 2 || name.find_first_not_of(ALPHANUM, 2) == string::npos), "Invalid identifier");
     }
 
-    bool isImage(Directive d) const {
+    bool isImage(Code d) const {
         DirectiveVariable v = d;
         return isImageOrSampler(d) && !isSampler(d);
     }
 
-    bool isSampler(Directive d) const {
+    bool isSampler(Code d) const {
         DirectiveVariable v = d;
         return v && v.type() == Brig::BRIG_TYPE_SAMP;
     }
 
-    bool isImageOrSampler(Directive d) const {
+    bool isImageOrSampler(Code d) const {
         DirectiveVariable v = d;
         return v && isImageExtType(v.type());
     }
 
-    bool isSignal(Directive d) const {
+    bool isSignal(Code d) const {
         DirectiveVariable v = d;
         return v && (v.type() == Brig::BRIG_TYPE_SIG32 || v.type() == Brig::BRIG_TYPE_SIG64);
     }
@@ -2326,7 +2302,7 @@ private:
         }
     }
 
-    void validateDefDecl(Directive d)
+    void validateDefDecl(Code d)
     {
         // NB: Validation of arg and kernarg segment variables depends on context (see defineVar)
 
@@ -2337,7 +2313,7 @@ private:
         }
     }
 
-    void validateLinkage(Directive d)
+    void validateLinkage(Code d)
     {
         using namespace Brig;
 
@@ -2410,7 +2386,7 @@ private:
         validate(var, isValidVarType(var.type()), "Invalid variable type");
     }
 
-    void validateAlign(Directive d) const
+    void validateAlign(Code d) const
     {
         assert(isVar(d));
         validate(d, isValidAlignment(getAlignment(d), getDataType(d)),
@@ -2493,7 +2469,7 @@ private:
         validate(init, elementCount >= data.length() / typeSize, "Invalid initializer: too many initial values");
     }
 
-    void validateArgs(Directive d)
+    void validateArgs(Code d)
     {
         if (isKernel(d))
         {
@@ -2511,7 +2487,7 @@ private:
         validate(d, next.brigOffset() == getFirstScoped(d).brigOffset(), "Invalid reference to first scoped directive");
     }
 
-    Code validateSbrArgs(Directive sbr, Code next, Code argStart, unsigned paramNum, bool isInputArgs)
+    Code validateSbrArgs(Code sbr, Code next, Code argStart, unsigned paramNum, bool isInputArgs)
     {
         unsigned seg = isKernel(sbr)? Brig::BRIG_SEGMENT_KERNARG : Brig::BRIG_SEGMENT_ARG;
 
@@ -2544,13 +2520,12 @@ private:
             validate(arg, !isInitialized(arg), "Arguments cannot have initializer");
             validate(arg, !isConst(arg),       "Arguments cannot be const");
 
-            //validateInit(arg); // This is necessary only to avoid cryptic error msg
             arg = arg.next();
         }
         return arg;
     }
 
-    void validateScoped(Directive sbr)
+    void validateScoped(Code sbr)
     {
         Code it  = getFirstScoped(sbr);
         Code end = getNextTopLevel(sbr);
@@ -2575,9 +2550,6 @@ private:
 
         for (; it != end; it = it.next())
         {
-            //F validate ordering if it is not validated elsewhere (code elements follow each other without gaps)
-            //F Is there a guarantee that code.next() returns offset of next item? This should be validated by an assert
-
             if (isDirective(it.kind()))
             {
                 validate(it, isBodyStatement(it), "Directive is not allowed inside kernel or function");
@@ -2603,27 +2575,23 @@ private:
         validate(inst, out, "Missing list of output arguments");
         validate(inst, in,  "Missing list of input arguments");
 
-        validate(out, fn.outArgCount() == out.elementCount(), "Invalid number of output arguments");
+        validateFuncArgList(fn.next(),       fn.outArgCount(), out, "Invalid number of output arguments");
+        validateFuncArgList(fn.firstInArg(), fn.inArgCount(),   in, "Invalid number of input arguments");
+    }
 
-        DirectiveVariable formalArg = fn.next();
-        for (unsigned i = 0; i < fn.outArgCount(); ++i)
+    void validateFuncArgList(DirectiveVariable formal, unsigned formalArgCount, OperandCodeList actualArgList, SRef msg) const
+    {
+        validate(actualArgList, formalArgCount == actualArgList.elementCount(), msg);
+
+        for (unsigned i = 0; i < formalArgCount; ++i)
         {
-            assert(formalArg); // Validated on previous steps
+            DirectiveVariable actual = actualArgList.elements(i);
 
-            validateCallArg(out, out.elements(i), formalArg);
-            formalArg = formalArg.next();
-        }
+            assert(formal); // Validated on previous steps
+            assert(actual); // Validated on previous steps
 
-        //FF: make a separate function
-        validate(in, fn.inArgCount() == in.elementCount(), "Invalid number of input arguments");
-
-        formalArg = fn.firstInArg();
-        for (unsigned i = 0; i < fn.inArgCount(); ++i)
-        {
-            assert(formalArg); // Validated on previous steps
-
-            validateCallArg(in, in.elements(i), formalArg);
-            formalArg = formalArg.next();
+            validateCallArg(actualArgList, actual, formal);
+            formal = formal.next();
         }
     }
 
@@ -2633,7 +2601,7 @@ private:
     // - Both are arrays with the same size and alignment and the elements have identical properties.
     // - Both are arrays with elements that have identical properties, both arrays have
     //   the same alignment, and the formal is a flexible array (of no specified size).
-    void validateCallArg(OperandCodeList list, Directive var, DirectiveVariable formal) const
+    void validateCallArg(OperandCodeList list, Code var, DirectiveVariable formal) const
     {
         DirectiveVariable actual = var;
 
@@ -2661,9 +2629,9 @@ private:
 
     template<class T> void validateOffset(T item, int section, unsigned offset, const char* structName, const char* fieldName, bool z = false, bool ex = false) const
     {
-        assert(section == BRIG_SEC_OPERANDS   ||
-               section == BRIG_SEC_CODE       ||
-               section == BRIG_SEC_DATA);
+        assert(section == BRIG_SECTION_INDEX_OPERAND   ||
+               section == BRIG_SECTION_INDEX_CODE      ||
+               section == BRIG_SECTION_INDEX_DATA);
 
         unsigned size = getSectionSize(section);
 
@@ -2682,9 +2650,9 @@ private:
 
         switch(section)
         {
-        case BRIG_SEC_OPERANDS:   msg = "hsa_operand"; break;
-        case BRIG_SEC_CODE:       msg = "hsa_code";    break;
-        case BRIG_SEC_DATA:       msg = "hsa_data";    break;
+        case BRIG_SECTION_INDEX_OPERAND:   msg = "hsa_operand"; break;
+        case BRIG_SECTION_INDEX_CODE:      msg = "hsa_code";    break;
+        case BRIG_SECTION_INDEX_DATA:      msg = "hsa_data";    break;
         default:
             assert(false);
             break;
@@ -2695,45 +2663,48 @@ private:
 
     template<class T> void validate_BrigCodeOffset(T item, unsigned offset, const char* structName, const char* fieldName) const
     {
-        bool z = OperandAddress(item);
-        validateOffset(item, BRIG_SEC_CODE, offset, structName, "code", z, true); //F should it be 'false', 'false'?
+        bool z  = OperandAddress(item);
+        bool ex = !OperandAddress(item);
+        validateOffset(item, BRIG_SECTION_INDEX_CODE, offset, structName, "code", z, ex);
     }
 
     template<class T> void validate_BrigOperandOffset(T item, unsigned offset, const char* structName, const char* fieldName) const
     {
-        validateOffset(item, BRIG_SEC_OPERANDS, offset, structName, fieldName, true); //F should it be 'false'?
+        validateOffset(item, BRIG_SECTION_INDEX_OPERAND, offset, structName, fieldName, true);
     }
 
     template<class T> void validate_BrigDataOffsetString(T item, unsigned offset, const char* structName, const char* fieldName) const
     {
-        validateOffset(item, BRIG_SEC_DATA, offset, structName, fieldName);
+        validateOffset(item, BRIG_SECTION_INDEX_DATA, offset, structName, fieldName);
     }
 
     void validate_BrigDataOffsetCodeList(Operand item, unsigned offset, const char* structName, const char* fieldName) const
     {
-        validateOffset(item, BRIG_SEC_DATA, offset, structName, fieldName);
-        validateList(item, offset, BRIG_SEC_CODE, structName, fieldName);
+        validateOffset(item, BRIG_SECTION_INDEX_DATA, offset, structName, fieldName);
+        validateList(item, offset, BRIG_SECTION_INDEX_CODE, structName, fieldName);
     }
 
     template<class T> void validate_BrigDataOffsetOperandList(T item, unsigned offset, const char* structName, const char* fieldName) const
     {
-        validateOffset(item, BRIG_SEC_DATA, offset, structName, fieldName);
-        validateList(item, offset, BRIG_SEC_OPERANDS, structName, fieldName);
+        validateOffset(item, BRIG_SECTION_INDEX_DATA, offset, structName, fieldName);
+        validateList(item, offset, BRIG_SECTION_INDEX_OPERAND, structName, fieldName);
     }
 
     template<class T> void validateList(T item, unsigned offset, unsigned section, const char* structName, const char* fieldName) const
     {
-        uint32_t byteCount = getSectionData<uint32_t>(BRIG_SEC_DATA, offset);
+        const Brig::BrigData* data = getDataItem(offset);
+        uint32_t* elements = (uint32_t*)data->bytes;
 
-        validate(item, (byteCount & 0x3) == 0, "Invalid array of offsets, size must be a multiple of 4");
+        validate(item, (data->byteCount & 0x3) == 0, "Invalid array of offsets, size must be a multiple of 4");
 
-        for (unsigned pos = offset + 4; pos <= offset + byteCount; pos += 4)
+        unsigned size = data->byteCount / 4;
+        for (unsigned i = 0; i < size; ++i)
         {
-            uint32_t elementOffset = getSectionData<uint32_t>(BRIG_SEC_DATA, pos);
+            uint32_t elementOffset = elements[i];
             validateOffset(item, section, elementOffset, structName, fieldName);
-            if (section == BRIG_SEC_CODE)
+            if (section == BRIG_SECTION_INDEX_CODE)
             {
-                uint16_t id = getSectionData<uint16_t>(section, elementOffset + sizeof(uint16_t)); //F use struct
+                uint16_t id = getItemKind(section, elementOffset);
                 validate(item, isDirective(id), "Invalid OperandCodeList, all list elements must refer directives");
             }
         }
@@ -2767,7 +2738,7 @@ private:
         validate(item, *s != 0,   "Unspecified image geometry");
     }
 
-    void validate_BrigExecutableModifier(Directive item, Brig::BrigExecutableModifier val, const char* structName, const char* fieldName) const
+    void validate_BrigExecutableModifier(Code item, Brig::BrigExecutableModifier val, const char* structName, const char* fieldName) const
     {
         using namespace Brig;
 
@@ -2777,12 +2748,12 @@ private:
         validate(item, (mod & ~mask) == 0, "Invalid executable modifier value", mod);
     }
 
-    void validate_BrigLinkage(Directive item, unsigned linkage, const char* structName, const char* fieldName) const
+    void validate_BrigLinkage(Code item, unsigned linkage, const char* structName, const char* fieldName) const
     {
         validate(item, linkage2str(linkage) != NULL, "Invalid linkage value", linkage);
     }
 
-    void validate_BrigVariableModifier(Directive item, Brig::BrigVariableModifier val, const char* structName, const char* fieldName) const
+    void validate_BrigVariableModifier(Code item, Brig::BrigVariableModifier val, const char* structName, const char* fieldName) const
     {
         using namespace Brig;
 
@@ -2793,7 +2764,7 @@ private:
         validate(item, (mod & BRIG_SYMBOL_FLEX_ARRAY) == 0 || (mod & BRIG_SYMBOL_ARRAY) != 0, "Invalid variable modifier value ('flex' = 1, but 'array' = 0)", mod);
     }
 
-    void validate_BrigAllocation(Directive item, unsigned allocation, const char* structName, const char* fieldName) const
+    void validate_BrigAllocation(Code item, unsigned allocation, const char* structName, const char* fieldName) const
     {
         validate(item, allocation2str(allocation) != NULL, "Invalid allocation value", allocation);
     }
@@ -2822,7 +2793,7 @@ private:
         validate(item, (mod & ~BRIG_SEG_CVT_NONULL) == 0, "Invalid segcvt modifier value", mod);
     }
 
-    void validate_BrigControlDirective(Directive item, unsigned val, const char* structName, const char* fieldName) const
+    void validate_BrigControlDirective(Code item, unsigned val, const char* structName, const char* fieldName) const
     {
         validate(item, controlDirective2str(val) != NULL, "Invalid control type value", val);
     }
@@ -2847,12 +2818,12 @@ private:
         validate(item, *s != 0,   "Unspecified image channel type");
     }
 
-    void validate_BrigProfile(Directive item, unsigned val, const char* structName, const char* fieldName) const
+    void validate_BrigProfile(Code item, unsigned val, const char* structName, const char* fieldName) const
     {
         validate(item, profile2str(val) != NULL, "Invalid version profile value", val);
     }
 
-    void validate_BrigMachineModel(Directive item, unsigned val, const char* structName, const char* fieldName) const
+    void validate_BrigMachineModel(Code item, unsigned val, const char* structName, const char* fieldName) const
     {
         validate(item, machineModel2str(val) != NULL, "Invalid machine model value", val);
     }
@@ -2983,12 +2954,12 @@ private:
         validate(item, registerKind2str(kind) != NULL, "Invalid register kind value", kind);
     }
 
-    void validate_fld_Line(Directive item, unsigned val, const char* structName, const char* fieldName) const
+    void validate_fld_Line(Code item, unsigned val, const char* structName, const char* fieldName) const
     {
         validate(item, val > 0, "Invalid loc directive, line number must be greater than 0");
     }
 
-    void validate_fld_Column(Directive item, unsigned val, const char* structName, const char* fieldName) const
+    void validate_fld_Column(Code item, unsigned val, const char* structName, const char* fieldName) const
     {
         validate(item, val > 0, "Invalid loc directive, column number must be greater than 0");
     }
@@ -2996,52 +2967,40 @@ private:
     //-------------------------------------------------------------------------
     // Low-level BRIG validation (functions used by autogenerated code)
 
-    void validate_fld_Dim(Directive item, BrigUInt64 val, const char* structName, const char* fieldName) const {}         // Nothing to do
+    void validate_fld_Dim(Code item, BrigUInt64 val, const char* structName, const char* fieldName) const {}         // Nothing to do
     void validate_fld_Offset(Operand item, BrigUInt64 val, const char* structName, const char* fieldName) const {}        // Nothing to do
     void validate_fld_EquivClass(Inst item, unsigned val, const char* structName, const char* fieldName) const {}         // Nothing to do
-    void validate_fld_InArgCount(Directive item, unsigned val, const char* structName, const char* fieldName) const {}    // Nothing to do
-    void validate_BrigVersion(Directive item, unsigned val, const char* structName, const char* fieldName) const {}       // Validated elsewhere
-    void validate_fld_OutArgCount(Directive item, unsigned val, const char* structName, const char* fieldName) const {}   // Validated elsewhere
-    void validate_fld_CodeBlockEntryCount(Directive item, unsigned val, const char* structName, const char* fieldName) const {} // Validated elsewhere
+    void validate_fld_InArgCount(Code item, unsigned val, const char* structName, const char* fieldName) const {}    // Nothing to do
+    void validate_BrigVersion(Code item, unsigned val, const char* structName, const char* fieldName) const {}       // Validated elsewhere
+    void validate_fld_OutArgCount(Code item, unsigned val, const char* structName, const char* fieldName) const {}   // Validated elsewhere
+    void validate_fld_CodeBlockEntryCount(Code item, unsigned val, const char* structName, const char* fieldName) const {} // Validated elsewhere
     void validate_fld_RegNum(Operand item, unsigned val, const char* structName, const char* fieldName) const {}          // Validated elsewhere
+
+
+    //-------------------------------------------------------------------------
+    // Access to Brig module
+
+    const Brig::BrigModule* getBrigModule() const { return brig.getBrigModule(); }
 
     //-------------------------------------------------------------------------
     // Access to Brig sections
 
-    string getExpectedSectionName(int section) const
+    const Brig::BrigSectionHeader* getSectionHeader(int section) const
     {
-        switch(section)
-        {
-        case BRIG_SEC_DATA:       return "hsa_data";
-        case BRIG_SEC_CODE:       return "hsa_code";
-        case BRIG_SEC_OPERANDS:   return "hsa_operand";
-        default:                  return "";
-        }
+        assert(0 <= section && section < BRIG_NUM_SECTIONS);
+        return getBrigModule()->section[section];
+    }
+
+    const char* getSectionAddr(int section, unsigned offset) const
+    {
+        return reinterpret_cast<const char*>(getSectionHeader(section)) + offset;
     }
 
     template<typename T>
     T getSectionData(int section, unsigned offset) const
     {
         assert(sizeof(T) <= 4);
-        return *(reinterpret_cast<const T*>(getSectionAddr(section) + offset));
-    }
-
-    const char* getSectionAddr(int section) const
-    {
-        switch(section) //F access via module header
-        {
-        case BRIG_SEC_DATA:       return brig.strings().getData(0);
-        case BRIG_SEC_CODE:       return brig.code().getData(0);
-        case BRIG_SEC_OPERANDS:   return brig.operands().getData(0);
-        default:
-            assert(false);
-            return 0;
-        }
-    }
-
-    Brig::BrigSectionHeader* getSectionHeader(int section) const
-    {
-        return (Brig::BrigSectionHeader*)getSectionAddr(section);
+        return *reinterpret_cast<const T*>(getSectionAddr(section, offset));
     }
 
     unsigned getSectionStartOffset(int section) const
@@ -3057,21 +3016,78 @@ private:
     string getSectionName(int section) const
     {
         uint32_t len = getSectionHeader(section)->nameLength;
-        const char* name = reinterpret_cast<char*>(&getSectionHeader(section)->name);
+        const char* name = reinterpret_cast<const char*>(&getSectionHeader(section)->name);
         return SRef(name, name + len);
+    }
+
+    string getExpectedSectionName(int section) const
+    {
+        switch(section)
+        {
+        case BRIG_SECTION_INDEX_DATA:      return "hsa_data";
+        case BRIG_SECTION_INDEX_CODE:      return "hsa_code";
+        case BRIG_SECTION_INDEX_OPERAND:   return "hsa_operand";
+        default:                           return "";
+        }
     }
 
     const SourceInfo* getSourceInfo(int section, unsigned offset) const
     {
-        if (section == BRIG_SEC_CODE && offset > 0)
+        if (section == BRIG_SECTION_INDEX_CODE && offset > 0)
         {
             return brig.code().sourceInfo(offset);
         }
-        else if (section == BRIG_SEC_OPERANDS && offset > 0)
+        else if (section == BRIG_SECTION_INDEX_OPERAND && offset > 0)
         {
             return brig.operands().sourceInfo(offset);
         }
         return NULL;
+    }
+
+    //-------------------------------------------------------------------------
+    // Access to Brig items
+
+    const Brig::BrigData* getDataItem(unsigned offset) const
+    {
+        return reinterpret_cast<const Brig::BrigData*>(getSectionAddr(BRIG_SECTION_INDEX_DATA, offset));
+    }
+
+    const Brig::BrigBase* getSectionItem(int section, unsigned offset) const
+    {
+        assert(section == BRIG_SECTION_INDEX_CODE || section == BRIG_SECTION_INDEX_OPERAND);
+        return reinterpret_cast<const Brig::BrigBase*>(getSectionAddr(section, offset));
+    }
+
+    unsigned getItemSize(int section, unsigned offset) const
+    {
+        if (section == BRIG_SECTION_INDEX_DATA)
+        {
+            return ((getDataItem(offset)->byteCount + 7) / 4) * 4;
+        }
+        else
+        {
+            assert(section == BRIG_SECTION_INDEX_CODE || section == BRIG_SECTION_INDEX_OPERAND);
+            return getSectionItem(section, offset)->byteCount;
+        }
+    }
+
+    unsigned getItemDataSize(int section, unsigned offset) const
+    {
+        if (section == BRIG_SECTION_INDEX_DATA)
+        {
+            return getDataItem(offset)->byteCount;
+        }
+        else
+        {
+            assert(section == BRIG_SECTION_INDEX_CODE || section == BRIG_SECTION_INDEX_OPERAND);
+            return getSectionItem(section, offset)->byteCount;
+        }
+    }
+
+    unsigned getItemKind(int section, unsigned offset) const
+    {
+        assert(section == BRIG_SECTION_INDEX_CODE || section == BRIG_SECTION_INDEX_OPERAND);
+        return getSectionItem(section, offset)->kind;
     }
 
     //-------------------------------------------------------------------------
@@ -3086,13 +3102,13 @@ private:
     void validate(Code c, bool cond, SRef msg) const
     {
         assert(c);
-        if (!cond) throw BrigFormatError(BRIG_SEC_CODE, c.brigOffset(), msg);
+        if (!cond) throw BrigFormatError(BRIG_SECTION_INDEX_CODE, c.brigOffset(), msg);
     }
 
     void validate(Operand opr, bool cond, SRef msg) const
     {
         assert(opr);
-        if (!cond) throw BrigFormatError(BRIG_SEC_OPERANDS, opr.brigOffset(), msg);
+        if (!cond) throw BrigFormatError(BRIG_SECTION_INDEX_OPERAND, opr.brigOffset(), msg);
     }
 
     template<class T>
@@ -3121,11 +3137,13 @@ private:
     {
         ostringstream s;
 
-        if (disasmOnError)
+        if (disasmOnError &&
+            offset >= getSectionStartOffset(section) &&
+            offset < getSectionSize(section))
         {
             Disassembler disasm(brig);
 
-            if (section == BRIG_SEC_CODE && offset > 0) //F
+            if (section == BRIG_SECTION_INDEX_CODE)
             {
                 Code code = Code(&brig, offset);
                 if (Inst inst = code)
@@ -3137,7 +3155,7 @@ private:
                     s << ": " << disasm.get(d, mModel, mProfile);
                 }
             }
-            else if (section == BRIG_SEC_OPERANDS && offset > 0) //F
+            else if (section == BRIG_SECTION_INDEX_OPERAND)
             {
                 if (Operand opr = Operand(&brig, offset))
                 {
@@ -3159,8 +3177,8 @@ private:
     // Helpers
 
     bool isLargeModel()                   const { return mModel == Brig::BRIG_MACHINE_LARGE; }
-    bool isTopLevelStatement(Directive d) const { return !isBodyOnly(d);     }
-    bool isBodyStatement(Directive d)     const { return !isToplevelOnly(d); }
+    bool isTopLevelStatement(Code d) const { return !isBodyOnly(d);     }
+    bool isBodyStatement(Code d)     const { return !isToplevelOnly(d); }
 
 }; // class ValidatorImpl
 
@@ -3228,47 +3246,18 @@ int    Validator::getErrorCode()                 const { return impl->getErrorCo
 //F - BrigSamplerCoordNormalization: Values 5 through 255 are available for extensions.
 //F - BrigSamplerFilter: Values 2 through 63 are available for extensions
 //F - BrigSegment: Values 9 through 16 are available for extensions
-//F MISC:
-//F - Src operand of stof and ftos can no longer be WAVESIZE
 
 //F TODO
-//F validate new flags such as isDecl (their correlation with other props) ::: create random BRIG tests on all combinations of flags
-//F Improve errors reporting for "Invalid reference to label defined in another scope"
-
-//F POSTPONED FEATURES
-//F The s, d, and q registers in HSAIL share a single pool of resources.
-//F add support of querysamplerboundary (added in April)
+//F create random BRIG tests on all combinations of flags such as isConst, isDecl, etc
+//F Improve errors reporting
 
 //F TEMPORARILY DISABLED FEATURES
 //F - identifiers must not start with "__hsa" (currently, this check is disabled)
 //F - addresses of 32-bit segments must have b32 type and 's' register, if any (currently, addresses may have both b32 and b64 type; both 's' and 'd' registers and allowed)
 //F - images and samplers must be passed to operations in 'd' registers (currently, addresses are allowed as well)
 
-//F MINOR PENDING FEATURES
-//F - nop
+//F MAJOR PENDING FEATURES
+//F - Support of GCN extension has not been tested yet
 //F - The s, d, and q registers in HSAIL share a single pool of resources.
 
-//F MAJOR PENDING FEATURES
-//F - constants conversions and validation (4.10.4 How Text Format Constants Are Converted to Bit String Constants)
-//F - labeltargets (lack tests and checks in validator because of planned redesign)
-//F - some requirements on control directives (e.g. "If multiple control directives are present in the kernel or the functions it calls, they must all have the same values")
-//F - Support of GCN extension has not been tested yet
-//F - validation of debug section + disasm
-//F - for linkage we currently encode modifiers which are present in HSAIL (e.g. 'none' if there is no modifier specified). Instead, we should encode actual linkage (e.g. 'extern' if no modifiers specified)
-//F - All operands are typed
-//F - If the same symbol (variable, image, sampler, or function) is both declared and defined
-//F   in the same compilation unit, all references to the symbol in the Brig representation
-//F   must refer to the definition, even if the definition comes after the use. If there are
-//F   multiple declarations and no definitions, then all uses must refer to the first declaration
-//F   in lexical order
-//F - profile-specific req
 
-
-/////////////////////////
-// TODO
-//
-// variable name namy be empty but for signatures only
-//
-//
-// Add tests:
-// - Flexible array in kernel args

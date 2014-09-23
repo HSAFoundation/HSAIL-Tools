@@ -103,6 +103,7 @@ unsigned getSegment(Inst inst);
 unsigned getPacking(Inst inst);
 unsigned getEqClass(Inst inst);
 
+unsigned getOperandsNum(Inst inst);
 unsigned getDefWidth(Inst inst, unsigned machineModel, unsigned profile);
 unsigned getDefRounding(Inst inst, unsigned machineModel, unsigned profile);
 
@@ -154,6 +155,8 @@ string getRegName(OperandReg reg);
 
 unsigned getImmSize(OperandData opr);
 bool     isImmB1(OperandData imm);
+uint32_t getImmAsU32(OperandData opr, unsigned index = 0);
+uint64_t getImmAsU64(OperandData opr);
 //============================================================================
 // Operations with types
 

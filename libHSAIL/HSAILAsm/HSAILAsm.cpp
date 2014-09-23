@@ -45,6 +45,9 @@
 //===----------------------------------------------------------------------===//
 #include "llvm/Support/CommandLine.h"
 #ifdef _DEBUG
+#ifdef DEBUG
+#undef DEBUG
+#endif
 #include "llvm/Support/Debug.h"
 #else
 #define DEBUG(x)
@@ -263,7 +266,7 @@ static int AssembleInput() {
     if ( DebugInfoFilename.size() > 0 )
         DumpDebugInfoToFile( c );
 
-    DEBUG(HSAIL_ASM::dump(c));
+    DEBUG(HSAIL_ASM::dump(c, std::cout));
 
     /*if (!DisableOperandOptimizer) {
         c.optimizeOperands();
@@ -283,7 +286,7 @@ static int DisassembleInput() {
     BrigContainer c;
     if (AutoBinaryStreamer::load(c, InputFilename.c_str())) return 1;
 
-    DEBUG(HSAIL_ASM::dump(c));
+    DEBUG(HSAIL_ASM::dump(c, std::cout));
 
     int res = ValidateContainer(c, NULL);
     if (res) return res;

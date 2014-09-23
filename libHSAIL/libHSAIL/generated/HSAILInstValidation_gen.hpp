@@ -157,14 +157,14 @@ private:
     static unsigned OPERAND_VALUES_ADDRSEG[];
     static unsigned OPERAND_VALUES_ARGLIST[];
     static unsigned OPERAND_VALUES_CALLTAB[];
-    static unsigned OPERAND_VALUES_CNST[];
-    static unsigned OPERAND_VALUES_REGSTYPE_CNSTSTYPE[];
+    static unsigned OPERAND_VALUES_CNSTB32[];
+    static unsigned OPERAND_VALUES_REGU32_CNSTU32[];
     static unsigned OPERAND_VALUES_FBARRIERU32[];
     static unsigned OPERAND_VALUES_REGU32_FBARRIERU32[];
     static unsigned OPERAND_VALUES_FUNC[];
     static unsigned OPERAND_VALUES_IFUNC[];
-    static unsigned OPERAND_VALUES_IMMU32[];
-    static unsigned OPERAND_VALUES_REG_IMM[];
+    static unsigned OPERAND_VALUES_IMM[];
+    static unsigned OPERAND_VALUES_REGSTYPE_IMMSTYPE[];
     static unsigned OPERAND_VALUES_REG_VECTOR_IMM[];
     static unsigned OPERAND_VALUES_IMM0T2U32[];
     static unsigned OPERAND_VALUES_IMM0T3U32[];
@@ -173,11 +173,9 @@ private:
     static unsigned OPERAND_VALUES_LAB[];
     static unsigned OPERAND_VALUES_NULL[];
     static unsigned OPERAND_VALUES_REG[];
-    static unsigned OPERAND_VALUES_REGITYPE_IMAGEITYPE[];
-    static unsigned OPERAND_VALUES_REGSAMP_SAMPLERSAMP[];
     static unsigned OPERAND_VALUES_REG_VECTOR[];
     static unsigned OPERAND_VALUES_SIGNATURE[];
-    static unsigned OPERAND_VALUES_VEC2CTYPE[];
+    static unsigned OPERAND_VALUES_VEC2STYPE[];
     static unsigned OPERAND_VALUES_VEC3CTYPE[];
     static unsigned OPERAND_VALUES_VEC4[];
     static unsigned PACK_VALUES_NONE[];
@@ -195,7 +193,7 @@ private:
     static unsigned SEGMENT_VALUES_GROUP_PRIVATE_READONLY_KERNARG_SPILL_ARG[];
     static unsigned SEGMENT_VALUES_FLAT_GLOBAL[];
     static unsigned SEGMENT_VALUES_GLOBAL_GROUP_FLAT[];
-    static unsigned SEGMENT_VALUES_FLAT_GLOBAL_READONLY_GROUP_PRIVATE_KERNARG[];
+    static unsigned SEGMENT_VALUES_GLOBAL_GROUP_PRIVATE_FLAT_KERNARG_READONLY[];
     static unsigned SEGMENT_VALUES_GLOBAL_GROUP_PRIVATE[];
     static unsigned SEGMENT_VALUES_GROUP[];
     static unsigned SEGMENT_VALUES_PRIVATE[];
@@ -240,7 +238,7 @@ private:
     static unsigned TYPE_VALUES_S32_U32_S64_U64_F_FX[];
     static unsigned TYPE_VALUES_F16_F32[];
     static unsigned TYPE_VALUES_F[];
-    static unsigned TYPE_VALUES_U_S_F[];
+    static unsigned TYPE_VALUES_S_U_F[];
     static unsigned TYPE_VALUES_S32_S64_F[];
     static unsigned TYPE_VALUES_S32_U32_S64_U64_F[];
     static unsigned TYPE_VALUES_F16X[];
@@ -298,7 +296,7 @@ private:
     static unsigned TYPE_VALUES_U32X2[];
     static unsigned TYPE_VALUES_U32X4[];
     static unsigned TYPE_VALUES_U64[];
-    static unsigned TYPE_VALUES_U64X[];
+    static unsigned TYPE_VALUES_U64X2[];
     static unsigned TYPE_VALUES_U8X16[];
     static unsigned TYPE_VALUES_U8X4[];
     static unsigned TYPE_VALUES_U8X8[];
@@ -378,7 +376,7 @@ private:
     static bool check_segment_values_group_private_readonly_kernarg_spill_arg(unsigned val);
     static bool check_segment_values_flat_global(unsigned val);
     static bool check_segment_values_global_group_flat(unsigned val);
-    static bool check_segment_values_flat_global_readonly_group_private_kernarg(unsigned val);
+    static bool check_segment_values_global_group_private_flat_kernarg_readonly(unsigned val);
     static bool check_segment_values_global_group_private(unsigned val);
     static bool check_segment_values_group(unsigned val);
     static bool check_segment_values_private(unsigned val);
@@ -421,7 +419,7 @@ private:
     static bool check_type_values_s32_u32_s64_u64_f_fx(unsigned val);
     static bool check_type_values_f16_f32(unsigned val);
     static bool check_type_values_f(unsigned val);
-    static bool check_type_values_u_s_f(unsigned val);
+    static bool check_type_values_s_u_f(unsigned val);
     static bool check_type_values_s32_s64_f(unsigned val);
     static bool check_type_values_s32_u32_s64_u64_f(unsigned val);
     static bool check_type_values_f16x(unsigned val);
@@ -479,7 +477,7 @@ private:
     static bool check_type_values_u32x2(unsigned val);
     static bool check_type_values_u32x4(unsigned val);
     static bool check_type_values_u64(unsigned val);
-    static bool check_type_values_u64x(unsigned val);
+    static bool check_type_values_u64x2(unsigned val);
     static bool check_type_values_u8x16(unsigned val);
     static bool check_type_values_u8x4(unsigned val);
     static bool check_type_values_u8x8(unsigned val);
@@ -538,6 +536,7 @@ private:
     template<class T> bool req_gcn_atomic_noret(T inst);
     template<class T> bool req_gcn_b4xchg(T inst);
     template<class T> bool req_gcn_bfm(T inst);
+    template<class T> bool req_gcn_div_relaxed(T inst);
     template<class T> bool req_gcn_fldexp(T inst);
     template<class T> bool req_gcn_frexp_exp(T inst);
     template<class T> bool req_gcn_frexp_mant(T inst);
@@ -989,11 +988,11 @@ unsigned InstValidator::OPERAND_VALUES_CALLTAB[] = {
     OPERAND_VAL_CALLTAB
 };
 
-unsigned InstValidator::OPERAND_VALUES_CNST[] = {
+unsigned InstValidator::OPERAND_VALUES_CNSTB32[] = {
     OPERAND_VAL_CNST
 };
 
-unsigned InstValidator::OPERAND_VALUES_REGSTYPE_CNSTSTYPE[] = {
+unsigned InstValidator::OPERAND_VALUES_REGU32_CNSTU32[] = {
     OPERAND_VAL_CNST,
     OPERAND_VAL_REG
 };
@@ -1015,11 +1014,11 @@ unsigned InstValidator::OPERAND_VALUES_IFUNC[] = {
     OPERAND_VAL_IFUNC
 };
 
-unsigned InstValidator::OPERAND_VALUES_IMMU32[] = {
+unsigned InstValidator::OPERAND_VALUES_IMM[] = {
     OPERAND_VAL_IMM
 };
 
-unsigned InstValidator::OPERAND_VALUES_REG_IMM[] = {
+unsigned InstValidator::OPERAND_VALUES_REGSTYPE_IMMSTYPE[] = {
     OPERAND_VAL_IMM,
     OPERAND_VAL_REG
 };
@@ -1060,18 +1059,6 @@ unsigned InstValidator::OPERAND_VALUES_REG[] = {
     OPERAND_VAL_REG
 };
 
-unsigned InstValidator::OPERAND_VALUES_REGITYPE_IMAGEITYPE[] = {
-    OPERAND_VAL_REG,
-    OPERAND_VAL_ROIMAGE,
-    OPERAND_VAL_RWIMAGE,
-    OPERAND_VAL_WOIMAGE
-};
-
-unsigned InstValidator::OPERAND_VALUES_REGSAMP_SAMPLERSAMP[] = {
-    OPERAND_VAL_REG,
-    OPERAND_VAL_SAMPLER
-};
-
 unsigned InstValidator::OPERAND_VALUES_REG_VECTOR[] = {
     OPERAND_VAL_REG,
     OPERAND_VAL_VEC_2,
@@ -1083,7 +1070,7 @@ unsigned InstValidator::OPERAND_VALUES_SIGNATURE[] = {
     OPERAND_VAL_SIGNATURE
 };
 
-unsigned InstValidator::OPERAND_VALUES_VEC2CTYPE[] = {
+unsigned InstValidator::OPERAND_VALUES_VEC2STYPE[] = {
     OPERAND_VAL_VEC_2
 };
 
@@ -1204,7 +1191,7 @@ unsigned InstValidator::SEGMENT_VALUES_GLOBAL_GROUP_FLAT[] = {
     Brig::BRIG_SEGMENT_GROUP
 };
 
-unsigned InstValidator::SEGMENT_VALUES_FLAT_GLOBAL_READONLY_GROUP_PRIVATE_KERNARG[] = {
+unsigned InstValidator::SEGMENT_VALUES_GLOBAL_GROUP_PRIVATE_FLAT_KERNARG_READONLY[] = {
     Brig::BRIG_SEGMENT_FLAT,
     Brig::BRIG_SEGMENT_GLOBAL,
     Brig::BRIG_SEGMENT_GROUP,
@@ -1827,7 +1814,7 @@ unsigned InstValidator::TYPE_VALUES_F[] = {
     Brig::BRIG_TYPE_F64
 };
 
-unsigned InstValidator::TYPE_VALUES_U_S_F[] = {
+unsigned InstValidator::TYPE_VALUES_S_U_F[] = {
     Brig::BRIG_TYPE_F16,
     Brig::BRIG_TYPE_F32,
     Brig::BRIG_TYPE_F64,
@@ -2241,7 +2228,7 @@ unsigned InstValidator::TYPE_VALUES_U64[] = {
     Brig::BRIG_TYPE_U64
 };
 
-unsigned InstValidator::TYPE_VALUES_U64X[] = {
+unsigned InstValidator::TYPE_VALUES_U64X2[] = {
     Brig::BRIG_TYPE_U64X2
 };
 
@@ -3250,7 +3237,7 @@ bool InstValidator::check_segment_values_global_group_flat(unsigned val)
     }
 }
 
-bool InstValidator::check_segment_values_flat_global_readonly_group_private_kernarg(unsigned val)
+bool InstValidator::check_segment_values_global_group_private_flat_kernarg_readonly(unsigned val)
 {
     switch(val)
     {
@@ -4166,7 +4153,7 @@ bool InstValidator::check_type_values_f(unsigned val)
     }
 }
 
-bool InstValidator::check_type_values_u_s_f(unsigned val)
+bool InstValidator::check_type_values_s_u_f(unsigned val)
 {
     switch(val)
     {
@@ -4986,7 +4973,7 @@ bool InstValidator::check_type_values_u64(unsigned val)
     }
 }
 
-bool InstValidator::check_type_values_u64x(unsigned val)
+bool InstValidator::check_type_values_u64x2(unsigned val)
 {
     switch(val)
     {
@@ -5130,7 +5117,7 @@ template<class T> bool InstValidator::req_activelanecount(T inst)
         brigPropError(inst, PROP_WIDTH, getWidth<T>(inst), WIDTH_VALUES_ANY1, sizeof(WIDTH_VALUES_ANY1) / sizeof(unsigned));
     }
     validateOperand(inst, PROP_D0, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned));
-    validateOperand(inst, PROP_S1, OPERAND_ATTR_STYPE, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned));
+    validateOperand(inst, PROP_S1, OPERAND_ATTR_STYPE, OPERAND_VALUES_REGSTYPE_IMMSTYPE, sizeof(OPERAND_VALUES_REGSTYPE_IMMSTYPE) / sizeof(unsigned));
     validateOperand(inst, PROP_S2, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned));
     validateOperand(inst, PROP_S3, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned));
     validateOperand(inst, PROP_S4, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned));
@@ -5190,7 +5177,7 @@ template<class T> bool InstValidator::req_activelanemask(T inst)
         brigPropError(inst, PROP_WIDTH, getWidth<T>(inst), WIDTH_VALUES_ANY1, sizeof(WIDTH_VALUES_ANY1) / sizeof(unsigned));
     }
     validateOperand(inst, PROP_D0, OPERAND_ATTR_DTYPE, OPERAND_VALUES_VEC4, sizeof(OPERAND_VALUES_VEC4) / sizeof(unsigned));
-    validateOperand(inst, PROP_S1, OPERAND_ATTR_STYPE, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned));
+    validateOperand(inst, PROP_S1, OPERAND_ATTR_STYPE, OPERAND_VALUES_REGSTYPE_IMMSTYPE, sizeof(OPERAND_VALUES_REGSTYPE_IMMSTYPE) / sizeof(unsigned));
     validateOperand(inst, PROP_S2, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned));
     validateOperand(inst, PROP_S3, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned));
     validateOperand(inst, PROP_S4, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned));
@@ -5220,10 +5207,10 @@ template<class T> bool InstValidator::req_activelaneshuffle(T inst)
         brigPropError(inst, PROP_WIDTH, getWidth<T>(inst), WIDTH_VALUES_ANY1, sizeof(WIDTH_VALUES_ANY1) / sizeof(unsigned));
     }
     validateOperand(inst, PROP_D0, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned));
-    validateOperand(inst, PROP_S1, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned));
-    validateOperand(inst, PROP_S2, OPERAND_ATTR_U32, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned));
-    validateOperand(inst, PROP_S3, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned));
-    validateOperand(inst, PROP_S4, OPERAND_ATTR_B1, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned));
+    validateOperand(inst, PROP_S1, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REGSTYPE_IMMSTYPE, sizeof(OPERAND_VALUES_REGSTYPE_IMMSTYPE) / sizeof(unsigned));
+    validateOperand(inst, PROP_S2, OPERAND_ATTR_U32, OPERAND_VALUES_REGSTYPE_IMMSTYPE, sizeof(OPERAND_VALUES_REGSTYPE_IMMSTYPE) / sizeof(unsigned));
+    validateOperand(inst, PROP_S3, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REGSTYPE_IMMSTYPE, sizeof(OPERAND_VALUES_REGSTYPE_IMMSTYPE) / sizeof(unsigned));
+    validateOperand(inst, PROP_S4, OPERAND_ATTR_B1, OPERAND_VALUES_REGSTYPE_IMMSTYPE, sizeof(OPERAND_VALUES_REGSTYPE_IMMSTYPE) / sizeof(unsigned));
     return true;
 }
 
@@ -5315,7 +5302,7 @@ template<class T> bool InstValidator::req_addq(T inst)
     }
     validateOperand(inst, PROP_D0, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned));
     validateOperand(inst, PROP_S1, OPERAND_ATTR_SEG, OPERAND_VALUES_ADDRSEG, sizeof(OPERAND_VALUES_ADDRSEG) / sizeof(unsigned));
-    validateOperand(inst, PROP_S2, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned));
+    validateOperand(inst, PROP_S2, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REGSTYPE_IMMSTYPE, sizeof(OPERAND_VALUES_REGSTYPE_IMMSTYPE) / sizeof(unsigned));
     validateOperand(inst, PROP_S3, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned));
     validateOperand(inst, PROP_S4, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned));
     return true;
@@ -5368,7 +5355,7 @@ template<class T> bool InstValidator::req_alloca(T inst)
         brigPropError(inst, PROP_WIDTH, getWidth<T>(inst), WIDTH_VALUES_NONE, sizeof(WIDTH_VALUES_NONE) / sizeof(unsigned));
     }
     validateOperand(inst, PROP_S0, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned));
-    validateOperand(inst, PROP_S1, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned));
+    validateOperand(inst, PROP_S1, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REGSTYPE_IMMSTYPE, sizeof(OPERAND_VALUES_REGSTYPE_IMMSTYPE) / sizeof(unsigned));
     validateOperand(inst, PROP_S2, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned));
     validateOperand(inst, PROP_S3, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned));
     validateOperand(inst, PROP_S4, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned));
@@ -5433,8 +5420,8 @@ template<class T> bool InstValidator::req_atomic(T inst)
         if (!check_memord_values_any(getMemoryOrder<T>(inst))) {
             brigPropError(inst, PROP_MEMORYORDER, getMemoryOrder<T>(inst), MEMORD_VALUES_ANY, sizeof(MEMORD_VALUES_ANY) / sizeof(unsigned));
         }
-        validateOperand(inst, PROP_S2, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned));
-        validateOperand(inst, PROP_S3, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned));
+        validateOperand(inst, PROP_S2, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REGSTYPE_IMMSTYPE, sizeof(OPERAND_VALUES_REGSTYPE_IMMSTYPE) / sizeof(unsigned));
+        validateOperand(inst, PROP_S3, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REGSTYPE_IMMSTYPE, sizeof(OPERAND_VALUES_REGSTYPE_IMMSTYPE) / sizeof(unsigned));
     }
     else if (
             check_atmop_values_and_or_xor_exch(getAtomicOperation<T>(inst))
@@ -5446,7 +5433,7 @@ template<class T> bool InstValidator::req_atomic(T inst)
         if (!check_memord_values_any(getMemoryOrder<T>(inst))) {
             brigPropError(inst, PROP_MEMORYORDER, getMemoryOrder<T>(inst), MEMORD_VALUES_ANY, sizeof(MEMORD_VALUES_ANY) / sizeof(unsigned));
         }
-        validateOperand(inst, PROP_S2, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned));
+        validateOperand(inst, PROP_S2, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REGSTYPE_IMMSTYPE, sizeof(OPERAND_VALUES_REGSTYPE_IMMSTYPE) / sizeof(unsigned));
         validateOperand(inst, PROP_S3, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned));
     }
     else if (
@@ -5459,7 +5446,7 @@ template<class T> bool InstValidator::req_atomic(T inst)
         if (!check_memord_values_any(getMemoryOrder<T>(inst))) {
             brigPropError(inst, PROP_MEMORYORDER, getMemoryOrder<T>(inst), MEMORD_VALUES_ANY, sizeof(MEMORD_VALUES_ANY) / sizeof(unsigned));
         }
-        validateOperand(inst, PROP_S2, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned));
+        validateOperand(inst, PROP_S2, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REGSTYPE_IMMSTYPE, sizeof(OPERAND_VALUES_REGSTYPE_IMMSTYPE) / sizeof(unsigned));
         validateOperand(inst, PROP_S3, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned));
     }
     else if (
@@ -5472,7 +5459,7 @@ template<class T> bool InstValidator::req_atomic(T inst)
         if (!check_memord_values_any(getMemoryOrder<T>(inst))) {
             brigPropError(inst, PROP_MEMORYORDER, getMemoryOrder<T>(inst), MEMORD_VALUES_ANY, sizeof(MEMORD_VALUES_ANY) / sizeof(unsigned));
         }
-        validateOperand(inst, PROP_S2, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned));
+        validateOperand(inst, PROP_S2, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REGSTYPE_IMMSTYPE, sizeof(OPERAND_VALUES_REGSTYPE_IMMSTYPE) / sizeof(unsigned));
         validateOperand(inst, PROP_S3, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned));
     }
     else if (
@@ -5564,7 +5551,7 @@ template<class T> bool InstValidator::req_atomic_noret(T inst)
         if (!check_memord_values_any(getMemoryOrder<T>(inst))) {
             brigPropError(inst, PROP_MEMORYORDER, getMemoryOrder<T>(inst), MEMORD_VALUES_ANY, sizeof(MEMORD_VALUES_ANY) / sizeof(unsigned));
         }
-        validateOperand(inst, PROP_S2, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned));
+        validateOperand(inst, PROP_S2, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REGSTYPE_IMMSTYPE, sizeof(OPERAND_VALUES_REGSTYPE_IMMSTYPE) / sizeof(unsigned));
     }
     else if (
             check_atmop_values_and_or_xor(getAtomicOperation<T>(inst))
@@ -5640,7 +5627,7 @@ template<class T> bool InstValidator::req_atomic_noret(T inst)
         invalidVariant(inst, PROP_SEGMENT);
     }
     validateOperand(inst, PROP_S0, OPERAND_ATTR_SEG, OPERAND_VALUES_ADDRSEG, sizeof(OPERAND_VALUES_ADDRSEG) / sizeof(unsigned));
-    validateOperand(inst, PROP_S1, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned));
+    validateOperand(inst, PROP_S1, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REGSTYPE_IMMSTYPE, sizeof(OPERAND_VALUES_REGSTYPE_IMMSTYPE) / sizeof(unsigned));
     validateOperand(inst, PROP_S3, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned));
     validateOperand(inst, PROP_S4, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned));
     return true;
@@ -5775,9 +5762,9 @@ template<class T> bool InstValidator::req_bitextract(T inst)
         brigPropError(inst, PROP_TYPE, getType<T>(inst), TYPE_VALUES_S32_U32_S64_U64, sizeof(TYPE_VALUES_S32_U32_S64_U64) / sizeof(unsigned));
     }
     validateOperand(inst, PROP_D0, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned));
-    validateOperand(inst, PROP_S1, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned));
-    validateOperand(inst, PROP_S2, OPERAND_ATTR_U32, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned));
-    validateOperand(inst, PROP_S3, OPERAND_ATTR_U32, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned));
+    validateOperand(inst, PROP_S1, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REGSTYPE_IMMSTYPE, sizeof(OPERAND_VALUES_REGSTYPE_IMMSTYPE) / sizeof(unsigned));
+    validateOperand(inst, PROP_S2, OPERAND_ATTR_U32, OPERAND_VALUES_REGSTYPE_IMMSTYPE, sizeof(OPERAND_VALUES_REGSTYPE_IMMSTYPE) / sizeof(unsigned));
+    validateOperand(inst, PROP_S3, OPERAND_ATTR_U32, OPERAND_VALUES_REGSTYPE_IMMSTYPE, sizeof(OPERAND_VALUES_REGSTYPE_IMMSTYPE) / sizeof(unsigned));
     validateOperand(inst, PROP_S4, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned));
     return true;
 }
@@ -5797,10 +5784,10 @@ template<class T> bool InstValidator::req_bitinsert(T inst)
         brigPropError(inst, PROP_TYPE, getType<T>(inst), TYPE_VALUES_S32_U32_S64_U64, sizeof(TYPE_VALUES_S32_U32_S64_U64) / sizeof(unsigned));
     }
     validateOperand(inst, PROP_D0, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned));
-    validateOperand(inst, PROP_S1, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned));
-    validateOperand(inst, PROP_S2, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned));
-    validateOperand(inst, PROP_S3, OPERAND_ATTR_U32, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned));
-    validateOperand(inst, PROP_S4, OPERAND_ATTR_U32, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned));
+    validateOperand(inst, PROP_S1, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REGSTYPE_IMMSTYPE, sizeof(OPERAND_VALUES_REGSTYPE_IMMSTYPE) / sizeof(unsigned));
+    validateOperand(inst, PROP_S2, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REGSTYPE_IMMSTYPE, sizeof(OPERAND_VALUES_REGSTYPE_IMMSTYPE) / sizeof(unsigned));
+    validateOperand(inst, PROP_S3, OPERAND_ATTR_U32, OPERAND_VALUES_REGSTYPE_IMMSTYPE, sizeof(OPERAND_VALUES_REGSTYPE_IMMSTYPE) / sizeof(unsigned));
+    validateOperand(inst, PROP_S4, OPERAND_ATTR_U32, OPERAND_VALUES_REGSTYPE_IMMSTYPE, sizeof(OPERAND_VALUES_REGSTYPE_IMMSTYPE) / sizeof(unsigned));
     return true;
 }
 
@@ -5819,8 +5806,8 @@ template<class T> bool InstValidator::req_bitmask(T inst)
         brigPropError(inst, PROP_TYPE, getType<T>(inst), TYPE_VALUES_B32_B64, sizeof(TYPE_VALUES_B32_B64) / sizeof(unsigned));
     }
     validateOperand(inst, PROP_D0, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned));
-    validateOperand(inst, PROP_S1, OPERAND_ATTR_U32, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned));
-    validateOperand(inst, PROP_S2, OPERAND_ATTR_U32, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned));
+    validateOperand(inst, PROP_S1, OPERAND_ATTR_U32, OPERAND_VALUES_REGSTYPE_IMMSTYPE, sizeof(OPERAND_VALUES_REGSTYPE_IMMSTYPE) / sizeof(unsigned));
+    validateOperand(inst, PROP_S2, OPERAND_ATTR_U32, OPERAND_VALUES_REGSTYPE_IMMSTYPE, sizeof(OPERAND_VALUES_REGSTYPE_IMMSTYPE) / sizeof(unsigned));
     validateOperand(inst, PROP_S3, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned));
     validateOperand(inst, PROP_S4, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned));
     return true;
@@ -5930,8 +5917,8 @@ template<class T> bool InstValidator::req_casq(T inst)
     }
     validateOperand(inst, PROP_D0, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned));
     validateOperand(inst, PROP_S1, OPERAND_ATTR_SEG, OPERAND_VALUES_ADDRSEG, sizeof(OPERAND_VALUES_ADDRSEG) / sizeof(unsigned));
-    validateOperand(inst, PROP_S2, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned));
-    validateOperand(inst, PROP_S3, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned));
+    validateOperand(inst, PROP_S2, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REGSTYPE_IMMSTYPE, sizeof(OPERAND_VALUES_REGSTYPE_IMMSTYPE) / sizeof(unsigned));
+    validateOperand(inst, PROP_S3, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REGSTYPE_IMMSTYPE, sizeof(OPERAND_VALUES_REGSTYPE_IMMSTYPE) / sizeof(unsigned));
     validateOperand(inst, PROP_S4, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned));
     return true;
 }
@@ -5954,7 +5941,7 @@ template<class T> bool InstValidator::req_cbr(T inst)
     if (!check_width_values_any1(getWidth<T>(inst))) {
         brigPropError(inst, PROP_WIDTH, getWidth<T>(inst), WIDTH_VALUES_ANY1, sizeof(WIDTH_VALUES_ANY1) / sizeof(unsigned));
     }
-    validateOperand(inst, PROP_S0, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned));
+    validateOperand(inst, PROP_S0, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REGSTYPE_IMMSTYPE, sizeof(OPERAND_VALUES_REGSTYPE_IMMSTYPE) / sizeof(unsigned));
     validateOperand(inst, PROP_S1, OPERAND_ATTR_NONE, OPERAND_VALUES_LAB, sizeof(OPERAND_VALUES_LAB) / sizeof(unsigned));
     validateOperand(inst, PROP_S2, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned));
     validateOperand(inst, PROP_S3, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned));
@@ -6023,8 +6010,8 @@ template<class T> bool InstValidator::req_class(T inst)
         brigPropError(inst, PROP_SOURCETYPE, getSourceType<T>(inst), TYPE_VALUES_F, sizeof(TYPE_VALUES_F) / sizeof(unsigned));
     }
     validateOperand(inst, PROP_D0, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned));
-    validateOperand(inst, PROP_S1, OPERAND_ATTR_STYPE, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned));
-    validateOperand(inst, PROP_S2, OPERAND_ATTR_U32, OPERAND_VALUES_REGSTYPE_CNSTSTYPE, sizeof(OPERAND_VALUES_REGSTYPE_CNSTSTYPE) / sizeof(unsigned));
+    validateOperand(inst, PROP_S1, OPERAND_ATTR_STYPE, OPERAND_VALUES_REGSTYPE_IMMSTYPE, sizeof(OPERAND_VALUES_REGSTYPE_IMMSTYPE) / sizeof(unsigned));
+    validateOperand(inst, PROP_S2, OPERAND_ATTR_U32, OPERAND_VALUES_REGU32_CNSTU32, sizeof(OPERAND_VALUES_REGU32_CNSTU32) / sizeof(unsigned));
     validateOperand(inst, PROP_S3, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned));
     validateOperand(inst, PROP_S4, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned));
     return true;
@@ -6047,21 +6034,21 @@ template<class T> bool InstValidator::req_cmov(T inst)
         brigPropError(inst, PROP_TYPE, getType<T>(inst), TYPE_VALUES_B1_B32_B64_X, sizeof(TYPE_VALUES_B1_B32_B64_X) / sizeof(unsigned));
     }
     validateOperand(inst, PROP_D0, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned));
-    validateOperand(inst, PROP_S2, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned));
-    validateOperand(inst, PROP_S3, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned));
+    validateOperand(inst, PROP_S2, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REGSTYPE_IMMSTYPE, sizeof(OPERAND_VALUES_REGSTYPE_IMMSTYPE) / sizeof(unsigned));
+    validateOperand(inst, PROP_S3, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REGSTYPE_IMMSTYPE, sizeof(OPERAND_VALUES_REGSTYPE_IMMSTYPE) / sizeof(unsigned));
     validateOperand(inst, PROP_S4, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned));
 
     if (
             check_type_values_b1_b32_b64(getType<T>(inst))
        )
     {
-        validateOperand(inst, PROP_S1, OPERAND_ATTR_B1, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned));
+        validateOperand(inst, PROP_S1, OPERAND_ATTR_B1, OPERAND_VALUES_REGSTYPE_IMMSTYPE, sizeof(OPERAND_VALUES_REGSTYPE_IMMSTYPE) / sizeof(unsigned));
     }
     else if (
             check_type_values_x(getType<T>(inst))
        )
     {
-        validateOperand(inst, PROP_S1, OPERAND_ATTR_P2U, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned));
+        validateOperand(inst, PROP_S1, OPERAND_ATTR_P2U, OPERAND_VALUES_REGSTYPE_IMMSTYPE, sizeof(OPERAND_VALUES_REGSTYPE_IMMSTYPE) / sizeof(unsigned));
     }
     else 
     {
@@ -6184,8 +6171,8 @@ template<class T> bool InstValidator::req_cmp(T inst)
             check_type_values_s64x2_u64x2_f64x2(getSourceType<T>(inst))
        )
     {
-        if (!check_type_values_u64x(getType<T>(inst))) {
-            brigPropError(inst, PROP_TYPE, getType<T>(inst), TYPE_VALUES_U64X, sizeof(TYPE_VALUES_U64X) / sizeof(unsigned));
+        if (!check_type_values_u64x2(getType<T>(inst))) {
+            brigPropError(inst, PROP_TYPE, getType<T>(inst), TYPE_VALUES_U64X2, sizeof(TYPE_VALUES_U64X2) / sizeof(unsigned));
         }
     }
     else 
@@ -6258,8 +6245,8 @@ template<class T> bool InstValidator::req_cmp(T inst)
         invalidVariant(inst, PROP_SOURCETYPE);
     }
     validateOperand(inst, PROP_D0, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned));
-    validateOperand(inst, PROP_S1, OPERAND_ATTR_STYPE, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned));
-    validateOperand(inst, PROP_S2, OPERAND_ATTR_STYPE, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned));
+    validateOperand(inst, PROP_S1, OPERAND_ATTR_STYPE, OPERAND_VALUES_REGSTYPE_IMMSTYPE, sizeof(OPERAND_VALUES_REGSTYPE_IMMSTYPE) / sizeof(unsigned));
+    validateOperand(inst, PROP_S2, OPERAND_ATTR_STYPE, OPERAND_VALUES_REGSTYPE_IMMSTYPE, sizeof(OPERAND_VALUES_REGSTYPE_IMMSTYPE) / sizeof(unsigned));
     validateOperand(inst, PROP_S3, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned));
     validateOperand(inst, PROP_S4, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned));
     return true;
@@ -6292,14 +6279,14 @@ template<class T> bool InstValidator::req_combine(T inst)
             check_type_values_b32(getSourceType<T>(inst))
        )
     {
-        validateOperand(inst, PROP_S1, OPERAND_ATTR_STYPE, OPERAND_VALUES_VEC2CTYPE, sizeof(OPERAND_VALUES_VEC2CTYPE) / sizeof(unsigned));
+        validateOperand(inst, PROP_S1, OPERAND_ATTR_STYPE, OPERAND_VALUES_VEC2STYPE, sizeof(OPERAND_VALUES_VEC2STYPE) / sizeof(unsigned));
     }
     else if (
             check_type_values_b128(getType<T>(inst)) &&
             check_type_values_b64(getSourceType<T>(inst))
        )
     {
-        validateOperand(inst, PROP_S1, OPERAND_ATTR_STYPE, OPERAND_VALUES_VEC2CTYPE, sizeof(OPERAND_VALUES_VEC2CTYPE) / sizeof(unsigned));
+        validateOperand(inst, PROP_S1, OPERAND_ATTR_STYPE, OPERAND_VALUES_VEC2STYPE, sizeof(OPERAND_VALUES_VEC2STYPE) / sizeof(unsigned));
     }
     else if (
             check_type_values_b128(getType<T>(inst)) &&
@@ -6402,8 +6389,8 @@ template<class T> bool InstValidator::req_cvt(T inst)
             check_type_values_b1(getType<T>(inst))
        )
     {
-        if (!check_type_values_u_s_f(getSourceType<T>(inst))) {
-            brigPropError(inst, PROP_SOURCETYPE, getSourceType<T>(inst), TYPE_VALUES_U_S_F, sizeof(TYPE_VALUES_U_S_F) / sizeof(unsigned));
+        if (!check_type_values_s_u_f(getSourceType<T>(inst))) {
+            brigPropError(inst, PROP_SOURCETYPE, getSourceType<T>(inst), TYPE_VALUES_S_U_F, sizeof(TYPE_VALUES_S_U_F) / sizeof(unsigned));
         }
     }
     else if (
@@ -6536,7 +6523,7 @@ template<class T> bool InstValidator::req_cvt(T inst)
         invalidVariant(inst, PROP_SOURCETYPE, PROP_TYPE);
     }
     validateOperand(inst, PROP_D0, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned));
-    validateOperand(inst, PROP_S1, OPERAND_ATTR_STYPE, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned));
+    validateOperand(inst, PROP_S1, OPERAND_ATTR_STYPE, OPERAND_VALUES_REGSTYPE_IMMSTYPE, sizeof(OPERAND_VALUES_REGSTYPE_IMMSTYPE) / sizeof(unsigned));
     validateOperand(inst, PROP_S2, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned));
     validateOperand(inst, PROP_S3, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned));
     validateOperand(inst, PROP_S4, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned));
@@ -6554,7 +6541,7 @@ template<class T> bool InstValidator::req_cvt(T inst)
 template<class T> bool InstValidator::req_d0_s1(T inst)
 {
     validateOperand(inst, PROP_D0, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned));
-    validateOperand(inst, PROP_S1, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned));
+    validateOperand(inst, PROP_S1, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REGSTYPE_IMMSTYPE, sizeof(OPERAND_VALUES_REGSTYPE_IMMSTYPE) / sizeof(unsigned));
     validateOperand(inst, PROP_S2, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned));
     validateOperand(inst, PROP_S3, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned));
     validateOperand(inst, PROP_S4, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned));
@@ -6572,8 +6559,8 @@ template<class T> bool InstValidator::req_d0_s1(T inst)
 template<class T> bool InstValidator::req_d0_s1_s2(T inst)
 {
     validateOperand(inst, PROP_D0, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned));
-    validateOperand(inst, PROP_S1, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned));
-    validateOperand(inst, PROP_S2, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned));
+    validateOperand(inst, PROP_S1, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REGSTYPE_IMMSTYPE, sizeof(OPERAND_VALUES_REGSTYPE_IMMSTYPE) / sizeof(unsigned));
+    validateOperand(inst, PROP_S2, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REGSTYPE_IMMSTYPE, sizeof(OPERAND_VALUES_REGSTYPE_IMMSTYPE) / sizeof(unsigned));
     validateOperand(inst, PROP_S3, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned));
     validateOperand(inst, PROP_S4, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned));
     return true;
@@ -6590,9 +6577,9 @@ template<class T> bool InstValidator::req_d0_s1_s2(T inst)
 template<class T> bool InstValidator::req_d0_s1_s2_s3(T inst)
 {
     validateOperand(inst, PROP_D0, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned));
-    validateOperand(inst, PROP_S1, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned));
-    validateOperand(inst, PROP_S2, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned));
-    validateOperand(inst, PROP_S3, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned));
+    validateOperand(inst, PROP_S1, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REGSTYPE_IMMSTYPE, sizeof(OPERAND_VALUES_REGSTYPE_IMMSTYPE) / sizeof(unsigned));
+    validateOperand(inst, PROP_S2, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REGSTYPE_IMMSTYPE, sizeof(OPERAND_VALUES_REGSTYPE_IMMSTYPE) / sizeof(unsigned));
+    validateOperand(inst, PROP_S3, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REGSTYPE_IMMSTYPE, sizeof(OPERAND_VALUES_REGSTYPE_IMMSTYPE) / sizeof(unsigned));
     validateOperand(inst, PROP_S4, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned));
     return true;
 }
@@ -6611,7 +6598,7 @@ template<class T> bool InstValidator::req_debugtrap(T inst)
     if (!check_type_values_u32(getType<T>(inst))) {
         brigPropError(inst, PROP_TYPE, getType<T>(inst), TYPE_VALUES_U32, sizeof(TYPE_VALUES_U32) / sizeof(unsigned));
     }
-    validateOperand(inst, PROP_S0, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned));
+    validateOperand(inst, PROP_S0, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REGSTYPE_IMMSTYPE, sizeof(OPERAND_VALUES_REGSTYPE_IMMSTYPE) / sizeof(unsigned));
     validateOperand(inst, PROP_S1, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned));
     validateOperand(inst, PROP_S2, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned));
     validateOperand(inst, PROP_S3, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned));
@@ -6699,7 +6686,7 @@ template<class T> bool InstValidator::req_expand(T inst)
             check_type_values_b64(getSourceType<T>(inst))
        )
     {
-        validateOperand(inst, PROP_D0, OPERAND_ATTR_DTYPE, OPERAND_VALUES_VEC2CTYPE, sizeof(OPERAND_VALUES_VEC2CTYPE) / sizeof(unsigned));
+        validateOperand(inst, PROP_D0, OPERAND_ATTR_DTYPE, OPERAND_VALUES_VEC2STYPE, sizeof(OPERAND_VALUES_VEC2STYPE) / sizeof(unsigned));
     }
     else if (
             check_type_values_b32(getType<T>(inst)) &&
@@ -6713,13 +6700,13 @@ template<class T> bool InstValidator::req_expand(T inst)
             check_type_values_b128(getSourceType<T>(inst))
        )
     {
-        validateOperand(inst, PROP_D0, OPERAND_ATTR_DTYPE, OPERAND_VALUES_VEC2CTYPE, sizeof(OPERAND_VALUES_VEC2CTYPE) / sizeof(unsigned));
+        validateOperand(inst, PROP_D0, OPERAND_ATTR_DTYPE, OPERAND_VALUES_VEC2STYPE, sizeof(OPERAND_VALUES_VEC2STYPE) / sizeof(unsigned));
     }
     else 
     {
         invalidVariant(inst, PROP_SOURCETYPE, PROP_TYPE);
     }
-    validateOperand(inst, PROP_S1, OPERAND_ATTR_STYPE, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned));
+    validateOperand(inst, PROP_S1, OPERAND_ATTR_STYPE, OPERAND_VALUES_REGSTYPE_IMMSTYPE, sizeof(OPERAND_VALUES_REGSTYPE_IMMSTYPE) / sizeof(unsigned));
     validateOperand(inst, PROP_S2, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned));
     validateOperand(inst, PROP_S3, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned));
     validateOperand(inst, PROP_S4, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned));
@@ -6757,7 +6744,7 @@ template<class T> bool InstValidator::req_f2s(T inst)
     validateTypesize(inst, PROP_TYPESIZE, TYPESIZE_ATTR_NONE, TYPESIZE_VALUES_SEG, sizeof(TYPESIZE_VALUES_SEG) / sizeof(unsigned));
     validateStypesize(inst, PROP_STYPESIZE, STYPESIZE_ATTR_NONE, STYPESIZE_VALUES_MODEL, sizeof(STYPESIZE_VALUES_MODEL) / sizeof(unsigned));
     validateOperand(inst, PROP_D0, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned));
-    validateOperand(inst, PROP_S1, OPERAND_ATTR_STYPE, OPERAND_VALUES_REGSTYPE_CNSTSTYPE, sizeof(OPERAND_VALUES_REGSTYPE_CNSTSTYPE) / sizeof(unsigned));
+    validateOperand(inst, PROP_S1, OPERAND_ATTR_STYPE, OPERAND_VALUES_REGU32_CNSTU32, sizeof(OPERAND_VALUES_REGU32_CNSTU32) / sizeof(unsigned));
     validateOperand(inst, PROP_S2, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned));
     validateOperand(inst, PROP_S3, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned));
     validateOperand(inst, PROP_S4, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned));
@@ -6831,7 +6818,7 @@ template<class T> bool InstValidator::req_firstbit(T inst)
         brigPropError(inst, PROP_SOURCETYPE, getSourceType<T>(inst), TYPE_VALUES_S32_U32_S64_U64, sizeof(TYPE_VALUES_S32_U32_S64_U64) / sizeof(unsigned));
     }
     validateOperand(inst, PROP_D0, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned));
-    validateOperand(inst, PROP_S1, OPERAND_ATTR_STYPE, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned));
+    validateOperand(inst, PROP_S1, OPERAND_ATTR_STYPE, OPERAND_VALUES_REGSTYPE_IMMSTYPE, sizeof(OPERAND_VALUES_REGSTYPE_IMMSTYPE) / sizeof(unsigned));
     validateOperand(inst, PROP_S2, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned));
     validateOperand(inst, PROP_S3, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned));
     validateOperand(inst, PROP_S4, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned));
@@ -6973,8 +6960,8 @@ template<class T> bool InstValidator::req_gcn_atomic(T inst)
         if (!check_memord_values_any(getMemoryOrder<T>(inst))) {
             brigPropError(inst, PROP_MEMORYORDER, getMemoryOrder<T>(inst), MEMORD_VALUES_ANY, sizeof(MEMORD_VALUES_ANY) / sizeof(unsigned));
         }
-        validateOperand(inst, PROP_S2, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned));
-        validateOperand(inst, PROP_S3, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned));
+        validateOperand(inst, PROP_S2, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REGSTYPE_IMMSTYPE, sizeof(OPERAND_VALUES_REGSTYPE_IMMSTYPE) / sizeof(unsigned));
+        validateOperand(inst, PROP_S3, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REGSTYPE_IMMSTYPE, sizeof(OPERAND_VALUES_REGSTYPE_IMMSTYPE) / sizeof(unsigned));
     }
     else if (
             check_atmop_values_and_or_xor_exch(getAtomicOperation<T>(inst))
@@ -6986,7 +6973,7 @@ template<class T> bool InstValidator::req_gcn_atomic(T inst)
         if (!check_memord_values_any(getMemoryOrder<T>(inst))) {
             brigPropError(inst, PROP_MEMORYORDER, getMemoryOrder<T>(inst), MEMORD_VALUES_ANY, sizeof(MEMORD_VALUES_ANY) / sizeof(unsigned));
         }
-        validateOperand(inst, PROP_S2, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned));
+        validateOperand(inst, PROP_S2, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REGSTYPE_IMMSTYPE, sizeof(OPERAND_VALUES_REGSTYPE_IMMSTYPE) / sizeof(unsigned));
         validateOperand(inst, PROP_S3, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned));
     }
     else if (
@@ -6999,7 +6986,7 @@ template<class T> bool InstValidator::req_gcn_atomic(T inst)
         if (!check_memord_values_any(getMemoryOrder<T>(inst))) {
             brigPropError(inst, PROP_MEMORYORDER, getMemoryOrder<T>(inst), MEMORD_VALUES_ANY, sizeof(MEMORD_VALUES_ANY) / sizeof(unsigned));
         }
-        validateOperand(inst, PROP_S2, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned));
+        validateOperand(inst, PROP_S2, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REGSTYPE_IMMSTYPE, sizeof(OPERAND_VALUES_REGSTYPE_IMMSTYPE) / sizeof(unsigned));
         validateOperand(inst, PROP_S3, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned));
     }
     else if (
@@ -7012,7 +6999,7 @@ template<class T> bool InstValidator::req_gcn_atomic(T inst)
         if (!check_memord_values_any(getMemoryOrder<T>(inst))) {
             brigPropError(inst, PROP_MEMORYORDER, getMemoryOrder<T>(inst), MEMORD_VALUES_ANY, sizeof(MEMORD_VALUES_ANY) / sizeof(unsigned));
         }
-        validateOperand(inst, PROP_S2, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned));
+        validateOperand(inst, PROP_S2, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REGSTYPE_IMMSTYPE, sizeof(OPERAND_VALUES_REGSTYPE_IMMSTYPE) / sizeof(unsigned));
         validateOperand(inst, PROP_S3, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned));
     }
     else if (
@@ -7084,7 +7071,7 @@ template<class T> bool InstValidator::req_gcn_atomic_noret(T inst)
         if (!check_memord_values_any(getMemoryOrder<T>(inst))) {
             brigPropError(inst, PROP_MEMORYORDER, getMemoryOrder<T>(inst), MEMORD_VALUES_ANY, sizeof(MEMORD_VALUES_ANY) / sizeof(unsigned));
         }
-        validateOperand(inst, PROP_S2, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned));
+        validateOperand(inst, PROP_S2, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REGSTYPE_IMMSTYPE, sizeof(OPERAND_VALUES_REGSTYPE_IMMSTYPE) / sizeof(unsigned));
     }
     else if (
             check_atmop_values_and_or_xor(getAtomicOperation<T>(inst))
@@ -7139,7 +7126,7 @@ template<class T> bool InstValidator::req_gcn_atomic_noret(T inst)
         invalidVariant(inst, PROP_ATOMICOPERATION);
     }
     validateOperand(inst, PROP_S0, OPERAND_ATTR_SEG, OPERAND_VALUES_ADDRSEG, sizeof(OPERAND_VALUES_ADDRSEG) / sizeof(unsigned));
-    validateOperand(inst, PROP_S1, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned));
+    validateOperand(inst, PROP_S1, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REGSTYPE_IMMSTYPE, sizeof(OPERAND_VALUES_REGSTYPE_IMMSTYPE) / sizeof(unsigned));
     validateOperand(inst, PROP_S3, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned));
     validateOperand(inst, PROP_S4, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned));
     return true;
@@ -7161,7 +7148,7 @@ template<class T> bool InstValidator::req_gcn_b4xchg(T inst)
     }
     validateOperand(inst, PROP_D0, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned));
     validateOperand(inst, PROP_S1, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned));
-    validateOperand(inst, PROP_S2, OPERAND_ATTR_DTYPE, OPERAND_VALUES_IMMU32, sizeof(OPERAND_VALUES_IMMU32) / sizeof(unsigned));
+    validateOperand(inst, PROP_S2, OPERAND_ATTR_DTYPE, OPERAND_VALUES_IMM, sizeof(OPERAND_VALUES_IMM) / sizeof(unsigned));
     validateOperand(inst, PROP_S3, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned));
     validateOperand(inst, PROP_S4, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned));
     return true;
@@ -7182,10 +7169,24 @@ template<class T> bool InstValidator::req_gcn_bfm(T inst)
         brigPropError(inst, PROP_TYPE, getType<T>(inst), TYPE_VALUES_B32, sizeof(TYPE_VALUES_B32) / sizeof(unsigned));
     }
     validateOperand(inst, PROP_D0, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned));
-    validateOperand(inst, PROP_S1, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned));
-    validateOperand(inst, PROP_S2, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned));
+    validateOperand(inst, PROP_S1, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REGSTYPE_IMMSTYPE, sizeof(OPERAND_VALUES_REGSTYPE_IMMSTYPE) / sizeof(unsigned));
+    validateOperand(inst, PROP_S2, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REGSTYPE_IMMSTYPE, sizeof(OPERAND_VALUES_REGSTYPE_IMMSTYPE) / sizeof(unsigned));
     validateOperand(inst, PROP_S3, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned));
     validateOperand(inst, PROP_S4, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned));
+    return true;
+}
+
+//================================================================================
+//  Req gcn_div_relaxed = {
+//      type = f32;
+//      d0_s1_s2;
+//  }
+template<class T> bool InstValidator::req_gcn_div_relaxed(T inst)
+{
+    if (!check_type_values_f32(getType<T>(inst))) {
+        brigPropError(inst, PROP_TYPE, getType<T>(inst), TYPE_VALUES_F32, sizeof(TYPE_VALUES_F32) / sizeof(unsigned));
+    }
+    req_d0_s1_s2(inst);
     return true;
 }
 
@@ -7204,8 +7205,8 @@ template<class T> bool InstValidator::req_gcn_fldexp(T inst)
         brigPropError(inst, PROP_TYPE, getType<T>(inst), TYPE_VALUES_F32_F64, sizeof(TYPE_VALUES_F32_F64) / sizeof(unsigned));
     }
     validateOperand(inst, PROP_D0, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned));
-    validateOperand(inst, PROP_S1, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned));
-    validateOperand(inst, PROP_S2, OPERAND_ATTR_S32, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned));
+    validateOperand(inst, PROP_S1, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REGSTYPE_IMMSTYPE, sizeof(OPERAND_VALUES_REGSTYPE_IMMSTYPE) / sizeof(unsigned));
+    validateOperand(inst, PROP_S2, OPERAND_ATTR_S32, OPERAND_VALUES_REGSTYPE_IMMSTYPE, sizeof(OPERAND_VALUES_REGSTYPE_IMMSTYPE) / sizeof(unsigned));
     validateOperand(inst, PROP_S3, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned));
     validateOperand(inst, PROP_S4, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned));
     return true;
@@ -7226,7 +7227,7 @@ template<class T> bool InstValidator::req_gcn_frexp_exp(T inst)
         brigPropError(inst, PROP_TYPE, getType<T>(inst), TYPE_VALUES_F32_F64, sizeof(TYPE_VALUES_F32_F64) / sizeof(unsigned));
     }
     validateOperand(inst, PROP_D0, OPERAND_ATTR_S32, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned));
-    validateOperand(inst, PROP_S1, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned));
+    validateOperand(inst, PROP_S1, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REGSTYPE_IMMSTYPE, sizeof(OPERAND_VALUES_REGSTYPE_IMMSTYPE) / sizeof(unsigned));
     validateOperand(inst, PROP_S2, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned));
     validateOperand(inst, PROP_S3, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned));
     validateOperand(inst, PROP_S4, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned));
@@ -7248,7 +7249,7 @@ template<class T> bool InstValidator::req_gcn_frexp_mant(T inst)
         brigPropError(inst, PROP_TYPE, getType<T>(inst), TYPE_VALUES_F32_F64, sizeof(TYPE_VALUES_F32_F64) / sizeof(unsigned));
     }
     validateOperand(inst, PROP_D0, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned));
-    validateOperand(inst, PROP_S1, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned));
+    validateOperand(inst, PROP_S1, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REGSTYPE_IMMSTYPE, sizeof(OPERAND_VALUES_REGSTYPE_IMMSTYPE) / sizeof(unsigned));
     validateOperand(inst, PROP_S2, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned));
     validateOperand(inst, PROP_S3, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned));
     validateOperand(inst, PROP_S4, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned));
@@ -7291,7 +7292,7 @@ template<class T> bool InstValidator::req_gcn_ld(T inst)
     }
 
     if (
-            check_type_values_u_s_f(getType<T>(inst))
+            check_type_values_s_u_f(getType<T>(inst))
        )
     {
         validateOperand(inst, PROP_D0, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG_VECTOR, sizeof(OPERAND_VALUES_REG_VECTOR) / sizeof(unsigned));
@@ -7328,9 +7329,9 @@ template<class T> bool InstValidator::req_gcn_mads(T inst)
         brigPropError(inst, PROP_TYPE, getType<T>(inst), TYPE_VALUES_B32, sizeof(TYPE_VALUES_B32) / sizeof(unsigned));
     }
     validateOperand(inst, PROP_D0, OPERAND_ATTR_S64, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned));
-    validateOperand(inst, PROP_S1, OPERAND_ATTR_S32, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned));
-    validateOperand(inst, PROP_S2, OPERAND_ATTR_S32, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned));
-    validateOperand(inst, PROP_S3, OPERAND_ATTR_S64, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned));
+    validateOperand(inst, PROP_S1, OPERAND_ATTR_S32, OPERAND_VALUES_REGSTYPE_IMMSTYPE, sizeof(OPERAND_VALUES_REGSTYPE_IMMSTYPE) / sizeof(unsigned));
+    validateOperand(inst, PROP_S2, OPERAND_ATTR_S32, OPERAND_VALUES_REGSTYPE_IMMSTYPE, sizeof(OPERAND_VALUES_REGSTYPE_IMMSTYPE) / sizeof(unsigned));
+    validateOperand(inst, PROP_S3, OPERAND_ATTR_S64, OPERAND_VALUES_REGSTYPE_IMMSTYPE, sizeof(OPERAND_VALUES_REGSTYPE_IMMSTYPE) / sizeof(unsigned));
     validateOperand(inst, PROP_S4, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned));
     return true;
 }
@@ -7350,9 +7351,9 @@ template<class T> bool InstValidator::req_gcn_madu(T inst)
         brigPropError(inst, PROP_TYPE, getType<T>(inst), TYPE_VALUES_B32, sizeof(TYPE_VALUES_B32) / sizeof(unsigned));
     }
     validateOperand(inst, PROP_D0, OPERAND_ATTR_U64, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned));
-    validateOperand(inst, PROP_S1, OPERAND_ATTR_U32, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned));
-    validateOperand(inst, PROP_S2, OPERAND_ATTR_U32, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned));
-    validateOperand(inst, PROP_S3, OPERAND_ATTR_U64, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned));
+    validateOperand(inst, PROP_S1, OPERAND_ATTR_U32, OPERAND_VALUES_REGSTYPE_IMMSTYPE, sizeof(OPERAND_VALUES_REGSTYPE_IMMSTYPE) / sizeof(unsigned));
+    validateOperand(inst, PROP_S2, OPERAND_ATTR_U32, OPERAND_VALUES_REGSTYPE_IMMSTYPE, sizeof(OPERAND_VALUES_REGSTYPE_IMMSTYPE) / sizeof(unsigned));
+    validateOperand(inst, PROP_S3, OPERAND_ATTR_U64, OPERAND_VALUES_REGSTYPE_IMMSTYPE, sizeof(OPERAND_VALUES_REGSTYPE_IMMSTYPE) / sizeof(unsigned));
     validateOperand(inst, PROP_S4, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned));
     return true;
 }
@@ -7386,9 +7387,9 @@ template<class T> bool InstValidator::req_gcn_min_max_med3(T inst)
         brigPropError(inst, PROP_TYPE, getType<T>(inst), TYPE_VALUES_S32_U32_F32, sizeof(TYPE_VALUES_S32_U32_F32) / sizeof(unsigned));
     }
     validateOperand(inst, PROP_D0, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned));
-    validateOperand(inst, PROP_S1, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned));
-    validateOperand(inst, PROP_S2, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned));
-    validateOperand(inst, PROP_S3, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned));
+    validateOperand(inst, PROP_S1, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REGSTYPE_IMMSTYPE, sizeof(OPERAND_VALUES_REGSTYPE_IMMSTYPE) / sizeof(unsigned));
+    validateOperand(inst, PROP_S2, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REGSTYPE_IMMSTYPE, sizeof(OPERAND_VALUES_REGSTYPE_IMMSTYPE) / sizeof(unsigned));
+    validateOperand(inst, PROP_S3, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REGSTYPE_IMMSTYPE, sizeof(OPERAND_VALUES_REGSTYPE_IMMSTYPE) / sizeof(unsigned));
     validateOperand(inst, PROP_S4, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned));
     return true;
 }
@@ -7408,8 +7409,8 @@ template<class T> bool InstValidator::req_gcn_mqsad(T inst)
         brigPropError(inst, PROP_TYPE, getType<T>(inst), TYPE_VALUES_B64, sizeof(TYPE_VALUES_B64) / sizeof(unsigned));
     }
     validateOperand(inst, PROP_D0, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned));
-    validateOperand(inst, PROP_S1, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned));
-    validateOperand(inst, PROP_S2, OPERAND_ATTR_B32, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned));
+    validateOperand(inst, PROP_S1, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REGSTYPE_IMMSTYPE, sizeof(OPERAND_VALUES_REGSTYPE_IMMSTYPE) / sizeof(unsigned));
+    validateOperand(inst, PROP_S2, OPERAND_ATTR_B32, OPERAND_VALUES_REGSTYPE_IMMSTYPE, sizeof(OPERAND_VALUES_REGSTYPE_IMMSTYPE) / sizeof(unsigned));
     validateOperand(inst, PROP_S3, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned));
     validateOperand(inst, PROP_S4, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned));
     return true;
@@ -7430,8 +7431,8 @@ template<class T> bool InstValidator::req_gcn_mqsad4(T inst)
         brigPropError(inst, PROP_TYPE, getType<T>(inst), TYPE_VALUES_B32, sizeof(TYPE_VALUES_B32) / sizeof(unsigned));
     }
     validateOperand(inst, PROP_D0, OPERAND_ATTR_DTYPE, OPERAND_VALUES_VEC4, sizeof(OPERAND_VALUES_VEC4) / sizeof(unsigned));
-    validateOperand(inst, PROP_S1, OPERAND_ATTR_B64, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned));
-    validateOperand(inst, PROP_S2, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned));
+    validateOperand(inst, PROP_S1, OPERAND_ATTR_B64, OPERAND_VALUES_REGSTYPE_IMMSTYPE, sizeof(OPERAND_VALUES_REGSTYPE_IMMSTYPE) / sizeof(unsigned));
+    validateOperand(inst, PROP_S2, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REGSTYPE_IMMSTYPE, sizeof(OPERAND_VALUES_REGSTYPE_IMMSTYPE) / sizeof(unsigned));
     validateOperand(inst, PROP_S3, OPERAND_ATTR_DTYPE, OPERAND_VALUES_VEC4, sizeof(OPERAND_VALUES_VEC4) / sizeof(unsigned));
     validateOperand(inst, PROP_S4, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned));
     return true;
@@ -7452,9 +7453,9 @@ template<class T> bool InstValidator::req_gcn_msad(T inst)
         brigPropError(inst, PROP_TYPE, getType<T>(inst), TYPE_VALUES_B32, sizeof(TYPE_VALUES_B32) / sizeof(unsigned));
     }
     validateOperand(inst, PROP_D0, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned));
-    validateOperand(inst, PROP_S1, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned));
-    validateOperand(inst, PROP_S2, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned));
-    validateOperand(inst, PROP_S3, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned));
+    validateOperand(inst, PROP_S1, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REGSTYPE_IMMSTYPE, sizeof(OPERAND_VALUES_REGSTYPE_IMMSTYPE) / sizeof(unsigned));
+    validateOperand(inst, PROP_S2, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REGSTYPE_IMMSTYPE, sizeof(OPERAND_VALUES_REGSTYPE_IMMSTYPE) / sizeof(unsigned));
+    validateOperand(inst, PROP_S3, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REGSTYPE_IMMSTYPE, sizeof(OPERAND_VALUES_REGSTYPE_IMMSTYPE) / sizeof(unsigned));
     validateOperand(inst, PROP_S4, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned));
     return true;
 }
@@ -7474,9 +7475,9 @@ template<class T> bool InstValidator::req_gcn_qsad(T inst)
         brigPropError(inst, PROP_TYPE, getType<T>(inst), TYPE_VALUES_B64, sizeof(TYPE_VALUES_B64) / sizeof(unsigned));
     }
     validateOperand(inst, PROP_D0, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned));
-    validateOperand(inst, PROP_S1, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned));
-    validateOperand(inst, PROP_S2, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned));
-    validateOperand(inst, PROP_S3, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned));
+    validateOperand(inst, PROP_S1, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REGSTYPE_IMMSTYPE, sizeof(OPERAND_VALUES_REGSTYPE_IMMSTYPE) / sizeof(unsigned));
+    validateOperand(inst, PROP_S2, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REGSTYPE_IMMSTYPE, sizeof(OPERAND_VALUES_REGSTYPE_IMMSTYPE) / sizeof(unsigned));
+    validateOperand(inst, PROP_S3, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REGSTYPE_IMMSTYPE, sizeof(OPERAND_VALUES_REGSTYPE_IMMSTYPE) / sizeof(unsigned));
     validateOperand(inst, PROP_S4, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned));
     return true;
 }
@@ -7495,7 +7496,7 @@ template<class T> bool InstValidator::req_gcn_region_alloc(T inst)
     if (!check_type_values_b32(getType<T>(inst))) {
         brigPropError(inst, PROP_TYPE, getType<T>(inst), TYPE_VALUES_B32, sizeof(TYPE_VALUES_B32) / sizeof(unsigned));
     }
-    validateOperand(inst, PROP_S0, OPERAND_ATTR_U32, OPERAND_VALUES_IMMU32, sizeof(OPERAND_VALUES_IMMU32) / sizeof(unsigned));
+    validateOperand(inst, PROP_S0, OPERAND_ATTR_U32, OPERAND_VALUES_IMM, sizeof(OPERAND_VALUES_IMM) / sizeof(unsigned));
     validateOperand(inst, PROP_S1, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned));
     validateOperand(inst, PROP_S2, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned));
     validateOperand(inst, PROP_S3, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned));
@@ -7517,7 +7518,7 @@ template<class T> bool InstValidator::req_gcn_slp_prt(T inst)
     if (!check_type_values_u32(getType<T>(inst))) {
         brigPropError(inst, PROP_TYPE, getType<T>(inst), TYPE_VALUES_U32, sizeof(TYPE_VALUES_U32) / sizeof(unsigned));
     }
-    validateOperand(inst, PROP_S0, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned));
+    validateOperand(inst, PROP_S0, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REGSTYPE_IMMSTYPE, sizeof(OPERAND_VALUES_REGSTYPE_IMMSTYPE) / sizeof(unsigned));
     validateOperand(inst, PROP_S1, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned));
     validateOperand(inst, PROP_S2, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned));
     validateOperand(inst, PROP_S3, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned));
@@ -7565,7 +7566,7 @@ template<class T> bool InstValidator::req_gcn_st(T inst)
     validateOperand(inst, PROP_S4, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned));
 
     if (
-            check_type_values_u_s_f(getType<T>(inst))
+            check_type_values_s_u_f(getType<T>(inst))
        )
     {
         validateOperand(inst, PROP_S0, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG_VECTOR_IMM, sizeof(OPERAND_VALUES_REG_VECTOR_IMM) / sizeof(unsigned));
@@ -7598,8 +7599,8 @@ template<class T> bool InstValidator::req_gcn_trig_preop(T inst)
         brigPropError(inst, PROP_TYPE, getType<T>(inst), TYPE_VALUES_F64, sizeof(TYPE_VALUES_F64) / sizeof(unsigned));
     }
     validateOperand(inst, PROP_D0, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned));
-    validateOperand(inst, PROP_S1, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned));
-    validateOperand(inst, PROP_S2, OPERAND_ATTR_U32, OPERAND_VALUES_IMMU32, sizeof(OPERAND_VALUES_IMMU32) / sizeof(unsigned));
+    validateOperand(inst, PROP_S1, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REGSTYPE_IMMSTYPE, sizeof(OPERAND_VALUES_REGSTYPE_IMMSTYPE) / sizeof(unsigned));
+    validateOperand(inst, PROP_S2, OPERAND_ATTR_U32, OPERAND_VALUES_IMM, sizeof(OPERAND_VALUES_IMM) / sizeof(unsigned));
     validateOperand(inst, PROP_S3, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned));
     validateOperand(inst, PROP_S4, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned));
     return true;
@@ -7672,7 +7673,7 @@ template<class T> bool InstValidator::req_ld(T inst)
     }
 
     if (
-            check_type_values_u_s_f(getType<T>(inst))
+            check_type_values_s_u_f(getType<T>(inst))
        )
     {
         validateOperand(inst, PROP_D0, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG_VECTOR, sizeof(OPERAND_VALUES_REG_VECTOR) / sizeof(unsigned));
@@ -7725,7 +7726,7 @@ template<class T> bool InstValidator::req_ld(T inst)
 //      {geometry = 2ddepth; ? d0 = reg; s2 = vec_2_ctype;}
 //      {geometry = 2dadepth; ? d0 = reg; s2 = vec_3_ctype;}
 //      ;
-//      s1 = reg_itype, image_itype;
+//      s1 = reg_itype;
 //      s3 = null;
 //      s4 = null;
 //  }
@@ -7748,7 +7749,7 @@ template<class T> bool InstValidator::req_ld_image(T inst)
        )
     {
         validateOperand(inst, PROP_D0, OPERAND_ATTR_DTYPE, OPERAND_VALUES_VEC4, sizeof(OPERAND_VALUES_VEC4) / sizeof(unsigned));
-        validateOperand(inst, PROP_S2, OPERAND_ATTR_CTYPE, OPERAND_VALUES_VEC2CTYPE, sizeof(OPERAND_VALUES_VEC2CTYPE) / sizeof(unsigned));
+        validateOperand(inst, PROP_S2, OPERAND_ATTR_CTYPE, OPERAND_VALUES_VEC2STYPE, sizeof(OPERAND_VALUES_VEC2STYPE) / sizeof(unsigned));
     }
     else if (
             check_geometry_values_3d_2da(getGeometry<T>(inst))
@@ -7762,7 +7763,7 @@ template<class T> bool InstValidator::req_ld_image(T inst)
        )
     {
         validateOperand(inst, PROP_D0, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned));
-        validateOperand(inst, PROP_S2, OPERAND_ATTR_CTYPE, OPERAND_VALUES_VEC2CTYPE, sizeof(OPERAND_VALUES_VEC2CTYPE) / sizeof(unsigned));
+        validateOperand(inst, PROP_S2, OPERAND_ATTR_CTYPE, OPERAND_VALUES_VEC2STYPE, sizeof(OPERAND_VALUES_VEC2STYPE) / sizeof(unsigned));
     }
     else if (
             check_geometry_values_2dadepth(getGeometry<T>(inst))
@@ -7775,7 +7776,7 @@ template<class T> bool InstValidator::req_ld_image(T inst)
     {
         invalidVariant(inst, PROP_GEOMETRY);
     }
-    validateOperand(inst, PROP_S1, OPERAND_ATTR_ITYPE, OPERAND_VALUES_REGITYPE_IMAGEITYPE, sizeof(OPERAND_VALUES_REGITYPE_IMAGEITYPE) / sizeof(unsigned));
+    validateOperand(inst, PROP_S1, OPERAND_ATTR_ITYPE, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned));
     validateOperand(inst, PROP_S3, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned));
     validateOperand(inst, PROP_S4, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned));
     return true;
@@ -7819,8 +7820,8 @@ template<class T> bool InstValidator::req_lda(T inst)
     if (!check_type_values_u32_u64(getType<T>(inst))) {
         brigPropError(inst, PROP_TYPE, getType<T>(inst), TYPE_VALUES_U32_U64, sizeof(TYPE_VALUES_U32_U64) / sizeof(unsigned));
     }
-    if (!check_segment_values_flat_global_readonly_group_private_kernarg(getSegment<T>(inst))) {
-        brigPropError(inst, PROP_SEGMENT, getSegment<T>(inst), SEGMENT_VALUES_FLAT_GLOBAL_READONLY_GROUP_PRIVATE_KERNARG, sizeof(SEGMENT_VALUES_FLAT_GLOBAL_READONLY_GROUP_PRIVATE_KERNARG) / sizeof(unsigned));
+    if (!check_segment_values_global_group_private_flat_kernarg_readonly(getSegment<T>(inst))) {
+        brigPropError(inst, PROP_SEGMENT, getSegment<T>(inst), SEGMENT_VALUES_GLOBAL_GROUP_PRIVATE_FLAT_KERNARG_READONLY, sizeof(SEGMENT_VALUES_GLOBAL_GROUP_PRIVATE_FLAT_KERNARG_READONLY) / sizeof(unsigned));
     }
     validateTypesize(inst, PROP_TYPESIZE, TYPESIZE_ATTR_NONE, TYPESIZE_VALUES_SEG, sizeof(TYPESIZE_VALUES_SEG) / sizeof(unsigned));
     validateOperand(inst, PROP_D0, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned));
@@ -8132,7 +8133,7 @@ template<class T> bool InstValidator::req_memfence(T inst)
         }
     else 
     {
-        invalidVariant(inst, PROP_IMAGESEGMENTMEMORYSCOPE, PROP_GLOBALSEGMENTMEMORYSCOPE, PROP_GROUPSEGMENTMEMORYSCOPE);
+        invalidVariant(inst, PROP_GLOBALSEGMENTMEMORYSCOPE, PROP_GROUPSEGMENTMEMORYSCOPE, PROP_IMAGESEGMENTMEMORYSCOPE);
     }
     validateOperand(inst, PROP_S0, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned));
     validateOperand(inst, PROP_S1, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned));
@@ -8160,7 +8161,7 @@ template<class T> bool InstValidator::req_mov(T inst)
         brigPropError(inst, PROP_TYPE, getType<T>(inst), TYPE_VALUES_B1_B32_B64_B128_S32_U32_S64_U64_F_OPAQUE, sizeof(TYPE_VALUES_B1_B32_B64_B128_S32_U32_S64_U64_F_OPAQUE) / sizeof(unsigned));
     }
     validateOperand(inst, PROP_D0, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned));
-    validateOperand(inst, PROP_S1, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned));
+    validateOperand(inst, PROP_S1, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REGSTYPE_IMMSTYPE, sizeof(OPERAND_VALUES_REGSTYPE_IMMSTYPE) / sizeof(unsigned));
     validateOperand(inst, PROP_S2, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned));
     validateOperand(inst, PROP_S3, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned));
     validateOperand(inst, PROP_S4, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned));
@@ -8169,7 +8170,7 @@ template<class T> bool InstValidator::req_mov(T inst)
             check_type_values_b1_b32_b64_b128_s32_u32_s64_u64_f(getType<T>(inst))
        )
     {
-        validateOperand(inst, PROP_S1, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned));
+        validateOperand(inst, PROP_S1, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REGSTYPE_IMMSTYPE, sizeof(OPERAND_VALUES_REGSTYPE_IMMSTYPE) / sizeof(unsigned));
     }
     else if (
             check_type_values_opaque(getType<T>(inst))
@@ -8412,8 +8413,8 @@ template<class T> bool InstValidator::req_nullptr(T inst)
     if (!check_type_values_u32_u64(getType<T>(inst))) {
         brigPropError(inst, PROP_TYPE, getType<T>(inst), TYPE_VALUES_U32_U64, sizeof(TYPE_VALUES_U32_U64) / sizeof(unsigned));
     }
-    if (!check_segment_values_flat_global_readonly_group_private_kernarg(getSegment<T>(inst))) {
-        brigPropError(inst, PROP_SEGMENT, getSegment<T>(inst), SEGMENT_VALUES_FLAT_GLOBAL_READONLY_GROUP_PRIVATE_KERNARG, sizeof(SEGMENT_VALUES_FLAT_GLOBAL_READONLY_GROUP_PRIVATE_KERNARG) / sizeof(unsigned));
+    if (!check_segment_values_global_group_private_flat_kernarg_readonly(getSegment<T>(inst))) {
+        brigPropError(inst, PROP_SEGMENT, getSegment<T>(inst), SEGMENT_VALUES_GLOBAL_GROUP_PRIVATE_FLAT_KERNARG_READONLY, sizeof(SEGMENT_VALUES_GLOBAL_GROUP_PRIVATE_FLAT_KERNARG_READONLY) / sizeof(unsigned));
     }
     validateTypesize(inst, PROP_TYPESIZE, TYPESIZE_ATTR_NONE, TYPESIZE_VALUES_SEG, sizeof(TYPESIZE_VALUES_SEG) / sizeof(unsigned));
     validateOperand(inst, PROP_S0, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned));
@@ -8476,7 +8477,7 @@ template<class T> bool InstValidator::req_pack(T inst)
         }
     }
     else if (
-            check_type_values_u64x(getType<T>(inst))
+            check_type_values_u64x2(getType<T>(inst))
        )
     {
         if (!check_type_values_u64(getSourceType<T>(inst))) {
@@ -8512,9 +8513,9 @@ template<class T> bool InstValidator::req_pack(T inst)
         invalidVariant(inst, PROP_TYPE);
     }
     validateOperand(inst, PROP_D0, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned));
-    validateOperand(inst, PROP_S1, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned));
-    validateOperand(inst, PROP_S2, OPERAND_ATTR_STYPE, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned));
-    validateOperand(inst, PROP_S3, OPERAND_ATTR_U32, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned));
+    validateOperand(inst, PROP_S1, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REGSTYPE_IMMSTYPE, sizeof(OPERAND_VALUES_REGSTYPE_IMMSTYPE) / sizeof(unsigned));
+    validateOperand(inst, PROP_S2, OPERAND_ATTR_STYPE, OPERAND_VALUES_REGSTYPE_IMMSTYPE, sizeof(OPERAND_VALUES_REGSTYPE_IMMSTYPE) / sizeof(unsigned));
+    validateOperand(inst, PROP_S3, OPERAND_ATTR_U32, OPERAND_VALUES_REGSTYPE_IMMSTYPE, sizeof(OPERAND_VALUES_REGSTYPE_IMMSTYPE) / sizeof(unsigned));
     validateOperand(inst, PROP_S4, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned));
     return true;
 }
@@ -8538,10 +8539,10 @@ template<class T> bool InstValidator::req_packcvt(T inst)
         brigPropError(inst, PROP_SOURCETYPE, getSourceType<T>(inst), TYPE_VALUES_F32, sizeof(TYPE_VALUES_F32) / sizeof(unsigned));
     }
     validateOperand(inst, PROP_D0, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned));
-    validateOperand(inst, PROP_S1, OPERAND_ATTR_STYPE, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned));
-    validateOperand(inst, PROP_S2, OPERAND_ATTR_STYPE, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned));
-    validateOperand(inst, PROP_S3, OPERAND_ATTR_STYPE, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned));
-    validateOperand(inst, PROP_S4, OPERAND_ATTR_STYPE, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned));
+    validateOperand(inst, PROP_S1, OPERAND_ATTR_STYPE, OPERAND_VALUES_REGSTYPE_IMMSTYPE, sizeof(OPERAND_VALUES_REGSTYPE_IMMSTYPE) / sizeof(unsigned));
+    validateOperand(inst, PROP_S2, OPERAND_ATTR_STYPE, OPERAND_VALUES_REGSTYPE_IMMSTYPE, sizeof(OPERAND_VALUES_REGSTYPE_IMMSTYPE) / sizeof(unsigned));
+    validateOperand(inst, PROP_S3, OPERAND_ATTR_STYPE, OPERAND_VALUES_REGSTYPE_IMMSTYPE, sizeof(OPERAND_VALUES_REGSTYPE_IMMSTYPE) / sizeof(unsigned));
+    validateOperand(inst, PROP_S4, OPERAND_ATTR_STYPE, OPERAND_VALUES_REGSTYPE_IMMSTYPE, sizeof(OPERAND_VALUES_REGSTYPE_IMMSTYPE) / sizeof(unsigned));
     return true;
 }
 
@@ -8588,7 +8589,7 @@ template<class T> bool InstValidator::req_popcount(T inst)
         brigPropError(inst, PROP_SOURCETYPE, getSourceType<T>(inst), TYPE_VALUES_B32_B64, sizeof(TYPE_VALUES_B32_B64) / sizeof(unsigned));
     }
     validateOperand(inst, PROP_D0, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned));
-    validateOperand(inst, PROP_S1, OPERAND_ATTR_STYPE, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned));
+    validateOperand(inst, PROP_S1, OPERAND_ATTR_STYPE, OPERAND_VALUES_REGSTYPE_IMMSTYPE, sizeof(OPERAND_VALUES_REGSTYPE_IMMSTYPE) / sizeof(unsigned));
     validateOperand(inst, PROP_S2, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned));
     validateOperand(inst, PROP_S3, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned));
     validateOperand(inst, PROP_S4, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned));
@@ -8631,7 +8632,7 @@ template<class T> bool InstValidator::req_ptr_model(T inst)
 //      {iprop = height; ? geometry = 2d, 3d, 2da, 2ddepth, 2dadepth;}
 //      ;
 //      d0 = reg;
-//      s1 = reg_itype, image_itype;
+//      s1 = reg_itype;
 //      s2 = null;
 //      s3 = null;
 //      s4 = null;
@@ -8688,7 +8689,7 @@ template<class T> bool InstValidator::req_queryimage(T inst)
         invalidVariant(inst, PROP_IMAGEQUERY);
     }
     validateOperand(inst, PROP_D0, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned));
-    validateOperand(inst, PROP_S1, OPERAND_ATTR_ITYPE, OPERAND_VALUES_REGITYPE_IMAGEITYPE, sizeof(OPERAND_VALUES_REGITYPE_IMAGEITYPE) / sizeof(unsigned));
+    validateOperand(inst, PROP_S1, OPERAND_ATTR_ITYPE, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned));
     validateOperand(inst, PROP_S2, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned));
     validateOperand(inst, PROP_S3, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned));
     validateOperand(inst, PROP_S4, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned));
@@ -8700,7 +8701,7 @@ template<class T> bool InstValidator::req_queryimage(T inst)
 //      type = u32;
 //      sprop = any;
 //      d0 = reg;
-//      s1 = reg_samp, sampler_samp;
+//      s1 = reg_samp;
 //      s2 = null;
 //      s3 = null;
 //      s4 = null;
@@ -8714,7 +8715,7 @@ template<class T> bool InstValidator::req_querysampler(T inst)
         brigPropError(inst, PROP_SAMPLERQUERY, getSamplerQuery<T>(inst), SPROP_VALUES_ANY, sizeof(SPROP_VALUES_ANY) / sizeof(unsigned));
     }
     validateOperand(inst, PROP_D0, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned));
-    validateOperand(inst, PROP_S1, OPERAND_ATTR_SAMP, OPERAND_VALUES_REGSAMP_SAMPLERSAMP, sizeof(OPERAND_VALUES_REGSAMP_SAMPLERSAMP) / sizeof(unsigned));
+    validateOperand(inst, PROP_S1, OPERAND_ATTR_SAMP, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned));
     validateOperand(inst, PROP_S2, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned));
     validateOperand(inst, PROP_S3, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned));
     validateOperand(inst, PROP_S4, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned));
@@ -8728,8 +8729,8 @@ template<class T> bool InstValidator::req_querysampler(T inst)
 //      ctype = s32, f32;
 //      geometry = 1d, 2d, 3d, 1da, 2da, 2ddepth, 2dadepth;
 //      eqclass = any;
-//      s1 = reg_itype, image_itype;
-//      s2 = reg_samp, sampler_samp;
+//      s1 = reg_itype;
+//      s2 = reg_samp;
 //      s4 = null;
 //      {geometry = 1d; ? d0 = vec_4; s3 = reg_ctype;}
 //      {geometry = 2d, 1da; ? d0 = vec_4; s3 = vec_2_ctype;}
@@ -8753,8 +8754,8 @@ template<class T> bool InstValidator::req_rdimage(T inst)
         brigPropError(inst, PROP_GEOMETRY, getGeometry<T>(inst), GEOMETRY_VALUES_1D_2D_3D_1DA_2DA_2DDEPTH_2DADEPTH, sizeof(GEOMETRY_VALUES_1D_2D_3D_1DA_2DA_2DDEPTH_2DADEPTH) / sizeof(unsigned));
     }
     validateEqclass(inst, PROP_EQUIVCLASS, EQCLASS_ATTR_NONE, EQCLASS_VALUES_ANY, sizeof(EQCLASS_VALUES_ANY) / sizeof(unsigned));
-    validateOperand(inst, PROP_S1, OPERAND_ATTR_ITYPE, OPERAND_VALUES_REGITYPE_IMAGEITYPE, sizeof(OPERAND_VALUES_REGITYPE_IMAGEITYPE) / sizeof(unsigned));
-    validateOperand(inst, PROP_S2, OPERAND_ATTR_SAMP, OPERAND_VALUES_REGSAMP_SAMPLERSAMP, sizeof(OPERAND_VALUES_REGSAMP_SAMPLERSAMP) / sizeof(unsigned));
+    validateOperand(inst, PROP_S1, OPERAND_ATTR_ITYPE, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned));
+    validateOperand(inst, PROP_S2, OPERAND_ATTR_SAMP, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned));
     validateOperand(inst, PROP_S4, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned));
 
     if (
@@ -8769,7 +8770,7 @@ template<class T> bool InstValidator::req_rdimage(T inst)
        )
     {
         validateOperand(inst, PROP_D0, OPERAND_ATTR_DTYPE, OPERAND_VALUES_VEC4, sizeof(OPERAND_VALUES_VEC4) / sizeof(unsigned));
-        validateOperand(inst, PROP_S3, OPERAND_ATTR_CTYPE, OPERAND_VALUES_VEC2CTYPE, sizeof(OPERAND_VALUES_VEC2CTYPE) / sizeof(unsigned));
+        validateOperand(inst, PROP_S3, OPERAND_ATTR_CTYPE, OPERAND_VALUES_VEC2STYPE, sizeof(OPERAND_VALUES_VEC2STYPE) / sizeof(unsigned));
     }
     else if (
             check_geometry_values_3d_2da(getGeometry<T>(inst))
@@ -8783,7 +8784,7 @@ template<class T> bool InstValidator::req_rdimage(T inst)
        )
     {
         validateOperand(inst, PROP_D0, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned));
-        validateOperand(inst, PROP_S3, OPERAND_ATTR_CTYPE, OPERAND_VALUES_VEC2CTYPE, sizeof(OPERAND_VALUES_VEC2CTYPE) / sizeof(unsigned));
+        validateOperand(inst, PROP_S3, OPERAND_ATTR_CTYPE, OPERAND_VALUES_VEC2STYPE, sizeof(OPERAND_VALUES_VEC2STYPE) / sizeof(unsigned));
     }
     else if (
             check_geometry_values_2dadepth(getGeometry<T>(inst))
@@ -8866,7 +8867,7 @@ template<class T> bool InstValidator::req_s2f(T inst)
     validateTypesize(inst, PROP_TYPESIZE, TYPESIZE_ATTR_NONE, TYPESIZE_VALUES_MODEL, sizeof(TYPESIZE_VALUES_MODEL) / sizeof(unsigned));
     validateStypesize(inst, PROP_STYPESIZE, STYPESIZE_ATTR_NONE, STYPESIZE_VALUES_SEG, sizeof(STYPESIZE_VALUES_SEG) / sizeof(unsigned));
     validateOperand(inst, PROP_D0, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned));
-    validateOperand(inst, PROP_S1, OPERAND_ATTR_STYPE, OPERAND_VALUES_REGSTYPE_CNSTSTYPE, sizeof(OPERAND_VALUES_REGSTYPE_CNSTSTYPE) / sizeof(unsigned));
+    validateOperand(inst, PROP_S1, OPERAND_ATTR_STYPE, OPERAND_VALUES_REGU32_CNSTU32, sizeof(OPERAND_VALUES_REGU32_CNSTU32) / sizeof(unsigned));
     validateOperand(inst, PROP_S2, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned));
     validateOperand(inst, PROP_S3, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned));
     validateOperand(inst, PROP_S4, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned));
@@ -8892,9 +8893,9 @@ template<class T> bool InstValidator::req_sad(T inst)
         brigPropError(inst, PROP_SOURCETYPE, getSourceType<T>(inst), TYPE_VALUES_U32_U8X4_U16X2, sizeof(TYPE_VALUES_U32_U8X4_U16X2) / sizeof(unsigned));
     }
     validateOperand(inst, PROP_D0, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned));
-    validateOperand(inst, PROP_S1, OPERAND_ATTR_STYPE, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned));
-    validateOperand(inst, PROP_S2, OPERAND_ATTR_STYPE, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned));
-    validateOperand(inst, PROP_S3, OPERAND_ATTR_U32, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned));
+    validateOperand(inst, PROP_S1, OPERAND_ATTR_STYPE, OPERAND_VALUES_REGSTYPE_IMMSTYPE, sizeof(OPERAND_VALUES_REGSTYPE_IMMSTYPE) / sizeof(unsigned));
+    validateOperand(inst, PROP_S2, OPERAND_ATTR_STYPE, OPERAND_VALUES_REGSTYPE_IMMSTYPE, sizeof(OPERAND_VALUES_REGSTYPE_IMMSTYPE) / sizeof(unsigned));
+    validateOperand(inst, PROP_S3, OPERAND_ATTR_U32, OPERAND_VALUES_REGSTYPE_IMMSTYPE, sizeof(OPERAND_VALUES_REGSTYPE_IMMSTYPE) / sizeof(unsigned));
     validateOperand(inst, PROP_S4, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned));
     return true;
 }
@@ -8918,9 +8919,9 @@ template<class T> bool InstValidator::req_sadhi(T inst)
         brigPropError(inst, PROP_SOURCETYPE, getSourceType<T>(inst), TYPE_VALUES_U8X4, sizeof(TYPE_VALUES_U8X4) / sizeof(unsigned));
     }
     validateOperand(inst, PROP_D0, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned));
-    validateOperand(inst, PROP_S1, OPERAND_ATTR_STYPE, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned));
-    validateOperand(inst, PROP_S2, OPERAND_ATTR_STYPE, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned));
-    validateOperand(inst, PROP_S3, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned));
+    validateOperand(inst, PROP_S1, OPERAND_ATTR_STYPE, OPERAND_VALUES_REGSTYPE_IMMSTYPE, sizeof(OPERAND_VALUES_REGSTYPE_IMMSTYPE) / sizeof(unsigned));
+    validateOperand(inst, PROP_S2, OPERAND_ATTR_STYPE, OPERAND_VALUES_REGSTYPE_IMMSTYPE, sizeof(OPERAND_VALUES_REGSTYPE_IMMSTYPE) / sizeof(unsigned));
+    validateOperand(inst, PROP_S3, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REGSTYPE_IMMSTYPE, sizeof(OPERAND_VALUES_REGSTYPE_IMMSTYPE) / sizeof(unsigned));
     validateOperand(inst, PROP_S4, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned));
     return true;
 }
@@ -8943,7 +8944,7 @@ template<class T> bool InstValidator::req_sbr(T inst)
     if (!check_width_values_any1(getWidth<T>(inst))) {
         brigPropError(inst, PROP_WIDTH, getWidth<T>(inst), WIDTH_VALUES_ANY1, sizeof(WIDTH_VALUES_ANY1) / sizeof(unsigned));
     }
-    validateOperand(inst, PROP_S0, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned));
+    validateOperand(inst, PROP_S0, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REGSTYPE_IMMSTYPE, sizeof(OPERAND_VALUES_REGSTYPE_IMMSTYPE) / sizeof(unsigned));
     validateOperand(inst, PROP_S1, OPERAND_ATTR_NONE, OPERAND_VALUES_JUMPTAB, sizeof(OPERAND_VALUES_JUMPTAB) / sizeof(unsigned));
     validateOperand(inst, PROP_S2, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned));
     validateOperand(inst, PROP_S3, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned));
@@ -8970,7 +8971,7 @@ template<class T> bool InstValidator::req_scall(T inst)
         brigPropError(inst, PROP_WIDTH, getWidth<T>(inst), WIDTH_VALUES_ANY1, sizeof(WIDTH_VALUES_ANY1) / sizeof(unsigned));
     }
     validateOperand(inst, PROP_S0, OPERAND_ATTR_NONE, OPERAND_VALUES_ARGLIST, sizeof(OPERAND_VALUES_ARGLIST) / sizeof(unsigned));
-    validateOperand(inst, PROP_S1, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned));
+    validateOperand(inst, PROP_S1, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REGSTYPE_IMMSTYPE, sizeof(OPERAND_VALUES_REGSTYPE_IMMSTYPE) / sizeof(unsigned));
     validateOperand(inst, PROP_S2, OPERAND_ATTR_NONE, OPERAND_VALUES_ARGLIST, sizeof(OPERAND_VALUES_ARGLIST) / sizeof(unsigned));
     validateOperand(inst, PROP_S3, OPERAND_ATTR_NONE, OPERAND_VALUES_CALLTAB, sizeof(OPERAND_VALUES_CALLTAB) / sizeof(unsigned));
     validateOperand(inst, PROP_S4, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned));
@@ -9006,7 +9007,7 @@ template<class T> bool InstValidator::req_segmentp(T inst)
     }
     validateStypesize(inst, PROP_STYPESIZE, STYPESIZE_ATTR_NONE, STYPESIZE_VALUES_MODEL, sizeof(STYPESIZE_VALUES_MODEL) / sizeof(unsigned));
     validateOperand(inst, PROP_D0, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned));
-    validateOperand(inst, PROP_S1, OPERAND_ATTR_STYPE, OPERAND_VALUES_REGSTYPE_CNSTSTYPE, sizeof(OPERAND_VALUES_REGSTYPE_CNSTSTYPE) / sizeof(unsigned));
+    validateOperand(inst, PROP_S1, OPERAND_ATTR_STYPE, OPERAND_VALUES_REGU32_CNSTU32, sizeof(OPERAND_VALUES_REGU32_CNSTU32) / sizeof(unsigned));
     validateOperand(inst, PROP_S2, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned));
     validateOperand(inst, PROP_S3, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned));
     validateOperand(inst, PROP_S4, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned));
@@ -9028,8 +9029,8 @@ template<class T> bool InstValidator::req_shift(T inst)
         brigPropError(inst, PROP_TYPE, getType<T>(inst), TYPE_VALUES_S32_U32_S64_U64_SX_UX, sizeof(TYPE_VALUES_S32_U32_S64_U64_SX_UX) / sizeof(unsigned));
     }
     validateOperand(inst, PROP_D0, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned));
-    validateOperand(inst, PROP_S1, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned));
-    validateOperand(inst, PROP_S2, OPERAND_ATTR_U32, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned));
+    validateOperand(inst, PROP_S1, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REGSTYPE_IMMSTYPE, sizeof(OPERAND_VALUES_REGSTYPE_IMMSTYPE) / sizeof(unsigned));
+    validateOperand(inst, PROP_S2, OPERAND_ATTR_U32, OPERAND_VALUES_REGSTYPE_IMMSTYPE, sizeof(OPERAND_VALUES_REGSTYPE_IMMSTYPE) / sizeof(unsigned));
     validateOperand(inst, PROP_S3, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned));
     validateOperand(inst, PROP_S4, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned));
     return true;
@@ -9050,9 +9051,9 @@ template<class T> bool InstValidator::req_shuffle(T inst)
         brigPropError(inst, PROP_TYPE, getType<T>(inst), TYPE_VALUES_X32_X64, sizeof(TYPE_VALUES_X32_X64) / sizeof(unsigned));
     }
     validateOperand(inst, PROP_D0, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned));
-    validateOperand(inst, PROP_S1, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned));
-    validateOperand(inst, PROP_S2, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned));
-    validateOperand(inst, PROP_S3, OPERAND_ATTR_B32, OPERAND_VALUES_CNST, sizeof(OPERAND_VALUES_CNST) / sizeof(unsigned));
+    validateOperand(inst, PROP_S1, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REGSTYPE_IMMSTYPE, sizeof(OPERAND_VALUES_REGSTYPE_IMMSTYPE) / sizeof(unsigned));
+    validateOperand(inst, PROP_S2, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REGSTYPE_IMMSTYPE, sizeof(OPERAND_VALUES_REGSTYPE_IMMSTYPE) / sizeof(unsigned));
+    validateOperand(inst, PROP_S3, OPERAND_ATTR_B32, OPERAND_VALUES_CNSTB32, sizeof(OPERAND_VALUES_CNSTB32) / sizeof(unsigned));
     validateOperand(inst, PROP_S4, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned));
     return true;
 }
@@ -9139,7 +9140,7 @@ template<class T> bool InstValidator::req_signal(T inst)
         if (!check_memord_values_any(getMemoryOrder<T>(inst))) {
             brigPropError(inst, PROP_MEMORYORDER, getMemoryOrder<T>(inst), MEMORD_VALUES_ANY, sizeof(MEMORD_VALUES_ANY) / sizeof(unsigned));
         }
-        validateOperand(inst, PROP_S2, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned));
+        validateOperand(inst, PROP_S2, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REGSTYPE_IMMSTYPE, sizeof(OPERAND_VALUES_REGSTYPE_IMMSTYPE) / sizeof(unsigned));
         validateOperand(inst, PROP_S3, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned));
     }
     else if (
@@ -9152,8 +9153,8 @@ template<class T> bool InstValidator::req_signal(T inst)
         if (!check_memord_values_any(getMemoryOrder<T>(inst))) {
             brigPropError(inst, PROP_MEMORYORDER, getMemoryOrder<T>(inst), MEMORD_VALUES_ANY, sizeof(MEMORD_VALUES_ANY) / sizeof(unsigned));
         }
-        validateOperand(inst, PROP_S2, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned));
-        validateOperand(inst, PROP_S3, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned));
+        validateOperand(inst, PROP_S2, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REGSTYPE_IMMSTYPE, sizeof(OPERAND_VALUES_REGSTYPE_IMMSTYPE) / sizeof(unsigned));
+        validateOperand(inst, PROP_S3, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REGSTYPE_IMMSTYPE, sizeof(OPERAND_VALUES_REGSTYPE_IMMSTYPE) / sizeof(unsigned));
     }
     else if (
             check_atmop_values_add_sub(getSignalOperation<T>(inst))
@@ -9165,7 +9166,7 @@ template<class T> bool InstValidator::req_signal(T inst)
         if (!check_memord_values_any(getMemoryOrder<T>(inst))) {
             brigPropError(inst, PROP_MEMORYORDER, getMemoryOrder<T>(inst), MEMORD_VALUES_ANY, sizeof(MEMORD_VALUES_ANY) / sizeof(unsigned));
         }
-        validateOperand(inst, PROP_S2, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned));
+        validateOperand(inst, PROP_S2, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REGSTYPE_IMMSTYPE, sizeof(OPERAND_VALUES_REGSTYPE_IMMSTYPE) / sizeof(unsigned));
         validateOperand(inst, PROP_S3, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned));
     }
     else if (
@@ -9178,7 +9179,7 @@ template<class T> bool InstValidator::req_signal(T inst)
         if (!check_memord_values_ld(getMemoryOrder<T>(inst))) {
             brigPropError(inst, PROP_MEMORYORDER, getMemoryOrder<T>(inst), MEMORD_VALUES_LD, sizeof(MEMORD_VALUES_LD) / sizeof(unsigned));
         }
-        validateOperand(inst, PROP_S2, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned));
+        validateOperand(inst, PROP_S2, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REGSTYPE_IMMSTYPE, sizeof(OPERAND_VALUES_REGSTYPE_IMMSTYPE) / sizeof(unsigned));
         validateOperand(inst, PROP_S3, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned));
     }
     else if (
@@ -9191,8 +9192,8 @@ template<class T> bool InstValidator::req_signal(T inst)
         if (!check_memord_values_ld(getMemoryOrder<T>(inst))) {
             brigPropError(inst, PROP_MEMORYORDER, getMemoryOrder<T>(inst), MEMORD_VALUES_LD, sizeof(MEMORD_VALUES_LD) / sizeof(unsigned));
         }
-        validateOperand(inst, PROP_S2, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned));
-        validateOperand(inst, PROP_S3, OPERAND_ATTR_U64, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned));
+        validateOperand(inst, PROP_S2, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REGSTYPE_IMMSTYPE, sizeof(OPERAND_VALUES_REGSTYPE_IMMSTYPE) / sizeof(unsigned));
+        validateOperand(inst, PROP_S3, OPERAND_ATTR_U64, OPERAND_VALUES_REGSTYPE_IMMSTYPE, sizeof(OPERAND_VALUES_REGSTYPE_IMMSTYPE) / sizeof(unsigned));
     }
     else 
     {
@@ -9295,7 +9296,7 @@ template<class T> bool InstValidator::req_signal_noret(T inst)
         if (!check_memord_values_any(getMemoryOrder<T>(inst))) {
             brigPropError(inst, PROP_MEMORYORDER, getMemoryOrder<T>(inst), MEMORD_VALUES_ANY, sizeof(MEMORD_VALUES_ANY) / sizeof(unsigned));
         }
-        validateOperand(inst, PROP_S2, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned));
+        validateOperand(inst, PROP_S2, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REGSTYPE_IMMSTYPE, sizeof(OPERAND_VALUES_REGSTYPE_IMMSTYPE) / sizeof(unsigned));
     }
     else if (
             check_atmop_values_add_sub(getSignalOperation<T>(inst))
@@ -9313,7 +9314,7 @@ template<class T> bool InstValidator::req_signal_noret(T inst)
     {
         invalidVariant(inst, PROP_SIGNALOPERATION);
     }
-    validateOperand(inst, PROP_S1, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned));
+    validateOperand(inst, PROP_S1, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REGSTYPE_IMMSTYPE, sizeof(OPERAND_VALUES_REGSTYPE_IMMSTYPE) / sizeof(unsigned));
     validateOperand(inst, PROP_S3, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned));
     validateOperand(inst, PROP_S4, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned));
     return true;
@@ -9355,7 +9356,7 @@ template<class T> bool InstValidator::req_spec_except(T inst)
     if (!check_type_values_u32(getType<T>(inst))) {
         brigPropError(inst, PROP_TYPE, getType<T>(inst), TYPE_VALUES_U32, sizeof(TYPE_VALUES_U32) / sizeof(unsigned));
     }
-    validateOperand(inst, PROP_S0, OPERAND_ATTR_DTYPE, OPERAND_VALUES_CNST, sizeof(OPERAND_VALUES_CNST) / sizeof(unsigned));
+    validateOperand(inst, PROP_S0, OPERAND_ATTR_DTYPE, OPERAND_VALUES_CNSTB32, sizeof(OPERAND_VALUES_CNSTB32) / sizeof(unsigned));
     validateOperand(inst, PROP_S1, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned));
     validateOperand(inst, PROP_S2, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned));
     validateOperand(inst, PROP_S3, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned));
@@ -9442,7 +9443,7 @@ template<class T> bool InstValidator::req_st(T inst)
     }
 
     if (
-            check_type_values_u_s_f(getType<T>(inst))
+            check_type_values_s_u_f(getType<T>(inst))
        )
     {
         validateOperand(inst, PROP_S0, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG_VECTOR_IMM, sizeof(OPERAND_VALUES_REG_VECTOR_IMM) / sizeof(unsigned));
@@ -9483,7 +9484,7 @@ template<class T> bool InstValidator::req_st(T inst)
 //      {geometry = 2ddepth; ? s0 = reg; s2 = vec_2_ctype;}
 //      {geometry = 2dadepth; ? s0 = reg; s2 = vec_3_ctype;}
 //      ;
-//      s1 = reg_itype, image_itype;
+//      s1 = reg_itype;
 //      s3 = null;
 //      s4 = null;
 //  }
@@ -9506,7 +9507,7 @@ template<class T> bool InstValidator::req_st_image(T inst)
        )
     {
         validateOperand(inst, PROP_S0, OPERAND_ATTR_DTYPE, OPERAND_VALUES_VEC4, sizeof(OPERAND_VALUES_VEC4) / sizeof(unsigned));
-        validateOperand(inst, PROP_S2, OPERAND_ATTR_CTYPE, OPERAND_VALUES_VEC2CTYPE, sizeof(OPERAND_VALUES_VEC2CTYPE) / sizeof(unsigned));
+        validateOperand(inst, PROP_S2, OPERAND_ATTR_CTYPE, OPERAND_VALUES_VEC2STYPE, sizeof(OPERAND_VALUES_VEC2STYPE) / sizeof(unsigned));
     }
     else if (
             check_geometry_values_3d_2da(getGeometry<T>(inst))
@@ -9520,7 +9521,7 @@ template<class T> bool InstValidator::req_st_image(T inst)
        )
     {
         validateOperand(inst, PROP_S0, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned));
-        validateOperand(inst, PROP_S2, OPERAND_ATTR_CTYPE, OPERAND_VALUES_VEC2CTYPE, sizeof(OPERAND_VALUES_VEC2CTYPE) / sizeof(unsigned));
+        validateOperand(inst, PROP_S2, OPERAND_ATTR_CTYPE, OPERAND_VALUES_VEC2STYPE, sizeof(OPERAND_VALUES_VEC2STYPE) / sizeof(unsigned));
     }
     else if (
             check_geometry_values_2dadepth(getGeometry<T>(inst))
@@ -9533,7 +9534,7 @@ template<class T> bool InstValidator::req_st_image(T inst)
     {
         invalidVariant(inst, PROP_GEOMETRY);
     }
-    validateOperand(inst, PROP_S1, OPERAND_ATTR_ITYPE, OPERAND_VALUES_REGITYPE_IMAGEITYPE, sizeof(OPERAND_VALUES_REGITYPE_IMAGEITYPE) / sizeof(unsigned));
+    validateOperand(inst, PROP_S1, OPERAND_ATTR_ITYPE, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned));
     validateOperand(inst, PROP_S3, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned));
     validateOperand(inst, PROP_S4, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned));
     return true;
@@ -9562,7 +9563,7 @@ template<class T> bool InstValidator::req_stq(T inst)
         brigPropError(inst, PROP_MEMORYORDER, getMemoryOrder<T>(inst), MEMORD_VALUES_ST, sizeof(MEMORD_VALUES_ST) / sizeof(unsigned));
     }
     validateOperand(inst, PROP_S0, OPERAND_ATTR_SEG, OPERAND_VALUES_ADDRSEG, sizeof(OPERAND_VALUES_ADDRSEG) / sizeof(unsigned));
-    validateOperand(inst, PROP_S1, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned));
+    validateOperand(inst, PROP_S1, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REGSTYPE_IMMSTYPE, sizeof(OPERAND_VALUES_REGSTYPE_IMMSTYPE) / sizeof(unsigned));
     validateOperand(inst, PROP_S2, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned));
     validateOperand(inst, PROP_S3, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned));
     validateOperand(inst, PROP_S4, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned));
@@ -9652,8 +9653,8 @@ template<class T> bool InstValidator::req_unpack(T inst)
             check_type_values_u64(getType<T>(inst))
        )
     {
-        if (!check_type_values_u64x(getSourceType<T>(inst))) {
-            brigPropError(inst, PROP_SOURCETYPE, getSourceType<T>(inst), TYPE_VALUES_U64X, sizeof(TYPE_VALUES_U64X) / sizeof(unsigned));
+        if (!check_type_values_u64x2(getSourceType<T>(inst))) {
+            brigPropError(inst, PROP_SOURCETYPE, getSourceType<T>(inst), TYPE_VALUES_U64X2, sizeof(TYPE_VALUES_U64X2) / sizeof(unsigned));
         }
     }
     else if (
@@ -9685,8 +9686,8 @@ template<class T> bool InstValidator::req_unpack(T inst)
         invalidVariant(inst, PROP_TYPE);
     }
     validateOperand(inst, PROP_D0, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned));
-    validateOperand(inst, PROP_S1, OPERAND_ATTR_STYPE, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned));
-    validateOperand(inst, PROP_S2, OPERAND_ATTR_U32, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned));
+    validateOperand(inst, PROP_S1, OPERAND_ATTR_STYPE, OPERAND_VALUES_REGSTYPE_IMMSTYPE, sizeof(OPERAND_VALUES_REGSTYPE_IMMSTYPE) / sizeof(unsigned));
+    validateOperand(inst, PROP_S2, OPERAND_ATTR_U32, OPERAND_VALUES_REGSTYPE_IMMSTYPE, sizeof(OPERAND_VALUES_REGSTYPE_IMMSTYPE) / sizeof(unsigned));
     validateOperand(inst, PROP_S3, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned));
     validateOperand(inst, PROP_S4, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned));
     return true;
@@ -9711,7 +9712,7 @@ template<class T> bool InstValidator::req_unpackcvt(T inst)
         brigPropError(inst, PROP_SOURCETYPE, getSourceType<T>(inst), TYPE_VALUES_U8X4, sizeof(TYPE_VALUES_U8X4) / sizeof(unsigned));
     }
     validateOperand(inst, PROP_D0, OPERAND_ATTR_DTYPE, OPERAND_VALUES_REG, sizeof(OPERAND_VALUES_REG) / sizeof(unsigned));
-    validateOperand(inst, PROP_S1, OPERAND_ATTR_STYPE, OPERAND_VALUES_REG_IMM, sizeof(OPERAND_VALUES_REG_IMM) / sizeof(unsigned));
+    validateOperand(inst, PROP_S1, OPERAND_ATTR_STYPE, OPERAND_VALUES_REGSTYPE_IMMSTYPE, sizeof(OPERAND_VALUES_REGSTYPE_IMMSTYPE) / sizeof(unsigned));
     validateOperand(inst, PROP_S2, OPERAND_ATTR_U32, OPERAND_VALUES_IMM0T3U32, sizeof(OPERAND_VALUES_IMM0T3U32) / sizeof(unsigned));
     validateOperand(inst, PROP_S3, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned));
     validateOperand(inst, PROP_S4, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned));
@@ -10217,6 +10218,20 @@ void InstValidator::validateInst(Inst inst)
             InstAddr i = inst;
             if (!i) { invalidFormat(inst, "InstAddr"); }
             req_gcn_append_consume<InstAddr>(i);
+            break;
+        }
+        case (Brig::BRIG_OPCODE_GCNDIVRELAXED):
+        {
+            InstBasic i = inst;
+            if (!i) { invalidFormat(inst, "InstBasic"); }
+            req_gcn_div_relaxed<InstBasic>(i);
+            break;
+        }
+        case (Brig::BRIG_OPCODE_GCNDIVRELAXEDNARROW):
+        {
+            InstBasic i = inst;
+            if (!i) { invalidFormat(inst, "InstBasic"); }
+            req_gcn_div_relaxed<InstBasic>(i);
             break;
         }
         case (Brig::BRIG_OPCODE_GCNFLDEXP):
@@ -11187,6 +11202,8 @@ unsigned InstValidator::getOperand0Attr(Inst inst)
         case (Brig::BRIG_OPCODE_GCNB4XCHG): return OPERAND_ATTR_DTYPE;
         case (Brig::BRIG_OPCODE_GCNBFM): return OPERAND_ATTR_DTYPE;
         case (Brig::BRIG_OPCODE_GCNCONSUME): return OPERAND_ATTR_DTYPE;
+        case (Brig::BRIG_OPCODE_GCNDIVRELAXED): return OPERAND_ATTR_DTYPE;
+        case (Brig::BRIG_OPCODE_GCNDIVRELAXEDNARROW): return OPERAND_ATTR_DTYPE;
         case (Brig::BRIG_OPCODE_GCNFLDEXP): return OPERAND_ATTR_DTYPE;
         case (Brig::BRIG_OPCODE_GCNFREXP_EXP): return OPERAND_ATTR_S32;
         case (Brig::BRIG_OPCODE_GCNFREXP_MANT): return OPERAND_ATTR_DTYPE;
@@ -11413,6 +11430,8 @@ unsigned InstValidator::getOperand1Attr(Inst inst)
         case (Brig::BRIG_OPCODE_GCNB4XCHG): return OPERAND_ATTR_DTYPE;
         case (Brig::BRIG_OPCODE_GCNBFM): return OPERAND_ATTR_DTYPE;
         case (Brig::BRIG_OPCODE_GCNCONSUME): return OPERAND_ATTR_SEG;
+        case (Brig::BRIG_OPCODE_GCNDIVRELAXED): return OPERAND_ATTR_DTYPE;
+        case (Brig::BRIG_OPCODE_GCNDIVRELAXEDNARROW): return OPERAND_ATTR_DTYPE;
         case (Brig::BRIG_OPCODE_GCNFLDEXP): return OPERAND_ATTR_DTYPE;
         case (Brig::BRIG_OPCODE_GCNFREXP_EXP): return OPERAND_ATTR_DTYPE;
         case (Brig::BRIG_OPCODE_GCNFREXP_MANT): return OPERAND_ATTR_DTYPE;
@@ -11833,6 +11852,8 @@ unsigned InstValidator::getOperand2Attr(Inst inst)
         case (Brig::BRIG_OPCODE_GCNB4XCHG): return OPERAND_ATTR_DTYPE;
         case (Brig::BRIG_OPCODE_GCNBFM): return OPERAND_ATTR_DTYPE;
         case (Brig::BRIG_OPCODE_GCNCONSUME): return OPERAND_ATTR_NONE;
+        case (Brig::BRIG_OPCODE_GCNDIVRELAXED): return OPERAND_ATTR_DTYPE;
+        case (Brig::BRIG_OPCODE_GCNDIVRELAXEDNARROW): return OPERAND_ATTR_DTYPE;
         case (Brig::BRIG_OPCODE_GCNFLDEXP): return OPERAND_ATTR_S32;
         case (Brig::BRIG_OPCODE_GCNFREXP_EXP): return OPERAND_ATTR_NONE;
         case (Brig::BRIG_OPCODE_GCNFREXP_MANT): return OPERAND_ATTR_NONE;
@@ -12148,6 +12169,8 @@ unsigned InstValidator::getOperand3Attr(Inst inst)
         case (Brig::BRIG_OPCODE_GCNB4XCHG): return OPERAND_ATTR_NONE;
         case (Brig::BRIG_OPCODE_GCNBFM): return OPERAND_ATTR_NONE;
         case (Brig::BRIG_OPCODE_GCNCONSUME): return OPERAND_ATTR_NONE;
+        case (Brig::BRIG_OPCODE_GCNDIVRELAXED): return OPERAND_ATTR_NONE;
+        case (Brig::BRIG_OPCODE_GCNDIVRELAXEDNARROW): return OPERAND_ATTR_NONE;
         case (Brig::BRIG_OPCODE_GCNFLDEXP): return OPERAND_ATTR_NONE;
         case (Brig::BRIG_OPCODE_GCNFREXP_EXP): return OPERAND_ATTR_NONE;
         case (Brig::BRIG_OPCODE_GCNFREXP_MANT): return OPERAND_ATTR_NONE;
@@ -12334,6 +12357,8 @@ unsigned InstValidator::getOperand4Attr(Inst inst)
         case (Brig::BRIG_OPCODE_GCNB4XCHG): return OPERAND_ATTR_NONE;
         case (Brig::BRIG_OPCODE_GCNBFM): return OPERAND_ATTR_NONE;
         case (Brig::BRIG_OPCODE_GCNCONSUME): return OPERAND_ATTR_NONE;
+        case (Brig::BRIG_OPCODE_GCNDIVRELAXED): return OPERAND_ATTR_NONE;
+        case (Brig::BRIG_OPCODE_GCNDIVRELAXEDNARROW): return OPERAND_ATTR_NONE;
         case (Brig::BRIG_OPCODE_GCNFLDEXP): return OPERAND_ATTR_NONE;
         case (Brig::BRIG_OPCODE_GCNFREXP_EXP): return OPERAND_ATTR_NONE;
         case (Brig::BRIG_OPCODE_GCNFREXP_MANT): return OPERAND_ATTR_NONE;

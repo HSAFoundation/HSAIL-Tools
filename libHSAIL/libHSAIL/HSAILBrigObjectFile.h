@@ -48,7 +48,7 @@
 /// are essentially independent from the rest of this component and may be
 /// factored out when necessary.
 
-#include <iosfwd> // only forward dependencies from stdio
+#include <iosfwd>
 #include <memory> // unique_ptr
 
 #include "HSAILBrigContainer.h"
@@ -212,7 +212,7 @@ typedef BinaryStreamer<FILE_FORMAT_BIF |FILE_FORMAT_ELF64>  Bif64Streamer;
 typedef BinaryStreamer<FILE_FORMAT_BRIG|FILE_FORMAT_ELF64>  Brig64Streamer;
 typedef BinaryStreamer<FILE_FORMAT_AUTO>                    AutoBinaryStreamer;
 
-typedef  Bif32Streamer BifStreamer;
+typedef Bif32Streamer BifStreamer;
 typedef Brig32Streamer BrigStreamer;
 
 }

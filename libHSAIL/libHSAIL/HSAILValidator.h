@@ -49,7 +49,7 @@
 #include <istream>
 #include <string>
 
-#define ENABLE_ADDRESS_SIZE_CHECK (0)
+#define ENABLE_ADDRESS_SIZE_CHECK (1)
 
 using std::istream;
 

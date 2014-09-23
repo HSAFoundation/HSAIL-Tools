@@ -148,217 +148,218 @@ ETokens Scanner::scanModifier(EScanContext ctx, Scanner::Token &t)
 /*!re2c
     re2c:indent:string = "    ";
 
-    "_s16x2"/EOMOD        { brigId = Brig::BRIG_TYPE_S16X2;                    return EMType;                 }
-    "_b1"/EOMOD           { brigId = Brig::BRIG_TYPE_B1;                       return EMType;                 }
-    "_f32x2"/EOMOD        { brigId = Brig::BRIG_TYPE_F32X2;                    return EMType;                 }
-    "_sneari_sat"/EOMOD   { brigId = Brig::BRIG_ROUND_INTEGER_SIGNALLING_NEAR_EVEN_SAT; return EMRound;                }
-    "_f16"/EOMOD          { brigId = Brig::BRIG_TYPE_F16;                      return EMType;                 }
-    "_sle"/EOMOD          { brigId = Brig::BRIG_COMPARE_SLE;                   return EMCompare;              }
-    "_snan"/EOMOD         { brigId = Brig::BRIG_COMPARE_SNAN;                  return EMCompare;              }
-    "_s8x4"/EOMOD         { brigId = Brig::BRIG_TYPE_S8X4;                     return EMType;                 }
-    "_s8x8"/EOMOD         { brigId = Brig::BRIG_TYPE_S8X8;                     return EMType;                 }
-    "_wait_gte"/EOMOD     { switch(ctx) {
-	case EInstModifierInstAtomicContext: brigId = Brig::BRIG_ATOMIC_WAIT_GTE;               return EMAtomicOp;            
-	default: return EEmpty; } }
-    "_u32x2"/EOMOD        { brigId = Brig::BRIG_TYPE_U32X2;                    return EMType;                 }
-    "_sp_sat"/EOMOD       { brigId = Brig::BRIG_PACK_SPSAT;                    return EMPacking;              }
-    "_f64"/EOMOD          { brigId = Brig::BRIG_TYPE_F64;                      return EMType;                 }
-    "_u8x4"/EOMOD         { brigId = Brig::BRIG_TYPE_U8X4;                     return EMType;                 }
-    "_scacq"/EOMOD        { brigId = Brig::BRIG_MEMORY_ORDER_SC_ACQUIRE;       return EMMemoryOrder;          }
-    "_wrapdec"/EOMOD      { switch(ctx) {
-	case EInstModifierInstAtomicContext: brigId = Brig::BRIG_ATOMIC_WRAPDEC;                return EMAtomicOp;            
-	default: return EEmpty; } }
-    "_sys"/EOMOD          { brigId = Brig::BRIG_MEMORY_SCOPE_SYSTEM;           return EMMemoryScope;          }
-    "_le"/EOMOD           { brigId = Brig::BRIG_COMPARE_LE;                    return EMCompare;              }
-    "_s32x2"/EOMOD        { brigId = Brig::BRIG_TYPE_S32X2;                    return EMType;                 }
-    "_wg"/EOMOD           { brigId = Brig::BRIG_MEMORY_SCOPE_WORKGROUP;        return EMMemoryScope;          }
-    "_leu"/EOMOD          { brigId = Brig::BRIG_COMPARE_LEU;                   return EMCompare;              }
-    "_supi"/EOMOD         { brigId = Brig::BRIG_ROUND_INTEGER_SIGNALLING_PLUS_INFINITY; return EMRound;                }
-    "_sleu"/EOMOD         { brigId = Brig::BRIG_COMPARE_SLEU;                  return EMCompare;              }
-    "_exch"/EOMOD         { switch(ctx) {
-	case EInstModifierInstAtomicContext: brigId = Brig::BRIG_ATOMIC_EXCH;                   return EMAtomicOp;            
-	default: return EEmpty; } }
-    "_upi"/EOMOD          { brigId = Brig::BRIG_ROUND_INTEGER_PLUS_INFINITY;   return EMRound;                }
-    "_s64"/EOMOD          { brigId = Brig::BRIG_TYPE_S64;                      return EMType;                 }
-    "_pp"/EOMOD           { brigId = Brig::BRIG_PACK_PP;                       return EMPacking;              }
-    "_f16x8"/EOMOD        { brigId = Brig::BRIG_TYPE_F16X8;                    return EMType;                 }
-    "_s16"/EOMOD          { brigId = Brig::BRIG_TYPE_S16;                      return EMType;                 }
-    "_wv"/EOMOD           { brigId = Brig::BRIG_MEMORY_SCOPE_WAVEFRONT;        return EMMemoryScope;          }
-    "_image"/EOMOD        { switch(ctx) {
-	case EInstModifierInstFenceContext: brigId = Brig::BRIG_MEMORY_FENCE_SEGMENT_IMAGE;    return EMMemoryFenceSegments; 
-	default: return EEmpty; } }
-    "_sgt"/EOMOD          { brigId = Brig::BRIG_COMPARE_SGT;                   return EMCompare;              }
-    "_downi_sat"/EOMOD    { brigId = Brig::BRIG_ROUND_INTEGER_MINUS_INFINITY_SAT; return EMRound;                }
-    "_max"/EOMOD          { switch(ctx) {
-	case EInstModifierInstAtomicContext: brigId = Brig::BRIG_ATOMIC_MAX;                    return EMAtomicOp;            
-	default: return EEmpty; } }
-    "_cas"/EOMOD          { switch(ctx) {
-	case EInstModifierInstAtomicContext: brigId = Brig::BRIG_ATOMIC_CAS;                    return EMAtomicOp;            
-	default: return EEmpty; } }
-    "_u8"/EOMOD           { brigId = Brig::BRIG_TYPE_U8;                       return EMType;                 }
-    "_s8"/EOMOD           { brigId = Brig::BRIG_TYPE_S8;                       return EMType;                 }
-    "_zero"/EOMOD         { brigId = Brig::BRIG_ROUND_FLOAT_ZERO;              return EMRound;                }
-    "_s64x2"/EOMOD        { brigId = Brig::BRIG_TYPE_S64X2;                    return EMType;                 }
-    "_f64x2"/EOMOD        { brigId = Brig::BRIG_TYPE_F64X2;                    return EMType;                 }
-    "_u16x2"/EOMOD        { brigId = Brig::BRIG_TYPE_U16X2;                    return EMType;                 }
-    "_sneu"/EOMOD         { brigId = Brig::BRIG_COMPARE_SNEU;                  return EMCompare;              }
-    "_wrapinc"/EOMOD      { switch(ctx) {
-	case EInstModifierInstAtomicContext: brigId = Brig::BRIG_ATOMIC_WRAPINC;                return EMAtomicOp;            
-	default: return EEmpty; } }
-    "_s32x4"/EOMOD        { brigId = Brig::BRIG_TYPE_S32X4;                    return EMType;                 }
-    "_sgtu"/EOMOD         { brigId = Brig::BRIG_COMPARE_SGTU;                  return EMCompare;              }
-    "_zeroi_sat"/EOMOD    { brigId = Brig::BRIG_ROUND_INTEGER_ZERO_SAT;        return EMRound;                }
-    "_sig32"/EOMOD        { brigId = Brig::BRIG_TYPE_SIG32;                    return EMType;                 }
-    "_waittimeout_eq"/EOMOD  { switch(ctx) {
-	case EInstModifierInstAtomicContext: brigId = Brig::BRIG_ATOMIC_WAITTIMEOUT_EQ;         return EMAtomicOp;            
-	default: return EEmpty; } }
-    "_gt"/EOMOD           { brigId = Brig::BRIG_COMPARE_GT;                    return EMCompare;              }
-    "_ps_sat"/EOMOD       { brigId = Brig::BRIG_PACK_PSSAT;                    return EMPacking;              }
-    "_p"/EOMOD            { brigId = Brig::BRIG_PACK_P;                        return EMPacking;              }
-    "_wait_ne"/EOMOD      { switch(ctx) {
-	case EInstModifierInstAtomicContext: brigId = Brig::BRIG_ATOMIC_WAIT_NE;                return EMAtomicOp;            
-	default: return EEmpty; } }
-    "_b128"/EOMOD         { brigId = Brig::BRIG_TYPE_B128;                     return EMType;                 }
-    "_coord"/EOMOD        { brigId = Brig::BRIG_SAMPLER_QUERY_COORD;           return EMSamplerQuery;         }
-    "_b8"/EOMOD           { brigId = Brig::BRIG_TYPE_B8;                       return EMType;                 }
-    "_sp"/EOMOD           { brigId = Brig::BRIG_PACK_SP;                       return EMPacking;              }
-    "_num"/EOMOD          { brigId = Brig::BRIG_COMPARE_NUM;                   return EMCompare;              }
-    "_u64x2"/EOMOD        { brigId = Brig::BRIG_TYPE_U64X2;                    return EMType;                 }
-    "_region"/EOMOD       { switch(ctx) {
-	case EInstModifierContext: brigId = Brig::BRIG_SEGMENT_EXTSPACE0;             return EMSegment;             
-	default: return EEmpty; } }
-    "_waittimeout_lt"/EOMOD  { switch(ctx) {
-	case EInstModifierInstAtomicContext: brigId = Brig::BRIG_ATOMIC_WAITTIMEOUT_LT;         return EMAtomicOp;            
-	default: return EEmpty; } }
-    "_screl"/EOMOD        { brigId = Brig::BRIG_MEMORY_ORDER_SC_RELEASE;       return EMMemoryOrder;          }
-    "_sequ"/EOMOD         { brigId = Brig::BRIG_COMPARE_SEQU;                  return EMCompare;              }
-    "_sgeu"/EOMOD         { brigId = Brig::BRIG_COMPARE_SGEU;                  return EMCompare;              }
-    "_sneari"/EOMOD       { brigId = Brig::BRIG_ROUND_INTEGER_SIGNALLING_NEAR_EVEN; return EMRound;                }
-    "_f32x4"/EOMOD        { brigId = Brig::BRIG_TYPE_F32X4;                    return EMType;                 }
-    "_supi_sat"/EOMOD     { brigId = Brig::BRIG_ROUND_INTEGER_SIGNALLING_PLUS_INFINITY_SAT; return EMRound;                }
-    "_scar"/EOMOD         { brigId = Brig::BRIG_MEMORY_ORDER_SC_ACQUIRE_RELEASE; return EMMemoryOrder;          }
-    "_s32"/EOMOD          { brigId = Brig::BRIG_TYPE_S32;                      return EMType;                 }
-    "_s_sat"/EOMOD        { brigId = Brig::BRIG_PACK_SSAT;                     return EMPacking;              }
-    "_neari_sat"/EOMOD    { brigId = Brig::BRIG_ROUND_INTEGER_NEAR_EVEN_SAT;   return EMRound;                }
-    "_s16x4"/EOMOD        { brigId = Brig::BRIG_TYPE_S16X4;                    return EMType;                 }
-    "_sub"/EOMOD          { switch(ctx) {
-	case EInstModifierInstAtomicContext: brigId = Brig::BRIG_ATOMIC_SUB;                    return EMAtomicOp;            
-	default: return EEmpty; } }
+    "_2"/EOMOD            { brigId = Brig::BRIG_ROUND_NONE;                    return EMRound;                }
     "_add"/EOMOD          { switch(ctx) {
 	case EInstModifierInstAtomicContext: brigId = Brig::BRIG_ATOMIC_ADD;                    return EMAtomicOp;            
 	default: return EEmpty; } }
-    "_lt"/EOMOD           { brigId = Brig::BRIG_COMPARE_LT;                    return EMCompare;              }
-    "_private"/EOMOD      { switch(ctx) {
-	case EInstModifierContext: brigId = Brig::BRIG_SEGMENT_PRIVATE;               return EMSegment;             
-	default: return EEmpty; } }
-    "_down"/EOMOD         { brigId = Brig::BRIG_ROUND_FLOAT_MINUS_INFINITY;    return EMRound;                }
-    "_woimg"/EOMOD        { brigId = Brig::BRIG_TYPE_WOIMG;                    return EMType;                 }
-    "_st"/EOMOD           { switch(ctx) {
-	case EInstModifierInstAtomicContext: brigId = Brig::BRIG_ATOMIC_ST;                     return EMAtomicOp;            
-	default: return EEmpty; } }
-    "_slt"/EOMOD          { brigId = Brig::BRIG_COMPARE_SLT;                   return EMCompare;              }
-    "_ps"/EOMOD           { brigId = Brig::BRIG_PACK_PS;                       return EMPacking;              }
-    "_u8x8"/EOMOD         { brigId = Brig::BRIG_TYPE_U8X8;                     return EMType;                 }
-    "_gtu"/EOMOD          { brigId = Brig::BRIG_COMPARE_GTU;                   return EMCompare;              }
-    "_readonly"/EOMOD     { switch(ctx) {
-	case EInstModifierContext: brigId = Brig::BRIG_SEGMENT_READONLY;              return EMSegment;             
-	default: return EEmpty; } }
-    "_cmp"/EOMOD          { brigId = Brig::BRIG_MEMORY_SCOPE_COMPONENT;        return EMMemoryScope;          }
-    "_sdowni"/EOMOD       { brigId = Brig::BRIG_ROUND_INTEGER_SIGNALLING_MINUS_INFINITY; return EMRound;                }
-    "_snum"/EOMOD         { brigId = Brig::BRIG_COMPARE_SNUM;                  return EMCompare;              }
-    "_s8x16"/EOMOD        { brigId = Brig::BRIG_TYPE_S8X16;                    return EMType;                 }
-    "_ld"/EOMOD           { switch(ctx) {
-	case EInstModifierInstAtomicContext: brigId = Brig::BRIG_ATOMIC_LD;                     return EMAtomicOp;            
-	default: return EEmpty; } }
-    "_eq"/EOMOD           { brigId = Brig::BRIG_COMPARE_EQ;                    return EMCompare;              }
-    "_min"/EOMOD          { switch(ctx) {
-	case EInstModifierInstAtomicContext: brigId = Brig::BRIG_ATOMIC_MIN;                    return EMAtomicOp;            
-	default: return EEmpty; } }
-    "_kernarg"/EOMOD      { switch(ctx) {
-	case EInstModifierContext: brigId = Brig::BRIG_SEGMENT_KERNARG;               return EMSegment;             
-	default: return EEmpty; } }
-    "_sne"/EOMOD          { brigId = Brig::BRIG_COMPARE_SNE;                   return EMCompare;              }
-    "_u16x8"/EOMOD        { brigId = Brig::BRIG_TYPE_U16X8;                    return EMType;                 }
+    "_addressing"/EOMOD   { brigId = Brig::BRIG_SAMPLER_QUERY_ADDRESSING;      return EMSamplerQuery;         }
     "_and"/EOMOD          { switch(ctx) {
 	case EInstModifierInstAtomicContext: brigId = Brig::BRIG_ATOMIC_AND;                    return EMAtomicOp;            
-	default: return EEmpty; } }
-    "_s"/EOMOD            { brigId = Brig::BRIG_PACK_S;                        return EMPacking;              }
-    "_geu"/EOMOD          { brigId = Brig::BRIG_COMPARE_GEU;                   return EMCompare;              }
-    "_u16"/EOMOD          { brigId = Brig::BRIG_TYPE_U16;                      return EMType;                 }
-    "_rwimg"/EOMOD        { brigId = Brig::BRIG_TYPE_RWIMG;                    return EMType;                 }
-    "_sge"/EOMOD          { brigId = Brig::BRIG_COMPARE_SGE;                   return EMCompare;              }
-    "_b32"/EOMOD          { brigId = Brig::BRIG_TYPE_B32;                      return EMType;                 }
-    "_u32x4"/EOMOD        { brigId = Brig::BRIG_TYPE_U32X4;                    return EMType;                 }
-    "_rlx"/EOMOD          { brigId = Brig::BRIG_MEMORY_ORDER_RELAXED;          return EMMemoryOrder;          }
-    "_u32"/EOMOD          { brigId = Brig::BRIG_TYPE_U32;                      return EMType;                 }
-    "_seq"/EOMOD          { brigId = Brig::BRIG_COMPARE_SEQ;                   return EMCompare;              }
-    "_filter"/EOMOD       { brigId = Brig::BRIG_SAMPLER_QUERY_FILTER;          return EMSamplerQuery;         }
-    "_szeroi_sat"/EOMOD   { brigId = Brig::BRIG_ROUND_INTEGER_SIGNALLING_ZERO_SAT; return EMRound;                }
-    "_waittimeout_gte"/EOMOD  { switch(ctx) {
-	case EInstModifierInstAtomicContext: brigId = Brig::BRIG_ATOMIC_WAITTIMEOUT_GTE;        return EMAtomicOp;            
-	default: return EEmpty; } }
-    "_ltu"/EOMOD          { brigId = Brig::BRIG_COMPARE_LTU;                   return EMCompare;              }
-    "_f16x4"/EOMOD        { brigId = Brig::BRIG_TYPE_F16X4;                    return EMType;                 }
-    "_samp"/EOMOD         { brigId = Brig::BRIG_TYPE_SAMP;                     return EMType;                 }
-    "_addressing"/EOMOD   { brigId = Brig::BRIG_SAMPLER_QUERY_ADDRESSING;      return EMSamplerQuery;         }
-    "_nan"/EOMOD          { brigId = Brig::BRIG_COMPARE_NAN;                   return EMCompare;              }
-    "_p_sat"/EOMOD        { brigId = Brig::BRIG_PACK_PSAT;                     return EMPacking;              }
-    "_group"/EOMOD        { switch(ctx) {
-	case EInstModifierInstFenceContext: brigId = Brig::BRIG_MEMORY_FENCE_SEGMENT_GROUP;    return EMMemoryFenceSegments; 
-	case EInstModifierContext: brigId = Brig::BRIG_SEGMENT_GROUP;                 return EMSegment;             
-	default: return EEmpty; } }
-    "_roimg"/EOMOD        { brigId = Brig::BRIG_TYPE_ROIMG;                    return EMType;                 }
-    "_near"/EOMOD         { brigId = Brig::BRIG_ROUND_FLOAT_NEAR_EVEN;         return EMRound;                }
-    "_ss_sat"/EOMOD       { brigId = Brig::BRIG_PACK_SSSAT;                    return EMPacking;              }
-    "_equ"/EOMOD          { brigId = Brig::BRIG_COMPARE_EQU;                   return EMCompare;              }
-    "_neari"/EOMOD        { brigId = Brig::BRIG_ROUND_INTEGER_NEAR_EVEN;       return EMRound;                }
-    "_wait_lt"/EOMOD      { switch(ctx) {
-	case EInstModifierInstAtomicContext: brigId = Brig::BRIG_ATOMIC_WAIT_LT;                return EMAtomicOp;            
-	default: return EEmpty; } }
-    "_up"/EOMOD           { brigId = Brig::BRIG_ROUND_FLOAT_PLUS_INFINITY;     return EMRound;                }
-    "_waittimeout_ne"/EOMOD  { switch(ctx) {
-	case EInstModifierInstAtomicContext: brigId = Brig::BRIG_ATOMIC_WAITTIMEOUT_NE;         return EMAtomicOp;            
-	default: return EEmpty; } }
-    "_ne"/EOMOD           { brigId = Brig::BRIG_COMPARE_NE;                    return EMCompare;              }
-    "_sdowni_sat"/EOMOD   { brigId = Brig::BRIG_ROUND_INTEGER_SIGNALLING_MINUS_INFINITY_SAT; return EMRound;                }
-    "_f32"/EOMOD          { brigId = Brig::BRIG_TYPE_F32;                      return EMType;                 }
-    "_or"/EOMOD           { switch(ctx) {
-	case EInstModifierInstAtomicContext: brigId = Brig::BRIG_ATOMIC_OR;                     return EMAtomicOp;            
-	default: return EEmpty; } }
-    "_u16x4"/EOMOD        { brigId = Brig::BRIG_TYPE_U16X4;                    return EMType;                 }
-    "_ss"/EOMOD           { brigId = Brig::BRIG_PACK_SS;                       return EMPacking;              }
-    "_b64"/EOMOD          { brigId = Brig::BRIG_TYPE_B64;                      return EMType;                 }
-    "_upi_sat"/EOMOD      { brigId = Brig::BRIG_ROUND_INTEGER_PLUS_INFINITY_SAT; return EMRound;                }
-    "_pp_sat"/EOMOD       { brigId = Brig::BRIG_PACK_PPSAT;                    return EMPacking;              }
-    "_wi"/EOMOD           { brigId = Brig::BRIG_MEMORY_SCOPE_WORKITEM;         return EMMemoryScope;          }
-    "_wait_eq"/EOMOD      { switch(ctx) {
-	case EInstModifierInstAtomicContext: brigId = Brig::BRIG_ATOMIC_WAIT_EQ;                return EMAtomicOp;            
-	default: return EEmpty; } }
-    "_s16x8"/EOMOD        { brigId = Brig::BRIG_TYPE_S16X8;                    return EMType;                 }
-    "_sltu"/EOMOD         { brigId = Brig::BRIG_COMPARE_SLTU;                  return EMCompare;              }
-    "_b16"/EOMOD          { brigId = Brig::BRIG_TYPE_B16;                      return EMType;                 }
-    "_f16x2"/EOMOD        { brigId = Brig::BRIG_TYPE_F16X2;                    return EMType;                 }
-    "_downi"/EOMOD        { brigId = Brig::BRIG_ROUND_INTEGER_MINUS_INFINITY;  return EMRound;                }
-    "_global"/EOMOD       { switch(ctx) {
-	case EInstModifierInstFenceContext: brigId = Brig::BRIG_MEMORY_FENCE_SEGMENT_GLOBAL;   return EMMemoryFenceSegments; 
-	case EInstModifierContext: brigId = Brig::BRIG_SEGMENT_GLOBAL;                return EMSegment;             
-	default: return EEmpty; } }
-    "_ge"/EOMOD           { brigId = Brig::BRIG_COMPARE_GE;                    return EMCompare;              }
-    "_zeroi"/EOMOD        { brigId = Brig::BRIG_ROUND_INTEGER_ZERO;            return EMRound;                }
-    "_spill"/EOMOD        { switch(ctx) {
-	case EInstModifierContext: brigId = Brig::BRIG_SEGMENT_SPILL;                 return EMSegment;             
-	default: return EEmpty; } }
-    "_neu"/EOMOD          { brigId = Brig::BRIG_COMPARE_NEU;                   return EMCompare;              }
-    "_u8x16"/EOMOD        { brigId = Brig::BRIG_TYPE_U8X16;                    return EMType;                 }
-    "_sig64"/EOMOD        { brigId = Brig::BRIG_TYPE_SIG64;                    return EMType;                 }
-    "_u64"/EOMOD          { brigId = Brig::BRIG_TYPE_U64;                      return EMType;                 }
-    "_xor"/EOMOD          { switch(ctx) {
-	case EInstModifierInstAtomicContext: brigId = Brig::BRIG_ATOMIC_XOR;                    return EMAtomicOp;            
 	default: return EEmpty; } }
     "_arg"/EOMOD          { switch(ctx) {
 	case EInstModifierContext: brigId = Brig::BRIG_SEGMENT_ARG;                   return EMSegment;             
 	default: return EEmpty; } }
+    "_b1"/EOMOD           { brigId = Brig::BRIG_TYPE_B1;                       return EMType;                 }
+    "_b128"/EOMOD         { brigId = Brig::BRIG_TYPE_B128;                     return EMType;                 }
+    "_b16"/EOMOD          { brigId = Brig::BRIG_TYPE_B16;                      return EMType;                 }
+    "_b32"/EOMOD          { brigId = Brig::BRIG_TYPE_B32;                      return EMType;                 }
+    "_b64"/EOMOD          { brigId = Brig::BRIG_TYPE_B64;                      return EMType;                 }
+    "_b8"/EOMOD           { brigId = Brig::BRIG_TYPE_B8;                       return EMType;                 }
+    "_cas"/EOMOD          { switch(ctx) {
+	case EInstModifierInstAtomicContext: brigId = Brig::BRIG_ATOMIC_CAS;                    return EMAtomicOp;            
+	default: return EEmpty; } }
+    "_cmp"/EOMOD          { brigId = Brig::BRIG_MEMORY_SCOPE_COMPONENT;        return EMMemoryScope;          }
+    "_coord"/EOMOD        { brigId = Brig::BRIG_SAMPLER_QUERY_COORD;           return EMSamplerQuery;         }
+    "_down"/EOMOD         { brigId = Brig::BRIG_ROUND_FLOAT_MINUS_INFINITY;    return EMRound;                }
+    "_downi"/EOMOD        { brigId = Brig::BRIG_ROUND_INTEGER_MINUS_INFINITY;  return EMRound;                }
+    "_downi_sat"/EOMOD    { brigId = Brig::BRIG_ROUND_INTEGER_MINUS_INFINITY_SAT; return EMRound;                }
+    "_eq"/EOMOD           { brigId = Brig::BRIG_COMPARE_EQ;                    return EMCompare;              }
+    "_equ"/EOMOD          { brigId = Brig::BRIG_COMPARE_EQU;                   return EMCompare;              }
+    "_exch"/EOMOD         { switch(ctx) {
+	case EInstModifierInstAtomicContext: brigId = Brig::BRIG_ATOMIC_EXCH;                   return EMAtomicOp;            
+	default: return EEmpty; } }
+    "_f16"/EOMOD          { brigId = Brig::BRIG_TYPE_F16;                      return EMType;                 }
+    "_f16x2"/EOMOD        { brigId = Brig::BRIG_TYPE_F16X2;                    return EMType;                 }
+    "_f16x4"/EOMOD        { brigId = Brig::BRIG_TYPE_F16X4;                    return EMType;                 }
+    "_f16x8"/EOMOD        { brigId = Brig::BRIG_TYPE_F16X8;                    return EMType;                 }
+    "_f32"/EOMOD          { brigId = Brig::BRIG_TYPE_F32;                      return EMType;                 }
+    "_f32x2"/EOMOD        { brigId = Brig::BRIG_TYPE_F32X2;                    return EMType;                 }
+    "_f32x4"/EOMOD        { brigId = Brig::BRIG_TYPE_F32X4;                    return EMType;                 }
+    "_f64"/EOMOD          { brigId = Brig::BRIG_TYPE_F64;                      return EMType;                 }
+    "_f64x2"/EOMOD        { brigId = Brig::BRIG_TYPE_F64X2;                    return EMType;                 }
+    "_filter"/EOMOD       { brigId = Brig::BRIG_SAMPLER_QUERY_FILTER;          return EMSamplerQuery;         }
+    "_ge"/EOMOD           { brigId = Brig::BRIG_COMPARE_GE;                    return EMCompare;              }
+    "_geu"/EOMOD          { brigId = Brig::BRIG_COMPARE_GEU;                   return EMCompare;              }
+    "_global"/EOMOD       { switch(ctx) {
+	case EInstModifierContext: brigId = Brig::BRIG_SEGMENT_GLOBAL;                return EMSegment;             
+	case EInstModifierInstFenceContext: brigId = Brig::BRIG_MEMORY_FENCE_SEGMENT_GLOBAL;   return EMMemoryFenceSegments; 
+	default: return EEmpty; } }
+    "_group"/EOMOD        { switch(ctx) {
+	case EInstModifierContext: brigId = Brig::BRIG_SEGMENT_GROUP;                 return EMSegment;             
+	case EInstModifierInstFenceContext: brigId = Brig::BRIG_MEMORY_FENCE_SEGMENT_GROUP;    return EMMemoryFenceSegments; 
+	default: return EEmpty; } }
+    "_gt"/EOMOD           { brigId = Brig::BRIG_COMPARE_GT;                    return EMCompare;              }
+    "_gtu"/EOMOD          { brigId = Brig::BRIG_COMPARE_GTU;                   return EMCompare;              }
+    "_image"/EOMOD        { switch(ctx) {
+	case EInstModifierInstFenceContext: brigId = Brig::BRIG_MEMORY_FENCE_SEGMENT_IMAGE;    return EMMemoryFenceSegments; 
+	default: return EEmpty; } }
+    "_kernarg"/EOMOD      { switch(ctx) {
+	case EInstModifierContext: brigId = Brig::BRIG_SEGMENT_KERNARG;               return EMSegment;             
+	default: return EEmpty; } }
+    "_ld"/EOMOD           { switch(ctx) {
+	case EInstModifierInstAtomicContext: brigId = Brig::BRIG_ATOMIC_LD;                     return EMAtomicOp;            
+	default: return EEmpty; } }
+    "_le"/EOMOD           { brigId = Brig::BRIG_COMPARE_LE;                    return EMCompare;              }
+    "_leu"/EOMOD          { brigId = Brig::BRIG_COMPARE_LEU;                   return EMCompare;              }
+    "_lt"/EOMOD           { brigId = Brig::BRIG_COMPARE_LT;                    return EMCompare;              }
+    "_ltu"/EOMOD          { brigId = Brig::BRIG_COMPARE_LTU;                   return EMCompare;              }
+    "_max"/EOMOD          { switch(ctx) {
+	case EInstModifierInstAtomicContext: brigId = Brig::BRIG_ATOMIC_MAX;                    return EMAtomicOp;            
+	default: return EEmpty; } }
+    "_min"/EOMOD          { switch(ctx) {
+	case EInstModifierInstAtomicContext: brigId = Brig::BRIG_ATOMIC_MIN;                    return EMAtomicOp;            
+	default: return EEmpty; } }
+    "_nan"/EOMOD          { brigId = Brig::BRIG_COMPARE_NAN;                   return EMCompare;              }
+    "_ne"/EOMOD           { brigId = Brig::BRIG_COMPARE_NE;                    return EMCompare;              }
+    "_near"/EOMOD         { brigId = Brig::BRIG_ROUND_FLOAT_NEAR_EVEN;         return EMRound;                }
+    "_neari"/EOMOD        { brigId = Brig::BRIG_ROUND_INTEGER_NEAR_EVEN;       return EMRound;                }
+    "_neari_sat"/EOMOD    { brigId = Brig::BRIG_ROUND_INTEGER_NEAR_EVEN_SAT;   return EMRound;                }
+    "_neu"/EOMOD          { brigId = Brig::BRIG_COMPARE_NEU;                   return EMCompare;              }
+    "_num"/EOMOD          { brigId = Brig::BRIG_COMPARE_NUM;                   return EMCompare;              }
+    "_or"/EOMOD           { switch(ctx) {
+	case EInstModifierInstAtomicContext: brigId = Brig::BRIG_ATOMIC_OR;                     return EMAtomicOp;            
+	default: return EEmpty; } }
+    "_p"/EOMOD            { brigId = Brig::BRIG_PACK_P;                        return EMPacking;              }
+    "_p_sat"/EOMOD        { brigId = Brig::BRIG_PACK_PSAT;                     return EMPacking;              }
+    "_pp"/EOMOD           { brigId = Brig::BRIG_PACK_PP;                       return EMPacking;              }
+    "_pp_sat"/EOMOD       { brigId = Brig::BRIG_PACK_PPSAT;                    return EMPacking;              }
+    "_private"/EOMOD      { switch(ctx) {
+	case EInstModifierContext: brigId = Brig::BRIG_SEGMENT_PRIVATE;               return EMSegment;             
+	default: return EEmpty; } }
+    "_ps"/EOMOD           { brigId = Brig::BRIG_PACK_PS;                       return EMPacking;              }
+    "_ps_sat"/EOMOD       { brigId = Brig::BRIG_PACK_PSSAT;                    return EMPacking;              }
+    "_readonly"/EOMOD     { switch(ctx) {
+	case EInstModifierContext: brigId = Brig::BRIG_SEGMENT_READONLY;              return EMSegment;             
+	default: return EEmpty; } }
+    "_region"/EOMOD       { switch(ctx) {
+	case EInstModifierContext: brigId = Brig::BRIG_SEGMENT_EXTSPACE0;             return EMSegment;             
+	default: return EEmpty; } }
+    "_rlx"/EOMOD          { brigId = Brig::BRIG_MEMORY_ORDER_RELAXED;          return EMMemoryOrder;          }
+    "_roimg"/EOMOD        { brigId = Brig::BRIG_TYPE_ROIMG;                    return EMType;                 }
+    "_rwimg"/EOMOD        { brigId = Brig::BRIG_TYPE_RWIMG;                    return EMType;                 }
+    "_s"/EOMOD            { brigId = Brig::BRIG_PACK_S;                        return EMPacking;              }
+    "_s16"/EOMOD          { brigId = Brig::BRIG_TYPE_S16;                      return EMType;                 }
+    "_s16x2"/EOMOD        { brigId = Brig::BRIG_TYPE_S16X2;                    return EMType;                 }
+    "_s16x4"/EOMOD        { brigId = Brig::BRIG_TYPE_S16X4;                    return EMType;                 }
+    "_s16x8"/EOMOD        { brigId = Brig::BRIG_TYPE_S16X8;                    return EMType;                 }
+    "_s32"/EOMOD          { brigId = Brig::BRIG_TYPE_S32;                      return EMType;                 }
+    "_s32x2"/EOMOD        { brigId = Brig::BRIG_TYPE_S32X2;                    return EMType;                 }
+    "_s32x4"/EOMOD        { brigId = Brig::BRIG_TYPE_S32X4;                    return EMType;                 }
+    "_s64"/EOMOD          { brigId = Brig::BRIG_TYPE_S64;                      return EMType;                 }
+    "_s64x2"/EOMOD        { brigId = Brig::BRIG_TYPE_S64X2;                    return EMType;                 }
+    "_s8"/EOMOD           { brigId = Brig::BRIG_TYPE_S8;                       return EMType;                 }
+    "_s8x16"/EOMOD        { brigId = Brig::BRIG_TYPE_S8X16;                    return EMType;                 }
+    "_s8x4"/EOMOD         { brigId = Brig::BRIG_TYPE_S8X4;                     return EMType;                 }
+    "_s8x8"/EOMOD         { brigId = Brig::BRIG_TYPE_S8X8;                     return EMType;                 }
+    "_s_sat"/EOMOD        { brigId = Brig::BRIG_PACK_SSAT;                     return EMPacking;              }
+    "_samp"/EOMOD         { brigId = Brig::BRIG_TYPE_SAMP;                     return EMType;                 }
+    "_scacq"/EOMOD        { brigId = Brig::BRIG_MEMORY_ORDER_SC_ACQUIRE;       return EMMemoryOrder;          }
+    "_scar"/EOMOD         { brigId = Brig::BRIG_MEMORY_ORDER_SC_ACQUIRE_RELEASE; return EMMemoryOrder;          }
+    "_screl"/EOMOD        { brigId = Brig::BRIG_MEMORY_ORDER_SC_RELEASE;       return EMMemoryOrder;          }
+    "_sdowni"/EOMOD       { brigId = Brig::BRIG_ROUND_INTEGER_SIGNALLING_MINUS_INFINITY; return EMRound;                }
+    "_sdowni_sat"/EOMOD   { brigId = Brig::BRIG_ROUND_INTEGER_SIGNALLING_MINUS_INFINITY_SAT; return EMRound;                }
+    "_seq"/EOMOD          { brigId = Brig::BRIG_COMPARE_SEQ;                   return EMCompare;              }
+    "_sequ"/EOMOD         { brigId = Brig::BRIG_COMPARE_SEQU;                  return EMCompare;              }
+    "_sge"/EOMOD          { brigId = Brig::BRIG_COMPARE_SGE;                   return EMCompare;              }
+    "_sgeu"/EOMOD         { brigId = Brig::BRIG_COMPARE_SGEU;                  return EMCompare;              }
+    "_sgt"/EOMOD          { brigId = Brig::BRIG_COMPARE_SGT;                   return EMCompare;              }
+    "_sgtu"/EOMOD         { brigId = Brig::BRIG_COMPARE_SGTU;                  return EMCompare;              }
+    "_sig32"/EOMOD        { brigId = Brig::BRIG_TYPE_SIG32;                    return EMType;                 }
+    "_sig64"/EOMOD        { brigId = Brig::BRIG_TYPE_SIG64;                    return EMType;                 }
+    "_sle"/EOMOD          { brigId = Brig::BRIG_COMPARE_SLE;                   return EMCompare;              }
+    "_sleu"/EOMOD         { brigId = Brig::BRIG_COMPARE_SLEU;                  return EMCompare;              }
+    "_slt"/EOMOD          { brigId = Brig::BRIG_COMPARE_SLT;                   return EMCompare;              }
+    "_sltu"/EOMOD         { brigId = Brig::BRIG_COMPARE_SLTU;                  return EMCompare;              }
+    "_snan"/EOMOD         { brigId = Brig::BRIG_COMPARE_SNAN;                  return EMCompare;              }
+    "_sne"/EOMOD          { brigId = Brig::BRIG_COMPARE_SNE;                   return EMCompare;              }
+    "_sneari"/EOMOD       { brigId = Brig::BRIG_ROUND_INTEGER_SIGNALLING_NEAR_EVEN; return EMRound;                }
+    "_sneari_sat"/EOMOD   { brigId = Brig::BRIG_ROUND_INTEGER_SIGNALLING_NEAR_EVEN_SAT; return EMRound;                }
+    "_sneu"/EOMOD         { brigId = Brig::BRIG_COMPARE_SNEU;                  return EMCompare;              }
+    "_snum"/EOMOD         { brigId = Brig::BRIG_COMPARE_SNUM;                  return EMCompare;              }
+    "_sp"/EOMOD           { brigId = Brig::BRIG_PACK_SP;                       return EMPacking;              }
+    "_sp_sat"/EOMOD       { brigId = Brig::BRIG_PACK_SPSAT;                    return EMPacking;              }
+    "_spill"/EOMOD        { switch(ctx) {
+	case EInstModifierContext: brigId = Brig::BRIG_SEGMENT_SPILL;                 return EMSegment;             
+	default: return EEmpty; } }
+    "_ss"/EOMOD           { brigId = Brig::BRIG_PACK_SS;                       return EMPacking;              }
+    "_ss_sat"/EOMOD       { brigId = Brig::BRIG_PACK_SSSAT;                    return EMPacking;              }
+    "_st"/EOMOD           { switch(ctx) {
+	case EInstModifierInstAtomicContext: brigId = Brig::BRIG_ATOMIC_ST;                     return EMAtomicOp;            
+	default: return EEmpty; } }
+    "_sub"/EOMOD          { switch(ctx) {
+	case EInstModifierInstAtomicContext: brigId = Brig::BRIG_ATOMIC_SUB;                    return EMAtomicOp;            
+	default: return EEmpty; } }
+    "_supi"/EOMOD         { brigId = Brig::BRIG_ROUND_INTEGER_SIGNALLING_PLUS_INFINITY; return EMRound;                }
+    "_supi_sat"/EOMOD     { brigId = Brig::BRIG_ROUND_INTEGER_SIGNALLING_PLUS_INFINITY_SAT; return EMRound;                }
+    "_sys"/EOMOD          { brigId = Brig::BRIG_MEMORY_SCOPE_SYSTEM;           return EMMemoryScope;          }
     "_szeroi"/EOMOD       { brigId = Brig::BRIG_ROUND_INTEGER_SIGNALLING_ZERO; return EMRound;                }
+    "_szeroi_sat"/EOMOD   { brigId = Brig::BRIG_ROUND_INTEGER_SIGNALLING_ZERO_SAT; return EMRound;                }
+    "_u16"/EOMOD          { brigId = Brig::BRIG_TYPE_U16;                      return EMType;                 }
+    "_u16x2"/EOMOD        { brigId = Brig::BRIG_TYPE_U16X2;                    return EMType;                 }
+    "_u16x4"/EOMOD        { brigId = Brig::BRIG_TYPE_U16X4;                    return EMType;                 }
+    "_u16x8"/EOMOD        { brigId = Brig::BRIG_TYPE_U16X8;                    return EMType;                 }
+    "_u32"/EOMOD          { brigId = Brig::BRIG_TYPE_U32;                      return EMType;                 }
+    "_u32x2"/EOMOD        { brigId = Brig::BRIG_TYPE_U32X2;                    return EMType;                 }
+    "_u32x4"/EOMOD        { brigId = Brig::BRIG_TYPE_U32X4;                    return EMType;                 }
+    "_u64"/EOMOD          { brigId = Brig::BRIG_TYPE_U64;                      return EMType;                 }
+    "_u64x2"/EOMOD        { brigId = Brig::BRIG_TYPE_U64X2;                    return EMType;                 }
+    "_u8"/EOMOD           { brigId = Brig::BRIG_TYPE_U8;                       return EMType;                 }
+    "_u8x16"/EOMOD        { brigId = Brig::BRIG_TYPE_U8X16;                    return EMType;                 }
+    "_u8x4"/EOMOD         { brigId = Brig::BRIG_TYPE_U8X4;                     return EMType;                 }
+    "_u8x8"/EOMOD         { brigId = Brig::BRIG_TYPE_U8X8;                     return EMType;                 }
+    "_up"/EOMOD           { brigId = Brig::BRIG_ROUND_FLOAT_PLUS_INFINITY;     return EMRound;                }
+    "_upi"/EOMOD          { brigId = Brig::BRIG_ROUND_INTEGER_PLUS_INFINITY;   return EMRound;                }
+    "_upi_sat"/EOMOD      { brigId = Brig::BRIG_ROUND_INTEGER_PLUS_INFINITY_SAT; return EMRound;                }
+    "_wait_eq"/EOMOD      { switch(ctx) {
+	case EInstModifierInstAtomicContext: brigId = Brig::BRIG_ATOMIC_WAIT_EQ;                return EMAtomicOp;            
+	default: return EEmpty; } }
+    "_wait_gte"/EOMOD     { switch(ctx) {
+	case EInstModifierInstAtomicContext: brigId = Brig::BRIG_ATOMIC_WAIT_GTE;               return EMAtomicOp;            
+	default: return EEmpty; } }
+    "_wait_lt"/EOMOD      { switch(ctx) {
+	case EInstModifierInstAtomicContext: brigId = Brig::BRIG_ATOMIC_WAIT_LT;                return EMAtomicOp;            
+	default: return EEmpty; } }
+    "_wait_ne"/EOMOD      { switch(ctx) {
+	case EInstModifierInstAtomicContext: brigId = Brig::BRIG_ATOMIC_WAIT_NE;                return EMAtomicOp;            
+	default: return EEmpty; } }
+    "_waittimeout_eq"/EOMOD  { switch(ctx) {
+	case EInstModifierInstAtomicContext: brigId = Brig::BRIG_ATOMIC_WAITTIMEOUT_EQ;         return EMAtomicOp;            
+	default: return EEmpty; } }
+    "_waittimeout_gte"/EOMOD  { switch(ctx) {
+	case EInstModifierInstAtomicContext: brigId = Brig::BRIG_ATOMIC_WAITTIMEOUT_GTE;        return EMAtomicOp;            
+	default: return EEmpty; } }
+    "_waittimeout_lt"/EOMOD  { switch(ctx) {
+	case EInstModifierInstAtomicContext: brigId = Brig::BRIG_ATOMIC_WAITTIMEOUT_LT;         return EMAtomicOp;            
+	default: return EEmpty; } }
+    "_waittimeout_ne"/EOMOD  { switch(ctx) {
+	case EInstModifierInstAtomicContext: brigId = Brig::BRIG_ATOMIC_WAITTIMEOUT_NE;         return EMAtomicOp;            
+	default: return EEmpty; } }
+    "_wg"/EOMOD           { brigId = Brig::BRIG_MEMORY_SCOPE_WORKGROUP;        return EMMemoryScope;          }
+    "_wi"/EOMOD           { brigId = Brig::BRIG_MEMORY_SCOPE_WORKITEM;         return EMMemoryScope;          }
+    "_woimg"/EOMOD        { brigId = Brig::BRIG_TYPE_WOIMG;                    return EMType;                 }
+    "_wrapdec"/EOMOD      { switch(ctx) {
+	case EInstModifierInstAtomicContext: brigId = Brig::BRIG_ATOMIC_WRAPDEC;                return EMAtomicOp;            
+	default: return EEmpty; } }
+    "_wrapinc"/EOMOD      { switch(ctx) {
+	case EInstModifierInstAtomicContext: brigId = Brig::BRIG_ATOMIC_WRAPINC;                return EMAtomicOp;            
+	default: return EEmpty; } }
+    "_wv"/EOMOD           { brigId = Brig::BRIG_MEMORY_SCOPE_WAVEFRONT;        return EMMemoryScope;          }
+    "_xor"/EOMOD          { switch(ctx) {
+	case EInstModifierInstAtomicContext: brigId = Brig::BRIG_ATOMIC_XOR;                    return EMAtomicOp;            
+	default: return EEmpty; } }
+    "_zero"/EOMOD         { brigId = Brig::BRIG_ROUND_FLOAT_ZERO;              return EMRound;                }
+    "_zeroi"/EOMOD        { brigId = Brig::BRIG_ROUND_INTEGER_ZERO;            return EMRound;                }
+    "_zeroi_sat"/EOMOD    { brigId = Brig::BRIG_ROUND_INTEGER_ZERO_SAT;        return EMRound;                }
 
     "_1d"/EOMOD        { brigId = Brig::BRIG_GEOMETRY_1D;  return EMGeom; }
     "_1db"/EOMOD       { brigId = Brig::BRIG_GEOMETRY_1DB; return EMGeom; }
@@ -512,75 +513,57 @@ ETokens Scanner::scanDefault(EScanContext ctx, Scanner::Token &t)
     "_woimg"/EOKW             { brigId = Brig::BRIG_TYPE_WOIMG; return EKWWOImg; }
     "_samp"/EOKW              { brigId = Brig::BRIG_TYPE_SAMP;  return EKWSamp; }
 
-    "requirenopartialworkgroups"/EOKW  { brigId = Brig::BRIG_CONTROL_REQUIRENOPARTIALWORKGROUPS; return EControl;               }
-    "requiredgridsize"/EOKW  { brigId = Brig::BRIG_CONTROL_REQUIREDGRIDSIZE;      return EControl;               }
-    "maxflatworkgroupsize"/EOKW  { brigId = Brig::BRIG_CONTROL_MAXFLATWORKGROUPSIZE;  return EControl;               }
-    "maxflatgridsize"/EOKW  { brigId = Brig::BRIG_CONTROL_MAXFLATGRIDSIZE;       return EControl;               }
-    "requiredworkgroupsize"/EOKW  { brigId = Brig::BRIG_CONTROL_REQUIREDWORKGROUPSIZE; return EControl;               }
-    "maxdynamicgroupsize"/EOKW  { brigId = Brig::BRIG_CONTROL_MAXDYNAMICGROUPSIZE;   return EControl;               }
+    "enablebreakexceptions"/EOKW  { brigId = Brig::BRIG_CONTROL_ENABLEBREAKEXCEPTIONS; return EControl;               }
     "enabledetectexceptions"/EOKW  { brigId = Brig::BRIG_CONTROL_ENABLEDETECTEXCEPTIONS; return EControl;               }
+    "maxdynamicgroupsize"/EOKW  { brigId = Brig::BRIG_CONTROL_MAXDYNAMICGROUPSIZE;   return EControl;               }
+    "maxflatgridsize"/EOKW  { brigId = Brig::BRIG_CONTROL_MAXFLATGRIDSIZE;       return EControl;               }
+    "maxflatworkgroupsize"/EOKW  { brigId = Brig::BRIG_CONTROL_MAXFLATWORKGROUPSIZE;  return EControl;               }
     "requestedworkgroupspercu"/EOKW  { brigId = Brig::BRIG_CONTROL_REQUESTEDWORKGROUPSPERCU; return EControl;               }
     "requireddim"/EOKW    { brigId = Brig::BRIG_CONTROL_REQUIREDDIM;           return EControl;               }
-    "enablebreakexceptions"/EOKW  { brigId = Brig::BRIG_CONTROL_ENABLEBREAKEXCEPTIONS; return EControl;               }
+    "requiredgridsize"/EOKW  { brigId = Brig::BRIG_CONTROL_REQUIREDGRIDSIZE;      return EControl;               }
+    "requiredworkgroupsize"/EOKW  { brigId = Brig::BRIG_CONTROL_REQUIREDWORKGROUPSIZE; return EControl;               }
+    "requirenopartialworkgroups"/EOKW  { brigId = Brig::BRIG_CONTROL_REQUIRENOPARTIALWORKGROUPS; return EControl;               }
 
-    "unorm_int_101010"/EOKW  { brigId = Brig::BRIG_CHANNEL_TYPE_UNORM_INT_101010; return EImageFormat;           }
-    "unsigned_int16"/EOKW  { brigId = Brig::BRIG_CHANNEL_TYPE_UNSIGNED_INT16;   return EImageFormat;           }
-    "snorm_int16"/EOKW    { brigId = Brig::BRIG_CHANNEL_TYPE_SNORM_INT16;      return EImageFormat;           }
-    "snorm_int8"/EOKW     { brigId = Brig::BRIG_CHANNEL_TYPE_SNORM_INT8;       return EImageFormat;           }
-    "unorm_short_555"/EOKW  { brigId = Brig::BRIG_CHANNEL_TYPE_UNORM_SHORT_555;  return EImageFormat;           }
-    "unsigned_int8"/EOKW  { brigId = Brig::BRIG_CHANNEL_TYPE_UNSIGNED_INT8;    return EImageFormat;           }
     "float"/EOKW          { brigId = Brig::BRIG_CHANNEL_TYPE_FLOAT;            return EImageFormat;           }
     "half_float"/EOKW     { brigId = Brig::BRIG_CHANNEL_TYPE_HALF_FLOAT;       return EImageFormat;           }
-    "unorm_int8"/EOKW     { brigId = Brig::BRIG_CHANNEL_TYPE_UNORM_INT8;       return EImageFormat;           }
-    "signed_int8"/EOKW    { brigId = Brig::BRIG_CHANNEL_TYPE_SIGNED_INT8;      return EImageFormat;           }
-    "unorm_int24"/EOKW    { brigId = Brig::BRIG_CHANNEL_TYPE_UNORM_INT24;      return EImageFormat;           }
-    "signed_int32"/EOKW   { brigId = Brig::BRIG_CHANNEL_TYPE_SIGNED_INT32;     return EImageFormat;           }
     "signed_int16"/EOKW   { brigId = Brig::BRIG_CHANNEL_TYPE_SIGNED_INT16;     return EImageFormat;           }
+    "signed_int32"/EOKW   { brigId = Brig::BRIG_CHANNEL_TYPE_SIGNED_INT32;     return EImageFormat;           }
+    "signed_int8"/EOKW    { brigId = Brig::BRIG_CHANNEL_TYPE_SIGNED_INT8;      return EImageFormat;           }
+    "snorm_int16"/EOKW    { brigId = Brig::BRIG_CHANNEL_TYPE_SNORM_INT16;      return EImageFormat;           }
+    "snorm_int8"/EOKW     { brigId = Brig::BRIG_CHANNEL_TYPE_SNORM_INT8;       return EImageFormat;           }
     "unorm_int16"/EOKW    { brigId = Brig::BRIG_CHANNEL_TYPE_UNORM_INT16;      return EImageFormat;           }
-    "unsigned_int32"/EOKW  { brigId = Brig::BRIG_CHANNEL_TYPE_UNSIGNED_INT32;   return EImageFormat;           }
+    "unorm_int24"/EOKW    { brigId = Brig::BRIG_CHANNEL_TYPE_UNORM_INT24;      return EImageFormat;           }
+    "unorm_int8"/EOKW     { brigId = Brig::BRIG_CHANNEL_TYPE_UNORM_INT8;       return EImageFormat;           }
+    "unorm_int_101010"/EOKW  { brigId = Brig::BRIG_CHANNEL_TYPE_UNORM_INT_101010; return EImageFormat;           }
+    "unorm_short_555"/EOKW  { brigId = Brig::BRIG_CHANNEL_TYPE_UNORM_SHORT_555;  return EImageFormat;           }
     "unorm_short_565"/EOKW  { brigId = Brig::BRIG_CHANNEL_TYPE_UNORM_SHORT_565;  return EImageFormat;           }
+    "unsigned_int16"/EOKW  { brigId = Brig::BRIG_CHANNEL_TYPE_UNSIGNED_INT16;   return EImageFormat;           }
+    "unsigned_int32"/EOKW  { brigId = Brig::BRIG_CHANNEL_TYPE_UNSIGNED_INT32;   return EImageFormat;           }
+    "unsigned_int8"/EOKW  { brigId = Brig::BRIG_CHANNEL_TYPE_UNSIGNED_INT8;    return EImageFormat;           }
 
-    "sbgra"/EOKW          { switch(ctx) {
-	case EImageOrderContext: brigId = Brig::BRIG_CHANNEL_ORDER_SBGRA;           return EImageOrder;           
-	default: return EEmpty; } }
-    "depth_stencil"/EOKW  { switch(ctx) {
-	case EImageOrderContext: brigId = Brig::BRIG_CHANNEL_ORDER_DEPTH_STENCIL;   return EImageOrder;           
-	default: return EEmpty; } }
     "a"/EOKW              { switch(ctx) {
 	case EImageOrderContext: brigId = Brig::BRIG_CHANNEL_ORDER_A;               return EImageOrder;           
-	default: return EEmpty; } }
-    "srgb"/EOKW           { switch(ctx) {
-	case EImageOrderContext: brigId = Brig::BRIG_CHANNEL_ORDER_SRGB;            return EImageOrder;           
-	default: return EEmpty; } }
-    "rgbx"/EOKW           { switch(ctx) {
-	case EImageOrderContext: brigId = Brig::BRIG_CHANNEL_ORDER_RGBX;            return EImageOrder;           
-	default: return EEmpty; } }
-    "intensity"/EOKW      { switch(ctx) {
-	case EImageOrderContext: brigId = Brig::BRIG_CHANNEL_ORDER_INTENSITY;       return EImageOrder;           
-	default: return EEmpty; } }
-    "rgb"/EOKW            { switch(ctx) {
-	case EImageOrderContext: brigId = Brig::BRIG_CHANNEL_ORDER_RGB;             return EImageOrder;           
-	default: return EEmpty; } }
-    "bgra"/EOKW           { switch(ctx) {
-	case EImageOrderContext: brigId = Brig::BRIG_CHANNEL_ORDER_BGRA;            return EImageOrder;           
-	default: return EEmpty; } }
-    "argb"/EOKW           { switch(ctx) {
-	case EImageOrderContext: brigId = Brig::BRIG_CHANNEL_ORDER_ARGB;            return EImageOrder;           
-	default: return EEmpty; } }
-    "srgbx"/EOKW          { switch(ctx) {
-	case EImageOrderContext: brigId = Brig::BRIG_CHANNEL_ORDER_SRGBX;           return EImageOrder;           
-	default: return EEmpty; } }
-    "rg"/EOKW             { switch(ctx) {
-	case EImageOrderContext: brigId = Brig::BRIG_CHANNEL_ORDER_RG;              return EImageOrder;           
-	default: return EEmpty; } }
-    "rx"/EOKW             { switch(ctx) {
-	case EImageOrderContext: brigId = Brig::BRIG_CHANNEL_ORDER_RX;              return EImageOrder;           
 	default: return EEmpty; } }
     "abgr"/EOKW           { switch(ctx) {
 	case EImageOrderContext: brigId = Brig::BRIG_CHANNEL_ORDER_ABGR;            return EImageOrder;           
 	default: return EEmpty; } }
-    "srgba"/EOKW          { switch(ctx) {
-	case EImageOrderContext: brigId = Brig::BRIG_CHANNEL_ORDER_SRGBA;           return EImageOrder;           
+    "argb"/EOKW           { switch(ctx) {
+	case EImageOrderContext: brigId = Brig::BRIG_CHANNEL_ORDER_ARGB;            return EImageOrder;           
+	default: return EEmpty; } }
+    "bgra"/EOKW           { switch(ctx) {
+	case EImageOrderContext: brigId = Brig::BRIG_CHANNEL_ORDER_BGRA;            return EImageOrder;           
+	default: return EEmpty; } }
+    "depth"/EOKW          { switch(ctx) {
+	case EImageOrderContext: brigId = Brig::BRIG_CHANNEL_ORDER_DEPTH;           return EImageOrder;           
+	default: return EEmpty; } }
+    "depth_stencil"/EOKW  { switch(ctx) {
+	case EImageOrderContext: brigId = Brig::BRIG_CHANNEL_ORDER_DEPTH_STENCIL;   return EImageOrder;           
+	default: return EEmpty; } }
+    "intensity"/EOKW      { switch(ctx) {
+	case EImageOrderContext: brigId = Brig::BRIG_CHANNEL_ORDER_INTENSITY;       return EImageOrder;           
+	default: return EEmpty; } }
+    "luminance"/EOKW      { switch(ctx) {
+	case EImageOrderContext: brigId = Brig::BRIG_CHANNEL_ORDER_LUMINANCE;       return EImageOrder;           
 	default: return EEmpty; } }
     "r"/EOKW              { switch(ctx) {
 	case EImageOrderContext: brigId = Brig::BRIG_CHANNEL_ORDER_R;               return EImageOrder;           
@@ -588,484 +571,523 @@ ETokens Scanner::scanDefault(EScanContext ctx, Scanner::Token &t)
     "ra"/EOKW             { switch(ctx) {
 	case EImageOrderContext: brigId = Brig::BRIG_CHANNEL_ORDER_RA;              return EImageOrder;           
 	default: return EEmpty; } }
-    "depth"/EOKW          { switch(ctx) {
-	case EImageOrderContext: brigId = Brig::BRIG_CHANNEL_ORDER_DEPTH;           return EImageOrder;           
+    "rg"/EOKW             { switch(ctx) {
+	case EImageOrderContext: brigId = Brig::BRIG_CHANNEL_ORDER_RG;              return EImageOrder;           
+	default: return EEmpty; } }
+    "rgb"/EOKW            { switch(ctx) {
+	case EImageOrderContext: brigId = Brig::BRIG_CHANNEL_ORDER_RGB;             return EImageOrder;           
 	default: return EEmpty; } }
     "rgba"/EOKW           { switch(ctx) {
 	case EImageOrderContext: brigId = Brig::BRIG_CHANNEL_ORDER_RGBA;            return EImageOrder;           
 	default: return EEmpty; } }
-    "luminance"/EOKW      { switch(ctx) {
-	case EImageOrderContext: brigId = Brig::BRIG_CHANNEL_ORDER_LUMINANCE;       return EImageOrder;           
+    "rgbx"/EOKW           { switch(ctx) {
+	case EImageOrderContext: brigId = Brig::BRIG_CHANNEL_ORDER_RGBX;            return EImageOrder;           
 	default: return EEmpty; } }
     "rgx"/EOKW            { switch(ctx) {
 	case EImageOrderContext: brigId = Brig::BRIG_CHANNEL_ORDER_RGX;             return EImageOrder;           
 	default: return EEmpty; } }
+    "rx"/EOKW             { switch(ctx) {
+	case EImageOrderContext: brigId = Brig::BRIG_CHANNEL_ORDER_RX;              return EImageOrder;           
+	default: return EEmpty; } }
+    "sbgra"/EOKW          { switch(ctx) {
+	case EImageOrderContext: brigId = Brig::BRIG_CHANNEL_ORDER_SBGRA;           return EImageOrder;           
+	default: return EEmpty; } }
+    "srgb"/EOKW           { switch(ctx) {
+	case EImageOrderContext: brigId = Brig::BRIG_CHANNEL_ORDER_SRGB;            return EImageOrder;           
+	default: return EEmpty; } }
+    "srgba"/EOKW          { switch(ctx) {
+	case EImageOrderContext: brigId = Brig::BRIG_CHANNEL_ORDER_SRGBA;           return EImageOrder;           
+	default: return EEmpty; } }
+    "srgbx"/EOKW          { switch(ctx) {
+	case EImageOrderContext: brigId = Brig::BRIG_CHANNEL_ORDER_SRGBX;           return EImageOrder;           
+	default: return EEmpty; } }
 
-    "3d"/EOKW             { brigId = Brig::BRIG_GEOMETRY_3D;                   return EImageGeometry;         }
-    "1db"/EOKW            { brigId = Brig::BRIG_GEOMETRY_1DB;                  return EImageGeometry;         }
     "1d"/EOKW             { brigId = Brig::BRIG_GEOMETRY_1D;                   return EImageGeometry;         }
+    "1da"/EOKW            { brigId = Brig::BRIG_GEOMETRY_1DA;                  return EImageGeometry;         }
+    "1db"/EOKW            { brigId = Brig::BRIG_GEOMETRY_1DB;                  return EImageGeometry;         }
+    "2d"/EOKW             { brigId = Brig::BRIG_GEOMETRY_2D;                   return EImageGeometry;         }
+    "2da"/EOKW            { brigId = Brig::BRIG_GEOMETRY_2DA;                  return EImageGeometry;         }
     "2dadepth"/EOKW       { brigId = Brig::BRIG_GEOMETRY_2DADEPTH;             return EImageGeometry;         }
     "2ddepth"/EOKW        { brigId = Brig::BRIG_GEOMETRY_2DDEPTH;              return EImageGeometry;         }
-    "2da"/EOKW            { brigId = Brig::BRIG_GEOMETRY_2DA;                  return EImageGeometry;         }
-    "1da"/EOKW            { brigId = Brig::BRIG_GEOMETRY_1DA;                  return EImageGeometry;         }
-    "2d"/EOKW             { brigId = Brig::BRIG_GEOMETRY_2D;                   return EImageGeometry;         }
+    "3d"/EOKW             { brigId = Brig::BRIG_GEOMETRY_3D;                   return EImageGeometry;         }
 
     "clamp_to_border"/EOKW  { brigId = Brig::BRIG_ADDRESSING_CLAMP_TO_BORDER;    return ESamplerAddressingMode;  }
-    "undefined"/EOKW      { brigId = Brig::BRIG_ADDRESSING_UNDEFINED;          return ESamplerAddressingMode;  }
+    "clamp_to_edge"/EOKW  { brigId = Brig::BRIG_ADDRESSING_CLAMP_TO_EDGE;      return ESamplerAddressingMode;  }
     "mirrored_repeat"/EOKW  { brigId = Brig::BRIG_ADDRESSING_MIRRORED_REPEAT;    return ESamplerAddressingMode;  }
     "repeat"/EOKW         { brigId = Brig::BRIG_ADDRESSING_REPEAT;             return ESamplerAddressingMode;  }
-    "clamp_to_edge"/EOKW  { brigId = Brig::BRIG_ADDRESSING_CLAMP_TO_EDGE;      return ESamplerAddressingMode;  }
+    "undefined"/EOKW      { brigId = Brig::BRIG_ADDRESSING_UNDEFINED;          return ESamplerAddressingMode;  }
 
-    "unnormalized"/EOKW   { brigId = Brig::BRIG_COORD_UNNORMALIZED;            return ESamplerCoord;          }
     "normalized"/EOKW     { brigId = Brig::BRIG_COORD_NORMALIZED;              return ESamplerCoord;          }
+    "unnormalized"/EOKW   { brigId = Brig::BRIG_COORD_UNNORMALIZED;            return ESamplerCoord;          }
 
-    "or"/EOMOD            { switch(ctx) {
-	case EDefaultContext: brigId = Brig::BRIG_OPCODE_OR;                     return EInstruction;          
+    "abs"/EOMOD           { switch(ctx) {
+	case EDefaultContext: brigId = Brig::BRIG_OPCODE_ABS;                    return EInstruction;          
 	default: return EEmpty; } }
-    "gcn_atomicNoRet"/EOMOD  { switch(ctx) {
-	case EDefaultContext: brigId = Brig::BRIG_OPCODE_GCNATOMICNORET;         return EInstruction;          
-	default: return EEmpty; } }
-    "add"/EOMOD           { switch(ctx) {
-	case EDefaultContext: brigId = Brig::BRIG_OPCODE_ADD;                    return EInstruction;          
-	default: return EEmpty; } }
-    "queryimage"/EOMOD    { switch(ctx) {
-	case EDefaultContext: brigId = Brig::BRIG_OPCODE_QUERYIMAGE;             return EInstruction;          
-	default: return EEmpty; } }
-    "nsin"/EOMOD          { switch(ctx) {
-	case EDefaultContext: brigId = Brig::BRIG_OPCODE_NSIN;                   return EInstruction;          
-	default: return EEmpty; } }
-    "nrsqrt"/EOMOD        { switch(ctx) {
-	case EDefaultContext: brigId = Brig::BRIG_OPCODE_NRSQRT;                 return EInstruction;          
-	default: return EEmpty; } }
-    "sadhi"/EOMOD         { switch(ctx) {
-	case EDefaultContext: brigId = Brig::BRIG_OPCODE_SADHI;                  return EInstruction;          
-	default: return EEmpty; } }
-    "joinfbar"/EOMOD      { switch(ctx) {
-	case EDefaultContext: brigId = Brig::BRIG_OPCODE_JOINFBAR;               return EInstruction;          
-	default: return EEmpty; } }
-    "bitalign"/EOMOD      { switch(ctx) {
-	case EDefaultContext: brigId = Brig::BRIG_OPCODE_BITALIGN;               return EInstruction;          
-	default: return EEmpty; } }
-    "waveid"/EOMOD        { switch(ctx) {
-	case EDefaultContext: brigId = Brig::BRIG_OPCODE_WAVEID;                 return EInstruction;          
+    "activelanecount"/EOMOD  { switch(ctx) {
+	case EDefaultContext: brigId = Brig::BRIG_OPCODE_ACTIVELANECOUNT;        return EInstruction;          
 	default: return EEmpty; } }
     "activelaneid"/EOMOD  { switch(ctx) {
 	case EDefaultContext: brigId = Brig::BRIG_OPCODE_ACTIVELANEID;           return EInstruction;          
 	default: return EEmpty; } }
-    "abs"/EOMOD           { switch(ctx) {
-	case EDefaultContext: brigId = Brig::BRIG_OPCODE_ABS;                    return EInstruction;          
-	default: return EEmpty; } }
-    "mad24hi"/EOMOD       { switch(ctx) {
-	case EDefaultContext: brigId = Brig::BRIG_OPCODE_MAD24HI;                return EInstruction;          
-	default: return EEmpty; } }
-    "copysign"/EOMOD      { switch(ctx) {
-	case EDefaultContext: brigId = Brig::BRIG_OPCODE_COPYSIGN;               return EInstruction;          
-	default: return EEmpty; } }
-    "sad"/EOMOD           { switch(ctx) {
-	case EDefaultContext: brigId = Brig::BRIG_OPCODE_SAD;                    return EInstruction;          
-	default: return EEmpty; } }
-    "memfence"/EOMOD      { switch(ctx) {
-	case EDefaultContext: brigId = Brig::BRIG_OPCODE_MEMFENCE;               return EInstruction;          
-	default: return EEmpty; } }
-    "mov"/EOMOD           { switch(ctx) {
-	case EDefaultContext: brigId = Brig::BRIG_OPCODE_MOV;                    return EInstruction;          
-	default: return EEmpty; } }
-    "expand"/EOMOD        { switch(ctx) {
-	case EDefaultContext: brigId = Brig::BRIG_OPCODE_EXPAND;                 return EInstruction;          
-	default: return EEmpty; } }
-    "workitemflatabsid"/EOMOD  { switch(ctx) {
-	case EDefaultContext: brigId = Brig::BRIG_OPCODE_WORKITEMFLATABSID;      return EInstruction;          
-	default: return EEmpty; } }
-    "gcn_sleep"/EOMOD     { switch(ctx) {
-	case EDefaultContext: brigId = Brig::BRIG_OPCODE_GCNSLEEP;               return EInstruction;          
-	default: return EEmpty; } }
-    "and"/EOMOD           { switch(ctx) {
-	case EDefaultContext: brigId = Brig::BRIG_OPCODE_AND;                    return EInstruction;          
-	default: return EEmpty; } }
-    "groupbaseptr"/EOMOD  { switch(ctx) {
-	case EDefaultContext: brigId = Brig::BRIG_OPCODE_GROUPBASEPTR;           return EInstruction;          
-	default: return EEmpty; } }
-    "gcn_frexp_mant"/EOMOD  { switch(ctx) {
-	case EDefaultContext: brigId = Brig::BRIG_OPCODE_GCNFREXP_MANT;          return EInstruction;          
-	default: return EEmpty; } }
-    "gridsize"/EOMOD      { switch(ctx) {
-	case EDefaultContext: brigId = Brig::BRIG_OPCODE_GRIDSIZE;               return EInstruction;          
-	default: return EEmpty; } }
-    "nlog2"/EOMOD         { switch(ctx) {
-	case EDefaultContext: brigId = Brig::BRIG_OPCODE_NLOG2;                  return EInstruction;          
-	default: return EEmpty; } }
-    "min"/EOMOD           { switch(ctx) {
-	case EDefaultContext: brigId = Brig::BRIG_OPCODE_MIN;                    return EInstruction;          
-	default: return EEmpty; } }
-    "unpacklo"/EOMOD      { switch(ctx) {
-	case EDefaultContext: brigId = Brig::BRIG_OPCODE_UNPACKLO;               return EInstruction;          
-	default: return EEmpty; } }
-    "ldqueuewriteindex"/EOMOD  { switch(ctx) {
-	case EDefaultContext: brigId = Brig::BRIG_OPCODE_LDQUEUEWRITEINDEX;      return EInstruction;          
-	default: return EEmpty; } }
-    "rem"/EOMOD           { switch(ctx) {
-	case EDefaultContext: brigId = Brig::BRIG_OPCODE_REM;                    return EInstruction;          
-	default: return EEmpty; } }
-    "gcn_b4xchg"/EOMOD    { switch(ctx) {
-	case EDefaultContext: brigId = Brig::BRIG_OPCODE_GCNB4XCHG;              return EInstruction;          
-	default: return EEmpty; } }
-    "mulhi"/EOMOD         { switch(ctx) {
-	case EDefaultContext: brigId = Brig::BRIG_OPCODE_MULHI;                  return EInstruction;          
-	default: return EEmpty; } }
-    "rdimage"/EOMOD       { switch(ctx) {
-	case EDefaultContext: brigId = Brig::BRIG_OPCODE_RDIMAGE;                return EInstruction;          
-	default: return EEmpty; } }
-    "cvt"/EOMOD           { switch(ctx) {
-	case EDefaultContext: brigId = Brig::BRIG_OPCODE_CVT;                    return EInstruction;          
-	default: return EEmpty; } }
-    "nullptr"/EOMOD       { switch(ctx) {
-	case EDefaultContext: brigId = Brig::BRIG_OPCODE_NULLPTR;                return EInstruction;          
-	default: return EEmpty; } }
-    "clock"/EOMOD         { switch(ctx) {
-	case EDefaultContext: brigId = Brig::BRIG_OPCODE_CLOCK;                  return EInstruction;          
-	default: return EEmpty; } }
-    "br"/EOMOD            { switch(ctx) {
-	case EDefaultContext: brigId = Brig::BRIG_OPCODE_BR;                     return EInstruction;          
-	default: return EEmpty; } }
-    "bitselect"/EOMOD     { switch(ctx) {
-	case EDefaultContext: brigId = Brig::BRIG_OPCODE_BITSELECT;              return EInstruction;          
-	default: return EEmpty; } }
-    "sqrt"/EOMOD          { switch(ctx) {
-	case EDefaultContext: brigId = Brig::BRIG_OPCODE_SQRT;                   return EInstruction;          
-	default: return EEmpty; } }
-    "signalnoret"/EOMOD   { switch(ctx) {
-	case EDefaultContext: brigId = Brig::BRIG_OPCODE_SIGNALNORET;            return EInstruction;          
-	default: return EEmpty; } }
-    "sbr"/EOMOD           { switch(ctx) {
-	case EDefaultContext: brigId = Brig::BRIG_OPCODE_SBR;                    return EInstruction;          
-	default: return EEmpty; } }
-    "ldk"/EOMOD           { switch(ctx) {
-	case EDefaultContext: brigId = Brig::BRIG_OPCODE_LDK;                    return EInstruction;          
-	default: return EEmpty; } }
-    "maxwaveid"/EOMOD     { switch(ctx) {
-	case EDefaultContext: brigId = Brig::BRIG_OPCODE_MAXWAVEID;              return EInstruction;          
-	default: return EEmpty; } }
-    "gcn_trig_preop"/EOMOD  { switch(ctx) {
-	case EDefaultContext: brigId = Brig::BRIG_OPCODE_GCNTRIG_PREOP;          return EInstruction;          
-	default: return EEmpty; } }
-    "gcn_min"/EOMOD       { switch(ctx) {
-	case EDefaultContext: brigId = Brig::BRIG_OPCODE_GCNMIN;                 return EInstruction;          
-	default: return EEmpty; } }
-    "unpackcvt"/EOMOD     { switch(ctx) {
-	case EDefaultContext: brigId = Brig::BRIG_OPCODE_UNPACKCVT;              return EInstruction;          
-	default: return EEmpty; } }
-    "trunc"/EOMOD         { switch(ctx) {
-	case EDefaultContext: brigId = Brig::BRIG_OPCODE_TRUNC;                  return EInstruction;          
-	default: return EEmpty; } }
-    "ldimage"/EOMOD       { switch(ctx) {
-	case EDefaultContext: brigId = Brig::BRIG_OPCODE_LDIMAGE;                return EInstruction;          
-	default: return EEmpty; } }
-    "initfbar"/EOMOD      { switch(ctx) {
-	case EDefaultContext: brigId = Brig::BRIG_OPCODE_INITFBAR;               return EInstruction;          
-	default: return EEmpty; } }
-    "max"/EOMOD           { switch(ctx) {
-	case EDefaultContext: brigId = Brig::BRIG_OPCODE_MAX;                    return EInstruction;          
-	default: return EEmpty; } }
-    "floor"/EOMOD         { switch(ctx) {
-	case EDefaultContext: brigId = Brig::BRIG_OPCODE_FLOOR;                  return EInstruction;          
-	default: return EEmpty; } }
-    "gcn_fldexp"/EOMOD    { switch(ctx) {
-	case EDefaultContext: brigId = Brig::BRIG_OPCODE_GCNFLDEXP;              return EInstruction;          
-	default: return EEmpty; } }
-    "stqueuewriteindex"/EOMOD  { switch(ctx) {
-	case EDefaultContext: brigId = Brig::BRIG_OPCODE_STQUEUEWRITEINDEX;      return EInstruction;          
-	default: return EEmpty; } }
-    "shuffle"/EOMOD       { switch(ctx) {
-	case EDefaultContext: brigId = Brig::BRIG_OPCODE_SHUFFLE;                return EInstruction;          
-	default: return EEmpty; } }
-    "shr"/EOMOD           { switch(ctx) {
-	case EDefaultContext: brigId = Brig::BRIG_OPCODE_SHR;                    return EInstruction;          
-	default: return EEmpty; } }
-    "wi"/EOMOD            { switch(ctx) {
-	case EMemoryScopeContext: brigId = Brig::BRIG_MEMORY_SCOPE2_WORKITEM;        return EMemoryScope;          
-	default: return EEmpty; } }
-    "ldi"/EOMOD           { switch(ctx) {
-	case EDefaultContext: brigId = Brig::BRIG_OPCODE_LDI;                    return EInstruction;          
-	default: return EEmpty; } }
-    "ncos"/EOMOD          { switch(ctx) {
-	case EDefaultContext: brigId = Brig::BRIG_OPCODE_NCOS;                   return EInstruction;          
-	default: return EEmpty; } }
-    "cuid"/EOMOD          { switch(ctx) {
-	case EDefaultContext: brigId = Brig::BRIG_OPCODE_CUID;                   return EInstruction;          
-	default: return EEmpty; } }
-    "dim"/EOMOD           { switch(ctx) {
-	case EDefaultContext: brigId = Brig::BRIG_OPCODE_DIM;                    return EInstruction;          
-	default: return EEmpty; } }
-    "gcn_mqsad4"/EOMOD    { switch(ctx) {
-	case EDefaultContext: brigId = Brig::BRIG_OPCODE_GCNMQSAD4;              return EInstruction;          
-	default: return EEmpty; } }
-    "stimage"/EOMOD       { switch(ctx) {
-	case EDefaultContext: brigId = Brig::BRIG_OPCODE_STIMAGE;                return EInstruction;          
-	default: return EEmpty; } }
-    "bitextract"/EOMOD    { switch(ctx) {
-	case EDefaultContext: brigId = Brig::BRIG_OPCODE_BITEXTRACT;             return EInstruction;          
-	default: return EEmpty; } }
-    "packetcompletionsig"/EOMOD  { switch(ctx) {
-	case EDefaultContext: brigId = Brig::BRIG_OPCODE_PACKETCOMPLETIONSIG;    return EInstruction;          
-	default: return EEmpty; } }
-    "releasefbar"/EOMOD   { switch(ctx) {
-	case EDefaultContext: brigId = Brig::BRIG_OPCODE_RELEASEFBAR;            return EInstruction;          
-	default: return EEmpty; } }
-    "packcvt"/EOMOD       { switch(ctx) {
-	case EDefaultContext: brigId = Brig::BRIG_OPCODE_PACKCVT;                return EInstruction;          
-	default: return EEmpty; } }
-    "carry"/EOMOD         { switch(ctx) {
-	case EDefaultContext: brigId = Brig::BRIG_OPCODE_CARRY;                  return EInstruction;          
+    "activelanemask"/EOMOD  { switch(ctx) {
+	case EDefaultContext: brigId = Brig::BRIG_OPCODE_ACTIVELANEMASK;         return EInstruction;          
 	default: return EEmpty; } }
     "activelaneshuffle"/EOMOD  { switch(ctx) {
 	case EDefaultContext: brigId = Brig::BRIG_OPCODE_ACTIVELANESHUFFLE;      return EInstruction;          
 	default: return EEmpty; } }
-    "leavefbar"/EOMOD     { switch(ctx) {
-	case EDefaultContext: brigId = Brig::BRIG_OPCODE_LEAVEFBAR;              return EInstruction;          
+    "add"/EOMOD           { switch(ctx) {
+	case EDefaultContext: brigId = Brig::BRIG_OPCODE_ADD;                    return EInstruction;          
 	default: return EEmpty; } }
-    "firstbit"/EOMOD      { switch(ctx) {
-	case EDefaultContext: brigId = Brig::BRIG_OPCODE_FIRSTBIT;               return EInstruction;          
+    "addqueuewriteindex"/EOMOD  { switch(ctx) {
+	case EDefaultContext: brigId = Brig::BRIG_OPCODE_ADDQUEUEWRITEINDEX;     return EInstruction;          
 	default: return EEmpty; } }
-    "gcn_b32xchg"/EOMOD   { switch(ctx) {
-	case EDefaultContext: brigId = Brig::BRIG_OPCODE_GCNB32XCHG;             return EInstruction;          
+    "agentcount"/EOMOD    { switch(ctx) {
+	case EDefaultContext: brigId = Brig::BRIG_OPCODE_AGENTCOUNT;             return EInstruction;          
 	default: return EEmpty; } }
-    "casqueuewriteindex"/EOMOD  { switch(ctx) {
-	case EDefaultContext: brigId = Brig::BRIG_OPCODE_CASQUEUEWRITEINDEX;     return EInstruction;          
-	default: return EEmpty; } }
-    "st"/EOMOD            { switch(ctx) {
-	case EDefaultContext: brigId = Brig::BRIG_OPCODE_ST;                     return EInstruction;          
-	default: return EEmpty; } }
-    "gcn_atomic"/EOMOD    { switch(ctx) {
-	case EDefaultContext: brigId = Brig::BRIG_OPCODE_GCNATOMIC;              return EInstruction;          
-	default: return EEmpty; } }
-    "mul24"/EOMOD         { switch(ctx) {
-	case EDefaultContext: brigId = Brig::BRIG_OPCODE_MUL24;                  return EInstruction;          
-	default: return EEmpty; } }
-    "waitfbar"/EOMOD      { switch(ctx) {
-	case EDefaultContext: brigId = Brig::BRIG_OPCODE_WAITFBAR;               return EInstruction;          
-	default: return EEmpty; } }
-    "scall"/EOMOD         { switch(ctx) {
-	case EDefaultContext: brigId = Brig::BRIG_OPCODE_SCALL;                  return EInstruction;          
-	default: return EEmpty; } }
-    "rint"/EOMOD          { switch(ctx) {
-	case EDefaultContext: brigId = Brig::BRIG_OPCODE_RINT;                   return EInstruction;          
-	default: return EEmpty; } }
-    "neg"/EOMOD           { switch(ctx) {
-	case EDefaultContext: brigId = Brig::BRIG_OPCODE_NEG;                    return EInstruction;          
-	default: return EEmpty; } }
-    "querysampler"/EOMOD  { switch(ctx) {
-	case EDefaultContext: brigId = Brig::BRIG_OPCODE_QUERYSAMPLER;           return EInstruction;          
-	default: return EEmpty; } }
-    "packetid"/EOMOD      { switch(ctx) {
-	case EDefaultContext: brigId = Brig::BRIG_OPCODE_PACKETID;               return EInstruction;          
-	default: return EEmpty; } }
-    "activelanemask"/EOMOD  { switch(ctx) {
-	case EDefaultContext: brigId = Brig::BRIG_OPCODE_ACTIVELANEMASK;         return EInstruction;          
-	default: return EEmpty; } }
-    "bitrev"/EOMOD        { switch(ctx) {
-	case EDefaultContext: brigId = Brig::BRIG_OPCODE_BITREV;                 return EInstruction;          
-	default: return EEmpty; } }
-    "cbr"/EOMOD           { switch(ctx) {
-	case EDefaultContext: brigId = Brig::BRIG_OPCODE_CBR;                    return EInstruction;          
-	default: return EEmpty; } }
-    "lastbit"/EOMOD       { switch(ctx) {
-	case EDefaultContext: brigId = Brig::BRIG_OPCODE_LASTBIT;                return EInstruction;          
-	default: return EEmpty; } }
-    "setdetectexcept"/EOMOD  { switch(ctx) {
-	case EDefaultContext: brigId = Brig::BRIG_OPCODE_SETDETECTEXCEPT;        return EInstruction;          
-	default: return EEmpty; } }
-    "gcn_frexp_exp"/EOMOD  { switch(ctx) {
-	case EDefaultContext: brigId = Brig::BRIG_OPCODE_GCNFREXP_EXP;           return EInstruction;          
-	default: return EEmpty; } }
-    "gcn_med3"/EOMOD      { switch(ctx) {
-	case EDefaultContext: brigId = Brig::BRIG_OPCODE_GCNMED3;                return EInstruction;          
+    "agentid"/EOMOD       { switch(ctx) {
+	case EDefaultContext: brigId = Brig::BRIG_OPCODE_AGENTID;                return EInstruction;          
 	default: return EEmpty; } }
     "alloca"/EOMOD        { switch(ctx) {
 	case EDefaultContext: brigId = Brig::BRIG_OPCODE_ALLOCA;                 return EInstruction;          
 	default: return EEmpty; } }
-    "gcn_mqsad"/EOMOD     { switch(ctx) {
-	case EDefaultContext: brigId = Brig::BRIG_OPCODE_GCNMQSAD;               return EInstruction;          
+    "and"/EOMOD           { switch(ctx) {
+	case EDefaultContext: brigId = Brig::BRIG_OPCODE_AND;                    return EInstruction;          
+	default: return EEmpty; } }
+    "arrivefbar"/EOMOD    { switch(ctx) {
+	case EDefaultContext: brigId = Brig::BRIG_OPCODE_ARRIVEFBAR;             return EInstruction;          
+	default: return EEmpty; } }
+    "atomic"/EOMOD        { switch(ctx) {
+	case EDefaultContext: brigId = Brig::BRIG_OPCODE_ATOMIC;                 return EInstruction;          
+	default: return EEmpty; } }
+    "atomicnoret"/EOMOD   { switch(ctx) {
+	case EDefaultContext: brigId = Brig::BRIG_OPCODE_ATOMICNORET;            return EInstruction;          
+	default: return EEmpty; } }
+    "barrier"/EOMOD       { switch(ctx) {
+	case EDefaultContext: brigId = Brig::BRIG_OPCODE_BARRIER;                return EInstruction;          
+	default: return EEmpty; } }
+    "bitalign"/EOMOD      { switch(ctx) {
+	case EDefaultContext: brigId = Brig::BRIG_OPCODE_BITALIGN;               return EInstruction;          
+	default: return EEmpty; } }
+    "bitextract"/EOMOD    { switch(ctx) {
+	case EDefaultContext: brigId = Brig::BRIG_OPCODE_BITEXTRACT;             return EInstruction;          
+	default: return EEmpty; } }
+    "bitinsert"/EOMOD     { switch(ctx) {
+	case EDefaultContext: brigId = Brig::BRIG_OPCODE_BITINSERT;              return EInstruction;          
+	default: return EEmpty; } }
+    "bitmask"/EOMOD       { switch(ctx) {
+	case EDefaultContext: brigId = Brig::BRIG_OPCODE_BITMASK;                return EInstruction;          
+	default: return EEmpty; } }
+    "bitrev"/EOMOD        { switch(ctx) {
+	case EDefaultContext: brigId = Brig::BRIG_OPCODE_BITREV;                 return EInstruction;          
+	default: return EEmpty; } }
+    "bitselect"/EOMOD     { switch(ctx) {
+	case EDefaultContext: brigId = Brig::BRIG_OPCODE_BITSELECT;              return EInstruction;          
+	default: return EEmpty; } }
+    "borrow"/EOMOD        { switch(ctx) {
+	case EDefaultContext: brigId = Brig::BRIG_OPCODE_BORROW;                 return EInstruction;          
+	default: return EEmpty; } }
+    "br"/EOMOD            { switch(ctx) {
+	case EDefaultContext: brigId = Brig::BRIG_OPCODE_BR;                     return EInstruction;          
+	default: return EEmpty; } }
+    "bytealign"/EOMOD     { switch(ctx) {
+	case EDefaultContext: brigId = Brig::BRIG_OPCODE_BYTEALIGN;              return EInstruction;          
+	default: return EEmpty; } }
+    "call"/EOMOD          { switch(ctx) {
+	case EDefaultContext: brigId = Brig::BRIG_OPCODE_CALL;                   return EInstruction;          
+	default: return EEmpty; } }
+    "carry"/EOMOD         { switch(ctx) {
+	case EDefaultContext: brigId = Brig::BRIG_OPCODE_CARRY;                  return EInstruction;          
+	default: return EEmpty; } }
+    "casqueuewriteindex"/EOMOD  { switch(ctx) {
+	case EDefaultContext: brigId = Brig::BRIG_OPCODE_CASQUEUEWRITEINDEX;     return EInstruction;          
+	default: return EEmpty; } }
+    "cbr"/EOMOD           { switch(ctx) {
+	case EDefaultContext: brigId = Brig::BRIG_OPCODE_CBR;                    return EInstruction;          
+	default: return EEmpty; } }
+    "ceil"/EOMOD          { switch(ctx) {
+	case EDefaultContext: brigId = Brig::BRIG_OPCODE_CEIL;                   return EInstruction;          
+	default: return EEmpty; } }
+    "class"/EOMOD         { switch(ctx) {
+	case EDefaultContext: brigId = Brig::BRIG_OPCODE_CLASS;                  return EInstruction;          
+	default: return EEmpty; } }
+    "cleardetectexcept"/EOMOD  { switch(ctx) {
+	case EDefaultContext: brigId = Brig::BRIG_OPCODE_CLEARDETECTEXCEPT;      return EInstruction;          
+	default: return EEmpty; } }
+    "clock"/EOMOD         { switch(ctx) {
+	case EDefaultContext: brigId = Brig::BRIG_OPCODE_CLOCK;                  return EInstruction;          
+	default: return EEmpty; } }
+    "cmov"/EOMOD          { switch(ctx) {
+	case EDefaultContext: brigId = Brig::BRIG_OPCODE_CMOV;                   return EInstruction;          
 	default: return EEmpty; } }
     "cmp"/EOMOD           { switch(ctx) {
 	case EDefaultContext: brigId = Brig::BRIG_OPCODE_CMP;                    return EInstruction;          
 	case EMemoryScopeContext: brigId = Brig::BRIG_MEMORY_SCOPE2_COMPONENT;       return EMemoryScope;          
 	default: return EEmpty; } }
-    "not"/EOMOD           { switch(ctx) {
-	case EDefaultContext: brigId = Brig::BRIG_OPCODE_NOT;                    return EInstruction;          
+    "combine"/EOMOD       { switch(ctx) {
+	case EDefaultContext: brigId = Brig::BRIG_OPCODE_COMBINE;                return EInstruction;          
 	default: return EEmpty; } }
-    "getdetectexcept"/EOMOD  { switch(ctx) {
-	case EDefaultContext: brigId = Brig::BRIG_OPCODE_GETDETECTEXCEPT;        return EInstruction;          
+    "copysign"/EOMOD      { switch(ctx) {
+	case EDefaultContext: brigId = Brig::BRIG_OPCODE_COPYSIGN;               return EInstruction;          
 	default: return EEmpty; } }
-    "wv"/EOMOD            { switch(ctx) {
-	case EMemoryScopeContext: brigId = Brig::BRIG_MEMORY_SCOPE2_WAVEFRONT;       return EMemoryScope;          
-	default: return EEmpty; } }
-    "bitmask"/EOMOD       { switch(ctx) {
-	case EDefaultContext: brigId = Brig::BRIG_OPCODE_BITMASK;                return EInstruction;          
-	default: return EEmpty; } }
-    "agentcount"/EOMOD    { switch(ctx) {
-	case EDefaultContext: brigId = Brig::BRIG_OPCODE_AGENTCOUNT;             return EInstruction;          
-	default: return EEmpty; } }
-    "bytealign"/EOMOD     { switch(ctx) {
-	case EDefaultContext: brigId = Brig::BRIG_OPCODE_BYTEALIGN;              return EInstruction;          
-	default: return EEmpty; } }
-    "gcn_st"/EOMOD        { switch(ctx) {
-	case EDefaultContext: brigId = Brig::BRIG_OPCODE_GCNST;                  return EInstruction;          
-	default: return EEmpty; } }
-    "atomic"/EOMOD        { switch(ctx) {
-	case EDefaultContext: brigId = Brig::BRIG_OPCODE_ATOMIC;                 return EInstruction;          
-	default: return EEmpty; } }
-    "unpack"/EOMOD        { switch(ctx) {
-	case EDefaultContext: brigId = Brig::BRIG_OPCODE_UNPACK;                 return EInstruction;          
-	default: return EEmpty; } }
-    "ldf"/EOMOD           { switch(ctx) {
-	case EDefaultContext: brigId = Brig::BRIG_OPCODE_LDF;                    return EInstruction;          
-	default: return EEmpty; } }
-    "agentid"/EOMOD       { switch(ctx) {
-	case EDefaultContext: brigId = Brig::BRIG_OPCODE_AGENTID;                return EInstruction;          
-	default: return EEmpty; } }
-    "unpackhi"/EOMOD      { switch(ctx) {
-	case EDefaultContext: brigId = Brig::BRIG_OPCODE_UNPACKHI;               return EInstruction;          
-	default: return EEmpty; } }
-    "class"/EOMOD         { switch(ctx) {
-	case EDefaultContext: brigId = Brig::BRIG_OPCODE_CLASS;                  return EInstruction;          
-	default: return EEmpty; } }
-    "gcn_madu"/EOMOD      { switch(ctx) {
-	case EDefaultContext: brigId = Brig::BRIG_OPCODE_GCNMADU;                return EInstruction;          
-	default: return EEmpty; } }
-    "nexp2"/EOMOD         { switch(ctx) {
-	case EDefaultContext: brigId = Brig::BRIG_OPCODE_NEXP2;                  return EInstruction;          
-	default: return EEmpty; } }
-    "stqueuereadindex"/EOMOD  { switch(ctx) {
-	case EDefaultContext: brigId = Brig::BRIG_OPCODE_STQUEUEREADINDEX;       return EInstruction;          
-	default: return EEmpty; } }
-    "xor"/EOMOD           { switch(ctx) {
-	case EDefaultContext: brigId = Brig::BRIG_OPCODE_XOR;                    return EInstruction;          
-	default: return EEmpty; } }
-    "gcn_sadd"/EOMOD      { switch(ctx) {
-	case EDefaultContext: brigId = Brig::BRIG_OPCODE_GCNSADD;                return EInstruction;          
-	default: return EEmpty; } }
-    "gcn_priority"/EOMOD  { switch(ctx) {
-	case EDefaultContext: brigId = Brig::BRIG_OPCODE_GCNPRIORITY;            return EInstruction;          
-	default: return EEmpty; } }
-    "popcount"/EOMOD      { switch(ctx) {
-	case EDefaultContext: brigId = Brig::BRIG_OPCODE_POPCOUNT;               return EInstruction;          
-	default: return EEmpty; } }
-    "gcn_qsad"/EOMOD      { switch(ctx) {
-	case EDefaultContext: brigId = Brig::BRIG_OPCODE_GCNQSAD;                return EInstruction;          
-	default: return EEmpty; } }
-    "shl"/EOMOD           { switch(ctx) {
-	case EDefaultContext: brigId = Brig::BRIG_OPCODE_SHL;                    return EInstruction;          
-	default: return EEmpty; } }
-    "wg"/EOMOD            { switch(ctx) {
-	case EMemoryScopeContext: brigId = Brig::BRIG_MEMORY_SCOPE2_WORKGROUP;       return EMemoryScope;          
-	default: return EEmpty; } }
-    "gcn_max3"/EOMOD      { switch(ctx) {
-	case EDefaultContext: brigId = Brig::BRIG_OPCODE_GCNMAX3;                return EInstruction;          
-	default: return EEmpty; } }
-    "debugtrap"/EOMOD     { switch(ctx) {
-	case EDefaultContext: brigId = Brig::BRIG_OPCODE_DEBUGTRAP;              return EInstruction;          
-	default: return EEmpty; } }
-    "gcn_region_alloc"/EOMOD  { switch(ctx) {
-	case EDefaultContext: brigId = Brig::BRIG_OPCODE_GCNREGIONALLOC;         return EInstruction;          
-	default: return EEmpty; } }
-    "nop"/EOMOD           { switch(ctx) {
-	case EDefaultContext: brigId = Brig::BRIG_OPCODE_NOP;                    return EInstruction;          
-	default: return EEmpty; } }
-    "bitinsert"/EOMOD     { switch(ctx) {
-	case EDefaultContext: brigId = Brig::BRIG_OPCODE_BITINSERT;              return EInstruction;          
-	default: return EEmpty; } }
-    "maxcuid"/EOMOD       { switch(ctx) {
-	case EDefaultContext: brigId = Brig::BRIG_OPCODE_MAXCUID;                return EInstruction;          
-	default: return EEmpty; } }
-    "signal"/EOMOD        { switch(ctx) {
-	case EDefaultContext: brigId = Brig::BRIG_OPCODE_SIGNAL;                 return EInstruction;          
-	default: return EEmpty; } }
-    "barrier"/EOMOD       { switch(ctx) {
-	case EDefaultContext: brigId = Brig::BRIG_OPCODE_BARRIER;                return EInstruction;          
-	default: return EEmpty; } }
-    "mad"/EOMOD           { switch(ctx) {
-	case EDefaultContext: brigId = Brig::BRIG_OPCODE_MAD;                    return EInstruction;          
-	default: return EEmpty; } }
-    "mul24hi"/EOMOD       { switch(ctx) {
-	case EDefaultContext: brigId = Brig::BRIG_OPCODE_MUL24HI;                return EInstruction;          
-	default: return EEmpty; } }
-    "workgroupid"/EOMOD   { switch(ctx) {
-	case EDefaultContext: brigId = Brig::BRIG_OPCODE_WORKGROUPID;            return EInstruction;          
-	default: return EEmpty; } }
-    "addqueuewriteindex"/EOMOD  { switch(ctx) {
-	case EDefaultContext: brigId = Brig::BRIG_OPCODE_ADDQUEUEWRITEINDEX;     return EInstruction;          
-	default: return EEmpty; } }
-    "queueid"/EOMOD       { switch(ctx) {
-	case EDefaultContext: brigId = Brig::BRIG_OPCODE_QUEUEID;                return EInstruction;          
-	default: return EEmpty; } }
-    "lda"/EOMOD           { switch(ctx) {
-	case EDefaultContext: brigId = Brig::BRIG_OPCODE_LDA;                    return EInstruction;          
-	default: return EEmpty; } }
-    "ret"/EOMOD           { switch(ctx) {
-	case EDefaultContext: brigId = Brig::BRIG_OPCODE_RET;                    return EInstruction;          
-	default: return EEmpty; } }
-    "gcn_bfm"/EOMOD       { switch(ctx) {
-	case EDefaultContext: brigId = Brig::BRIG_OPCODE_GCNBFM;                 return EInstruction;          
-	default: return EEmpty; } }
-    "nrcp"/EOMOD          { switch(ctx) {
-	case EDefaultContext: brigId = Brig::BRIG_OPCODE_NRCP;                   return EInstruction;          
+    "cuid"/EOMOD          { switch(ctx) {
+	case EDefaultContext: brigId = Brig::BRIG_OPCODE_CUID;                   return EInstruction;          
 	default: return EEmpty; } }
     "currentworkgroupsize"/EOMOD  { switch(ctx) {
 	case EDefaultContext: brigId = Brig::BRIG_OPCODE_CURRENTWORKGROUPSIZE;   return EInstruction;          
 	default: return EEmpty; } }
-    "gcn_sadw"/EOMOD      { switch(ctx) {
-	case EDefaultContext: brigId = Brig::BRIG_OPCODE_GCNSADW;                return EInstruction;          
+    "cvt"/EOMOD           { switch(ctx) {
+	case EDefaultContext: brigId = Brig::BRIG_OPCODE_CVT;                    return EInstruction;          
 	default: return EEmpty; } }
-    "ldqueuereadindex"/EOMOD  { switch(ctx) {
-	case EDefaultContext: brigId = Brig::BRIG_OPCODE_LDQUEUEREADINDEX;       return EInstruction;          
+    "debugtrap"/EOMOD     { switch(ctx) {
+	case EDefaultContext: brigId = Brig::BRIG_OPCODE_DEBUGTRAP;              return EInstruction;          
 	default: return EEmpty; } }
-    "mad24"/EOMOD         { switch(ctx) {
-	case EDefaultContext: brigId = Brig::BRIG_OPCODE_MAD24;                  return EInstruction;          
+    "dim"/EOMOD           { switch(ctx) {
+	case EDefaultContext: brigId = Brig::BRIG_OPCODE_DIM;                    return EInstruction;          
 	default: return EEmpty; } }
-    "atomicnoret"/EOMOD   { switch(ctx) {
-	case EDefaultContext: brigId = Brig::BRIG_OPCODE_ATOMICNORET;            return EInstruction;          
+    "div"/EOMOD           { switch(ctx) {
+	case EDefaultContext: brigId = Brig::BRIG_OPCODE_DIV;                    return EInstruction;          
 	default: return EEmpty; } }
-    "fract"/EOMOD         { switch(ctx) {
-	case EDefaultContext: brigId = Brig::BRIG_OPCODE_FRACT;                  return EInstruction;          
+    "expand"/EOMOD        { switch(ctx) {
+	case EDefaultContext: brigId = Brig::BRIG_OPCODE_EXPAND;                 return EInstruction;          
 	default: return EEmpty; } }
-    "kernargbaseptr"/EOMOD  { switch(ctx) {
-	case EDefaultContext: brigId = Brig::BRIG_OPCODE_KERNARGBASEPTR;         return EInstruction;          
+    "firstbit"/EOMOD      { switch(ctx) {
+	case EDefaultContext: brigId = Brig::BRIG_OPCODE_FIRSTBIT;               return EInstruction;          
 	default: return EEmpty; } }
-    "workitemid"/EOMOD    { switch(ctx) {
-	case EDefaultContext: brigId = Brig::BRIG_OPCODE_WORKITEMID;             return EInstruction;          
-	default: return EEmpty; } }
-    "cleardetectexcept"/EOMOD  { switch(ctx) {
-	case EDefaultContext: brigId = Brig::BRIG_OPCODE_CLEARDETECTEXCEPT;      return EInstruction;          
-	default: return EEmpty; } }
-    "icall"/EOMOD         { switch(ctx) {
-	case EDefaultContext: brigId = Brig::BRIG_OPCODE_ICALL;                  return EInstruction;          
-	default: return EEmpty; } }
-    "borrow"/EOMOD        { switch(ctx) {
-	case EDefaultContext: brigId = Brig::BRIG_OPCODE_BORROW;                 return EInstruction;          
-	default: return EEmpty; } }
-    "lerp"/EOMOD          { switch(ctx) {
-	case EDefaultContext: brigId = Brig::BRIG_OPCODE_LERP;                   return EInstruction;          
+    "floor"/EOMOD         { switch(ctx) {
+	case EDefaultContext: brigId = Brig::BRIG_OPCODE_FLOOR;                  return EInstruction;          
 	default: return EEmpty; } }
     "fma"/EOMOD           { switch(ctx) {
 	case EDefaultContext: brigId = Brig::BRIG_OPCODE_FMA;                    return EInstruction;          
 	default: return EEmpty; } }
+    "fract"/EOMOD         { switch(ctx) {
+	case EDefaultContext: brigId = Brig::BRIG_OPCODE_FRACT;                  return EInstruction;          
+	default: return EEmpty; } }
+    "ftos"/EOMOD          { switch(ctx) {
+	case EDefaultContext: brigId = Brig::BRIG_OPCODE_FTOS;                   return EInstruction;          
+	default: return EEmpty; } }
+    "gcn_atomic"/EOMOD    { switch(ctx) {
+	case EDefaultContext: brigId = Brig::BRIG_OPCODE_GCNATOMIC;              return EInstruction;          
+	default: return EEmpty; } }
+    "gcn_atomicNoRet"/EOMOD  { switch(ctx) {
+	case EDefaultContext: brigId = Brig::BRIG_OPCODE_GCNATOMICNORET;         return EInstruction;          
+	default: return EEmpty; } }
     "gcn_atomic_append"/EOMOD  { switch(ctx) {
 	case EDefaultContext: brigId = Brig::BRIG_OPCODE_GCNAPPEND;              return EInstruction;          
 	default: return EEmpty; } }
-    "nfma"/EOMOD          { switch(ctx) {
-	case EDefaultContext: brigId = Brig::BRIG_OPCODE_NFMA;                   return EInstruction;          
+    "gcn_atomic_consume"/EOMOD  { switch(ctx) {
+	case EDefaultContext: brigId = Brig::BRIG_OPCODE_GCNCONSUME;             return EInstruction;          
+	default: return EEmpty; } }
+    "gcn_b32xchg"/EOMOD   { switch(ctx) {
+	case EDefaultContext: brigId = Brig::BRIG_OPCODE_GCNB32XCHG;             return EInstruction;          
+	default: return EEmpty; } }
+    "gcn_b4xchg"/EOMOD    { switch(ctx) {
+	case EDefaultContext: brigId = Brig::BRIG_OPCODE_GCNB4XCHG;              return EInstruction;          
+	default: return EEmpty; } }
+    "gcn_bfm"/EOMOD       { switch(ctx) {
+	case EDefaultContext: brigId = Brig::BRIG_OPCODE_GCNBFM;                 return EInstruction;          
+	default: return EEmpty; } }
+    "gcn_divrelaxed"/EOMOD  { switch(ctx) {
+	case EDefaultContext: brigId = Brig::BRIG_OPCODE_GCNDIVRELAXED;          return EInstruction;          
+	default: return EEmpty; } }
+    "gcn_divrelaxednarrow"/EOMOD  { switch(ctx) {
+	case EDefaultContext: brigId = Brig::BRIG_OPCODE_GCNDIVRELAXEDNARROW;    return EInstruction;          
+	default: return EEmpty; } }
+    "gcn_fldexp"/EOMOD    { switch(ctx) {
+	case EDefaultContext: brigId = Brig::BRIG_OPCODE_GCNFLDEXP;              return EInstruction;          
+	default: return EEmpty; } }
+    "gcn_frexp_exp"/EOMOD  { switch(ctx) {
+	case EDefaultContext: brigId = Brig::BRIG_OPCODE_GCNFREXP_EXP;           return EInstruction;          
+	default: return EEmpty; } }
+    "gcn_frexp_mant"/EOMOD  { switch(ctx) {
+	case EDefaultContext: brigId = Brig::BRIG_OPCODE_GCNFREXP_MANT;          return EInstruction;          
+	default: return EEmpty; } }
+    "gcn_ld"/EOMOD        { switch(ctx) {
+	case EDefaultContext: brigId = Brig::BRIG_OPCODE_GCNLD;                  return EInstruction;          
+	default: return EEmpty; } }
+    "gcn_mads"/EOMOD      { switch(ctx) {
+	case EDefaultContext: brigId = Brig::BRIG_OPCODE_GCNMADS;                return EInstruction;          
+	default: return EEmpty; } }
+    "gcn_madu"/EOMOD      { switch(ctx) {
+	case EDefaultContext: brigId = Brig::BRIG_OPCODE_GCNMADU;                return EInstruction;          
 	default: return EEmpty; } }
     "gcn_max"/EOMOD       { switch(ctx) {
 	case EDefaultContext: brigId = Brig::BRIG_OPCODE_GCNMAX;                 return EInstruction;          
 	default: return EEmpty; } }
-    "wavebarrier"/EOMOD   { switch(ctx) {
-	case EDefaultContext: brigId = Brig::BRIG_OPCODE_WAVEBARRIER;            return EInstruction;          
+    "gcn_max3"/EOMOD      { switch(ctx) {
+	case EDefaultContext: brigId = Brig::BRIG_OPCODE_GCNMAX3;                return EInstruction;          
+	default: return EEmpty; } }
+    "gcn_med3"/EOMOD      { switch(ctx) {
+	case EDefaultContext: brigId = Brig::BRIG_OPCODE_GCNMED3;                return EInstruction;          
+	default: return EEmpty; } }
+    "gcn_min"/EOMOD       { switch(ctx) {
+	case EDefaultContext: brigId = Brig::BRIG_OPCODE_GCNMIN;                 return EInstruction;          
+	default: return EEmpty; } }
+    "gcn_min3"/EOMOD      { switch(ctx) {
+	case EDefaultContext: brigId = Brig::BRIG_OPCODE_GCNMIN3;                return EInstruction;          
+	default: return EEmpty; } }
+    "gcn_mqsad"/EOMOD     { switch(ctx) {
+	case EDefaultContext: brigId = Brig::BRIG_OPCODE_GCNMQSAD;               return EInstruction;          
+	default: return EEmpty; } }
+    "gcn_mqsad4"/EOMOD    { switch(ctx) {
+	case EDefaultContext: brigId = Brig::BRIG_OPCODE_GCNMQSAD4;              return EInstruction;          
+	default: return EEmpty; } }
+    "gcn_msad"/EOMOD      { switch(ctx) {
+	case EDefaultContext: brigId = Brig::BRIG_OPCODE_GCNMSAD;                return EInstruction;          
+	default: return EEmpty; } }
+    "gcn_priority"/EOMOD  { switch(ctx) {
+	case EDefaultContext: brigId = Brig::BRIG_OPCODE_GCNPRIORITY;            return EInstruction;          
+	default: return EEmpty; } }
+    "gcn_qsad"/EOMOD      { switch(ctx) {
+	case EDefaultContext: brigId = Brig::BRIG_OPCODE_GCNQSAD;                return EInstruction;          
+	default: return EEmpty; } }
+    "gcn_region_alloc"/EOMOD  { switch(ctx) {
+	case EDefaultContext: brigId = Brig::BRIG_OPCODE_GCNREGIONALLOC;         return EInstruction;          
+	default: return EEmpty; } }
+    "gcn_sadd"/EOMOD      { switch(ctx) {
+	case EDefaultContext: brigId = Brig::BRIG_OPCODE_GCNSADD;                return EInstruction;          
+	default: return EEmpty; } }
+    "gcn_sadw"/EOMOD      { switch(ctx) {
+	case EDefaultContext: brigId = Brig::BRIG_OPCODE_GCNSADW;                return EInstruction;          
+	default: return EEmpty; } }
+    "gcn_sleep"/EOMOD     { switch(ctx) {
+	case EDefaultContext: brigId = Brig::BRIG_OPCODE_GCNSLEEP;               return EInstruction;          
+	default: return EEmpty; } }
+    "gcn_st"/EOMOD        { switch(ctx) {
+	case EDefaultContext: brigId = Brig::BRIG_OPCODE_GCNST;                  return EInstruction;          
+	default: return EEmpty; } }
+    "gcn_trig_preop"/EOMOD  { switch(ctx) {
+	case EDefaultContext: brigId = Brig::BRIG_OPCODE_GCNTRIG_PREOP;          return EInstruction;          
+	default: return EEmpty; } }
+    "getdetectexcept"/EOMOD  { switch(ctx) {
+	case EDefaultContext: brigId = Brig::BRIG_OPCODE_GETDETECTEXCEPT;        return EInstruction;          
+	default: return EEmpty; } }
+    "gridgroups"/EOMOD    { switch(ctx) {
+	case EDefaultContext: brigId = Brig::BRIG_OPCODE_GRIDGROUPS;             return EInstruction;          
+	default: return EEmpty; } }
+    "gridsize"/EOMOD      { switch(ctx) {
+	case EDefaultContext: brigId = Brig::BRIG_OPCODE_GRIDSIZE;               return EInstruction;          
+	default: return EEmpty; } }
+    "groupbaseptr"/EOMOD  { switch(ctx) {
+	case EDefaultContext: brigId = Brig::BRIG_OPCODE_GROUPBASEPTR;           return EInstruction;          
+	default: return EEmpty; } }
+    "icall"/EOMOD         { switch(ctx) {
+	case EDefaultContext: brigId = Brig::BRIG_OPCODE_ICALL;                  return EInstruction;          
+	default: return EEmpty; } }
+    "initfbar"/EOMOD      { switch(ctx) {
+	case EDefaultContext: brigId = Brig::BRIG_OPCODE_INITFBAR;               return EInstruction;          
+	default: return EEmpty; } }
+    "joinfbar"/EOMOD      { switch(ctx) {
+	case EDefaultContext: brigId = Brig::BRIG_OPCODE_JOINFBAR;               return EInstruction;          
+	default: return EEmpty; } }
+    "kernargbaseptr"/EOMOD  { switch(ctx) {
+	case EDefaultContext: brigId = Brig::BRIG_OPCODE_KERNARGBASEPTR;         return EInstruction;          
+	default: return EEmpty; } }
+    "laneid"/EOMOD        { switch(ctx) {
+	case EDefaultContext: brigId = Brig::BRIG_OPCODE_LANEID;                 return EInstruction;          
+	default: return EEmpty; } }
+    "lastbit"/EOMOD       { switch(ctx) {
+	case EDefaultContext: brigId = Brig::BRIG_OPCODE_LASTBIT;                return EInstruction;          
+	default: return EEmpty; } }
+    "ld"/EOMOD            { switch(ctx) {
+	case EDefaultContext: brigId = Brig::BRIG_OPCODE_LD;                     return EInstruction;          
+	default: return EEmpty; } }
+    "lda"/EOMOD           { switch(ctx) {
+	case EDefaultContext: brigId = Brig::BRIG_OPCODE_LDA;                    return EInstruction;          
+	default: return EEmpty; } }
+    "ldf"/EOMOD           { switch(ctx) {
+	case EDefaultContext: brigId = Brig::BRIG_OPCODE_LDF;                    return EInstruction;          
+	default: return EEmpty; } }
+    "ldi"/EOMOD           { switch(ctx) {
+	case EDefaultContext: brigId = Brig::BRIG_OPCODE_LDI;                    return EInstruction;          
+	default: return EEmpty; } }
+    "ldimage"/EOMOD       { switch(ctx) {
+	case EDefaultContext: brigId = Brig::BRIG_OPCODE_LDIMAGE;                return EInstruction;          
+	default: return EEmpty; } }
+    "ldk"/EOMOD           { switch(ctx) {
+	case EDefaultContext: brigId = Brig::BRIG_OPCODE_LDK;                    return EInstruction;          
+	default: return EEmpty; } }
+    "ldqueuereadindex"/EOMOD  { switch(ctx) {
+	case EDefaultContext: brigId = Brig::BRIG_OPCODE_LDQUEUEREADINDEX;       return EInstruction;          
+	default: return EEmpty; } }
+    "ldqueuewriteindex"/EOMOD  { switch(ctx) {
+	case EDefaultContext: brigId = Brig::BRIG_OPCODE_LDQUEUEWRITEINDEX;      return EInstruction;          
+	default: return EEmpty; } }
+    "leavefbar"/EOMOD     { switch(ctx) {
+	case EDefaultContext: brigId = Brig::BRIG_OPCODE_LEAVEFBAR;              return EInstruction;          
+	default: return EEmpty; } }
+    "lerp"/EOMOD          { switch(ctx) {
+	case EDefaultContext: brigId = Brig::BRIG_OPCODE_LERP;                   return EInstruction;          
+	default: return EEmpty; } }
+    "mad"/EOMOD           { switch(ctx) {
+	case EDefaultContext: brigId = Brig::BRIG_OPCODE_MAD;                    return EInstruction;          
+	default: return EEmpty; } }
+    "mad24"/EOMOD         { switch(ctx) {
+	case EDefaultContext: brigId = Brig::BRIG_OPCODE_MAD24;                  return EInstruction;          
+	default: return EEmpty; } }
+    "mad24hi"/EOMOD       { switch(ctx) {
+	case EDefaultContext: brigId = Brig::BRIG_OPCODE_MAD24HI;                return EInstruction;          
+	default: return EEmpty; } }
+    "max"/EOMOD           { switch(ctx) {
+	case EDefaultContext: brigId = Brig::BRIG_OPCODE_MAX;                    return EInstruction;          
+	default: return EEmpty; } }
+    "maxcuid"/EOMOD       { switch(ctx) {
+	case EDefaultContext: brigId = Brig::BRIG_OPCODE_MAXCUID;                return EInstruction;          
+	default: return EEmpty; } }
+    "maxwaveid"/EOMOD     { switch(ctx) {
+	case EDefaultContext: brigId = Brig::BRIG_OPCODE_MAXWAVEID;              return EInstruction;          
+	default: return EEmpty; } }
+    "memfence"/EOMOD      { switch(ctx) {
+	case EDefaultContext: brigId = Brig::BRIG_OPCODE_MEMFENCE;               return EInstruction;          
+	default: return EEmpty; } }
+    "min"/EOMOD           { switch(ctx) {
+	case EDefaultContext: brigId = Brig::BRIG_OPCODE_MIN;                    return EInstruction;          
+	default: return EEmpty; } }
+    "mov"/EOMOD           { switch(ctx) {
+	case EDefaultContext: brigId = Brig::BRIG_OPCODE_MOV;                    return EInstruction;          
 	default: return EEmpty; } }
     "mul"/EOMOD           { switch(ctx) {
 	case EDefaultContext: brigId = Brig::BRIG_OPCODE_MUL;                    return EInstruction;          
 	default: return EEmpty; } }
-    "gcn_mads"/EOMOD      { switch(ctx) {
-	case EDefaultContext: brigId = Brig::BRIG_OPCODE_GCNMADS;                return EInstruction;          
+    "mul24"/EOMOD         { switch(ctx) {
+	case EDefaultContext: brigId = Brig::BRIG_OPCODE_MUL24;                  return EInstruction;          
+	default: return EEmpty; } }
+    "mul24hi"/EOMOD       { switch(ctx) {
+	case EDefaultContext: brigId = Brig::BRIG_OPCODE_MUL24HI;                return EInstruction;          
+	default: return EEmpty; } }
+    "mulhi"/EOMOD         { switch(ctx) {
+	case EDefaultContext: brigId = Brig::BRIG_OPCODE_MULHI;                  return EInstruction;          
+	default: return EEmpty; } }
+    "ncos"/EOMOD          { switch(ctx) {
+	case EDefaultContext: brigId = Brig::BRIG_OPCODE_NCOS;                   return EInstruction;          
+	default: return EEmpty; } }
+    "neg"/EOMOD           { switch(ctx) {
+	case EDefaultContext: brigId = Brig::BRIG_OPCODE_NEG;                    return EInstruction;          
+	default: return EEmpty; } }
+    "nexp2"/EOMOD         { switch(ctx) {
+	case EDefaultContext: brigId = Brig::BRIG_OPCODE_NEXP2;                  return EInstruction;          
+	default: return EEmpty; } }
+    "nfma"/EOMOD          { switch(ctx) {
+	case EDefaultContext: brigId = Brig::BRIG_OPCODE_NFMA;                   return EInstruction;          
+	default: return EEmpty; } }
+    "nlog2"/EOMOD         { switch(ctx) {
+	case EDefaultContext: brigId = Brig::BRIG_OPCODE_NLOG2;                  return EInstruction;          
+	default: return EEmpty; } }
+    "nop"/EOMOD           { switch(ctx) {
+	case EDefaultContext: brigId = Brig::BRIG_OPCODE_NOP;                    return EInstruction;          
+	default: return EEmpty; } }
+    "not"/EOMOD           { switch(ctx) {
+	case EDefaultContext: brigId = Brig::BRIG_OPCODE_NOT;                    return EInstruction;          
+	default: return EEmpty; } }
+    "nrcp"/EOMOD          { switch(ctx) {
+	case EDefaultContext: brigId = Brig::BRIG_OPCODE_NRCP;                   return EInstruction;          
+	default: return EEmpty; } }
+    "nrsqrt"/EOMOD        { switch(ctx) {
+	case EDefaultContext: brigId = Brig::BRIG_OPCODE_NRSQRT;                 return EInstruction;          
+	default: return EEmpty; } }
+    "nsin"/EOMOD          { switch(ctx) {
+	case EDefaultContext: brigId = Brig::BRIG_OPCODE_NSIN;                   return EInstruction;          
+	default: return EEmpty; } }
+    "nsqrt"/EOMOD         { switch(ctx) {
+	case EDefaultContext: brigId = Brig::BRIG_OPCODE_NSQRT;                  return EInstruction;          
+	default: return EEmpty; } }
+    "nullptr"/EOMOD       { switch(ctx) {
+	case EDefaultContext: brigId = Brig::BRIG_OPCODE_NULLPTR;                return EInstruction;          
+	default: return EEmpty; } }
+    "or"/EOMOD            { switch(ctx) {
+	case EDefaultContext: brigId = Brig::BRIG_OPCODE_OR;                     return EInstruction;          
+	default: return EEmpty; } }
+    "pack"/EOMOD          { switch(ctx) {
+	case EDefaultContext: brigId = Brig::BRIG_OPCODE_PACK;                   return EInstruction;          
+	default: return EEmpty; } }
+    "packcvt"/EOMOD       { switch(ctx) {
+	case EDefaultContext: brigId = Brig::BRIG_OPCODE_PACKCVT;                return EInstruction;          
+	default: return EEmpty; } }
+    "packetcompletionsig"/EOMOD  { switch(ctx) {
+	case EDefaultContext: brigId = Brig::BRIG_OPCODE_PACKETCOMPLETIONSIG;    return EInstruction;          
+	default: return EEmpty; } }
+    "packetid"/EOMOD      { switch(ctx) {
+	case EDefaultContext: brigId = Brig::BRIG_OPCODE_PACKETID;               return EInstruction;          
+	default: return EEmpty; } }
+    "popcount"/EOMOD      { switch(ctx) {
+	case EDefaultContext: brigId = Brig::BRIG_OPCODE_POPCOUNT;               return EInstruction;          
+	default: return EEmpty; } }
+    "queryimage"/EOMOD    { switch(ctx) {
+	case EDefaultContext: brigId = Brig::BRIG_OPCODE_QUERYIMAGE;             return EInstruction;          
+	default: return EEmpty; } }
+    "querysampler"/EOMOD  { switch(ctx) {
+	case EDefaultContext: brigId = Brig::BRIG_OPCODE_QUERYSAMPLER;           return EInstruction;          
+	default: return EEmpty; } }
+    "queueid"/EOMOD       { switch(ctx) {
+	case EDefaultContext: brigId = Brig::BRIG_OPCODE_QUEUEID;                return EInstruction;          
+	default: return EEmpty; } }
+    "queueptr"/EOMOD      { switch(ctx) {
+	case EDefaultContext: brigId = Brig::BRIG_OPCODE_QUEUEPTR;               return EInstruction;          
+	default: return EEmpty; } }
+    "rdimage"/EOMOD       { switch(ctx) {
+	case EDefaultContext: brigId = Brig::BRIG_OPCODE_RDIMAGE;                return EInstruction;          
+	default: return EEmpty; } }
+    "releasefbar"/EOMOD   { switch(ctx) {
+	case EDefaultContext: brigId = Brig::BRIG_OPCODE_RELEASEFBAR;            return EInstruction;          
+	default: return EEmpty; } }
+    "rem"/EOMOD           { switch(ctx) {
+	case EDefaultContext: brigId = Brig::BRIG_OPCODE_REM;                    return EInstruction;          
+	default: return EEmpty; } }
+    "ret"/EOMOD           { switch(ctx) {
+	case EDefaultContext: brigId = Brig::BRIG_OPCODE_RET;                    return EInstruction;          
+	default: return EEmpty; } }
+    "rint"/EOMOD          { switch(ctx) {
+	case EDefaultContext: brigId = Brig::BRIG_OPCODE_RINT;                   return EInstruction;          
+	default: return EEmpty; } }
+    "sad"/EOMOD           { switch(ctx) {
+	case EDefaultContext: brigId = Brig::BRIG_OPCODE_SAD;                    return EInstruction;          
+	default: return EEmpty; } }
+    "sadhi"/EOMOD         { switch(ctx) {
+	case EDefaultContext: brigId = Brig::BRIG_OPCODE_SADHI;                  return EInstruction;          
+	default: return EEmpty; } }
+    "sbr"/EOMOD           { switch(ctx) {
+	case EDefaultContext: brigId = Brig::BRIG_OPCODE_SBR;                    return EInstruction;          
+	default: return EEmpty; } }
+    "scall"/EOMOD         { switch(ctx) {
+	case EDefaultContext: brigId = Brig::BRIG_OPCODE_SCALL;                  return EInstruction;          
+	default: return EEmpty; } }
+    "segmentp"/EOMOD      { switch(ctx) {
+	case EDefaultContext: brigId = Brig::BRIG_OPCODE_SEGMENTP;               return EInstruction;          
+	default: return EEmpty; } }
+    "setdetectexcept"/EOMOD  { switch(ctx) {
+	case EDefaultContext: brigId = Brig::BRIG_OPCODE_SETDETECTEXCEPT;        return EInstruction;          
+	default: return EEmpty; } }
+    "shl"/EOMOD           { switch(ctx) {
+	case EDefaultContext: brigId = Brig::BRIG_OPCODE_SHL;                    return EInstruction;          
+	default: return EEmpty; } }
+    "shr"/EOMOD           { switch(ctx) {
+	case EDefaultContext: brigId = Brig::BRIG_OPCODE_SHR;                    return EInstruction;          
+	default: return EEmpty; } }
+    "shuffle"/EOMOD       { switch(ctx) {
+	case EDefaultContext: brigId = Brig::BRIG_OPCODE_SHUFFLE;                return EInstruction;          
+	default: return EEmpty; } }
+    "signal"/EOMOD        { switch(ctx) {
+	case EDefaultContext: brigId = Brig::BRIG_OPCODE_SIGNAL;                 return EInstruction;          
+	default: return EEmpty; } }
+    "signalnoret"/EOMOD   { switch(ctx) {
+	case EDefaultContext: brigId = Brig::BRIG_OPCODE_SIGNALNORET;            return EInstruction;          
+	default: return EEmpty; } }
+    "sqrt"/EOMOD          { switch(ctx) {
+	case EDefaultContext: brigId = Brig::BRIG_OPCODE_SQRT;                   return EInstruction;          
+	default: return EEmpty; } }
+    "st"/EOMOD            { switch(ctx) {
+	case EDefaultContext: brigId = Brig::BRIG_OPCODE_ST;                     return EInstruction;          
+	default: return EEmpty; } }
+    "stimage"/EOMOD       { switch(ctx) {
+	case EDefaultContext: brigId = Brig::BRIG_OPCODE_STIMAGE;                return EInstruction;          
+	default: return EEmpty; } }
+    "stof"/EOMOD          { switch(ctx) {
+	case EDefaultContext: brigId = Brig::BRIG_OPCODE_STOF;                   return EInstruction;          
+	default: return EEmpty; } }
+    "stqueuereadindex"/EOMOD  { switch(ctx) {
+	case EDefaultContext: brigId = Brig::BRIG_OPCODE_STQUEUEREADINDEX;       return EInstruction;          
+	default: return EEmpty; } }
+    "stqueuewriteindex"/EOMOD  { switch(ctx) {
+	case EDefaultContext: brigId = Brig::BRIG_OPCODE_STQUEUEWRITEINDEX;      return EInstruction;          
 	default: return EEmpty; } }
     "sub"/EOMOD           { switch(ctx) {
 	case EDefaultContext: brigId = Brig::BRIG_OPCODE_SUB;                    return EInstruction;          
@@ -1073,74 +1095,59 @@ ETokens Scanner::scanDefault(EScanContext ctx, Scanner::Token &t)
     "sys"/EOMOD           { switch(ctx) {
 	case EMemoryScopeContext: brigId = Brig::BRIG_MEMORY_SCOPE2_SYSTEM;          return EMemoryScope;          
 	default: return EEmpty; } }
-    "nsqrt"/EOMOD         { switch(ctx) {
-	case EDefaultContext: brigId = Brig::BRIG_OPCODE_NSQRT;                  return EInstruction;          
+    "trunc"/EOMOD         { switch(ctx) {
+	case EDefaultContext: brigId = Brig::BRIG_OPCODE_TRUNC;                  return EInstruction;          
 	default: return EEmpty; } }
-    "workitemflatid"/EOMOD  { switch(ctx) {
-	case EDefaultContext: brigId = Brig::BRIG_OPCODE_WORKITEMFLATID;         return EInstruction;          
+    "unpack"/EOMOD        { switch(ctx) {
+	case EDefaultContext: brigId = Brig::BRIG_OPCODE_UNPACK;                 return EInstruction;          
 	default: return EEmpty; } }
-    "workitemabsid"/EOMOD  { switch(ctx) {
-	case EDefaultContext: brigId = Brig::BRIG_OPCODE_WORKITEMABSID;          return EInstruction;          
+    "unpackcvt"/EOMOD     { switch(ctx) {
+	case EDefaultContext: brigId = Brig::BRIG_OPCODE_UNPACKCVT;              return EInstruction;          
 	default: return EEmpty; } }
-    "queueptr"/EOMOD      { switch(ctx) {
-	case EDefaultContext: brigId = Brig::BRIG_OPCODE_QUEUEPTR;               return EInstruction;          
+    "unpackhi"/EOMOD      { switch(ctx) {
+	case EDefaultContext: brigId = Brig::BRIG_OPCODE_UNPACKHI;               return EInstruction;          
 	default: return EEmpty; } }
-    "segmentp"/EOMOD      { switch(ctx) {
-	case EDefaultContext: brigId = Brig::BRIG_OPCODE_SEGMENTP;               return EInstruction;          
+    "unpacklo"/EOMOD      { switch(ctx) {
+	case EDefaultContext: brigId = Brig::BRIG_OPCODE_UNPACKLO;               return EInstruction;          
 	default: return EEmpty; } }
-    "gcn_ld"/EOMOD        { switch(ctx) {
-	case EDefaultContext: brigId = Brig::BRIG_OPCODE_GCNLD;                  return EInstruction;          
+    "waitfbar"/EOMOD      { switch(ctx) {
+	case EDefaultContext: brigId = Brig::BRIG_OPCODE_WAITFBAR;               return EInstruction;          
 	default: return EEmpty; } }
-    "ld"/EOMOD            { switch(ctx) {
-	case EDefaultContext: brigId = Brig::BRIG_OPCODE_LD;                     return EInstruction;          
+    "wavebarrier"/EOMOD   { switch(ctx) {
+	case EDefaultContext: brigId = Brig::BRIG_OPCODE_WAVEBARRIER;            return EInstruction;          
 	default: return EEmpty; } }
-    "ftos"/EOMOD          { switch(ctx) {
-	case EDefaultContext: brigId = Brig::BRIG_OPCODE_FTOS;                   return EInstruction;          
+    "waveid"/EOMOD        { switch(ctx) {
+	case EDefaultContext: brigId = Brig::BRIG_OPCODE_WAVEID;                 return EInstruction;          
 	default: return EEmpty; } }
-    "gcn_min3"/EOMOD      { switch(ctx) {
-	case EDefaultContext: brigId = Brig::BRIG_OPCODE_GCNMIN3;                return EInstruction;          
+    "wg"/EOMOD            { switch(ctx) {
+	case EMemoryScopeContext: brigId = Brig::BRIG_MEMORY_SCOPE2_WORKGROUP;       return EMemoryScope;          
 	default: return EEmpty; } }
-    "activelanecount"/EOMOD  { switch(ctx) {
-	case EDefaultContext: brigId = Brig::BRIG_OPCODE_ACTIVELANECOUNT;        return EInstruction;          
+    "wi"/EOMOD            { switch(ctx) {
+	case EMemoryScopeContext: brigId = Brig::BRIG_MEMORY_SCOPE2_WORKITEM;        return EMemoryScope;          
+	default: return EEmpty; } }
+    "workgroupid"/EOMOD   { switch(ctx) {
+	case EDefaultContext: brigId = Brig::BRIG_OPCODE_WORKGROUPID;            return EInstruction;          
 	default: return EEmpty; } }
     "workgroupsize"/EOMOD  { switch(ctx) {
 	case EDefaultContext: brigId = Brig::BRIG_OPCODE_WORKGROUPSIZE;          return EInstruction;          
 	default: return EEmpty; } }
-    "gridgroups"/EOMOD    { switch(ctx) {
-	case EDefaultContext: brigId = Brig::BRIG_OPCODE_GRIDGROUPS;             return EInstruction;          
+    "workitemabsid"/EOMOD  { switch(ctx) {
+	case EDefaultContext: brigId = Brig::BRIG_OPCODE_WORKITEMABSID;          return EInstruction;          
 	default: return EEmpty; } }
-    "stof"/EOMOD          { switch(ctx) {
-	case EDefaultContext: brigId = Brig::BRIG_OPCODE_STOF;                   return EInstruction;          
+    "workitemflatabsid"/EOMOD  { switch(ctx) {
+	case EDefaultContext: brigId = Brig::BRIG_OPCODE_WORKITEMFLATABSID;      return EInstruction;          
 	default: return EEmpty; } }
-    "ceil"/EOMOD          { switch(ctx) {
-	case EDefaultContext: brigId = Brig::BRIG_OPCODE_CEIL;                   return EInstruction;          
+    "workitemflatid"/EOMOD  { switch(ctx) {
+	case EDefaultContext: brigId = Brig::BRIG_OPCODE_WORKITEMFLATID;         return EInstruction;          
 	default: return EEmpty; } }
-    "call"/EOMOD          { switch(ctx) {
-	case EDefaultContext: brigId = Brig::BRIG_OPCODE_CALL;                   return EInstruction;          
+    "workitemid"/EOMOD    { switch(ctx) {
+	case EDefaultContext: brigId = Brig::BRIG_OPCODE_WORKITEMID;             return EInstruction;          
 	default: return EEmpty; } }
-    "gcn_atomic_consume"/EOMOD  { switch(ctx) {
-	case EDefaultContext: brigId = Brig::BRIG_OPCODE_GCNCONSUME;             return EInstruction;          
+    "wv"/EOMOD            { switch(ctx) {
+	case EMemoryScopeContext: brigId = Brig::BRIG_MEMORY_SCOPE2_WAVEFRONT;       return EMemoryScope;          
 	default: return EEmpty; } }
-    "arrivefbar"/EOMOD    { switch(ctx) {
-	case EDefaultContext: brigId = Brig::BRIG_OPCODE_ARRIVEFBAR;             return EInstruction;          
-	default: return EEmpty; } }
-    "pack"/EOMOD          { switch(ctx) {
-	case EDefaultContext: brigId = Brig::BRIG_OPCODE_PACK;                   return EInstruction;          
-	default: return EEmpty; } }
-    "div"/EOMOD           { switch(ctx) {
-	case EDefaultContext: brigId = Brig::BRIG_OPCODE_DIV;                    return EInstruction;          
-	default: return EEmpty; } }
-    "cmov"/EOMOD          { switch(ctx) {
-	case EDefaultContext: brigId = Brig::BRIG_OPCODE_CMOV;                   return EInstruction;          
-	default: return EEmpty; } }
-    "combine"/EOMOD       { switch(ctx) {
-	case EDefaultContext: brigId = Brig::BRIG_OPCODE_COMBINE;                return EInstruction;          
-	default: return EEmpty; } }
-    "laneid"/EOMOD        { switch(ctx) {
-	case EDefaultContext: brigId = Brig::BRIG_OPCODE_LANEID;                 return EInstruction;          
-	default: return EEmpty; } }
-    "gcn_msad"/EOMOD      { switch(ctx) {
-	case EDefaultContext: brigId = Brig::BRIG_OPCODE_GCNMSAD;                return EInstruction;          
+    "xor"/EOMOD           { switch(ctx) {
+	case EDefaultContext: brigId = Brig::BRIG_OPCODE_XOR;                    return EInstruction;          
 	default: return EEmpty; } }
 
     "$large"/EOKW         { brigId = Brig::BRIG_MACHINE_LARGE;                 return ETargetMachine;         }

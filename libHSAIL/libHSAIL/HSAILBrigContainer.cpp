@@ -45,7 +45,7 @@
 #include "HSAILBrigantine.h"
 
 #include <algorithm>
-#include <iostream>
+#include <ostream>
 
 
 namespace HSAIL_ASM {
@@ -152,15 +152,22 @@ int BrigContainer::verifySection(int index, SRef data, std::ostream &errs)
     return 0;
 }
 
-int BrigContainer::loadSection(int index, BrigSectionImpl::Buffer& data, std::ostream &errs)
+int BrigContainer::loadSection(int index, BrigSectionImpl::Buffer& data, bool includesHeader, std::ostream &errs)
 {
-    if (verifySection(index, data, errs)) {
+    if (includesHeader && verifySection(index, data, errs)) {
         return 1;
     }
     if (index >= Brig::BRIG_SECTION_INDEX_IMPLEMENTATION_DEFINED) {
         initSectionRaw(index, "dummy"); // \todo1.0
     }
-    sectionById(index).swapInData(data);
+    if (includesHeader) {
+        sectionById(index).swapInData(data);
+    } else {
+        sectionById(index).clear();
+        sectionById(index).insertData(
+            sectionById(index).size(),
+            &data[0], (&data[0]) + data.size());
+    }
     return 0;
 }
 

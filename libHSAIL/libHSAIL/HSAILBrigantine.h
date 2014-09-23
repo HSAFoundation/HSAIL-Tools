@@ -299,7 +299,7 @@ public:
     /// @param fnName - function name including '&' (global name search)
     /// @param srcInfo - (optional) source location.
     /// @{
-    OperandCodeRef  createFuncRef(const SRef& fnName, const SourceInfo* srcInfo=NULL);
+    OperandCodeRef  createExecutableRef(const SRef& name, const SourceInfo* srcInfo=NULL);
     /// @}
 
     OperandCodeRef createSigRef(const SRef& fnName, const SourceInfo* srcInfo=NULL);

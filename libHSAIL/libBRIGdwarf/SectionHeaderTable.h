@@ -53,7 +53,7 @@ public:
 	{
 		m_data.push_back( '\0' );
 	}
-	
+
 	virtual ~SectionHeaderTable() {}
 
 	size_t addHeaderName( const std::string & headerName )

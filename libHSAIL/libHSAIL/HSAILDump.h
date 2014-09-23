@@ -55,7 +55,6 @@ void dumpItem(std::ostream&, Code);
 void dumpItem(std::ostream&, Operand);
 
 void dump(BrigContainer &c, std::ostream& out);
-void dump(BrigContainer &c);
 
 }
 

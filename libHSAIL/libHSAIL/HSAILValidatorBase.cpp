@@ -44,7 +44,7 @@
 #include "HSAILItems.h"
 #include "Brig.h"
 
-#include <iostream>
+#include <iosfwd>
 #include <sstream>
 
 #include <string.h>
@@ -602,8 +602,7 @@ bool PropValidator::isImmInRange(Operand opr, unsigned low, unsigned high)
     {
         if (getImmSize(imm) != 32) return false;
 
-        SRef bytes = imm.data();
-        unsigned val = *reinterpret_cast<const uint32_t*>(bytes.begin); //F
+        unsigned val = getImmAsU32(imm);
         return low <= val && val <= high;
     }
     return false;
@@ -1043,11 +1042,12 @@ bool PropValidator::validateAtomicTypeSize(Inst inst, bool isAssert)
 {
     assert(inst);
 
-    if (getBrigTypeNumBits(inst.type()) == 64 && !isLargeModel())
-    {
-        if (isAssert) validate(inst, -1, false, "Instruction type size 64 is not allowed with small machine model");
-        return false;
-    }
+    // \todo 1.0p: temporarily removed restriction on 64-bit atomics in 32-bit mode
+    // if (getBrigTypeNumBits(inst.type()) == 64 && !isLargeModel())
+    // {
+    //     if (isAssert) validate(inst, -1, false, "Instruction type size 64 is not allowed with small machine model");
+    //     return false;
+    // }
     return true;
 }
 

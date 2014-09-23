@@ -44,7 +44,7 @@
 #include "HSAILDump.h"
 #include <iosfwd>
 #include <sstream>
-#include <iostream>
+#include <iosfwd>
 
 namespace HSAIL_ASM
 {
@@ -1459,7 +1459,7 @@ OperandCodeRef Parser::parseFunctionRef()
     eatToken(EIDStatic);
     SRef const fnName = token().text();
     SourceInfo const srcInfo = sourceInfo(token());
-    return m_bw.createFuncRef(fnName,&srcInfo);
+    return m_bw.createExecutableRef(fnName,&srcInfo);
 }
 
 Operand Parser::parseSigRef()

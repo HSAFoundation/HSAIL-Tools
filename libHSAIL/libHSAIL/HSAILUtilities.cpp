@@ -168,7 +168,7 @@ SRef getName(Directive d)
 unsigned getDataType(Directive d)
 {
     assert(d);
-    if      (DirectiveVariable     sym  = d) return sym.type();
+    if (DirectiveVariable sym  = d) return sym.type();
 
     assert(false);
     return Brig::BRIG_TYPE_NONE;
@@ -176,8 +176,8 @@ unsigned getDataType(Directive d)
 
 unsigned getSegment(Directive d)
 {
-    if (DirectiveVariable sym = d)     return sym.segment();
-    else if (DirectiveFbarrier(d))     return Brig::BRIG_SEGMENT_GROUP;
+    if (DirectiveVariable sym = d) return sym.segment();
+    else if (DirectiveFbarrier(d)) return Brig::BRIG_SEGMENT_GROUP;
 
     assert(false);
     return Brig::BRIG_SEGMENT_NONE;
@@ -326,6 +326,8 @@ unsigned getSegment(Inst inst) { return getBrigProp(inst, HSAIL_PROPS::PROP_SEGM
 unsigned getPacking(Inst inst) { return getBrigProp(inst, HSAIL_PROPS::PROP_PACK,       true, Brig::BRIG_PACK_NONE);    }
 unsigned getEqClass(Inst inst) { return getBrigProp(inst, HSAIL_PROPS::PROP_EQUIVCLASS, true, 0);                       }
 
+unsigned getOperandsNum(Inst inst) { return inst.operands().size(); }
+
 bool isImageInst(unsigned opcode)
 {
     using namespace Brig;
@@ -398,8 +400,9 @@ unsigned getRegKind(SRef regName)
 
 unsigned getRegSize(OperandReg reg)
 {
-  using namespace Brig;
-  switch(reg.regKind()) {
+    using namespace Brig;
+    switch(reg.regKind())
+    {
     case BRIG_REGISTER_CONTROL          : return 1;
     case BRIG_REGISTER_SINGLE           : return 32;
     case BRIG_REGISTER_DOUBLE           : return 64;
@@ -430,6 +433,19 @@ bool isImmB1(OperandData imm)
     assert(imm);
     SRef bytes = imm.data();
     return bytes.length() == 1 && (bytes[0] == 0 || bytes[0] == 1);
+}
+
+uint32_t getImmAsU32(OperandData opr, unsigned index)
+{
+    assert(opr);
+    SRef data = opr.data();
+    assert(data.length() >= 4 * index);
+    return *(uint32_t*)(data.begin + sizeof(uint32_t) * index);
+}
+
+uint64_t getImmAsU64(OperandData opr)
+{
+    return getImmAsU32(opr) + ((uint64_t)getImmAsU32(opr, 1) << 32);
 }
 
 unsigned getAddrSize(OperandAddress addr, bool isLargeModel)
@@ -780,7 +796,8 @@ unsigned getBitType(unsigned size)
 {
     using namespace Brig;
 
-    switch(size) {
+    switch(size)
+    {
     case 1:   return BRIG_TYPE_B1;
     case 8:   return BRIG_TYPE_B8;
     case 16:  return BRIG_TYPE_B16;
@@ -797,7 +814,8 @@ unsigned getSignedType(unsigned size)
 {
     using namespace Brig;
 
-    switch(size) {
+    switch(size)
+    {
     case 8:   return BRIG_TYPE_S8;
     case 16:  return BRIG_TYPE_S16;
     case 32:  return BRIG_TYPE_S32;
@@ -812,7 +830,8 @@ unsigned getUnsignedType(unsigned size)
 {
     using namespace Brig;
 
-    switch(size) {
+    switch(size)
+    {
     case 8:   return BRIG_TYPE_U8;
     case 16:  return BRIG_TYPE_U16;
     case 32:  return BRIG_TYPE_U32;
@@ -1005,7 +1024,8 @@ char getPackingControl(unsigned srcOperandIdx, unsigned packing)
     using namespace Brig;
 
     const char* ctl;
-    switch(packing) {
+    switch(packing)
+    {
     case BRIG_PACK_NONE:    ctl = "  "; break;
     case BRIG_PACK_P:       ctl = "p "; break;
     case BRIG_PACK_PP:      ctl = "pp"; break;
@@ -1102,7 +1122,8 @@ const char* width2str(unsigned val)
 //============================================================================
 // Misc operations
 
-std::ostream& operator<<(std::ostream& os, const SRef& s) {
+std::ostream& operator<<(std::ostream& os, const SRef& s)
+{
     os.write(s.begin,s.length());
     return os;
 }

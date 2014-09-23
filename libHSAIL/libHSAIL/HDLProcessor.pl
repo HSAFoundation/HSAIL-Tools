@@ -796,7 +796,7 @@ sub addClone
 sub getClones
 {
     my ($name) = @_;
-    return grep { $hdlClone{$_} eq $name } keys %hdlClone;
+    return grep { $hdlClone{$_} eq $name } sort keys %hdlClone;
 }
 
 ###############################################################################
@@ -895,7 +895,7 @@ sub getPropKindName
 sub getInstPropsUs # unsorted
 {
     my ($inst, $kind) = @_;
-    return grep { $instPropKind{$inst}{$_} == $kind } keys %{$instPropKind{$inst}};
+    return grep { $instPropKind{$inst}{$_} == $kind } sort keys %{$instPropKind{$inst}};
 }
 
 sub getInstProps     { my ($inst, $kind) = @_; return sort(getInstPropsUs($inst, $kind)); }
@@ -1328,7 +1328,7 @@ sub dumpReqBase
 sub unique          # Return unique array elements
 {
     my %hash = map { $_, 1 } @_;
-    return keys %hash;
+    return sort keys %hash;
 }
 
 sub eqArrayElements
@@ -2239,7 +2239,7 @@ sub genReq
         {
             print "    else \n";
             print "    {\n";
-            print "        invalidVariant(inst, ", join(', ', map { getTargetPropName($_) } keys %propVariants), ");\n";
+            print "        invalidVariant(inst, ", join(', ', map { getTargetPropName($_) } sort keys %propVariants), ");\n";
             print "    }\n";
             %propVariants = ();
         }
@@ -2758,7 +2758,7 @@ setContext;
 ###############################################################################
 # Main Optimizer
 
-for my $req (keys %hdlReq) {
+for my $req (sort keys %hdlReq) {
     setContext "optimizing requirement '$req'";
     optimizeReq($req);
 }
@@ -2867,7 +2867,7 @@ EOT
 genCommonDeclarations();
 
 print "\nprivate:\n";
-for my $prop (keys %hdlProp) {
+for my $prop (sort keys %hdlProp) {
     print '    static unsigned ', getTargetPropValListName($prop), "[];\n";
 }
 
@@ -2917,11 +2917,11 @@ print cpp(<<"EOT");
     |    {
 EOT
 
-for my $prop (keys %hdlProp) {
+for my $prop (sort keys %hdlProp) {
     print '    case ', getTargetPropName($prop), ': return ', (isBrigProp($prop)? 'true' : 'false'), ";\n";
 }
 
-for my $clone (keys %hdlClone) {
+for my $clone (sort keys %hdlClone) {
     print '    case ', getTargetPropName($clone), ': return ', (isBrigProp($hdlClone{$clone})? 'true' : 'false'), ";\n";
 }
 
@@ -3025,7 +3025,7 @@ sub printPropValues
     }
 }
 
-for my $prop (keys %hdlProp) {
+for my $prop (sort keys %hdlProp) {
     print "unsigned ${className}::", getTargetPropValListName($prop), "[] = \n{\n";
     printPropValues($prop);
     print "};\n\n"

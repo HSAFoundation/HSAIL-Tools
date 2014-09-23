@@ -41,7 +41,7 @@
 template <typename RetType, typename Visitor>
 RetType dispatchByItemKind_gen(Code item,Visitor& vis) {
 	using namespace Brig;
-	switch(item.brig()->kind) {
+	switch(item.kind()) {
 	case BRIG_KIND_DIRECTIVE_ARG_BLOCK_END: return vis(DirectiveArgBlockEnd(item));
 	case BRIG_KIND_DIRECTIVE_ARG_BLOCK_START: return vis(DirectiveArgBlockStart(item));
 	case BRIG_KIND_DIRECTIVE_COMMENT: return vis(DirectiveComment(item));
@@ -84,7 +84,7 @@ RetType dispatchByItemKind_gen(Code item,Visitor& vis) {
 template <typename RetType, typename Visitor>
 RetType dispatchByItemKind_gen(Directive item,Visitor& vis) {
 	using namespace Brig;
-	switch(item.brig()->kind) {
+	switch(item.kind()) {
 	case BRIG_KIND_DIRECTIVE_ARG_BLOCK_END: return vis(DirectiveArgBlockEnd(item));
 	case BRIG_KIND_DIRECTIVE_ARG_BLOCK_START: return vis(DirectiveArgBlockStart(item));
 	case BRIG_KIND_DIRECTIVE_COMMENT: return vis(DirectiveComment(item));
@@ -109,7 +109,7 @@ RetType dispatchByItemKind_gen(Directive item,Visitor& vis) {
 template <typename RetType, typename Visitor>
 RetType dispatchByItemKind_gen(DirectiveExecutable item,Visitor& vis) {
 	using namespace Brig;
-	switch(item.brig()->kind) {
+	switch(item.kind()) {
 	case BRIG_KIND_DIRECTIVE_FUNCTION: return vis(DirectiveFunction(item));
 	case BRIG_KIND_DIRECTIVE_INDIRECT_FUNCTION: return vis(DirectiveIndirectFunction(item));
 	case BRIG_KIND_DIRECTIVE_KERNEL: return vis(DirectiveKernel(item));
@@ -122,7 +122,7 @@ RetType dispatchByItemKind_gen(DirectiveExecutable item,Visitor& vis) {
 template <typename RetType, typename Visitor>
 RetType dispatchByItemKind_gen(Inst item,Visitor& vis) {
 	using namespace Brig;
-	switch(item.brig()->kind) {
+	switch(item.kind()) {
 	case BRIG_KIND_INST_ADDR: return vis(InstAddr(item));
 	case BRIG_KIND_INST_ATOMIC: return vis(InstAtomic(item));
 	case BRIG_KIND_INST_BASIC: return vis(InstBasic(item));
@@ -149,7 +149,7 @@ RetType dispatchByItemKind_gen(Inst item,Visitor& vis) {
 template <typename RetType, typename Visitor>
 RetType dispatchByItemKind_gen(Operand item,Visitor& vis) {
 	using namespace Brig;
-	switch(item.brig()->kind) {
+	switch(item.kind()) {
 	case BRIG_KIND_OPERAND_ADDRESS: return vis(OperandAddress(item));
 	case BRIG_KIND_OPERAND_CODE_LIST: return vis(OperandCodeList(item));
 	case BRIG_KIND_OPERAND_CODE_REF: return vis(OperandCodeRef(item));
@@ -171,22 +171,34 @@ template <typename Visitor> void enumerateFields_gen(AluModifier obj,  Visitor &
   vis(obj.ftz(),"ftz");
 }
 
+template <typename Visitor> void enumerateFields_gen(Code obj,  Visitor & vis) {
+}
+
+template <typename Visitor> void enumerateFields_gen(Directive obj,  Visitor & vis) {
+  enumerateFields_gen(Code(obj), vis);
+}
+
 template <typename Visitor> void enumerateFields_gen(DirectiveArgBlockEnd obj,  Visitor & vis) {
+  enumerateFields_gen(Directive(obj), vis);
 }
 
 template <typename Visitor> void enumerateFields_gen(DirectiveArgBlockStart obj,  Visitor & vis) {
+  enumerateFields_gen(Directive(obj), vis);
 }
 
 template <typename Visitor> void enumerateFields_gen(DirectiveComment obj,  Visitor & vis) {
+  enumerateFields_gen(Directive(obj), vis);
   vis(obj.name(),"name");
 }
 
 template <typename Visitor> void enumerateFields_gen(DirectiveControl obj,  Visitor & vis) {
+  enumerateFields_gen(Directive(obj), vis);
   vis(obj.control(),"control");
   vis(obj.operands(),"operands");
 }
 
-template <typename Visitor> void enumerateFields_gen(DirectiveFunction obj,  Visitor & vis) {
+template <typename Visitor> void enumerateFields_gen(DirectiveExecutable obj,  Visitor & vis) {
+  enumerateFields_gen(Directive(obj), vis);
   vis(obj.name(),"name");
   vis(obj.outArgCount(),"outArgCount");
   vis(obj.inArgCount(),"inArgCount");
@@ -196,72 +208,59 @@ template <typename Visitor> void enumerateFields_gen(DirectiveFunction obj,  Vis
   vis(obj.codeBlockEntryCount(),"codeBlockEntryCount");
   enumerateFields(obj.modifier(), vis);
   vis(obj.linkage(),"linkage");
+}
+
+template <typename Visitor> void enumerateFields_gen(DirectiveFunction obj,  Visitor & vis) {
+  enumerateFields_gen(DirectiveExecutable(obj), vis);
 }
 
 template <typename Visitor> void enumerateFields_gen(DirectiveIndirectFunction obj,  Visitor & vis) {
-  vis(obj.name(),"name");
-  vis(obj.outArgCount(),"outArgCount");
-  vis(obj.inArgCount(),"inArgCount");
-  vis(obj.firstInArg(),"firstInArg");
-  vis(obj.firstCodeBlockEntry(),"firstCodeBlockEntry");
-  vis(obj.nextModuleEntry(),"nextModuleEntry");
-  vis(obj.codeBlockEntryCount(),"codeBlockEntryCount");
-  enumerateFields(obj.modifier(), vis);
-  vis(obj.linkage(),"linkage");
+  enumerateFields_gen(DirectiveExecutable(obj), vis);
 }
 
 template <typename Visitor> void enumerateFields_gen(DirectiveKernel obj,  Visitor & vis) {
-  vis(obj.name(),"name");
-  vis(obj.outArgCount(),"outArgCount");
-  vis(obj.inArgCount(),"inArgCount");
-  vis(obj.firstInArg(),"firstInArg");
-  vis(obj.firstCodeBlockEntry(),"firstCodeBlockEntry");
-  vis(obj.nextModuleEntry(),"nextModuleEntry");
-  vis(obj.codeBlockEntryCount(),"codeBlockEntryCount");
-  enumerateFields(obj.modifier(), vis);
-  vis(obj.linkage(),"linkage");
+  enumerateFields_gen(DirectiveExecutable(obj), vis);
 }
 
 template <typename Visitor> void enumerateFields_gen(DirectiveSignature obj,  Visitor & vis) {
-  vis(obj.name(),"name");
-  vis(obj.outArgCount(),"outArgCount");
-  vis(obj.inArgCount(),"inArgCount");
-  vis(obj.firstInArg(),"firstInArg");
-  vis(obj.firstCodeBlockEntry(),"firstCodeBlockEntry");
-  vis(obj.nextModuleEntry(),"nextModuleEntry");
-  vis(obj.codeBlockEntryCount(),"codeBlockEntryCount");
-  enumerateFields(obj.modifier(), vis);
-  vis(obj.linkage(),"linkage");
+  enumerateFields_gen(DirectiveExecutable(obj), vis);
 }
 
 template <typename Visitor> void enumerateFields_gen(DirectiveExtension obj,  Visitor & vis) {
+  enumerateFields_gen(Directive(obj), vis);
   vis(obj.name(),"name");
 }
 
 template <typename Visitor> void enumerateFields_gen(DirectiveFbarrier obj,  Visitor & vis) {
+  enumerateFields_gen(Directive(obj), vis);
   vis(obj.name(),"name");
   enumerateFields(obj.modifier(), vis);
   vis(obj.linkage(),"linkage");
 }
 
 template <typename Visitor> void enumerateFields_gen(DirectiveLabel obj,  Visitor & vis) {
+  enumerateFields_gen(Directive(obj), vis);
   vis(obj.name(),"name");
 }
 
 template <typename Visitor> void enumerateFields_gen(DirectiveLoc obj,  Visitor & vis) {
+  enumerateFields_gen(Directive(obj), vis);
   vis(obj.filename(),"filename");
   vis(obj.line(),"line");
   vis(obj.column(),"column");
 }
 
 template <typename Visitor> void enumerateFields_gen(DirectiveNone obj,  Visitor & vis) {
+  enumerateFields_gen(Directive(obj), vis);
 }
 
 template <typename Visitor> void enumerateFields_gen(DirectivePragma obj,  Visitor & vis) {
+  enumerateFields_gen(Directive(obj), vis);
   vis(obj.operands(),"operands");
 }
 
 template <typename Visitor> void enumerateFields_gen(DirectiveVariable obj,  Visitor & vis) {
+  enumerateFields_gen(Directive(obj), vis);
   vis(obj.name(),"name");
   vis(obj.init(),"init");
   vis(obj.type(),"type");
@@ -274,6 +273,7 @@ template <typename Visitor> void enumerateFields_gen(DirectiveVariable obj,  Vis
 }
 
 template <typename Visitor> void enumerateFields_gen(DirectiveVersion obj,  Visitor & vis) {
+  enumerateFields_gen(Directive(obj), vis);
   vis(obj.hsailMajor(),"hsailMajor");
   vis(obj.hsailMinor(),"hsailMinor");
   vis(obj.brigMajor(),"brigMajor");
@@ -282,17 +282,20 @@ template <typename Visitor> void enumerateFields_gen(DirectiveVersion obj,  Visi
   vis(obj.machineModel(),"machineModel");
 }
 
-template <typename Visitor> void enumerateFields_gen(InstAddr obj,  Visitor & vis) {
+template <typename Visitor> void enumerateFields_gen(Inst obj,  Visitor & vis) {
+  enumerateFields_gen(Code(obj), vis);
   vis(obj.opcode(),"opcode");
   vis(obj.type(),"type");
   vis(obj.operands(),"operands");
+}
+
+template <typename Visitor> void enumerateFields_gen(InstAddr obj,  Visitor & vis) {
+  enumerateFields_gen(Inst(obj), vis);
   vis(obj.segment(),"segment");
 }
 
 template <typename Visitor> void enumerateFields_gen(InstAtomic obj,  Visitor & vis) {
-  vis(obj.opcode(),"opcode");
-  vis(obj.type(),"type");
-  vis(obj.operands(),"operands");
+  enumerateFields_gen(Inst(obj), vis);
   vis(obj.segment(),"segment");
   vis(obj.memoryOrder(),"memoryOrder");
   vis(obj.memoryScope(),"memoryScope");
@@ -301,22 +304,16 @@ template <typename Visitor> void enumerateFields_gen(InstAtomic obj,  Visitor & 
 }
 
 template <typename Visitor> void enumerateFields_gen(InstBasic obj,  Visitor & vis) {
-  vis(obj.opcode(),"opcode");
-  vis(obj.type(),"type");
-  vis(obj.operands(),"operands");
+  enumerateFields_gen(Inst(obj), vis);
 }
 
 template <typename Visitor> void enumerateFields_gen(InstBr obj,  Visitor & vis) {
-  vis(obj.opcode(),"opcode");
-  vis(obj.type(),"type");
-  vis(obj.operands(),"operands");
+  enumerateFields_gen(Inst(obj), vis);
   vis(obj.width(),"width");
 }
 
 template <typename Visitor> void enumerateFields_gen(InstCmp obj,  Visitor & vis) {
-  vis(obj.opcode(),"opcode");
-  vis(obj.type(),"type");
-  vis(obj.operands(),"operands");
+  enumerateFields_gen(Inst(obj), vis);
   vis(obj.sourceType(),"sourceType");
   enumerateFields(obj.modifier(), vis);
   vis(obj.compare(),"compare");
@@ -324,17 +321,13 @@ template <typename Visitor> void enumerateFields_gen(InstCmp obj,  Visitor & vis
 }
 
 template <typename Visitor> void enumerateFields_gen(InstCvt obj,  Visitor & vis) {
-  vis(obj.opcode(),"opcode");
-  vis(obj.type(),"type");
-  vis(obj.operands(),"operands");
+  enumerateFields_gen(Inst(obj), vis);
   vis(obj.sourceType(),"sourceType");
   enumerateFields(obj.modifier(), vis);
 }
 
 template <typename Visitor> void enumerateFields_gen(InstImage obj,  Visitor & vis) {
-  vis(obj.opcode(),"opcode");
-  vis(obj.type(),"type");
-  vis(obj.operands(),"operands");
+  enumerateFields_gen(Inst(obj), vis);
   vis(obj.imageType(),"imageType");
   vis(obj.coordType(),"coordType");
   vis(obj.geometry(),"geometry");
@@ -342,17 +335,13 @@ template <typename Visitor> void enumerateFields_gen(InstImage obj,  Visitor & v
 }
 
 template <typename Visitor> void enumerateFields_gen(InstLane obj,  Visitor & vis) {
-  vis(obj.opcode(),"opcode");
-  vis(obj.type(),"type");
-  vis(obj.operands(),"operands");
+  enumerateFields_gen(Inst(obj), vis);
   vis(obj.sourceType(),"sourceType");
   vis(obj.width(),"width");
 }
 
 template <typename Visitor> void enumerateFields_gen(InstMem obj,  Visitor & vis) {
-  vis(obj.opcode(),"opcode");
-  vis(obj.type(),"type");
-  vis(obj.operands(),"operands");
+  enumerateFields_gen(Inst(obj), vis);
   vis(obj.segment(),"segment");
   vis(obj.align(),"align");
   vis(obj.equivClass(),"equivClass");
@@ -361,9 +350,7 @@ template <typename Visitor> void enumerateFields_gen(InstMem obj,  Visitor & vis
 }
 
 template <typename Visitor> void enumerateFields_gen(InstMemFence obj,  Visitor & vis) {
-  vis(obj.opcode(),"opcode");
-  vis(obj.type(),"type");
-  vis(obj.operands(),"operands");
+  enumerateFields_gen(Inst(obj), vis);
   vis(obj.memoryOrder(),"memoryOrder");
   vis(obj.globalSegmentMemoryScope(),"globalSegmentMemoryScope");
   vis(obj.groupSegmentMemoryScope(),"groupSegmentMemoryScope");
@@ -371,66 +358,50 @@ template <typename Visitor> void enumerateFields_gen(InstMemFence obj,  Visitor 
 }
 
 template <typename Visitor> void enumerateFields_gen(InstMod obj,  Visitor & vis) {
-  vis(obj.opcode(),"opcode");
-  vis(obj.type(),"type");
-  vis(obj.operands(),"operands");
+  enumerateFields_gen(Inst(obj), vis);
   enumerateFields(obj.modifier(), vis);
   vis(obj.pack(),"pack");
 }
 
 template <typename Visitor> void enumerateFields_gen(InstQueryImage obj,  Visitor & vis) {
-  vis(obj.opcode(),"opcode");
-  vis(obj.type(),"type");
-  vis(obj.operands(),"operands");
+  enumerateFields_gen(Inst(obj), vis);
   vis(obj.imageType(),"imageType");
   vis(obj.geometry(),"geometry");
   vis(obj.imageQuery(),"imageQuery");
 }
 
 template <typename Visitor> void enumerateFields_gen(InstQuerySampler obj,  Visitor & vis) {
-  vis(obj.opcode(),"opcode");
-  vis(obj.type(),"type");
-  vis(obj.operands(),"operands");
+  enumerateFields_gen(Inst(obj), vis);
   vis(obj.samplerQuery(),"samplerQuery");
 }
 
 template <typename Visitor> void enumerateFields_gen(InstQueue obj,  Visitor & vis) {
-  vis(obj.opcode(),"opcode");
-  vis(obj.type(),"type");
-  vis(obj.operands(),"operands");
+  enumerateFields_gen(Inst(obj), vis);
   vis(obj.segment(),"segment");
   vis(obj.memoryOrder(),"memoryOrder");
 }
 
 template <typename Visitor> void enumerateFields_gen(InstSeg obj,  Visitor & vis) {
-  vis(obj.opcode(),"opcode");
-  vis(obj.type(),"type");
-  vis(obj.operands(),"operands");
+  enumerateFields_gen(Inst(obj), vis);
   vis(obj.segment(),"segment");
 }
 
 template <typename Visitor> void enumerateFields_gen(InstSegCvt obj,  Visitor & vis) {
-  vis(obj.opcode(),"opcode");
-  vis(obj.type(),"type");
-  vis(obj.operands(),"operands");
+  enumerateFields_gen(Inst(obj), vis);
   vis(obj.sourceType(),"sourceType");
   vis(obj.segment(),"segment");
   enumerateFields(obj.modifier(), vis);
 }
 
 template <typename Visitor> void enumerateFields_gen(InstSignal obj,  Visitor & vis) {
-  vis(obj.opcode(),"opcode");
-  vis(obj.type(),"type");
-  vis(obj.operands(),"operands");
+  enumerateFields_gen(Inst(obj), vis);
   vis(obj.signalType(),"signalType");
   vis(obj.memoryOrder(),"memoryOrder");
   vis(obj.signalOperation(),"signalOperation");
 }
 
 template <typename Visitor> void enumerateFields_gen(InstSourceType obj,  Visitor & vis) {
-  vis(obj.opcode(),"opcode");
-  vis(obj.type(),"type");
-  vis(obj.operands(),"operands");
+  enumerateFields_gen(Inst(obj), vis);
   vis(obj.sourceType(),"sourceType");
 }
 
@@ -444,25 +415,33 @@ template <typename Visitor> void enumerateFields_gen(MemoryModifier obj,  Visito
   vis(obj.isConst(),"isConst");
 }
 
+template <typename Visitor> void enumerateFields_gen(Operand obj,  Visitor & vis) {
+}
+
 template <typename Visitor> void enumerateFields_gen(OperandAddress obj,  Visitor & vis) {
+  enumerateFields_gen(Operand(obj), vis);
   vis(obj.symbol(),"symbol");
   vis(obj.reg(),"reg");
   enumerateFields(obj.offset(), vis);
 }
 
 template <typename Visitor> void enumerateFields_gen(OperandCodeList obj,  Visitor & vis) {
+  enumerateFields_gen(Operand(obj), vis);
   vis(obj.elements(),"elements");
 }
 
 template <typename Visitor> void enumerateFields_gen(OperandCodeRef obj,  Visitor & vis) {
+  enumerateFields_gen(Operand(obj), vis);
   vis(obj.ref(),"ref");
 }
 
 template <typename Visitor> void enumerateFields_gen(OperandData obj,  Visitor & vis) {
+  enumerateFields_gen(Operand(obj), vis);
   vis(obj.data(),"data");
 }
 
 template <typename Visitor> void enumerateFields_gen(OperandImageProperties obj,  Visitor & vis) {
+  enumerateFields_gen(Operand(obj), vis);
   enumerateFields(obj.width(), vis);
   enumerateFields(obj.height(), vis);
   enumerateFields(obj.depth(), vis);
@@ -473,25 +452,30 @@ template <typename Visitor> void enumerateFields_gen(OperandImageProperties obj,
 }
 
 template <typename Visitor> void enumerateFields_gen(OperandOperandList obj,  Visitor & vis) {
+  enumerateFields_gen(Operand(obj), vis);
   vis(obj.elements(),"elements");
 }
 
 template <typename Visitor> void enumerateFields_gen(OperandReg obj,  Visitor & vis) {
+  enumerateFields_gen(Operand(obj), vis);
   vis(obj.regKind(),"regKind");
   vis(obj.regNum(),"regNum");
 }
 
 template <typename Visitor> void enumerateFields_gen(OperandSamplerProperties obj,  Visitor & vis) {
+  enumerateFields_gen(Operand(obj), vis);
   vis(obj.coord(),"coord");
   vis(obj.filter(),"filter");
   vis(obj.addressing(),"addressing");
 }
 
 template <typename Visitor> void enumerateFields_gen(OperandString obj,  Visitor & vis) {
+  enumerateFields_gen(Operand(obj), vis);
   vis(obj.string(),"string");
 }
 
 template <typename Visitor> void enumerateFields_gen(OperandWavesize obj,  Visitor & vis) {
+  enumerateFields_gen(Operand(obj), vis);
 }
 
 template <typename Visitor> void enumerateFields_gen(SegCvtModifier obj,  Visitor & vis) {

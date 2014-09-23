@@ -610,7 +610,7 @@ void BrigDwarfGenerator_impl::generateDwarfForBrig( HSAIL_ASM::BrigContainer & c
     {
         // cout << "offset 0x" << std::hex << d.brigOffset() << ": ";
 
-        switch ( d.brig()->kind )
+        switch ( d.kind() )
         {
         case Brig::BRIG_KIND_DIRECTIVE_VARIABLE:
          {
@@ -636,11 +636,6 @@ void BrigDwarfGenerator_impl::generateDwarfForBrig( HSAIL_ASM::BrigContainer & c
             nextD = d.next();
             break;
         }
-
-        //if ( d.brig()->kind == Brig::BRIG_KIND_DIRECTIVE_VARIABLE_INIT )
-        //    cout << "DirectiveVariableInit (dump skipped)" << endl;
-        //else
-        //    d.dump( cout );
     }
 }
 
@@ -730,7 +725,7 @@ void BrigDwarfGenerator_impl::generateDwarfForBrigKernelFunction( HSAIL_ASM::Dir
     declColumn = pSrcInfo->column + 1;
     firstInArg = d.firstInArg();
     numInParams = d.inArgCount();
-    if ( d.brig()->kind == Brig::BRIG_KIND_DIRECTIVE_FUNCTION ) {
+    if ( d.kind() == Brig::BRIG_KIND_DIRECTIVE_FUNCTION ) {
       isKernel = false;
       firstOutParam = d.next();
       numOutParams = d.outArgCount();
@@ -886,7 +881,7 @@ void BrigDwarfGenerator_impl::generateDwarfForBrigSubprogramBody(
     //
     while ( d != firstDirectiveAfterSubprogram )
     {
-        switch ( d.brig()->kind )
+        switch ( d.kind() )
         {
          case Brig::BRIG_KIND_DIRECTIVE_VARIABLE:
          {
@@ -1166,7 +1161,12 @@ void BrigDwarfGenerator_impl::initializeElf()
     if ( elf_version(EV_CURRENT) == EV_NONE )
         error( "Bad elf_version" );
 
-    m_pElf = elf_begin( m_elfFd, ELF_C_WRITE, 0 );
+    m_pElf = elf_begin( m_elfFd, ELF_C_WRITE, 0
+#ifdef AMD_LIBELF
+                                                              , NULL
+#else
+#endif
+);
     if ( ! m_pElf )
         error( "elf_begin() failed" );
 
@@ -1360,7 +1360,7 @@ void BrigDwarfGenerator_impl::finalizeElf()
 	// note!   We can not close the m_elfFd file until we read back
 	// in the ELF disk image
 	//
-	
+
 }
 
 

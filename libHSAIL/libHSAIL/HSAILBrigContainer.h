@@ -52,6 +52,7 @@
 #include <vector>
 #include <algorithm>
 #include <cassert>
+#include <functional>
 #include <iosfwd>
 #include <memory>
 #include <limits>
@@ -105,6 +106,8 @@ private:
 
     const Brig::BrigSectionHeader* m_data;
 
+    std::function<void()>       m_syncCallback;
+
     Buffer               m_buffer;
 
     typedef std::vector< std::pair<Offset, SourceInfo > > SectionSourceInfo;
@@ -118,6 +121,9 @@ private:
       assert(secHeader()->headerByteCount > 0);
       assert(secHeader()->headerByteCount <= end);
       secHeader()->byteCount = end;
+      if (m_syncCallback) {
+          m_syncCallback();
+      }
     }
 
 protected:
@@ -177,6 +183,10 @@ public:
         Buffer tmpBuf((const char*)data, (const char*)data + header->byteCount);
         m_buffer.swap(tmpBuf);
         syncWithBuffer();
+    }
+
+    void setSyncCallback(std::function<void()> f) {
+        m_syncCallback = f;
     }
 
     void reserve(size_t numBytes) {
@@ -550,7 +560,7 @@ public:
 
     static int verifySection(int index, SRef data, std::ostream &errs);
 
-    int loadSection(int index, BrigSectionImpl::Buffer& data, std::ostream &errs);
+    int loadSection(int index, BrigSectionImpl::Buffer& data, bool includesHeader, std::ostream &errs);
 
     void initSectionRaw(int index, SRef name);
 

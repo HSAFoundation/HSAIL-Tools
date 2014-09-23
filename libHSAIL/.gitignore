@@ -12,3 +12,6 @@
 *.lai
 *.la
 *.a
+
+vsvars.inc
+build_*/

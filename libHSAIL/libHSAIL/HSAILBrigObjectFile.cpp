@@ -58,10 +58,142 @@
 #include <iostream>
 #include <cstdio>
 
-#include "llvm/Support/ELF.h"
-using namespace llvm::ELF;
-
 namespace HSAIL_ASM {
+
+enum {
+  EI_MAG0       = 0,
+  EI_MAG1       = 1,
+  EI_MAG2       = 2,
+  EI_MAG3       = 3,
+  EI_CLASS      = 4,
+  EI_DATA       = 5,
+  EI_VERSION    = 6,
+  EI_OSABI      = 7,
+  EI_ABIVERSION = 8,
+  EI_PAD        = 9,
+  EI_NIDENT     = 16
+};
+
+enum {
+  SHT_NULL          = 0,
+  SHT_PROGBITS      = 1,
+  SHT_SYMTAB        = 2,
+  SHT_STRTAB        = 3
+};
+
+enum {
+  SHF_WRITE         = 0x1,
+  SHF_ALLOC         = 0x2,
+  SHF_EXECINSTR     = 0x4,
+  SHF_MERGE         = 0x10,
+  SHF_STRINGS       = 0x20,
+  SHF_INFO_LINK     = 0x40,
+  SHF_LINK_ORDER    = 0x80
+};
+
+enum {
+  ET_NONE   = 0,
+  ET_REL    = 1
+};
+
+enum {
+  EM_NONE =   0
+};
+
+enum {
+  STB_LOCAL = 0
+};
+
+enum {
+  STT_NOTYPE  = 0,
+  STT_OBJECT  = 1
+};
+
+enum {
+  EV_NONE = 0,
+  EV_CURRENT = 1
+};
+
+enum {
+  ELFDATANONE = 0,
+  ELFDATA2LSB = 1,
+  ELFDATA2MSB = 2
+};
+
+static const char ElfMagic[] = { 0x7f, 'E', 'L', 'F', '\0' };
+
+template<typename T>
+struct ElfPolicyBase {
+  typedef uint16_t    Half;
+  typedef uint32_t    Off;
+  typedef uint32_t    Word;
+  typedef T           Addr;
+  typedef T           Xword;
+
+  struct Ehdr {
+    unsigned char e_ident[EI_NIDENT];
+    Half    e_type;
+    Half    e_machine;
+    Word    e_version;
+    Addr    e_entry;
+    Off     e_phoff;
+    Off     e_shoff;
+    Word    e_flags;
+    Half    e_ehsize;
+    Half    e_phentsize;
+    Half    e_phnum;
+    Half    e_shentsize;
+    Half    e_shnum;
+    Half    e_shstrndx;
+
+    bool checkMagic() const {
+      return (memcmp(e_ident, ElfMagic, strlen(ElfMagic))) == 0;
+    }
+  };
+
+  struct Shdr {
+    Word    sh_name;
+    Word    sh_type;
+    Xword   sh_flags;
+    Addr    sh_addr;
+    Off     sh_offset;
+    Xword   sh_size;
+    Word    sh_link;
+    Word    sh_info;
+    Xword   sh_addralign;
+    Xword   sh_entsize;
+  };
+
+};
+
+struct Elf32Policy : public ElfPolicyBase<uint32_t> {
+
+  struct Sym {
+    Word    st_name;
+    Addr    st_value;
+    Word    st_size;
+    unsigned char st_info;
+    unsigned char st_other;
+    Half    st_shndx;
+  };
+
+  enum { ELFCLASS = 1, EM_HSAIL_ = 0xAF5A};
+};
+
+struct Elf64Policy : public ElfPolicyBase<uint64_t> {
+
+  struct Sym {
+    Word            st_name;
+    unsigned char   st_info;
+    unsigned char   st_other;
+    Half            st_shndx;
+    Addr            st_value;
+    Xword           st_size;
+  };
+
+  enum { ELFCLASS = 2, EM_HSAIL_ = 0xAF5B};
+};
+
 
 enum {
     ELF_SECTION_STRTAB = -1,
@@ -124,33 +256,14 @@ ReadAdapter::~ReadAdapter() {
 ReadWriteAdapter::~ReadWriteAdapter() {
 }
 
-struct Elf32Policy {
-    typedef Elf32_Ehdr Ehdr;
-    typedef Elf32_Shdr Shdr;
-    typedef Elf32_Sym Sym;
-    typedef Elf32_Word ElfWord;
-    typedef Elf32_Half ElfHalf;
-
-    enum { ELFCLASS = ELFCLASS32, EM_HSAIL_ = 0xAF5A};
-};
-
-struct Elf64Policy {
-    typedef Elf64_Ehdr Ehdr;
-    typedef Elf64_Shdr Shdr;
-    typedef Elf64_Sym Sym;
-    typedef Elf64_Word ElfWord;
-    typedef Elf64_Half ElfHalf;
-
-    enum { ELFCLASS = ELFCLASS64, EM_HSAIL_ = 0xAF5B};
-};
 
 template<typename Policy>
 class BrigIOImpl {
     typedef typename Policy::Ehdr Ehdr;
     typedef typename Policy::Shdr Shdr;
     typedef typename Policy::Sym Sym;
-    typedef typename Policy::ElfWord ElfWord;
-    typedef typename Policy::ElfHalf ElfHalf;
+    typedef typename Policy::Word ElfWord;
+    typedef typename Policy::Half ElfHalf;
     Ehdr elfHeader;
     std::vector<Shdr> sectionHeaders;
     std::vector<char> sectionNameTable;
@@ -211,7 +324,9 @@ public:
             std::vector<char> data;
             if (readSection(data, s, i)) return 1;
 
-            if (c.loadSection(desc->sectionId, data, s->errs)) {
+            bool includesHeader =
+                  desc->sectionId < Brig::BRIG_SECTION_INDEX_IMPLEMENTATION_DEFINED;
+            if (c.loadSection(desc->sectionId, data, includesHeader, s->errs)) {
                 return 1;
             }
         }
@@ -345,6 +460,13 @@ private:
             sectionData.push_back("");
         }
         assert(data.length() < INT_MAX);
+        bool includesHeader =
+            desc.sectionId >= 0 &&
+            desc.sectionId < Brig::BRIG_SECTION_INDEX_IMPLEMENTATION_DEFINED;
+        if (!includesHeader) {
+            Brig::BrigSectionHeader *header = (Brig::BrigSectionHeader*)data.begin;
+            data.begin += header->headerByteCount;
+        }
         unsigned shndx = (unsigned)sectionHeaders.size();
         thisSec.sh_type = desc.type;
         thisSec.sh_flags = desc.flags;
@@ -648,11 +770,11 @@ int BrigIO::load(BrigContainer &dst,
         return 1;
     }
     switch(ident[EI_CLASS]) {
-    case ELFCLASS32: {
+    case Elf32Policy::ELFCLASS: {
         BrigIOImpl<Elf32Policy> impl(fmt);
         return impl.readContainer(dst, &src);
         }
-    case ELFCLASS64: {
+    case Elf64Policy::ELFCLASS: {
         BrigIOImpl<Elf64Policy> impl(fmt);
         return impl.readContainer(dst, &src);
         }

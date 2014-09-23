@@ -46,6 +46,7 @@
 
 #include <fstream>
 #include <iomanip>
+#include <cmath>
 
 // ============================================================================
 // Public API
@@ -158,7 +159,7 @@ void Disassembler::printDirectiveFmt(Code d) const
     using namespace Brig;
     assert(d);
 
-    unsigned kind = d.brig()->kind;
+    unsigned kind = d.kind();
 
     if (kind == BRIG_KIND_DIRECTIVE_VERSION)
     {
@@ -180,7 +181,7 @@ void Disassembler::printDirective(Directive d, bool dump /*=false*/) const
     using namespace Brig;
     assert(d);
 
-    switch (d.brig()->kind)
+    switch (d.kind())
     {
     case BRIG_KIND_DIRECTIVE_VERSION:           printDirective(DirectiveVersion(d));        break;
     case BRIG_KIND_DIRECTIVE_KERNEL:
@@ -199,7 +200,7 @@ void Disassembler::printDirective(Directive d, bool dump /*=false*/) const
     case BRIG_KIND_DIRECTIVE_ARG_BLOCK_START:   printDirective(DirectiveArgBlockStart(d));  break;
     case BRIG_KIND_DIRECTIVE_ARG_BLOCK_END:     printDirective(DirectiveArgBlockEnd(d));    break;
 
-    default: error(d, "Unsupported Directive Kind", d.brig()->kind);                        break;
+    default: error(d, "Unsupported Directive Kind", d.kind());                        break;
     }
 }
 
@@ -519,7 +520,7 @@ void Disassembler::ValuePrinter::visit< BrigType<Brig::BRIG_TYPE_B1> >() const /
     m_self->printValue((int)(m_data.begin[0] & 0x1U));
 }
 
-
+// NB: initializer is not required to init all array elements
 void Disassembler::printValueList(SRef data, Brig::BrigType16_t type, uint64_t dim) const
 {
     if (type == Brig::BRIG_TYPE_B128)
@@ -528,6 +529,13 @@ void Disassembler::printValueList(SRef data, Brig::BrigType16_t type, uint64_t d
         // So replace b128 with any 128-bit packed type
         type = Brig::BRIG_TYPE_U8X16;
     }
+
+    ///unsigned elementSz = (unsigned)(data.length() / (dim == 0? 1 : dim));
+    ///if (elementSz != getBrigTypeNumBytes(type))
+    ///{
+    ///    // Data size does not match type size; replace with sth meaningful
+    ///    type = getBitType(elementSz == 0? 1 : elementSz * 8);
+    ///}
 
     dispatchByType(type, ValuePrinter(this, data, dim));
 }
@@ -560,7 +568,7 @@ void Disassembler::printInst(Inst i) const
     using namespace Brig;
     assert(i);
 
-    switch(i.brig()->kind)
+    switch(i.kind())
     {
     case BRIG_KIND_INST_BASIC:         printInst(InstBasic(i));        break;
     case BRIG_KIND_INST_ADDR:          printInst(InstAddr(i));         break;
@@ -580,7 +588,7 @@ void Disassembler::printInst(Inst i) const
     case BRIG_KIND_INST_SIGNAL:        printInst(InstSignal(i));       break;
     case BRIG_KIND_INST_QUERY_IMAGE:   printInst(InstQueryImage(i));   break;
     case BRIG_KIND_INST_QUERY_SAMPLER: printInst(InstQuerySampler(i)); break;
-    default: error(i, "Unsupported Instruction Format", i.brig()->kind); break;
+    default: error(i, "Unsupported Instruction Format", i.kind()); break;
     }
     print(';');
 }
@@ -947,7 +955,7 @@ void Disassembler::printOperand(Operand opr, Brig::BrigType16_t type, bool dump 
     using namespace Brig;
     assert(opr);
 
-    switch (opr.brig()->kind)
+    switch (opr.kind())
     {
     case BRIG_KIND_OPERAND_REG:                printOperandReg(opr);                     break;
     case BRIG_KIND_OPERAND_ADDRESS:            printOperandAddress(opr);                 break;
@@ -961,7 +969,7 @@ void Disassembler::printOperand(Operand opr, Brig::BrigType16_t type, bool dump 
     case BRIG_KIND_OPERAND_STRING:             printOperandString(opr);                  break;
 
     default:
-        error(opr, "Unsupported Operand Kind", opr.brig()->kind);
+        error(opr, "Unsupported Operand Kind", opr.kind());
         break;
     }
 }

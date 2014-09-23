@@ -355,9 +355,9 @@ private:
     void printBrig(Operand opr) const { printOperand(opr, true); }
 
     bool wantsExtraNewLineBefore(Directive d) const {
-        return (    (d.brig()->kind == Brig::BRIG_KIND_DIRECTIVE_LABEL)
-                 || (d.brig()->kind == Brig::BRIG_KIND_DIRECTIVE_KERNEL)
-                 || (d.brig()->kind == Brig::BRIG_KIND_DIRECTIVE_FUNCTION));
+        return (    (d.kind() == Brig::BRIG_KIND_DIRECTIVE_LABEL)
+                 || (d.kind() == Brig::BRIG_KIND_DIRECTIVE_KERNEL)
+                 || (d.kind() == Brig::BRIG_KIND_DIRECTIVE_FUNCTION));
     }
 
     //-------------------------------------------------------------------------

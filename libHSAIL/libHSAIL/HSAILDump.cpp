@@ -44,7 +44,7 @@
 #include "HSAILItems.h"
 #include "HSAILSRef.h"
 
-#include <iostream>
+#include <iosfwd>
 #include <iomanip>
 
 namespace HSAIL_ASM
@@ -84,8 +84,8 @@ public:
 
         s << "\n"
             << KindTag<typename Item::Kind>::tag << "@" << item.brigOffset() << " "
-            << Item::kindName() << "(" << item.brig()->kind << ") "
-            << "byteCount=" << item.brig()->byteCount;
+            << Item::kindName() << "(" << item.kind() << ") "
+            << "byteCount=" << item.byteCount();
 
         const SourceInfo *si = item.srcInfo();
         if (si) {
@@ -253,10 +253,6 @@ void dumpItem_t(std::ostream& out, Item item) {
 
 void dumpItem(std::ostream& out, Code item) { dumpItem_t(out,item); }
 void dumpItem(std::ostream& out, Operand item) { dumpItem_t(out,item); }
-
-void dump(BrigContainer &c) {
-    dump(c, std::cout);
-}
 
 void dump(BrigContainer &c, std::ostream& out) {
     for(Code i = c.code().begin(); i != c.code().end(); i = i.next())

@@ -38,17 +38,6 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS WITH THE
 // SOFTWARE.
-Parser::OperandParser Parser::getOperandParser(Brig::BrigOpcode16_t arg) {
-  using namespace Brig;
-  switch( arg ) {
-    case BRIG_OPCODE_CALL               : return &Parser::parseCallOperands;
-    case BRIG_OPCODE_ICALL              : return &Parser::parseCallOperands;
-    case BRIG_OPCODE_SBR                : return &Parser::parseSbrOperands;
-    case BRIG_OPCODE_SCALL              : return &Parser::parseCallOperands;
-    default : return &Parser::parseOperands;
-    }
-}
-
 OpcodeParser getOpcodeParser(Brig::BrigOpcode16_t arg) {
   using namespace Brig;
   switch( arg ) {
@@ -138,6 +127,17 @@ OpcodeParser getOpcodeParser(Brig::BrigOpcode16_t arg) {
     case BRIG_OPCODE_WAITFBAR           : return parseMnemoBr;
     case BRIG_OPCODE_WAVEBARRIER        : return parseMnemoBr;
     default : return parseMnemoBasic;
+    }
+}
+
+Parser::OperandParser Parser::getOperandParser(Brig::BrigOpcode16_t arg) {
+  using namespace Brig;
+  switch( arg ) {
+    case BRIG_OPCODE_CALL               : return &Parser::parseCallOperands;
+    case BRIG_OPCODE_ICALL              : return &Parser::parseCallOperands;
+    case BRIG_OPCODE_SBR                : return &Parser::parseSbrOperands;
+    case BRIG_OPCODE_SCALL              : return &Parser::parseCallOperands;
+    default : return &Parser::parseOperands;
     }
 }
 
