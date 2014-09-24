@@ -2237,7 +2237,7 @@ sub genReq
         }
         elsif (isChkEnd($chk)) # terminator: list of variants has finished
         {
-            print "    else \n";
+            print "    else\n";
             print "    {\n";
             print "        invalidVariant(inst, ", join(', ', map { getTargetPropName($_) } sort keys %propVariants), ");\n";
             print "    }\n";

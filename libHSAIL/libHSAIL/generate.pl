@@ -50,7 +50,10 @@ my $re2c_path;
 my $touch_path;
 my $nohdl;
 my $nore2c;
-die unless GetOptions("nore2c!" => \$nore2c, "nohdl!" => \$nohdl, "re2c=s" => \$re2c_path, "dk=s" => \$dk_root, "touch=s" => \$touch_path);
+my $genextra;
+
+die unless GetOptions("genextra!" => \$genextra, "nore2c!" => \$nore2c, "nohdl!" => \$nohdl, "re2c=s" => \$re2c_path, "dk=s" => \$dk_root, "touch=s" => \$touch_path);
+
 $dk_root //= $ENV{DK_ROOT};
 if (defined $dk_root) { $re2c_path //= "$dk_root/re2c/re2c"; }
 $re2c_path //= "re2c";
@@ -252,9 +255,11 @@ while(pos($_) < length($_)) {
 
 sub make;
 
-make "enums0_dump.pl", \&makePrint, Data::Dumper->Dump([$enums], ["enums"]);
-make "structs0_dump.pl", \&makePrint, Data::Dumper->Dump([$structs], ["structs"]);
-make "typedefs0_dump.pl", \&makePrint, Data::Dumper->Dump([$typedefs],["typedefs"]);
+if ($genextra) {
+    make "enums0_dump.pl", \&makePrint, Data::Dumper->Dump([$enums], ["enums"]);
+    make "structs0_dump.pl", \&makePrint, Data::Dumper->Dump([$structs], ["structs"]);
+    make "typedefs0_dump.pl", \&makePrint, Data::Dumper->Dump([$typedefs],["typedefs"]);
+}
 
 #
 # List of attributes currently used:
@@ -469,14 +474,14 @@ sub makeSwitch($$%) {
                 } else {
                   $tokenText .= ($scanner eq "Instructions") ? "/EOMOD" : "/EOKW";
                 }
-                $block = sprintf "%-50s %-30s", "brigId = Brig::$entryName;", "return $token; ";
+                $block = "brigId = Brig::$entryName; return $token;";
                 if ($context) {
                     $scanner{$scanner}->{$tokenText}->{$context} = $block;
                 } else {
                     $scanner{$scanner}->{$tokenText} = $block;
                 }
             } else {
-                $block = sprintf "%-40s", "return Brig::$entryName; ";
+                $block = "return Brig::$entryName;";
                 $scanner{$scanner}->{$tokenText} = $block;
             }
 
@@ -607,11 +612,11 @@ sub makeWrappers {
 
 
         print "\n\n\t/// constructors\n";
-        print "\t$swname()                           : $pwname() { } \n";
-        print "\t$swname(MySection* s, Offset o)     : $pwname(s, o) { } \n";
+        print "\t$swname()                           : $pwname() { }\n";
+        print "\t$swname(MySection* s, Offset o)     : $pwname(s, o) { }\n";
         my @children = $s->{children} ? sort grep { !$_->{generic} } values %{$s->{children}} : ($s);
         if (!$s->{standalone}) {
-            print "\t$swname(BrigContainer* c, Offset o) : $pwname(&c->sectionById(SECTION), o) { } \n";
+            print "\t$swname(BrigContainer* c, Offset o) : $pwname(&c->sectionById(SECTION), o) { }\n";
         }
 
         if (!$s->{standalone}) {
@@ -619,10 +624,10 @@ sub makeWrappers {
             print "\tstatic bool isAssignable(const ItemBase& rhs) {\n\t\treturn ",
                 join("\n\t\t    || ", (map { "rhs.kind() == Brig::".$_->{enum} } sort { $a->{enum} cmp $b->{enum} } @children ))
                 ,";\n\t}\n";
-            print "\t$swname(const ItemBase& rhs) { assignItem(*this,rhs); } \n";
+            print "\t$swname(const ItemBase& rhs) { assignItem(*this,rhs); }\n";
             print "\t$swname& operator=(const ItemBase& rhs) { assignItem(*this,rhs); return *this; }\n";
         } else {
-            print "\t$swname(const $swname& rhs) : ItemBase(rhs) { } \n";
+            print "\t$swname(const $swname& rhs) : ItemBase(rhs) { }\n";
             print "\t$swname& operator=(const $swname& rhs) { reset(rhs); return *this; }\n";
         }
 
@@ -630,7 +635,7 @@ sub makeWrappers {
         print "\ttypedef Brig::$s->{rawbrig} BrigStruct;\n";
         print "\t      BrigStruct* brig()       { return reinterpret_cast<BrigStruct*>      (m_section->getData(m_offset)); }\n";
         print "\tconst BrigStruct* brig() const { return reinterpret_cast<const BrigStruct*>(m_section->getData(m_offset)); }\n";
-        print "\tvoid initBrig(); \n";
+        print "\tvoid initBrig();\n";
 
         if ($s->{isroot} && !$s->{standalone}) {
             print "\n\t/// root utilities\n";
@@ -1264,8 +1269,11 @@ make "HSAILBrigPropsFastAcc_gen.hpp", \&makeBrigPropsFastAcc;
 make "HSAILBrigPropsVisitor_gen.hpp", \&makeBrigPropsVisitor;
 make "HSAILBrigPropsName_gen.hpp", \&makeBrigPropsName;
 make "HSAILBrigInstUtils_gen.hpp", \&makeBrigInstUtils;
-make "HSAILEnums.td", \&makeLLVMEnums;
-make "HSAILOperandPrinters.inc", \&makeLLVMPrinters;
+
+if ($genextra) {
+    make "HSAILEnums.td", \&makeLLVMEnums;
+    make "HSAILOperandPrinters.inc", \&makeLLVMPrinters;
+}
 
 for my $s (values %scanner) {
     my $text;
@@ -1303,10 +1311,12 @@ for my $s (values %$structs) {
 
 make "HSAILPropAccessors_gen.hpp", \&makePropAccessors;
 
-make "gvalues_dump.pl", \&makePrint, Data::Dumper->Dump([$gvalues], ["gvalues"]);
-make "enums_dump.pl", \&makePrint, Data::Dumper->Dump([$enums], ["enums"]);
-make "structs_dump.pl", \&makePrint, Data::Dumper->Dump([$structs], ["structs"]);
-make "typedefs_dump.pl", \&makePrint, Data::Dumper->Dump([$typedefs],["typedefs"]);
+if ($genextra) {
+    make "gvalues_dump.pl", \&makePrint, Data::Dumper->Dump([$gvalues], ["gvalues"]);
+    make "enums_dump.pl", \&makePrint, Data::Dumper->Dump([$enums], ["enums"]);
+    make "structs_dump.pl", \&makePrint, Data::Dumper->Dump([$structs], ["structs"]);
+    make "typedefs_dump.pl", \&makePrint, Data::Dumper->Dump([$typedefs],["typedefs"]);
+}
 
 $/ = undef;
 for my $fn (keys %outFileList) {

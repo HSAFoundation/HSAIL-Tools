@@ -858,7 +858,6 @@ const char* round2str(unsigned arg) {
     case BRIG_ROUND_INTEGER_SIGNALLING_ZERO_SAT : return "szeroi_sat";
     case BRIG_ROUND_INTEGER_ZERO        : return "zeroi";
     case BRIG_ROUND_INTEGER_ZERO_SAT    : return "zeroi_sat";
-    case BRIG_ROUND_NONE                : return "2";
     default : return NULL;
     }
 }

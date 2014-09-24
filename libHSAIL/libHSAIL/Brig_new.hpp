@@ -690,7 +690,7 @@ enum BrigRound {
     //.mnemo={}
     //.mnemo_fn=round2str //.mnemo_token=_EMRound
     //.print=$mnemo{ "_$mnemo" }
-    BRIG_ROUND_NONE = 0,
+    BRIG_ROUND_NONE = 0, //.no_mnemo
     BRIG_ROUND_FLOAT_NEAR_EVEN = 1, //.mnemo=near
     BRIG_ROUND_FLOAT_ZERO = 2, //.mnemo=zero
     BRIG_ROUND_FLOAT_PLUS_INFINITY = 3, //.mnemo=up

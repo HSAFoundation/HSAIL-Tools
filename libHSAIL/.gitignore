@@ -13,5 +13,8 @@
 *.la
 *.a
 
+*.bak
+*.orig
+
 vsvars.inc
 build_*/
