@@ -289,16 +289,10 @@ public:
             return 1;
         }
         if (fmt == FILE_FORMAT_AUTO) {
-            if (elfHeader.e_type != ET_NONE && elfHeader.e_machine == Policy::EM_HSAIL_) {
+            if (elfHeader.e_machine == Policy::EM_HSAIL_) {
                 fmt = FILE_FORMAT_BIF;
-            } else if (elfHeader.e_type == ET_NONE && elfHeader.e_machine == EM_NONE) {
-                fmt = FILE_FORMAT_BRIG;
             } else {
-                s->errs << "Unable to detect format with type="
-                          << elfHeader.e_type
-                          << ", machine = "
-                          << elfHeader.e_machine
-                          << std::endl;
+                fmt = FILE_FORMAT_BRIG;
             }
         }
         sectionHeaders.resize(elfHeader.e_shnum);

@@ -271,20 +271,17 @@ static int AssembleInput() {
     /*if (!DisableOperandOptimizer) {
         c.optimizeOperands();
     }*/
-    if (Elf64FileFormat) {
-        return BifFileFormat
-          ?  Bif64Streamer::save(c, getOutputFileName().c_str())
-          : Brig64Streamer::save(c, getOutputFileName().c_str());
-    } else {
-        return BifFileFormat
-          ?  Bif32Streamer::save(c, getOutputFileName().c_str())
-          : Brig32Streamer::save(c, getOutputFileName().c_str());
-    }
+    int format = (BifFileFormat ? FILE_FORMAT_BIF : FILE_FORMAT_BRIG)
+               | (Elf64FileFormat ? FILE_FORMAT_ELF64 : FILE_FORMAT_ELF32);
+    return BrigIO::save(c, format, BrigIO::fileWritingAdapter(getOutputFileName().c_str()));
 }
 
 static int DisassembleInput() {
     BrigContainer c;
-    if (AutoBinaryStreamer::load(c, InputFilename.c_str())) return 1;
+    int format = BifFileFormat ? FILE_FORMAT_BIF : FILE_FORMAT_AUTO;
+    if (BrigIO::load(c, format, BrigIO::fileReadingAdapter(InputFilename.c_str()))) {
+      return 1;
+    }
 
     DEBUG(HSAIL_ASM::dump(c, std::cout));
 
