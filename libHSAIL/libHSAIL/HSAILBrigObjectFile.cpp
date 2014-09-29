@@ -125,7 +125,7 @@ static const char ElfMagic[] = { 0x7f, 'E', 'L', 'F', '\0' };
 template<typename T>
 struct ElfPolicyBase {
   typedef uint16_t    Half;
-  typedef uint32_t    Off;
+  typedef T           Off;
   typedef uint32_t    Word;
   typedef T           Addr;
   typedef T           Xword;
