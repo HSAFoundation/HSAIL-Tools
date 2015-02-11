@@ -18,3 +18,4 @@
 
 vsvars.inc
 build_*/
+build/

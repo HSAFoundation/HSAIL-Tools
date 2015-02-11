@@ -103,3 +103,8 @@ where "." is the input file path and "generated" is the output file path. If
 necessary, path to re2c build may be explicitly specified:
 
     perl generate.pl --re2c=my/build/of/re2c . generated
+
+4. CMAKE BUILD:
+
+Experimental CMake build and example scripts to invoke cmake (cmake_win.bat
+and cmake_lnx.sh) are provided. You might want to edit them for your environment.
