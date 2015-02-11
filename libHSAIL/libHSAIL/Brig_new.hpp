@@ -416,7 +416,9 @@ enum BrigMemoryScope {
     BRIG_MEMORY_SCOPE_WAVEFRONT = 2, //.mnemo=wv
     BRIG_MEMORY_SCOPE_WORKGROUP = 3, //.mnemo=wg
     BRIG_MEMORY_SCOPE_COMPONENT = 4, //.mnemo=cmp
-    BRIG_MEMORY_SCOPE_SYSTEM = 5 //.mnemo=sys
+    BRIG_MEMORY_SCOPE_SYSTEM = 5, //.mnemo=sys
+
+    BRIG_MEMORY_SCOPE_LAST = 6 //.skip
 };
 
 enum BrigMemoryScope2 { // tbd HACK!
@@ -802,7 +804,7 @@ enum BrigTypeX {
     //.dispatch_proto="template<typename RetType, typename Visitor>\nRetType dispatchByType_gen(unsigned type, Visitor& v)"
     //.dispatch={ /^BRIG_TYPE_([BUSF]|SIG)[0-9]+/ ? "v.template visit< BrigType<$_> >()" : "v.visitNone(type)" }
     //.dispatch_arg="type" //.dispatch_default="return v.visitNone(type)"
-    //.tdname=BrigType
+    //- .tdname=BrigType
     //.print=$mnemo{ "_$mnemo" }
     BRIG_TYPE_NONE = 0, //.mnemo="" //.print=""
     BRIG_TYPE_U8 = 1, //.ctype=uint8_t // unsigned integer 8 bits
@@ -903,7 +905,9 @@ enum BrigWidth { //.tddef=1
     BRIG_WIDTH_1073741824 = 31,
     BRIG_WIDTH_2147483648 = 32,
     BRIG_WIDTH_WAVESIZE = 33,
-    BRIG_WIDTH_ALL = 34
+    BRIG_WIDTH_ALL = 34,
+
+    BRIG_WIDTH_LAST //.skip
 };
 
 struct BrigUInt64 { //.isroot //.standalone
