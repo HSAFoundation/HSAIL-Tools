@@ -13,6 +13,7 @@
  */
 
 #include <stddef.h>
+#include <stdint.h>
 
 #ifdef __cplusplus
 extern "C" {
@@ -27,6 +28,11 @@ struct brig_container_struct;
  * BRIG container handle.
  */
 typedef struct brig_container_struct* brig_container_t;
+
+/**
+ * Offset in BRIG code section
+ */
+typedef uint32_t brig_code_section_offset;
 
 /**
  * Create an empty BRIG cointainer.
@@ -185,6 +191,11 @@ HSAIL_C_API int         brig_container_validate(brig_container_t handle);
  * @return - the pointer to BrigModule.
  */
 HSAIL_C_API void* brig_container_get_brig_module(brig_container_t handle);
+
+/**
+  *
+  */
+HSAIL_C_API brig_code_section_offset brig_container_find_code_module_symbol_offset(brig_container_t handle, const char *symbol_name);
 
 /**
  * Obtain error message text.

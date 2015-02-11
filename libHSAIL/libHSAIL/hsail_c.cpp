@@ -182,6 +182,23 @@ HSAIL_C_API int brig_container_validate(brig_container_t handle)
     return 0;
 }
 
+HSAIL_C_API brig_code_section_offset brig_container_find_code_module_symbol_offset(brig_container_t handle, const char *symbol_name)
+{
+  BrigContainer& c = ((Api*)handle)->container;
+  for (Code d = c.code().begin(), e = c.code().end(); d != e; ) {
+    if (DirectiveExecutable e = d) {
+      if (e.name().str() == symbol_name) { return e.brigOffset(); }
+      d = e.nextModuleEntry(); // Skip to next top level directive.
+    } else if (DirectiveVariable v = d) {
+      if (v.name().str() == symbol_name) { return v.brigOffset(); }
+      d = d.next(); // Skip to next directive.
+    } else {
+      d = d.next(); // Skip to next directive.
+    }
+  }
+  return 0;
+}
+
 HSAIL_C_API const char* brig_container_get_error_text(brig_container_t handle) {
     return ((Api*)handle)->errorText.c_str();
 }
