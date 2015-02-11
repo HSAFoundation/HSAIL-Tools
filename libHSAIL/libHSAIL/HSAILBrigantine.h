@@ -193,7 +193,7 @@ public:
     /// emit extension for the following instruction.
     /// @param name - any text.
     /// @param srcInfo - (optional) source location.
-    DirectiveLabel   addExtension(const char *name,const SourceInfo* srcInfo=NULL);
+    DirectiveExtension addExtension(const char *name,const SourceInfo* srcInfo=NULL);
 
     // TBD095 replace with addSampler, createSamplerInitializer
     /*void CreateSampler(const SRef& name,const int normalized,const Brig::BrigSamplerFilter filter,
@@ -356,6 +356,9 @@ public:
     OperandAddress     createRef(const SRef& symName, SRef& reg, int64_t offset=0, const SourceInfo* srcInfo=NULL) {
         return createRef(symName, reg.empty() ? OperandReg() : createOperandReg(reg, srcInfo), offset, srcInfo);
     }
+
+    OperandAddress     createRef(DirectiveVariable var, OperandReg reg=OperandReg(), int64_t offset=0, const SourceInfo* srcInfo=NULL);
+
     OperandCodeRef         createDirectiveRef(const SRef& name,const SourceInfo* srcInfo=NULL);
     OperandCodeRef         createCodeRef(Code c,const SourceInfo* srcInfo=NULL);
 

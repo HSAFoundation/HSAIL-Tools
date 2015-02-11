@@ -335,10 +335,11 @@ OperandProp operand =
     fbarrier.u32,
     addr.(seg,              // 1) address size must match _instruction_ segment size;
                             // 2) if inst.segment=flat, address must be flat
-                            // 3) if address includes a symbol, symbol.segment must be the same as instr.segment
+                            // 3) addresses in arg and spill segments must include a symbol
+                            // 4) if address includes a symbol, symbol.segment must be the same as instr.segment
 
           tseg),            // 1+2+3+4
-                            // 4) opaque symbols used in address must match instruction type
+                            // 5) opaque symbols used in address must match instruction type
 
     (imm0T2, imm0T3).u32,
     (reg, vec.2, vec.3, vec.4, imm, cnst).(b1, b32, b64, u32, u64, s32, s64, p2u, dtype, stype, ctype),
@@ -1273,7 +1274,7 @@ Req ld
     width   = any.1;
 
     { type = u, s, f      ? d0 = (reg, vector) }
-    { type = b128, opaque ? d0 = reg          }
+    { type = b128, opaque ? d0 = reg           }
     ;
 
     { segment = global, flat                                  ? const = any  }
@@ -2301,10 +2302,10 @@ Req gcn_ld
     width   = any.1;
 
     { type = u, s, f ? d0 = (reg, vector) }
-    { type = b128    ? d0 = reg          }
+    { type = b128    ? d0 = reg           }
     ;
 
-    s1 = addr.tseg;
+    s1 = addr.seg;
     s2 = null;
     s3 = null;
     s4 = null;
@@ -2324,13 +2325,13 @@ Req gcn_st
     eqclass = any;
     width   = none;
 
-    s1 = addr.tseg;
+    s1 = addr.seg;
     s2 = null;
     s3 = null;
     s4 = null;
 
     { type = u, s, f ? s0 = (reg, vector, imm) }
-    { type = b128    ? s0 = reg               }
+    { type = b128    ? s0 = reg                }
     ;
 }
 

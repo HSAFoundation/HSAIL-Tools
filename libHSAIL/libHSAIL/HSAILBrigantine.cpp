@@ -321,6 +321,15 @@ DirectiveVariable Brigantine::addVariable(
     sym.name() = name;
     sym.segment() = segment;
     sym.type() = dType;
+    sym.align() = getNaturalAlignment(dType);
+    sym.modifier().isDefinition() = true;
+    sym.linkage() = segment == Brig::BRIG_SEGMENT_ARG ? Brig::BRIG_LINKAGE_ARG :
+                            m_funcScope.get() != NULL ? Brig::BRIG_LINKAGE_FUNCTION :
+                                                        Brig::BRIG_LINKAGE_MODULE;
+
+    sym.allocation() = segment == Brig::BRIG_SEGMENT_GLOBAL ?   Brig::BRIG_ALLOCATION_PROGRAM :
+                       segment == Brig::BRIG_SEGMENT_READONLY ? Brig::BRIG_ALLOCATION_AGENT :
+                                                                Brig::BRIG_ALLOCATION_AUTOMATIC;
     addSymbol(sym);
     return sym;
 }
@@ -376,6 +385,7 @@ DirectiveFbarrier Brigantine::addFbarrier(const SRef& name,const SourceInfo* src
 
 DirectiveLabel Brigantine::addLabelInternal(const SRef& name,const SourceInfo* srcInfo)
 {
+    assert(m_funcScope.get());
     DirectiveLabel lbl = m_funcScope->get<DirectiveLabel>(name);
     if (lbl) {
         brigWriteError("Duplicate label declaration",srcInfo);
@@ -405,7 +415,7 @@ DirectiveComment Brigantine::addComment(const char *comment,const SourceInfo* sr
     return cmt;
 }
 
-DirectiveLabel Brigantine::addExtension(const char *name,const SourceInfo* srcInfo)
+DirectiveExtension Brigantine::addExtension(const char *name,const SourceInfo* srcInfo)
 {
     DirectiveExtension ext = m_container.append<DirectiveExtension>();
     annotate(ext,srcInfo);
@@ -540,26 +550,34 @@ OperandData Brigantine::createImmed(SRef data, const SourceInfo* srcInfo) {
 
 
 OperandAddress Brigantine::createRef(
+    DirectiveVariable var,
+    OperandReg reg,
+    int64_t offset,
+    const SourceInfo* srcInfo)
+{
+    OperandAddress operand = m_container.append<OperandAddress>();
+    annotate(operand,srcInfo);
+    operand.symbol() = var;
+    operand.reg()    = reg;
+    operand.offset() = (uint64_t)offset;
+    return operand;
+}
+
+OperandAddress Brigantine::createRef(
     const SRef& symName,
     OperandReg reg,
     int64_t offset,
     const SourceInfo* srcInfo) {
-
-    OperandAddress operand = m_container.append<OperandAddress>();
-    annotate(operand,srcInfo);
-
+    DirectiveVariable nameDS;
     if (!symName.empty()) {
-        DirectiveVariable nameDS = findInScopes<DirectiveVariable>(symName);
+        nameDS = findInScopes<DirectiveVariable>(symName);
         if (!nameDS) {
             std::string name = symName;
             brigWriteError(("Symbol not found: " + name).c_str(),srcInfo);
             return OperandAddress();
         }
-        operand.symbol() = nameDS;
     }
-    operand.reg() = reg;
-    operand.offset() = (uint64_t)offset;
-    return operand;
+    return createRef(nameDS, reg, offset, srcInfo);
 }
 
 

@@ -478,6 +478,21 @@ unsigned getSegAddrSize(unsigned segment, bool isLargeModel)
     }
 }
 
+bool isAddressableSeg(unsigned segment)
+{
+    using namespace Brig;
+
+    switch (segment)
+    {
+    case BRIG_SEGMENT_ARG:
+    case BRIG_SEGMENT_SPILL:
+        return false;
+
+    default:
+        return true;
+    }
+}
+
 //============================================================================
 // Operations with types
 

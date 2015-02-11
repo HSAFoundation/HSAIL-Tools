@@ -1072,30 +1072,20 @@ DirectiveVariable Parser::parseVariable(bool nameRequired /*=true*/, const Modul
         sym = m_bw.addVariable(name,segment,dType,&srcInfo);
     }
 
-    sym.align() = align.value((unsigned) getNaturalAlignment(dType));
+    if (align.isInitialized())
+        sym.align() = align.value();
 
     if (hasConst.isInitialized())
         sym.modifier().isConst() = true;
 
-    if (modPfx && modPfx->linkage.isInitialized()) {
+    if (modPfx && modPfx->linkage.isInitialized())
         sym.linkage() = modPfx->linkage.value();
-    } else if (modPfx) {
-        sym.linkage() = Brig::BRIG_LINKAGE_MODULE;
-    } else if (segment == Brig::BRIG_SEGMENT_ARG) {
-        sym.linkage() = Brig::BRIG_LINKAGE_ARG;
-    } else {
-        sym.linkage() = Brig::BRIG_LINKAGE_FUNCTION;
-    }
 
     if (allocKind.isInitialized()) {
-        if (segment == Brig::BRIG_SEGMENT_READONLY) syntaxError("Allocation cannot be specified because readonly segment variables have implicit agent allocation");
+        if (segment == Brig::BRIG_SEGMENT_READONLY) 
+            syntaxError("Allocation cannot be specified because readonly "
+                        "segment variables have implicit agent allocation");
         sym.allocation() = allocKind.value();
-    } else if (segment == Brig::BRIG_SEGMENT_GLOBAL) {
-        sym.allocation() = Brig::BRIG_ALLOCATION_PROGRAM;
-    } else if (segment == Brig::BRIG_SEGMENT_READONLY) {
-        sym.allocation() = Brig::BRIG_ALLOCATION_AGENT;
-    } else {
-        sym.allocation() = Brig::BRIG_ALLOCATION_AUTOMATIC;
     }
 
     sym.dim() = 0;

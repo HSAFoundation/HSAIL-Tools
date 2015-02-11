@@ -259,6 +259,8 @@ private:
     std::string align2str(unsigned val) const;
     std::string equiv2str(unsigned val) const;
     std::string modifiers2str(AluModifier mod) const;
+    std::string registerKind2str(unsigned kind) const;
+    std::string controlDirective2str(unsigned val) const;
 
     bool hasType(Inst i) const;
 

@@ -983,7 +983,7 @@ void Disassembler::printOperandString(OperandString opr) const
 void Disassembler::printOperandReg(OperandReg opr) const
 {
     assert(opr);
-    const char* regKind = registerKind2str(opr.regKind());
+    string regKind = registerKind2str(opr.regKind());
     int regNum = opr.regNum();
     print(regKind, regNum);
 }
@@ -1085,7 +1085,7 @@ const char* Disassembler::machineModel2str(unsigned model) const
     {
     case Brig::BRIG_MACHINE_LARGE: return "$large";
     case Brig::BRIG_MACHINE_SMALL: return "$small";
-    default:               return invalid("Machine", model);
+    default:               return invalid("MachineModel", model);
     }
 }
 
@@ -1147,26 +1147,26 @@ const char* Disassembler::imageGeometry2str(unsigned g) const
 {
     const char* result=HSAIL_ASM::imageGeometry2str(g);
     if (result != NULL) return result;
-    else return invalid("Geom", g);
+    else return invalid("ImageGeom", g);
 }
 
 const char* Disassembler::samplerCoordNormalization2str(unsigned val) const
 {
     const char* result=HSAIL_ASM::samplerCoordNormalization2str(val);
     if (result != NULL) return result;
-    else return invalid("Coord", val);
+    else return invalid("SamplerCoord", val);
 }
 const char* Disassembler::samplerFilter2str(unsigned val) const
 {
     const char* result=HSAIL_ASM::samplerFilter2str(val);
     if (result != NULL) return result;
-    else return invalid("Filter", val);
+    else return invalid("SamplerFilter", val);
 }
 const char* Disassembler::samplerAddressing2str(unsigned val) const
 {
     const char* result=HSAIL_ASM::samplerAddressing2str(val);
     if (result != NULL) return result;
-    else return invalid("Addressing", val);
+    else return invalid("SamplerAddressing", val);
 }
 
 const char* Disassembler::samplerQuery2str(unsigned g) const
@@ -1223,7 +1223,7 @@ const char* Disassembler::round2str(unsigned val) const
     const char *result = HSAIL_ASM::round2str(val);
     if (result != NULL) return result;
     else if (val == Brig::BRIG_ROUND_NONE) return "";
-    else return invalid("round aluModifiers", val);
+    else return invalid("Rounding", val);
 }
 
 string Disassembler::modifiers2str(AluModifier mod) const
@@ -1231,6 +1231,20 @@ string Disassembler::modifiers2str(AluModifier mod) const
     ostringstream s;
     if (mod.ftz()) s << "_ftz";
     return s.str().c_str();
+}
+
+string Disassembler::registerKind2str(unsigned val) const
+{
+    const char *result = HSAIL_ASM::registerKind2str(val);
+    if (result != NULL) return result;
+    else return invalid("RegisterKind", val);
+}
+
+string Disassembler::controlDirective2str(unsigned val) const
+{
+    const char *result = HSAIL_ASM::controlDirective2str(val);
+    if (result != NULL) return result;
+    else return invalid("ControlDirective", val);
 }
 
 const char* Disassembler::v2str(Operand opr) const
@@ -1298,7 +1312,7 @@ string Disassembler::attr2str_(Brig::BrigLinkage8_t attr) const
     {
         if (attr == Brig::BRIG_LINKAGE_PROGRAM) s << "prog ";
     }
-    else s << invalid("Attribute", attr) << " ";
+    else s << invalid("Linkage", attr) << " ";
     return s.str();
 }
 

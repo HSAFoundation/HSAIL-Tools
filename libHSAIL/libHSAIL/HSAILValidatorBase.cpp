@@ -66,28 +66,6 @@ namespace HSAIL_ASM {
 
 //============================================================================
 
-bool PropValidator::isImage(Operand opr, unsigned type)
-{
-    using namespace Brig;
-
-    if (OperandAddress addr = opr)
-    {
-        DirectiveVariable var = addr.symbol();
-        return var && (var.type() == BRIG_TYPE_ROIMG || var.type() == BRIG_TYPE_RWIMG || var.type() == BRIG_TYPE_WOIMG);
-    }
-    return false;
-}
-
-bool PropValidator::isSampler(Operand opr)
-{
-    if (OperandAddress addr = opr)
-    {
-        DirectiveVariable var = addr.symbol();
-        return var && var.type() == Brig::BRIG_TYPE_SAMP;
-    }
-    return false;
-}
-
 bool PropValidator::isVector(Operand opr, unsigned size)
 {
     if (OperandOperandList list = opr)
@@ -183,11 +161,6 @@ const char* PropValidator::operand2str(unsigned valId)
     case OPERAND_VAL_CALLTAB:   return "a list of functions";
     case OPERAND_VAL_SIGNATURE: return "a signature";
     case OPERAND_VAL_FBARRIER:  return "an fbarrier";
-
-    case OPERAND_VAL_ROIMAGE:   return "a read-only image";
-    case OPERAND_VAL_WOIMAGE:   return "a write-only image";
-    case OPERAND_VAL_RWIMAGE:   return "a read-write image";
-    case OPERAND_VAL_SAMPLER:   return "a sampler";
 
     case OPERAND_VAL_IMM0T2:    return "a 32-bit immediate with value 0, 1 or 2";
     case OPERAND_VAL_IMM0T3:    return "a 32-bit immediate with value 0, 1, 2 or 3";
@@ -439,12 +412,6 @@ bool PropValidator::validateTypeSz(Inst inst, unsigned propVal, unsigned type, c
     {
     case TYPESIZE_VAL_SEG:
         if ((unsigned)getBrigTypeNumBits(type) == getSegAddrSize(HSAIL_ASM::getSegment(inst), isLargeModel())) return true;
-
-#if !ENABLE_ADDRESS_SIZE_CHECK
-        // This is a temporary workaround for lowering
-        if (isLargeModel() && getSegAddrSize(HSAIL_ASM::getSegment(inst), isLargeModel()) == 32 && getBrigTypeNumBits(type) == 64) return true;
-#endif
-
         if (isAssert) validate(inst, false, string(typeName) + " must match segment kind and machine model");
         break;
 
@@ -519,7 +486,8 @@ bool PropValidator::validateOperandAttr(Inst inst, unsigned operandIdx, unsigned
 
 // 1) address size must match _instruction_ segment size;
 // 2) if inst.segment=flat, address must be flat
-// 3) if address includes a symbol, symbol.segment must be the same as instr.segment
+// 3) addresses in arg and spill segments must include a symbol
+// 4) if address includes a symbol, symbol.segment must be the same as instr.segment
 bool PropValidator::checkAddrSeg(Inst inst, unsigned operandIdx, bool isAssert)
 {
     assert(inst);
@@ -533,37 +501,40 @@ bool PropValidator::checkAddrSeg(Inst inst, unsigned operandIdx, bool isAssert)
         if (isAssert) validate(inst, operandIdx, false, "Address segment does not match instruction segment (expected flat address)");
         return false;
     }
+
     if (opr.symbol() && opr.symbol().segment() != HSAIL_ASM::getSegment(inst))
     {
         if (isAssert) validate(inst, operandIdx, false, "Address segment does not match instruction segment");
         return false;
     }
 
+    if (!opr.symbol() && !isAddressableSeg(HSAIL_ASM::getSegment(inst)))
+    {
+        if (isAssert) validate(inst, operandIdx, false, "Flat address cannot be used with arg and spill segments");
+        return false;
+    }
+
     unsigned addrSize = getAddrSize(opr, isLargeModel()); // 32 or 64; 0 if both are valid
     if (addrSize != 0 && addrSize != getSegAddrSize(HSAIL_ASM::getSegment(inst), isLargeModel()))
     {
-
-#if !ENABLE_ADDRESS_SIZE_CHECK
-        // This is a temporary workaround for lowering
-        if (isLargeModel() && getSegAddrSize(HSAIL_ASM::getSegment(inst), isLargeModel()) == 32 && addrSize == 64) return true;
-#endif
-
         if (isAssert) validate(inst, operandIdx, false, "Address size does not match instruction type");
         return false;
     }
     return true;
 }
 
-// 4) opaque symbols used in address must match instruction type
+// 1+2+3+4
+// 5) opaque symbols used in address must match instruction type
 bool PropValidator::checkAddrTSeg(Inst inst, unsigned operandIdx, bool isAssert)
 {
     assert(inst);
     assert(operandIdx <= 4);
 
+    if (!checkAddrSeg(inst, operandIdx, isAssert)) return false;
+
     OperandAddress opr = inst.operand(operandIdx);
     assert(opr);
 
-    if (!checkAddrSeg(inst, operandIdx, isAssert)) return false;
     if (!opr.symbol()) return true;
 
     unsigned type = inst.type();
@@ -635,11 +606,6 @@ bool PropValidator::checkOperandKind(Inst inst, unsigned operandIdx, unsigned* v
         case OPERAND_VAL_ARGLIST:   if (isArgList(opr))                                         return true; break;
         case OPERAND_VAL_CALLTAB:   if (isCallTab(opr))                                         return true; break;
         case OPERAND_VAL_JUMPTAB:   if (isJumpTab(opr))                                         return true; break;
-
-        case OPERAND_VAL_ROIMAGE:   if (isImage(opr, BRIG_TYPE_ROIMG))                          return true; break;
-        case OPERAND_VAL_WOIMAGE:   if (isImage(opr, BRIG_TYPE_WOIMG))                          return true; break;
-        case OPERAND_VAL_RWIMAGE:   if (isImage(opr, BRIG_TYPE_RWIMG))                          return true; break;
-        case OPERAND_VAL_SAMPLER:   if (isSampler(opr))                                         return true; break;
 
         case OPERAND_VAL_IMM:       if (isImm(opr) || OperandWavesize(opr))                     return true; break;
         case OPERAND_VAL_CNST:      if (isImm(opr))                                             return true; break;
@@ -963,26 +929,6 @@ bool PropValidator::validateOperandType(Inst inst, unsigned oprIdx, bool isDst, 
     {
         if (isAssert) operandError(inst, oprIdx, "must be a register or a vector");
         return false;
-    }
-
-    //F Remove as soon as possible - we won't need this block of code in the near future.
-    //F This code is as a temporary patch that allows using images and samplers with image-handling instructions.
-    //F In the future we do not need these checks as all relevant cases should be handled via addr.tseg
-    if (isOpaqueType(type))
-    {
-        OperandAddress addr = opr;
-        if (addr)
-        {
-            DirectiveVariable var = addr.symbol();
-            if (var && isOpaqueType(var.type())) return true;
-            if (isAssert) operandTypeError(inst, oprIdx, type);
-            return false;
-        }
-        else if (!OperandReg(opr)) // NB: regs are handled below
-        {
-            if (isAssert) operandError(inst, oprIdx, "must be a register or an opaque object ", getExpectedTypeName(type));
-            return false;
-        }
     }
 
     if (OperandReg(opr))

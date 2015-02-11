@@ -153,8 +153,6 @@ private:
     bool checkAddrSeg(Inst inst, unsigned operandIdx, bool isAssert);
     bool checkAddrTSeg(Inst inst, unsigned operandIdx, bool isAssert);
 
-    static bool isImage(Operand addr, unsigned type);
-    static bool isSampler(Operand addr);
     static bool isVector(Operand opr, unsigned size);
     static bool isArgList(Operand opr);
     static bool isCallTab(Operand opr);

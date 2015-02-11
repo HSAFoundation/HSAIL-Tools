@@ -1772,8 +1772,6 @@ private:
 
     void validateArgUse(Inst inst, DirectiveVariable sym, bool isInputArg) const
     {
-        if (isImageExtType(sym.type())) return; //F this is a temporary patch
-
         if (isInputArg) validate(inst, inst.opcode() == Brig::BRIG_OPCODE_LD, "Input arguments may only be accessed by ld operations");
         else            validate(inst, inst.opcode() == Brig::BRIG_OPCODE_ST, "Output argument may only be accessed by st operations");
     }
@@ -2132,17 +2130,49 @@ private:
         if (err) validate(inst, false, SRef(err));
     }
 
+    void validateMemAccess(Inst inst, unsigned oprAddrIdx, unsigned oprDataIdx) const
+    {
+        assert(inst);
+
+        OperandAddress addr =  inst.operand(oprAddrIdx);
+        OperandOperandList vector = inst.operand(oprDataIdx);
+        unsigned accessDim = vector? vector.elements().size() : 1;
+
+        assert(1 <= accessDim && accessDim <= 4);
+        assert(addr);
+
+        DirectiveVariable var = addr.symbol();
+
+        if (!var || addr.reg()) return;
+        if (var.modifier().isFlexArray()) return;
+        if (var.modifier().isArray() && var.dim() == 0) return;  // var is defined in another module
+        if (var.segment() == Brig::BRIG_SEGMENT_KERNARG) return; // kernarg is a special case
+
+        uint64_t memSize = getBrigTypeNumBytes(var.type()) * (var.modifier().isArray()? var.dim() : 1);
+
+        validate(addr, addr.offset() < memSize, "Address offset exceeds variable size");
+
+        validate(addr, addr.offset() + getBrigTypeNumBytes(inst.type()) * accessDim <= memSize, 
+                 "Address is outside of memory allocated for variable");
+    }
+
     void validateComplexInst(Inst i) const
     {
         // Validate that there is a kernel/function which uses this instruction
         validate(i, usedInst.count(i.brigOffset()) > 0, "Instruction does not belong to any kernel/function");
 
+        using namespace Brig;
         switch(i.opcode())
         {
-        case Brig::BRIG_OPCODE_CALL:  validateDirectCall(i); break;
-        case Brig::BRIG_OPCODE_SCALL: validateSwitchCall(i); break;
-        case Brig::BRIG_OPCODE_ICALL: validateIndirectCall(i); break;
-        case Brig::BRIG_OPCODE_MEMFENCE: validateMemFence(i); break;
+        case BRIG_OPCODE_CALL:        validateDirectCall(i); break;
+        case BRIG_OPCODE_SCALL:       validateSwitchCall(i); break;
+        case BRIG_OPCODE_ICALL:       validateIndirectCall(i); break;
+        case BRIG_OPCODE_MEMFENCE:    validateMemFence(i);     break;
+
+        case BRIG_OPCODE_ATOMIC:      validateMemAccess(i, 1, 0); break;
+        case BRIG_OPCODE_ATOMICNORET: validateMemAccess(i, 0, 1); break;
+        case BRIG_OPCODE_LD:          validateMemAccess(i, 1, 0); break;
+        case BRIG_OPCODE_ST:          validateMemAccess(i, 1, 0); break;
 
         default: break;
         }
@@ -2155,8 +2185,12 @@ private:
         // This is a low-level check to make sure that operand refers a DirectiveVariable
         if (addr.brig()->symbol) validate(addr, isDirectiveKind<DirectiveVariable>(addr.symbol()), "Invalid symbol reference");
 
-        // This is a low-level check to validate register name
-        if (addr.reg()) validateReg(addr, addr.reg());
+        if (addr.brig()->reg) 
+        {
+            // This is a low-level check to make sure that operand refers an OperandReg
+            validate(addr, isOperandKind<OperandReg>(addr.reg()), "Invalid register reference");
+            validateReg(addr, addr.reg());
+        }
 
         // Make sure all address elements specify the same size
         unsigned addrSize = getAddrSize(addr, isLargeModel()); // 32 or 64; 0 if both are valid
@@ -2164,15 +2198,12 @@ private:
 
         if (addr.symbol())
         {
-#if !ENABLE_ADDRESS_SIZE_CHECK
-            // This is a temporary workaround for lowering
-            if (!isLargeModel() || getSegAddrSize(addr.symbol().segment(), isLargeModel()) != 32 || addrSize == 32)
-#endif
             validate(addr, addrSize == getSegAddrSize(addr.symbol().segment(), isLargeModel()),
-                     "Malformed address: segment size does not match register or offset size");
+                     "Malformed address: segment size does not match register size");
         }
 
-        if (addr.reg()) validate(addr, addrSize == getRegBits(addr.reg().regKind()), "Malformed address: register size does not match segment or offset size");
+        if (addr.reg()) validate(addr, addrSize == getRegBits(addr.reg().regKind()), 
+                                 "Malformed address: register size does not match segment size");
     }
 
     unsigned validateReg(Operand opr, OperandReg reg) const
@@ -2180,7 +2211,6 @@ private:
         unsigned regNum = reg.regNum();
         unsigned regBits = getRegBits(reg.regKind());
         SRef invalidIndex = "Invalid register index";
-
         switch(regBits)
         {
         case  1:  validate(opr, regNum <= 7,   invalidIndex); break;
@@ -2201,10 +2231,8 @@ private:
         validateReg(r, r);
     }
 
-    template <class DirectiveName> bool isDirectiveKind(Code d) const
-    {
-        return DirectiveName(d);
-    }
+    template <class DirectiveKind> bool isDirectiveKind(Code d)  const { return DirectiveKind(d); }
+    template <class OperandKind>   bool isOperandKind(Operand d) const { return OperandKind(d); }
 
     void validateOperand(Operand opr)
     {

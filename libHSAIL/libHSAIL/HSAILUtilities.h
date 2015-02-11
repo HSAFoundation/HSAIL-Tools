@@ -148,6 +148,7 @@ bool     isCodeRef(OperandCodeRef cr, unsigned targetKind);
 
 unsigned getAddrSize(OperandAddress addr, bool isLargeModel);
 unsigned getSegAddrSize(unsigned segment, bool isLargeModel);
+bool     isAddressableSeg(unsigned segment);
 
 unsigned getRegKind(SRef opr);
 unsigned getRegSize(OperandReg reg);
