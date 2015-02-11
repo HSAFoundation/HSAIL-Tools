@@ -7267,7 +7267,7 @@ template<class T> bool InstValidator::req_gcn_frexp_mant(T inst)
 //      {type = u, s, f; ? d0 = reg, vector;}
 //      {type = b128; ? d0 = reg;}
 //      ;
-//      s1 = addr_tseg;
+//      s1 = addr_seg;
 //      s2 = null;
 //      s3 = null;
 //      s4 = null;
@@ -7307,7 +7307,7 @@ template<class T> bool InstValidator::req_gcn_ld(T inst)
     {
         invalidVariant(inst, PROP_TYPE);
     }
-    validateOperand(inst, PROP_S1, OPERAND_ATTR_TSEG, OPERAND_VALUES_ADDRSEG, sizeof(OPERAND_VALUES_ADDRSEG) / sizeof(unsigned));
+    validateOperand(inst, PROP_S1, OPERAND_ATTR_SEG, OPERAND_VALUES_ADDRSEG, sizeof(OPERAND_VALUES_ADDRSEG) / sizeof(unsigned));
     validateOperand(inst, PROP_S2, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned));
     validateOperand(inst, PROP_S3, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned));
     validateOperand(inst, PROP_S4, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned));
@@ -7534,7 +7534,7 @@ template<class T> bool InstValidator::req_gcn_slp_prt(T inst)
 //      const = none;
 //      eqclass = any;
 //      width = none;
-//      s1 = addr_tseg;
+//      s1 = addr_seg;
 //      s2 = null;
 //      s3 = null;
 //      s4 = null;
@@ -7560,7 +7560,7 @@ template<class T> bool InstValidator::req_gcn_st(T inst)
     if (!check_width_values_none(getWidth<T>(inst))) {
         brigPropError(inst, PROP_WIDTH, getWidth<T>(inst), WIDTH_VALUES_NONE, sizeof(WIDTH_VALUES_NONE) / sizeof(unsigned));
     }
-    validateOperand(inst, PROP_S1, OPERAND_ATTR_TSEG, OPERAND_VALUES_ADDRSEG, sizeof(OPERAND_VALUES_ADDRSEG) / sizeof(unsigned));
+    validateOperand(inst, PROP_S1, OPERAND_ATTR_SEG, OPERAND_VALUES_ADDRSEG, sizeof(OPERAND_VALUES_ADDRSEG) / sizeof(unsigned));
     validateOperand(inst, PROP_S2, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned));
     validateOperand(inst, PROP_S3, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned));
     validateOperand(inst, PROP_S4, OPERAND_ATTR_NONE, OPERAND_VALUES_NULL, sizeof(OPERAND_VALUES_NULL) / sizeof(unsigned));
@@ -11435,7 +11435,7 @@ unsigned InstValidator::getOperand1Attr(Inst inst)
         case (Brig::BRIG_OPCODE_GCNFLDEXP): return OPERAND_ATTR_DTYPE;
         case (Brig::BRIG_OPCODE_GCNFREXP_EXP): return OPERAND_ATTR_DTYPE;
         case (Brig::BRIG_OPCODE_GCNFREXP_MANT): return OPERAND_ATTR_DTYPE;
-        case (Brig::BRIG_OPCODE_GCNLD): return OPERAND_ATTR_TSEG;
+        case (Brig::BRIG_OPCODE_GCNLD): return OPERAND_ATTR_SEG;
         case (Brig::BRIG_OPCODE_GCNMADS): return OPERAND_ATTR_S32;
         case (Brig::BRIG_OPCODE_GCNMADU): return OPERAND_ATTR_U32;
         case (Brig::BRIG_OPCODE_GCNMAX): return OPERAND_ATTR_DTYPE;
@@ -11452,7 +11452,7 @@ unsigned InstValidator::getOperand1Attr(Inst inst)
         case (Brig::BRIG_OPCODE_GCNSADD): return OPERAND_ATTR_DTYPE;
         case (Brig::BRIG_OPCODE_GCNSADW): return OPERAND_ATTR_DTYPE;
         case (Brig::BRIG_OPCODE_GCNSLEEP): return OPERAND_ATTR_NONE;
-        case (Brig::BRIG_OPCODE_GCNST): return OPERAND_ATTR_TSEG;
+        case (Brig::BRIG_OPCODE_GCNST): return OPERAND_ATTR_SEG;
         case (Brig::BRIG_OPCODE_GCNTRIG_PREOP): return OPERAND_ATTR_DTYPE;
         case (Brig::BRIG_OPCODE_GETDETECTEXCEPT): return OPERAND_ATTR_NONE;
         case (Brig::BRIG_OPCODE_GRIDGROUPS): return OPERAND_ATTR_U32;
