@@ -4,7 +4,7 @@ BrigDwarfGenerator.cpp	                      hsa_dwarf.h
 BrigDwarfGenerator.h	SectionHeaderTable.h
 )
 
-add_dependencies(libbrigdwarf libhsail)
+add_dependencies(libbrigdwarf ${libhsailname})
 
 include_directories(${CMAKE_SOURCE_DIR}/libHSAIL)
 include_directories(${CMAKE_SOURCE_DIR}/libHSAIL/generated)

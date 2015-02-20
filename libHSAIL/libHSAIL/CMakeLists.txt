@@ -1,5 +1,5 @@
 add_library(
-libhsail
+${libhsailname}
 Brig.h			 HSAILFloats.cpp	 HSAILUtilities.h
 Brig_new.hpp		 HSAILFloats.h		 HSAILValidator.cpp
 CMakeLists.txt		 HSAILInstProps.h	 HSAILValidator.h
@@ -22,11 +22,11 @@ add_custom_target(libhsail-includes
   perl ${CMAKE_SOURCE_DIR}/libHSAIL/generate.pl ${CMAKE_SOURCE_DIR}/libHSAIL ${CMAKE_SOURCE_DIR}/libHSAIL/generated
 )
 
-add_dependencies(libhsail libhsail-includes)
+add_dependencies(${libhsailname} libhsail-includes)
 
 include_directories(${CMAKE_SOURCE_DIR}/libHSAIL)
 include_directories(${CMAKE_SOURCE_DIR}/libHSAIL/generated)
 
 if(UNIX)
-target_link_libraries(libhsail dl)
+target_link_libraries(${libhsailname} dl)
 endif()

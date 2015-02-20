@@ -2,11 +2,11 @@ add_executable(HSAILasm
   HSAILAsm.cpp
 )
 
-add_dependencies(HSAILasm libhsail)
+add_dependencies(HSAILasm ${libhsailname})
 
 include_directories(${CMAKE_SOURCE_DIR}/libHSAIL)
 include_directories(${CMAKE_SOURCE_DIR}/libHSAIL/generated)
-target_link_libraries(HSAILasm libhsail)
+target_link_libraries(HSAILasm ${libhsailname})
 
 if(BUILD_LIBBRIGDWARF)
 add_dependencies(HSAILasm libbrigdwarf)
