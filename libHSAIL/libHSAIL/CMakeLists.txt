@@ -1,32 +1,59 @@
-add_library(
-libhsail
-Brig.h			 HSAILFloats.cpp	 HSAILUtilities.h
-Brig_new.hpp		 HSAILFloats.h		 HSAILValidator.cpp
-CMakeLists.txt		 HSAILInstProps.h	 HSAILValidator.h
-                         HSAILItemBase.h	 HSAILValidatorBase.cpp
-HSAILBrigContainer.cpp	 HSAILItems.cpp		 HSAILValidatorBase.h
-HSAILBrigContainer.h	 HSAILItems.h		 HSAILb128_t.h
-HSAILBrigInstr.hdl	 HSAILParser.cpp	 
-HSAILBrigObjectFile.cpp  HSAILParser.h		 
-HSAILBrigObjectFile.h	 HSAILSRef.h		 
-HSAILBrigantine.cpp	 HSAILScanner.cpp	 
-HSAILBrigantine.h	 HSAILScanner.h		 
-HSAILConvertors.h	 HSAILScannerRules.cpp	 hsail_c.cpp
-HSAILDisassembler.cpp	                         hsail_c.h
-HSAILDisassembler.h	 HSAILScope.h		 
-HSAILDump.cpp		 HSAILTypeUtilities.h
-HSAILDump.h		 HSAILUtilities.cpp
+
+find_package(Perl REQUIRED)
+
+add_library(hsail
+  Brig.h
+  Brig_new.hpp
+  HSAILb128_t.h
+  HSAILBrigantine.cpp
+  HSAILBrigantine.h
+  HSAILBrigContainer.cpp
+  HSAILBrigContainer.h
+  HSAILBrigInstr.hdl
+  HSAILBrigObjectFile.cpp
+  HSAILBrigObjectFile.h
+  hsail_c.cpp
+  hsail_c.h
+  HSAILConvertors.h
+  HSAILDisassembler.cpp
+  HSAILDisassembler.h
+  HSAILDump.cpp
+  HSAILDump.h
+  HSAILFloats.cpp
+  HSAILFloats.h
+  HSAILInstProps.h
+  HSAILItemBase.h
+  HSAILItems.cpp
+  HSAILItems.h
+  HSAILParser.cpp
+  HSAILParser.h
+  HSAILScanner.cpp
+  HSAILScanner.h
+  HSAILScannerRules.cpp
+  HSAILScope.h
+  HSAILSRef.h
+  HSAILTypeUtilities.h
+  HSAILUtilities.cpp
+  HSAILUtilities.h
+  HSAILValidatorBase.cpp
+  HSAILValidatorBase.h
+  HSAILValidator.cpp
+  HSAILValidator.h
 )
+
+set(generated_dir ${CMAKE_CURRENT_BINARY_DIR}/generated)
+
+include_directories(${CMAKE_CURRENT_SOURCE_DIR})
+include_directories(${generated_dir})
 
 add_custom_target(libhsail-includes
-  perl ${CMAKE_SOURCE_DIR}/libHSAIL/generate.pl ${CMAKE_SOURCE_DIR}/libHSAIL ${CMAKE_SOURCE_DIR}/libHSAIL/generated
+  ${PERL_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/generate.pl
+                     ${CMAKE_CURRENT_SOURCE_DIR}
+                     ${generated_dir}
 )
 
-add_dependencies(libhsail libhsail-includes)
-
-include_directories(${CMAKE_SOURCE_DIR}/libHSAIL)
-include_directories(${CMAKE_SOURCE_DIR}/libHSAIL/generated)
+add_dependencies(hsail libhsail-includes)
 
 if(UNIX)
-target_link_libraries(libhsail dl)
+  target_link_libraries(hsail dl)
 endif()
