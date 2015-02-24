@@ -1,7 +1,7 @@
 
 find_package(Perl REQUIRED)
 
-add_library(hsail
+set(libhsail_srcs
   Brig.h
   Brig_new.hpp
   HSAILb128_t.h
@@ -41,17 +41,47 @@ add_library(hsail
   HSAILValidator.h
 )
 
+set(generated_srcs
+  ${CMAKE_CURRENT_BINARY_DIR}/generated/HSAILBrigInstUtils_gen.hpp
+  ${CMAKE_CURRENT_BINARY_DIR}/generated/HSAILBrigPropsName_gen.hpp
+  ${CMAKE_CURRENT_BINARY_DIR}/generated/HSAILBrigValidation_gen.hpp
+  ${CMAKE_CURRENT_BINARY_DIR}/generated/HSAILItems_gen.hpp
+  ${CMAKE_CURRENT_BINARY_DIR}/generated/HSAILScannerRules_gen.re2c
+  ${CMAKE_CURRENT_BINARY_DIR}/generated/HSAILBrigPropsAcc_gen.hpp
+  ${CMAKE_CURRENT_BINARY_DIR}/generated/HSAILBrigPropsVisitor_gen.hpp
+  ${CMAKE_CURRENT_BINARY_DIR}/generated/HSAILInitBrig_gen.hpp
+  ${CMAKE_CURRENT_BINARY_DIR}/generated/HSAILItemUtils_gen.hpp
+  ${CMAKE_CURRENT_BINARY_DIR}/generated/HSAILScannerRules_gen_re2c.hpp
+  ${CMAKE_CURRENT_BINARY_DIR}/generated/HSAILBrigPropsFastAcc_gen.hpp
+  ${CMAKE_CURRENT_BINARY_DIR}/generated/HSAILBrigStaticChecks_gen.hpp
+  ${CMAKE_CURRENT_BINARY_DIR}/generated/HSAILInstValidation_gen.hpp
+  ${CMAKE_CURRENT_BINARY_DIR}/generated/HSAILParserUtilities_gen.hpp
+  ${CMAKE_CURRENT_BINARY_DIR}/generated/HSAILTemplateUtilities_gen.hpp
+  ${CMAKE_CURRENT_BINARY_DIR}/generated/HSAILBrigProps_gen.hpp
+  ${CMAKE_CURRENT_BINARY_DIR}/generated/HSAILBrigUtilities_gen.hpp
+  ${CMAKE_CURRENT_BINARY_DIR}/generated/HSAILItemImpls_gen.hpp
+  ${CMAKE_CURRENT_BINARY_DIR}/generated/HSAILPropAccessors_gen.hpp
+  ${CMAKE_CURRENT_BINARY_DIR}/generated/HSAILVisitItems_gen.hpp
+)
+
+
 set(generated_dir ${CMAKE_CURRENT_BINARY_DIR}/generated)
 
 include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 include_directories(${generated_dir})
 
-add_custom_target(libhsail-includes
-  ${PERL_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/generate.pl
-                     ${CMAKE_CURRENT_SOURCE_DIR}
-                     ${generated_dir}
+add_custom_command(
+  OUTPUT ${generated_srcs}
+  PRE_BUILD
+  COMMAND ${PERL_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/generate.pl
+                             ${CMAKE_CURRENT_SOURCE_DIR}
+                             ${generated_dir}
+  DEPENDS Brig_new.hpp
+  COMMENT "Generating libHSAIL sources"
 )
 
+add_custom_target(libhsail-includes ALL DEPENDS ${generated_srcs})
+add_library(hsail ${libhsail_srcs} ${generated_srcs})
 add_dependencies(hsail libhsail-includes)
 
 if(UNIX)

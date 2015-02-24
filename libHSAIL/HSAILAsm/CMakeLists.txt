@@ -1,6 +1,7 @@
 
-include_directories(${CMAKE_SOURCE_DIR}/libHSAIL)
-include_directories(${CMAKE_SOURCE_DIR}/libHSAIL/generated)
+include_directories(${PROJECT_SOURCE_DIR}/libHSAIL)
+include_directories(${PROJECT_BINARY_DIR}/libHSAIL/generated)
+
 include_directories(${LIBELF_INCLUDE_DIRS})
 include_directories(${LLVM_PATH}/include)
 
@@ -13,6 +14,7 @@ endif()
 
 add_executable(HSAILasm HSAILAsm.cpp)
 target_link_libraries(HSAILasm hsail)
+add_dependencies(HSAILasm libhsail-includes)
 
 # FIXME: We also need to get the link dependencies of the libLLVMSupport
 target_link_libraries(HSAILasm ${LLVMSupport})
