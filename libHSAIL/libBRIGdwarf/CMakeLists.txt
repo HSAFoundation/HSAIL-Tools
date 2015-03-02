@@ -1,4 +1,3 @@
-
 include_directories(${PROJECT_SOURCE_DIR}/libHSAIL)
 include_directories(${PROJECT_BINARY_DIR}/libHSAIL/generated)
 

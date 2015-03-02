@@ -1,4 +1,3 @@
-
 find_package(Perl REQUIRED)
 
 set(libhsail_srcs
@@ -41,31 +40,30 @@ set(libhsail_srcs
   HSAILValidator.h
 )
 
-set(generated_srcs
-  ${CMAKE_CURRENT_BINARY_DIR}/generated/HSAILBrigInstUtils_gen.hpp
-  ${CMAKE_CURRENT_BINARY_DIR}/generated/HSAILBrigPropsName_gen.hpp
-  ${CMAKE_CURRENT_BINARY_DIR}/generated/HSAILBrigValidation_gen.hpp
-  ${CMAKE_CURRENT_BINARY_DIR}/generated/HSAILItems_gen.hpp
-  ${CMAKE_CURRENT_BINARY_DIR}/generated/HSAILScannerRules_gen.re2c
-  ${CMAKE_CURRENT_BINARY_DIR}/generated/HSAILBrigPropsAcc_gen.hpp
-  ${CMAKE_CURRENT_BINARY_DIR}/generated/HSAILBrigPropsVisitor_gen.hpp
-  ${CMAKE_CURRENT_BINARY_DIR}/generated/HSAILInitBrig_gen.hpp
-  ${CMAKE_CURRENT_BINARY_DIR}/generated/HSAILItemUtils_gen.hpp
-  ${CMAKE_CURRENT_BINARY_DIR}/generated/HSAILScannerRules_gen_re2c.hpp
-  ${CMAKE_CURRENT_BINARY_DIR}/generated/HSAILBrigPropsFastAcc_gen.hpp
-  ${CMAKE_CURRENT_BINARY_DIR}/generated/HSAILBrigStaticChecks_gen.hpp
-  ${CMAKE_CURRENT_BINARY_DIR}/generated/HSAILInstValidation_gen.hpp
-  ${CMAKE_CURRENT_BINARY_DIR}/generated/HSAILParserUtilities_gen.hpp
-  ${CMAKE_CURRENT_BINARY_DIR}/generated/HSAILTemplateUtilities_gen.hpp
-  ${CMAKE_CURRENT_BINARY_DIR}/generated/HSAILBrigProps_gen.hpp
-  ${CMAKE_CURRENT_BINARY_DIR}/generated/HSAILBrigUtilities_gen.hpp
-  ${CMAKE_CURRENT_BINARY_DIR}/generated/HSAILItemImpls_gen.hpp
-  ${CMAKE_CURRENT_BINARY_DIR}/generated/HSAILPropAccessors_gen.hpp
-  ${CMAKE_CURRENT_BINARY_DIR}/generated/HSAILVisitItems_gen.hpp
-)
-
-
 set(generated_dir ${CMAKE_CURRENT_BINARY_DIR}/generated)
+
+set(generated_srcs
+  ${generated_dir}/HSAILBrigInstUtils_gen.hpp
+  ${generated_dir}/HSAILBrigPropsName_gen.hpp
+  ${generated_dir}/HSAILBrigValidation_gen.hpp
+  ${generated_dir}/HSAILItems_gen.hpp
+  ${generated_dir}/HSAILScannerRules_gen.re2c
+  ${generated_dir}/HSAILBrigPropsAcc_gen.hpp
+  ${generated_dir}/HSAILBrigPropsVisitor_gen.hpp
+  ${generated_dir}/HSAILInitBrig_gen.hpp
+  ${generated_dir}/HSAILItemUtils_gen.hpp
+  ${generated_dir}/HSAILScannerRules_gen_re2c.hpp
+  ${generated_dir}/HSAILBrigPropsFastAcc_gen.hpp
+  ${generated_dir}/HSAILBrigStaticChecks_gen.hpp
+  ${generated_dir}/HSAILInstValidation_gen.hpp
+  ${generated_dir}/HSAILParserUtilities_gen.hpp
+  ${generated_dir}/HSAILTemplateUtilities_gen.hpp
+  ${generated_dir}/HSAILBrigProps_gen.hpp
+  ${generated_dir}/HSAILBrigUtilities_gen.hpp
+  ${generated_dir}/HSAILItemImpls_gen.hpp
+  ${generated_dir}/HSAILPropAccessors_gen.hpp
+  ${generated_dir}/HSAILVisitItems_gen.hpp
+)
 
 include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 include_directories(${generated_dir})

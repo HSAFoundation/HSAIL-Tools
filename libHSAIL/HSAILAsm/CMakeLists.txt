@@ -1,4 +1,3 @@
-
 include_directories(${PROJECT_SOURCE_DIR}/libHSAIL)
 include_directories(${PROJECT_BINARY_DIR}/libHSAIL/generated)
 
@@ -10,7 +9,6 @@ if(UNIX)
 else()
   include_directories(${LLVM_PATH}/win32/include)
 endif()
-
 
 add_executable(HSAILasm HSAILAsm.cpp)
 target_link_libraries(HSAILasm hsail)
