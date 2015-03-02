@@ -187,7 +187,7 @@ Inst parseMnemoBasicOrMod(Scanner& scanner, Brigantine& bw, int*) {
         inst.type() = type;
 
         // NB: getDefRounding must be called after all other fields are initialized
-        inst.modifier().round() = round.isInitialized() ? round.value() : getDefRounding(inst, bw.getMachineModel(), bw.getProfile());
+        inst.round() = round.isInitialized() ? round.value() : getDefRounding(inst, bw.getMachineModel(), bw.getProfile());
 
         return inst;
     } else {
@@ -237,7 +237,7 @@ Inst parseMnemoAddr(Scanner& scanner, Brigantine& bw, int*) {
     InstAddr inst = bw.addInst<InstAddr>(opCode);
     inst.segment() = segment.isInitialized() ?
         segment.value() :
-        isGcnInst(inst.opcode())? Brig::BRIG_SEGMENT_EXTSPACE0 : Brig::BRIG_SEGMENT_FLAT;
+        isGcnInst(inst.opcode())? Brig::BRIG_SEGMENT_AMD_GCN : Brig::BRIG_SEGMENT_FLAT;
     inst.type() = type;
     return inst;
 }
@@ -348,7 +348,7 @@ Inst parseMnemoCvt(Scanner& scanner, Brigantine& bw, int*) {
     inst.modifier().ftz()   = ftz.isInitialized();
 
     // NB: getDefRounding must be called after all other fields are initialized
-    inst.modifier().round() = round.isInitialized() ? round.value() : getDefRounding(inst, bw.getMachineModel(), bw.getProfile());
+    inst.round() = round.isInitialized() ? round.value() : getDefRounding(inst, bw.getMachineModel(), bw.getProfile());
 
     return inst;
 }
@@ -376,30 +376,16 @@ Inst parseMnemoAtomic(Scanner& scanner, Brigantine& bw, int*) {
 Inst parseMnemoMemFence(Scanner& scanner, Brigantine& bw, int*) {
     unsigned  const opCode      = scanner.eatToken(EInstruction);
     unsigned  const memoryOrder = scanner.eatToken(EMMemoryOrder);
-    int segmentScopes[Brig::BRIG_MEMORY_FENCE_SEGMENT_LAST] = {
-        Brig::BRIG_MEMORY_SCOPE_NONE,
-        Brig::BRIG_MEMORY_SCOPE_NONE,
-        Brig::BRIG_MEMORY_SCOPE_NONE };
-    for(int i=0; i<3; ++i) {
-        if (scanner.tryEatToken(EMMemoryFenceSegments)) {
-            unsigned const segment = scanner.token().brigId();
-            assert(segment < Brig::BRIG_MEMORY_FENCE_SEGMENT_LAST);
-            if (segmentScopes[segment] == Brig::BRIG_MEMORY_SCOPE_NONE) {
-                scanner.eatToken(ELParen);
-                segmentScopes[segment] = scanner.eatToken(EMemoryScope);
-                scanner.eatToken(ERParen);
-            }
-        }
-    }
+    unsigned  const memoryScope = scanner.eatToken(EMMemoryScope);
     scanner.eatToken(EMNone);
     // parse done
 
     InstMemFence inst = bw.addInst<InstMemFence>(opCode,Brig::BRIG_TYPE_NONE);
 
     inst.memoryOrder()              = memoryOrder;
-    inst.globalSegmentMemoryScope() = segmentScopes[Brig::BRIG_MEMORY_FENCE_SEGMENT_GLOBAL];
-    inst.groupSegmentMemoryScope()  = segmentScopes[Brig::BRIG_MEMORY_FENCE_SEGMENT_GROUP];
-    inst.imageSegmentMemoryScope()  = segmentScopes[Brig::BRIG_MEMORY_FENCE_SEGMENT_IMAGE];
+    inst.globalSegmentMemoryScope() = memoryScope;
+    inst.groupSegmentMemoryScope()  = memoryScope;
+    inst.imageSegmentMemoryScope()  = Brig::BRIG_MEMORY_SCOPE_NONE;
     return inst;
 }
 
@@ -594,12 +580,17 @@ void Parser::parseProgram()
 }
 
 
-void Parser::parseVersion()
+void Parser::parseModule()
 {
     PDBG;
 
-    eatToken(EKWVersion);
+    eatToken(EKWModule);
+    eatToken(EIDStatic);
+
     SourceInfo const srcInfo = sourceInfo(token());
+    SRef const name = token().text();
+
+    eatToken(EColon);
     uint64_t const major = m_scanner.readIntLiteral();
     eatToken(EColon);
     uint64_t const minor = m_scanner.readIntLiteral();
@@ -607,12 +598,14 @@ void Parser::parseVersion()
     unsigned const profile = eatToken(ETargetProfile);
     eatToken(EColon);
     unsigned const machineModel = eatToken(ETargetMachine);
+    eatToken(EColon);
+    unsigned const defaultRound = eatToken(EDefaultRound);
     eatToken(ESemi);
 
     if (major > 0xFFFFFFFF) syntaxError("Invalid major version number");
     if (minor > 0xFFFFFFFF) syntaxError("Invalid minor version number");
 
-    m_bw.version((uint32_t)major,(uint32_t)minor,machineModel,profile,&srcInfo);
+    m_bw.module(name, (uint32_t)major,(uint32_t)minor,machineModel,profile,defaultRound,&srcInfo);
 }
 
 inline static bool isVariableStart(ETokens t)
@@ -646,7 +639,7 @@ void Parser::parseTopLevelStatement()
     switch (peek().kind()) {
     case ESLComment:      parseSLComment();break;
     case EMLCommentStart: parseMLComment(); break;
-    case EKWVersion:      parseVersion();break;
+    case EKWModule:       parseModule();break;
     case EKWExtension:    parseExtension();break;
     case EKWPragma:       parsePragma();break;
     case EControl:        parseControl();break;
@@ -768,35 +761,76 @@ void Parser::parseLabel()
     m_bw.addLabel(name,&srcInfo);
 }
 
-OperandOperandList Parser::parseOpaqueInitializer(Brig::BrigType16_t type, unsigned expectedSize)
-{
-    SourceInfo const srcInfo = sourceInfo(peek());
-    ItemList list;
-    do {
-        if (expectedSize > 0 && list.size() > expectedSize) {
-            syntaxError("element count exceeds specified");
-        }
-        list.push_back(
-            (type == Brig::BRIG_TYPE_SAMP)
-            ? parseSamplerProperties()
-            : parseImageProperties(type));
-    } while (tryEatToken(EComma));
+Operand Parser::parseOpaqueObject() {
+    assert(peek().kind() == EKWImage || peek().kind() == EKWSampler);
 
-    return m_bw.createOperandList(list, &srcInfo);
+    SourceInfo const srcInfo = sourceInfo(peek());
+    unsigned const initType = eatToken(peek().kind() == EKWImage? EKWImage : EKWSampler);
+
+    if (peek().kind() == ELBrace) {
+        ItemList list;
+        parseOpaqueArray(list, initType);
+        return m_bw.createConstantOperandList(list, initType, &srcInfo);
+    } else if (initType == Brig::BRIG_TYPE_SAMP) {
+        return parseSamplerProperties();
+    } else {
+        return parseImageProperties(initType);
+    } 
 }
 
-Operand Parser::parseImageProperties(Brig::BrigType16_t type)
+void Parser::parseAndUnfoldOpaqueObject(ItemList& list) {
+    assert(peek().kind() == EKWImage || peek().kind() == EKWSampler);
+
+    SourceInfo const srcInfo = sourceInfo(peek());
+    unsigned const initType = eatToken(peek().kind() == EKWImage? EKWImage : EKWSampler);
+
+    if (peek().kind() == ELBrace) {
+        parseOpaqueArray(list, initType);
+    } else if (initType == Brig::BRIG_TYPE_SAMP) {
+        list.push_back(parseSamplerProperties());
+    } else {
+        list.push_back(parseImageProperties(initType));
+    } 
+}
+
+void Parser::parseOpaqueArray(ItemList& list, unsigned expectedType)
 {
-    switch(type) {
-    case Brig::BRIG_TYPE_ROIMG: eatToken(EKWROImg); break;
-    case Brig::BRIG_TYPE_WOIMG: eatToken(EKWWOImg); break;
-    case Brig::BRIG_TYPE_RWIMG: eatToken(EKWRWImg); break;
-    default:
-        assert(0);
-    }
+    using namespace Brig;
+
+    eatToken(ELBrace);
+    eatToken(ERBrace);
+    eatToken(ELParen);
+
+    do {
+        unsigned const elementType = eatToken(expectedType == BRIG_TYPE_SAMP? EKWSampler : EKWImage);
+        if (elementType != expectedType) {
+            switch(expectedType)
+            {
+            case BRIG_TYPE_ROIMG: syntaxError("roimg constant expected");  break;
+            case BRIG_TYPE_RWIMG: syntaxError("rwimg constant expected"); break;
+            case BRIG_TYPE_WOIMG: syntaxError("woimg constant expected"); break;
+            case BRIG_TYPE_SAMP:  syntaxError("samp constant expected");          break;
+            default:
+                assert(false);
+                break;
+            }
+        }
+        Operand element = (elementType == BRIG_TYPE_SAMP) ?
+                          parseSamplerProperties() : 
+                          parseImageProperties(elementType);
+        list.push_back(element);
+    } while (tryEatToken(EComma));
+
+    eatToken(ERParen);
+}
+
+Operand Parser::parseImageProperties(unsigned type)
+{
     eatToken(ELParen);
     SourceInfo const srcInfo = sourceInfo(token());
-    OperandImageProperties props = m_bw.append<OperandImageProperties>(&srcInfo);
+    OperandConstantImage props = m_bw.append<OperandConstantImage>(&srcInfo);
+    props.type() = type;
+
     do {
         ETokens const t = scan().kind();
         SourceInfo const srcInfo = sourceInfo(token());
@@ -890,10 +924,11 @@ Operand Parser::parseImageProperties(Brig::BrigType16_t type)
 
 Operand Parser::parseSamplerProperties()
 {
-    eatToken(EKWSamp);
     eatToken(ELParen);
     SourceInfo const srcInfo = sourceInfo(token());
-    OperandSamplerProperties props = m_bw.append<OperandSamplerProperties>(&srcInfo);
+    OperandConstantSampler props = m_bw.append<OperandConstantSampler>(&srcInfo);
+    props.type() = Brig::BRIG_TYPE_SAMP;
+
     unsigned propMask = 0;
     do {
         ETokens const t = scan().kind();
@@ -1023,6 +1058,46 @@ void Parser::parseExecutable(ETokens kw, const ModuleStatementPrefix* modPfx)
     eatToken(ESemi);
 }
 
+Operand Parser::parseAggregateOperand()
+{
+    eatToken(ELCurl);
+    SourceInfo const srcInfo = sourceInfo(token());
+    ItemList list;
+    do {
+        // TBD length excess
+        switch(peek().kind()) {
+        case EKWAlign: {
+            eatToken(EKWAlign);
+            SourceInfo const srcInfo = sourceInfo(token());
+            unsigned const align = parseAlign(m_scanner);
+            OperandAlign oa = m_bw.append<OperandAlign>();
+            oa.annotate(srcInfo);
+            oa.align() = align;
+            list.push_back(oa);
+            break;
+        }
+        case EKWImage:
+        case EKWSampler:
+            parseAndUnfoldOpaqueObject(list);
+            break;
+        default: {
+            SourceInfo const srcInfo = sourceInfo(peek());
+            ArbitraryData values;
+            //F1.0: only typed constants may be used in aggregates; 
+            //F1.0: allow arrays in aggregates but unfold arrays of opaques
+            unsigned literalType = parseImmediate(&values, Brig::BRIG_TYPE_NONE, 0); //F1.0 how to avoid passing BRIG_TYPE_NONE?
+            list.push_back(
+               m_bw.createOperandConstantBytes(values.toSRef(),
+                                               arrayElementType(literalType), isArrayType(literalType),
+                                               &srcInfo));
+            break;
+        }
+        }
+    } while(tryEatToken(EComma));
+    eatToken(ERCurl);
+    return m_bw.createConstantOperandList(list, Brig::BRIG_TYPE_NONE, &srcInfo);
+}
+
 DirectiveVariable Parser::parseVariable(bool nameRequired /*=true*/, const ModuleStatementPrefix* modPfx)
 {
     OptionalU allocKind, align, hasConst;
@@ -1041,7 +1116,7 @@ DirectiveVariable Parser::parseVariable(bool nameRequired /*=true*/, const Modul
     // set position for signature args which have no name
     SourceInfo srcInfo = sourceInfo(token());
 
-    unsigned const dType = eatToken(EMType, "variable type");
+    unsigned const expectedType = eatToken(EMType, "variable type");
 
     SRef name;
     if (nameRequired) {
@@ -1058,18 +1133,18 @@ DirectiveVariable Parser::parseVariable(bool nameRequired /*=true*/, const Modul
     }
 
     DirectiveVariable sym;
-    switch(dType) {
+    switch(expectedType) {
     case Brig::BRIG_TYPE_ROIMG:
     case Brig::BRIG_TYPE_RWIMG:
     case Brig::BRIG_TYPE_WOIMG:
         sym = m_bw.addImage(name,segment,&srcInfo);
-        sym.type() = dType;
+        sym.type() = expectedType;
         break;
     case Brig::BRIG_TYPE_SAMP:
         sym = m_bw.addSampler(name,segment,&srcInfo);
         break;
     default:
-        sym = m_bw.addVariable(name,segment,dType,&srcInfo);
+        sym = m_bw.addVariable(name,segment,expectedType,&srcInfo);
     }
 
     if (align.isInitialized())
@@ -1088,12 +1163,12 @@ DirectiveVariable Parser::parseVariable(bool nameRequired /*=true*/, const Modul
         sym.allocation() = allocKind.value();
     }
 
-    sym.dim() = 0;
-    sym.modifier().isFlexArray() = false;
-
-    if (tryEatToken(ELBrace)) {
-        sym.modifier().isArray() = true;
-        if (peek().kind() != ERBrace) {
+    const bool isArray = tryEatToken(ELBrace);
+    bool isFlexArray = false;
+    if (isArray) {
+        sym.type() = elementType2arrayType(sym.type());
+        isFlexArray = peek().kind() == ERBrace;
+        if (!isFlexArray) {
             sym.dim() = m_scanner.readIntLiteral();
             if (sym.dim() == 0) syntaxError("Arrays must have dim > 0");
         }
@@ -1101,51 +1176,37 @@ DirectiveVariable Parser::parseVariable(bool nameRequired /*=true*/, const Modul
     }
 
     if (tryEatToken(EEqual)) {
-        const bool isArray = sym.modifier().isArray();
-        if (isArray) {
-            eatToken(ELCurl);
-        }
-        switch(dType) {
-        case Brig::BRIG_TYPE_ROIMG:
-        case Brig::BRIG_TYPE_WOIMG:
-        case Brig::BRIG_TYPE_RWIMG:
-        case Brig::BRIG_TYPE_SAMP:
-            {
-                if (isArray) {
-                    OperandOperandList init = parseOpaqueInitializer(dType, static_cast<unsigned>(sym.dim()));
-                    if (isArray && sym.dim() == 0) {
-                        sym.dim() = init.elements().size();
-                    }
-                    sym.init() = init;
-                } else if (dType == Brig::BRIG_TYPE_SAMP) {
-                    sym.init() = parseSamplerProperties();
-                } else {
-                    sym.init() = parseImageProperties(dType);
-                }
-            } break;
-        default:
-            {
-                Directive res;
-                SourceInfo const srcInfo = sourceInfo(peek());
-                ArbitraryData values;
-                unsigned dim = 0;
-                do {
-                    if (sym.dim() > 0 && dim >= sym.dim()) {
-                        m_scanner.syntaxError("initializer size must not exceed array size", m_scanner.peek().srcLoc());
-                    }
-                    parseImmediate(&values, dType, values.numBytes());
-                    ++dim;
-                } while(m_scanner.tryEatToken(EComma));
-                sym.init() = m_bw.createOperandData(values.toSRef(), &srcInfo);
-                if (isArray && sym.dim() == 0) {
-                    sym.dim() = dim;
-                }
+        
+        uint64_t dim;
+
+        if (peek().kind() == EKWImage || peek().kind() == EKWSampler) {
+            sym.init() = parseOpaqueObject();
+            OperandConstantOperandList list = sym.init();
+            dim = list ? list.elements().size() : 1;
+        } else if (peek().kind() == ELCurl) { // this is an aggregate
+            sym.init() = parseAggregateOperand();
+            dim = getAggregateNumBytes(sym.init()) / getBrigTypeNumBytes(sym.elementType());
+        } else {
+            SourceInfo const srcInfo = sourceInfo(peek());
+            ArbitraryData values;
+
+            unsigned literalType = parseImmediate(&values, expectedType, 0);
+
+            if (isBitType(expectedType) && !isArrayType(literalType) && 
+                getBrigTypeNumBytes(expectedType) == getBrigTypeNumBytes(literalType)) {
+                literalType = bitType2uType(expectedType);
             }
+
+            sym.init() = m_bw.createOperandConstantBytes(values.toSRef(), 
+                                                            arrayElementType(literalType), 
+                                                            isArrayType(literalType), 
+                                                            &srcInfo);
+            dim = values.numBytes() / getBrigTypeNumBytes(expectedType);
         }
-        if (isArray) {
-            eatToken(ERCurl);
-        }
+
+        if (isFlexArray) sym.dim() = dim;
     }
+
     sym.modifier().isDefinition() = !(modPfx && modPfx->decl.isInitialized());
     return sym;
 }
@@ -1350,13 +1411,17 @@ Operand Parser::parseOperandGeneric(Inst inst, unsigned opndIdx)
     return parseOperandGeneric(getOperandType(inst, opndIdx, m_bw.getMachineModel(), m_bw.getProfile()));
 }
 
+//F1.0 Make this function really generic - parse all types of operands. Let clients (or validator) decide which operands are allowed
 Operand Parser::parseOperandGeneric(unsigned requiredType)
 {
     PDBG;
     Operand res;
+
+    assert(!isArrayType(requiredType));
+
     switch (peek().kind()) {
     case ELBrace:
-        res = parseOperandInBraces();
+        res = parseOperandInBraces(requiredType);
         break;
 
     case ELParen: // see mov instruction
@@ -1369,7 +1434,7 @@ Operand Parser::parseOperandGeneric(unsigned requiredType)
     case EF16Literal:
     case EF32Literal:
     case EF64Literal:
-    case EPackedLiteral:
+    case ETypedLiteral:
         res = parseConstantGeneric(requiredType);
         break;
 
@@ -1410,7 +1475,7 @@ OperandCodeRef Parser::parseOperandRef()
     return m_bw.createDirectiveRef(name,&srcInfo);
 }
 
-OperandReg Parser::parseOperandReg()
+OperandRegister Parser::parseOperandReg()
 {
     PDBG;
     eatToken(ERegister);
@@ -1428,7 +1493,7 @@ Operand Parser::parseOperandVector(unsigned requiredType)
     ItemList opnds;
     while (true) {
         Operand o = parseOperandGeneric(requiredType);
-        if (!isa<OperandReg>(o) && !isa<OperandData>(o) && !isa<OperandWavesize>(o)) {
+        if (!isa<OperandRegister>(o) && !isa<OperandConstantBytes>(o) && !isa<OperandWavesize>(o)) {
             syntaxError("register, wavesize or immediate constant value expected");
         }
         opnds.push_back(o);
@@ -1484,6 +1549,7 @@ template<typename R> void parseFloatImmediate(
         requiredType == Brig::BRIG_TYPE_NONE) { // Malformed instruction; type cannot be identified
         requiredType = brigType; // Use actual literal type and let validator handle errors
     }
+    assert(!isArrayType(requiredType));
 
     R value = (scanner.*scanFunc)(); // NB: error reporting must follow literal scanning to show correct position in scr code
 
@@ -1494,27 +1560,43 @@ template<typename R> void parseFloatImmediate(
     return;
 }
 
-void Parser::parseImmediate(ArbitraryData *data, unsigned requiredType, size_t pos)
+unsigned Parser::parseImmediate(ArbitraryData *data, unsigned requiredType, size_t pos)
 {
-    bool hasPlus = false, hasMinus = false;
-    if (tryEatToken(EPlus).isInitialized()) {
-        hasPlus = true;
-    } else if (tryEatToken(EMinus).isInitialized()) {
-        hasMinus = true;
+    assert(!isArrayType(requiredType));
+
+    ETokens tokenAhead = peek().kind();
+
+    SourceInfo signSI;
+    bool hasMinus = false;
+    if (tokenAhead == EPlus || tokenAhead == EMinus) {
+        hasMinus = tokenAhead == EMinus;
+        eatToken(tokenAhead);
+        signSI = sourceInfo(token());
+        tokenAhead = peek().kind();
     }
 
-    ETokens const tokenAhead = peek().kind();
-
     switch(tokenAhead) {
-    case EPackedLiteral:
+    case ETypedLiteral:
         {
-            if (hasPlus || hasMinus) {
-                syntaxError("Sign is not allowed with a packed literal");
+            unsigned const typeFromToken = eatToken(ETypedLiteral);
+
+            if (tryEatToken(ELBrace)) {
+                if (signSI.column >= 0) {
+                    syntaxError("Sign is not allowed before an array", &signSI);
+                }
+                eatToken(ERBrace);
+                eatToken(ELParen);
+                do {
+                    parseImmediate(data, typeFromToken, data->numBytes());
+                } while(tryEatToken(EComma));
+                eatToken(ERParen);
+                //F1.0 test with b1 type: should report error
+                return elementType2arrayType(typeFromToken);
             }
-            m_scanner.eatToken(EPackedLiteral);
-            SrcLoc   const        srcLoc = m_scanner.token().srcLoc();
-            unsigned const typeFromToken = m_scanner.token().brigId();
-            unsigned const foundTypeSize = getBrigTypeNumBits(typeFromToken);
+
+            if (signSI.column >= 0) {
+                syntaxError("Sign is not allowed before a typed literal", &signSI);
+            }
 
             if (requiredType == (unsigned)Brig::BRIG_TYPE_INVALID ||
                 requiredType == (unsigned)Brig::BRIG_TYPE_NONE) { // Malformed instruction; type cannot be identified
@@ -1522,25 +1604,28 @@ void Parser::parseImmediate(ArbitraryData *data, unsigned requiredType, size_t p
             }
 
             unsigned const requiredTypeSize = getBrigTypeNumBits(requiredType);
+            unsigned const foundTypeSize = getBrigTypeNumBits(typeFromToken);
 
-            if (isPackedType(requiredType)) {
-                // "Type and length rule"
-                if (typeFromToken != requiredType) {
-                    syntaxError("Packed literal type does not match expected type");
-                    return;
+            if (isPackedType(typeFromToken)) {
+                if (isPackedType(requiredType)) {
+                    // "Type and length rule"
+                    if (typeFromToken != requiredType) {
+                        syntaxError("Packed literal type does not match expected type");
+                        return typeFromToken;
+                    }
+                } else if (isBitType(requiredType)) {
+                    // "Length-only rule"
+                    if (requiredTypeSize != foundTypeSize) {
+                        syntaxError("Packed literal size does not match expected type size");
+                        return typeFromToken;
+                    }
+                } else { //F1.0: replace "literal" with "constant" to match PRM terminology
+                    syntaxError(std::string("Packed literal cannot initialize ") + typeX2str(requiredType));
+                    return typeFromToken;
                 }
-            } else if (isBitType(requiredType)) {
-                // "Length-only rule"
-                if (requiredTypeSize != foundTypeSize) {
-                    syntaxError("Packed literal size does not match expected type size");
-                    return;
-                }
-            } else {
-                syntaxError(std::string("Packed literal cannot initialize ") + typeX2str(requiredType));
-                return;
             }
 
-            m_scanner.eatToken(ELParen);
+            eatToken(ELParen);
             unsigned elementType = typeFromToken & Brig::BRIG_TYPE_BASE_MASK;
             unsigned elementBytes = getBrigTypeNumBytes(elementType);
             unsigned numPackElem = foundTypeSize / getBrigTypeNumBits(elementType);
@@ -1548,22 +1633,23 @@ void Parser::parseImmediate(ArbitraryData *data, unsigned requiredType, size_t p
 
             for(unsigned i = 0; i < numPackElem; ++i) {
                 if (i) {
-                    m_scanner.eatToken(EComma);
+                    eatToken(EComma);
                 }
                 parseImmediate(data, elementType, pos + (numPackElem - i - 1) * elementBytes);
             }
-            m_scanner.eatToken(ERParen);
-            return;
+            eatToken(ERParen);
+
+            return typeFromToken;
         }
     case EF16Literal:
         parseFloatImmediate(data, requiredType, pos, m_scanner, &Scanner::readF16Literal, hasMinus, "f16");
-        return;
+        return Brig::BRIG_TYPE_F16;
     case EF32Literal:
         parseFloatImmediate(data, requiredType, pos, m_scanner, &Scanner::readF32Literal, hasMinus, "f32");
-        return;
+        return Brig::BRIG_TYPE_F32;
     case EF64Literal:
         parseFloatImmediate(data, requiredType, pos, m_scanner, &Scanner::readF64Literal, hasMinus, "f64");
-        return;
+        return Brig::BRIG_TYPE_F64;
     case EIntLiteral:
         {
             uint64_t value = m_scanner.readIntLiteral(); // NB: error reporting must follow literal scanning to show correct position in scr code
@@ -1571,11 +1657,14 @@ void Parser::parseImmediate(ArbitraryData *data, unsigned requiredType, size_t p
             if (requiredType == (unsigned)Brig::BRIG_TYPE_INVALID ||
                 requiredType == (unsigned)Brig::BRIG_TYPE_NONE) { // Malformed instruction; type cannot be identified
                 requiredType = Brig::BRIG_TYPE_U64; // Use actual literal type and let validator handle errors
-            } else if (isFloatType(requiredType) || getBrigTypeNumBits(requiredType) > 64) {
+            } else if (isPackedType(requiredType) || 
+                       isFloatType(requiredType)  || 
+                       getBrigTypeNumBits(requiredType) > 64) {
                 syntaxError(std::string("Integer literal cannot initialize ") + typeX2str(requiredType));
             }
 
             if (hasMinus) { value = (uint64_t) -(int64_t)value; }
+
             switch(requiredType) {
             case Brig::BRIG_TYPE_B1:
                 value = value ? 1 : 0;
@@ -1590,21 +1679,36 @@ void Parser::parseImmediate(ArbitraryData *data, unsigned requiredType, size_t p
                 break;
             }
             data->write(&value, getBrigTypeNumBytes(requiredType), pos);
-            return;
+
+            return isSignedType(requiredType)? requiredType : 
+                   isBitType(requiredType)?    bitType2uType(requiredType) :
+                                               getUnsignedType(getBrigTypeNumBits(requiredType));
         }
     default:
         eatToken(tokenAhead); // set error position
-        syntaxError("Immediate value expected");
+        syntaxError("Constant value expected");
+        return Brig::BRIG_TYPE_NONE;
     }
 }
 
 Operand Parser::parseConstantGeneric(unsigned requiredType)
 {
     PDBG;
+    assert(!isArrayType(requiredType));
     SourceInfo const srcInfo = sourceInfo(peek());
     ArbitraryData data;
-    parseImmediate(&data, requiredType, 0);
-    return m_bw.createImmed(data.toSRef(), &srcInfo);
+    unsigned literalType = parseImmediate(&data, requiredType, 0);
+
+    if (isArrayType(literalType)) {
+        syntaxError("array typed constants are not allowed as operands");
+    }
+
+    if (isBitType(requiredType) && !isArrayType(literalType) && 
+        getBrigTypeNumBytes(requiredType) == getBrigTypeNumBytes(literalType)) {
+        literalType = bitType2uType(requiredType);
+    }
+
+    return m_bw.createImmed(data.toSRef(), literalType, &srcInfo);
 }
 
 void Parser::parseAddress(SRef& reg, int64_t& offset)
@@ -1640,7 +1744,7 @@ void Parser::parseAddress(SRef& reg, int64_t& offset)
     }
 }
 
-Operand Parser::parseOperandInBraces()
+Operand Parser::parseOperandInBraces(unsigned requiredType)
 {
     PDBG;
     eatToken(ELBrace);
@@ -1669,7 +1773,7 @@ Operand Parser::parseOperandInBraces()
         parseAddress(reg, offset);
         eatToken(ERBrace);
     }
-    return m_bw.createRef(name, reg, offset, &srcInfo);
+    return m_bw.createRef(name, reg, offset, requiredType == Brig::BRIG_TYPE_U32, &srcInfo);
 }
 
 
@@ -1684,13 +1788,48 @@ void Parser::parsePragma()
     SourceInfo const srcInfo = sourceInfo(token());
     ItemList list;
 
+    //F1.0 Try merging with parseOperandGeneric
+
     int i=0;
     do {
         Operand opr;
-        if (peek().kind() == EQuot) {
-            opr = m_bw.createOperandString(parseStringLiteral(m_scanner));
-        } else {
-            opr = parseOperandGeneric(Brig::BRIG_TYPE_U64);
+        switch (peek().kind()) 
+        {
+        case EQuot:    
+            opr = m_bw.createOperandString(parseStringLiteral(m_scanner)); 
+            break;
+        case EKWImage:
+        case EKWSampler:
+            opr = parseOpaqueObject();
+            break;
+        case EIDLocal:
+        case EIDStatic:
+            opr = parseOperandRef();
+            break;
+        case ELabel:
+            opr = parseLabelOperand();
+            break;
+        case ERegister:
+            opr = parseOperandReg();
+            break;
+        case ELCurl: // aggregate
+            opr = parseAggregateOperand();
+            break;
+        case EWaveSizeMacro: {
+                scan();
+                SourceInfo const oprSrcInfo = sourceInfo(token());
+                opr = m_bw.createWaveSz(&oprSrcInfo);
+            }
+            break;
+        default: {
+                ArbitraryData values;
+                SourceInfo const oprSrcInfo = sourceInfo(peek());
+                unsigned literalType = parseImmediate(&values, Brig::BRIG_TYPE_NONE, 0); //F1.0 how to avoid passing BRIG_TYPE_NONE?
+                opr = m_bw.createOperandConstantBytes(values.toSRef(),
+                                                      arrayElementType(literalType), isArrayType(literalType),
+                                                      &oprSrcInfo);
+            }
+            break;
         }
         list.push_back(opr);
     } while(tryEatToken(EComma));

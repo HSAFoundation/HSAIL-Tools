@@ -86,7 +86,7 @@ private:
     //SourceInfo tokenSourceInfo() const;
 
     void parseProgram();
-    void parseVersion();
+    void parseModule();
     void parseTopLevelStatement();
     Optional<uint16_t> tryParseFBar();
     //void parseSigArgs(Scanner& s,DirectiveSignatureArguments types, DirectiveSignatureArguments::ArgKind argKind);
@@ -96,11 +96,11 @@ private:
     void parseLabel();
     Inst parseInst();
 
-
-    OperandData                 parseVariableInitializer(Brig::BrigType16_t type, unsigned expectedSize);
-    OperandOperandList          parseOpaqueInitializer(Brig::BrigType16_t type, unsigned expectedSize);
-    Operand    parseImageProperties(Brig::BrigType16_t type);
+    Operand    parseOpaqueObject();
+    void       parseAndUnfoldOpaqueObject(ItemList& list);
+    Operand    parseImageProperties(unsigned type);
     Operand    parseSamplerProperties();
+    void       parseOpaqueArray(ItemList& list, unsigned expectedType);
 
 
     void parseExecutable(ETokens kw, const ModuleStatementPrefix* modPfx);
@@ -137,20 +137,21 @@ private:
 
     Operand parseOperandGeneric(unsigned requiredType);
 
+    Operand parseAggregateOperand();
     Operand parseOperandGeneric(Inst inst, unsigned opndIdx);
     Operand parseConstantGeneric(unsigned requiredType);
 
-    void parseImmediate(ArbitraryData *data, unsigned requiredType, size_t pos);
+    unsigned parseImmediate(ArbitraryData *data, unsigned requiredType, size_t pos);
 
     OperandCodeRef parseOperandRef();
-    OperandReg parseOperandReg();
+    OperandRegister parseOperandReg();
     Operand parseOperandVector(unsigned requiredType);
 
     Operand parseLabelOperand();
     OperandCodeRef parseFunctionRef();
     Operand parseSigRef();
 
-    Operand parseOperandInBraces();
+    Operand parseOperandInBraces(unsigned requiredType);
     Operand parseActualParamList();
 
     void parseAddress(SRef& reg, int64_t& offset);

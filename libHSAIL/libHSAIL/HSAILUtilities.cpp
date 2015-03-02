@@ -78,9 +78,20 @@ const char* validateProp(unsigned propId, unsigned val, unsigned* vals, unsigned
     }
     else if (propId == HSAIL_PROPS::PROP_ROUND)
     {
-        if (val == BRIG_ROUND_NONE && length == 1) return 0;
-        if (val == BRIG_ROUND_FLOAT_NEAR_EVEN || val == BRIG_ROUND_INTEGER_ZERO || val == BRIG_ROUND_INTEGER_ZERO_SAT) return 0;
-        return "Base profile only supports 'near', 'zeroi' and 'zeroi_sat' rounding modes";
+        switch (val)
+        {
+        case BRIG_ROUND_NONE:
+        case BRIG_ROUND_FLOAT_DEFAULT:
+        case BRIG_ROUND_INTEGER_ZERO:
+        case BRIG_ROUND_INTEGER_ZERO_SAT:
+        case BRIG_ROUND_INTEGER_SIGNALING_ZERO:
+        case BRIG_ROUND_INTEGER_SIGNALING_ZERO_SAT: return 0;
+        default:
+            if (isFloatRounding(val)) return "Base profile only supports default floating-point rounding mode";
+            if (isIntRounding(val))   return "Base profile only supports 'zeroi', 'zeroi_sat', 'szeroi' and 'szeroi_sat' integer rounding modes";
+            assert(false);
+            break;
+        }
     }
     return 0;
 }
@@ -137,7 +148,7 @@ bool hasImageExtProps(Inst inst)
         {
             if (DirectiveVariable var = addr.symbol())
             {
-                if (isImageExtType(var.type())) return true;
+                if (isImageExtType(var.elementType())) return true;
             }
         }
     }
@@ -163,15 +174,6 @@ SRef getName(Directive d)
 
     assert(false);
     return SRef();
-}
-
-unsigned getDataType(Directive d)
-{
-    assert(d);
-    if (DirectiveVariable sym  = d) return sym.type();
-
-    assert(false);
-    return Brig::BRIG_TYPE_NONE;
 }
 
 unsigned getSegment(Directive d)
@@ -221,6 +223,11 @@ DirectiveVariable getInputArg(DirectiveExecutable sbr, unsigned idx)
     return arg;
 }
 
+uint64_t getVariableNumBytes(DirectiveVariable var)
+{
+    return getBrigTypeNumBytes(arrayElementType(var.type())) * std::max((uint64_t) var.dim(), (uint64_t) 1);
+}
+
 unsigned getCtlDirOperandType(unsigned kind, unsigned idx)
 {
     using namespace Brig;
@@ -231,7 +238,6 @@ unsigned getCtlDirOperandType(unsigned kind, unsigned idx)
     case BRIG_CONTROL_ENABLEDETECTEXCEPTIONS:
     case BRIG_CONTROL_MAXDYNAMICGROUPSIZE:
     case BRIG_CONTROL_MAXFLATWORKGROUPSIZE:
-    case BRIG_CONTROL_REQUESTEDWORKGROUPSPERCU:
     case BRIG_CONTROL_REQUIREDDIM:
                                                     if (idx == 0) return BRIG_TYPE_U32;
                                                     break;
@@ -266,7 +272,6 @@ const char* validateCtlDirOperandBounds(unsigned kind, unsigned idx, uint64_t va
 
     case BRIG_CONTROL_MAXFLATGRIDSIZE:
     case BRIG_CONTROL_MAXFLATWORKGROUPSIZE:
-    case BRIG_CONTROL_REQUESTEDWORKGROUPSPERCU:
     case BRIG_CONTROL_REQUIREDGRIDSIZE:
     case BRIG_CONTROL_REQUIREDWORKGROUPSIZE:
         if (val == 0) return "Operand must be greater than 0";
@@ -301,7 +306,6 @@ bool allowCtlDirOperandWs(unsigned kind)
     case BRIG_CONTROL_ENABLEBREAKEXCEPTIONS:
     case BRIG_CONTROL_ENABLEDETECTEXCEPTIONS:
     case BRIG_CONTROL_MAXDYNAMICGROUPSIZE:
-    case BRIG_CONTROL_REQUESTEDWORKGROUPSPERCU:
     case BRIG_CONTROL_REQUIREDDIM:
     case BRIG_CONTROL_REQUIRENOPARTIALWORKGROUPS:
         return false;
@@ -398,20 +402,9 @@ unsigned getRegKind(SRef regName)
     }
 }
 
-unsigned getRegSize(OperandReg reg)
-{
-    using namespace Brig;
-    switch(reg.regKind())
-    {
-    case BRIG_REGISTER_CONTROL          : return 1;
-    case BRIG_REGISTER_SINGLE           : return 32;
-    case BRIG_REGISTER_DOUBLE           : return 64;
-    case BRIG_REGISTER_QUAD             : return 128;
-    default : return (unsigned)-1;
-    }
-}
+unsigned getRegSize(OperandRegister reg) { assert(reg); return getRegBits(reg.regKind()); }
 
-string getRegName(OperandReg reg)
+string getRegName(OperandRegister reg)
 {
     ostringstream s;
 
@@ -421,31 +414,69 @@ string getRegName(OperandReg reg)
     return s.str();
 }
 
-unsigned getImmSize(OperandData imm)
+unsigned getImmSize(OperandConstantBytes imm)
 {
     assert(imm);
-    SRef bytes = imm.data();
+    SRef bytes = imm.bytes();
     return (unsigned)(bytes.length() * 8);
 }
 
-bool isImmB1(OperandData imm)
+bool isImmB1(OperandConstantBytes imm)
 {
     assert(imm);
-    SRef bytes = imm.data();
+    SRef bytes = imm.bytes();
     return bytes.length() == 1 && (bytes[0] == 0 || bytes[0] == 1);
 }
 
-uint32_t getImmAsU32(OperandData opr, unsigned index)
+uint32_t getImmAsU32(OperandConstantBytes opr, unsigned index)
 {
     assert(opr);
-    SRef data = opr.data();
+    SRef data = opr.bytes();
     assert(data.length() >= 4 * index);
     return *(uint32_t*)(data.begin + sizeof(uint32_t) * index);
 }
 
-uint64_t getImmAsU64(OperandData opr)
+uint64_t getImmAsU64(OperandConstantBytes opr)
 {
     return getImmAsU32(opr) + ((uint64_t)getImmAsU32(opr, 1) << 32);
+}
+
+uint64_t getAggregateNumBytes(OperandConstantOperandList opr)
+{
+    assert(opr);
+    assert(opr.type() == Brig::BRIG_TYPE_NONE);
+
+    unsigned numBytes = 0;
+    unsigned size = opr.elements().size();
+
+    for (unsigned i = 0; i < size; ++i)
+    {
+        Operand elem = opr.elements()[i];
+
+        if (OperandConstantBytes cnst = elem)
+        {
+            numBytes += getImmSize(cnst) / 8;
+        }
+        else if (OperandConstantImage img = elem)
+        {
+            numBytes += getBrigTypeNumBytes(img.type());
+        }
+        else if (OperandConstantSampler samp = elem)
+        {
+            numBytes += getBrigTypeNumBytes(samp.type());
+        }
+        else if (OperandAlign alignReq = elem)
+        {
+            unsigned align = align2num(alignReq.align());
+            numBytes += (numBytes % align == 0)? 0 : (align - numBytes % align);
+        }
+        else
+        {
+            assert(false);
+        }
+    }
+
+    return numBytes;
 }
 
 unsigned getAddrSize(OperandAddress addr, bool isLargeModel)
@@ -454,9 +485,6 @@ unsigned getAddrSize(OperandAddress addr, bool isLargeModel)
 
     if (addr.reg())    return getRegBits(addr.reg().regKind());
     if (addr.symbol()) return getSegAddrSize(addr.symbol().segment(), isLargeModel);
-
-    // currently there are no limitations on offset size, even for small model and 32-bit addresses
-    // if (addr.offset().hi() != 0) return 64;
 
     return 0; // unknown, both 32 and 64 are possible
 }
@@ -625,6 +653,32 @@ bool isImageType(unsigned type)
     }
 }
 
+bool isSamplerType(unsigned type)
+{
+    using namespace Brig;
+    switch(type)
+    {
+    case BRIG_TYPE_SAMP:
+        return true;
+
+    default:
+        return false;
+    }
+}
+
+bool isSignalType(unsigned type)
+{
+    using namespace Brig;
+    switch(type)
+    {
+    case BRIG_TYPE_SIG32:
+    case BRIG_TYPE_SIG64:
+        return true;
+
+    default:
+        return false;
+    }
+}
 
 bool isFullProfileOnlyType(unsigned type)
 {
@@ -698,7 +752,24 @@ bool isFloatPackedType(unsigned type)
     }
 }
 
-unsigned convType2BitType(unsigned type)
+unsigned bitType2uType(unsigned type)
+{
+    using namespace Brig;
+    switch(type)
+    {
+    case BRIG_TYPE_B1:     return BRIG_TYPE_U8;
+    case BRIG_TYPE_B8:     return BRIG_TYPE_U8;
+    case BRIG_TYPE_B16:    return BRIG_TYPE_U16;
+    case BRIG_TYPE_B32:    return BRIG_TYPE_U32;
+    case BRIG_TYPE_B64:    return BRIG_TYPE_U64;
+    case BRIG_TYPE_B128:   return BRIG_TYPE_U8X16;
+    default:
+        assert(false);
+        return BRIG_TYPE_NONE;
+    }
+}
+
+unsigned type2bitType(unsigned type)
 {
     using namespace Brig;
     switch(type)
@@ -762,7 +833,7 @@ unsigned convType2BitType(unsigned type)
     }
 }
 
-unsigned convPackedType2U(unsigned type)
+unsigned packedType2uType(unsigned type)
 {
     using namespace Brig;
     switch(type)
@@ -797,9 +868,24 @@ unsigned convPackedType2U(unsigned type)
     }
 }
 
+unsigned type2immType(unsigned elementType, bool isArray)
+{
+    using namespace Brig;
+
+    if (elementType == Brig::BRIG_TYPE_NONE ||
+        isArrayType(elementType) ||
+        isImageType(elementType) || 
+        isSamplerType(elementType)) return BRIG_TYPE_NONE;
+
+    if (isArray && elementType == BRIG_TYPE_B1) return BRIG_TYPE_NONE;
+
+    unsigned constType = isBitType(elementType)? bitType2uType(elementType) : elementType;
+    return isArray? elementType2arrayType(constType) : constType;
+}
+
 bool isValidImmType(unsigned type)
 {
-    return type != Brig::BRIG_TYPE_NONE && !isOpaqueType(type);
+    return type != Brig::BRIG_TYPE_NONE && !isImageType(type) && !isSamplerType(type); //F1.0
 }
 
 bool isValidVarType(unsigned type)
@@ -928,6 +1014,11 @@ unsigned packedType2elementType(unsigned type)
 unsigned packedType2baseType(unsigned type)
 {
     return expandSubwordType(packedType2elementType(type));
+}
+
+unsigned arrayElementType(unsigned type) 
+{
+    return isArrayType(type)? arrayType2elementType(type) : type;
 }
 
 //============================================================================

@@ -250,6 +250,17 @@ IOAdapter::~IOAdapter() {
 WriteAdapter::~WriteAdapter() {
 }
 
+int WriteAdapter::writeAlignPad(unsigned pow2) {
+    const char zeropad[] = "\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0";
+    size_t const p = (size_t)getPos();
+    size_t const numBytesWrite = align(p, pow2) - p;
+    if (numBytesWrite > 0) {
+        assert(numBytesWrite <= sizeof zeropad);
+        return write((const char*)zeropad, numBytesWrite);
+    }
+    return 0;
+}
+
 ReadAdapter::~ReadAdapter() {
 }
 
@@ -317,7 +328,7 @@ public:
 
             std::vector<char> data;
             if (readSection(data, s, i)) return 1;
-
+            
             bool includesHeader =
                   desc->sectionId < Brig::BRIG_SECTION_INDEX_IMPLEMENTATION_DEFINED;
             if (c.loadSection(desc->sectionId, data, includesHeader, s->errs)) {
@@ -543,6 +554,7 @@ private:
 
 // FILE ADAPTER
 
+#if 0
 struct FileAdapter : public ReadWriteAdapter {
     mutable int fd;
     FileAdapter(std::ostream& errs_)
@@ -574,6 +586,12 @@ struct FileAdapter : public ReadWriteAdapter {
         } else {
             return 0;
         }
+    }
+    virtual Position getPos() const {
+        return ::LSEEK(fd, 0, SEEK_CUR);
+    }
+    virtual void setPos(Position ofs) {
+        int64_t lrc = ::LSEEK(fd, ofs, SEEK_SET);
     }
     virtual int write(const char* data, size_t numBytes) const {
         int res = ::write(fd, data, (unsigned)numBytes);
@@ -611,19 +629,99 @@ struct FileAdapter : public ReadWriteAdapter {
         }
     }
 };
+#else
+struct FileAdapter : public ReadWriteAdapter {
+    mutable FILE* fd;
+    FileAdapter(std::ostream& errs_)
+        : IOAdapter(errs_)
+        , ReadWriteAdapter(errs_)
+        , fd(nullptr)
+    {
+    }
+    static void printErr(std::ostream& s) {
+        s << "Error " << errno << " (" << strerror(errno) << ")";
+    }
+    int open(const char* filename, bool forWriting) {
+        fd = fopen(filename, forWriting ? "wb+" : "rb");
+        if (!fd) {
+            printErr(errs);
+            errs << " opening \"" << filename << "\"" << std::endl;
+            return 1;
+        }
+        return 0;
+    }
+    int check1(int val) const {
+        if (val < 0) {
+            printErr(errs);
+            return 1;
+        } else {
+            return 0;
+        }
+    }
+    virtual Position getPos() const {
+        return (Position)ftell(fd);
+    }
+    virtual void setPos(Position ofs) {
+        fseek(fd, 0, SEEK_SET);
+    }
+    virtual int write(const char* data, size_t numBytes) const {
+        size_t const res = fwrite(data, 1, numBytes, fd);
+        if (check1((int)res)) {
+            errs << " writing" << std::endl;
+            return 1;
+        }
+        if (res != numBytes) {
+            errs << "Wrote " << res << " bytes instead of " << numBytes << std::endl;
+            return 1;
+        }
+        return 0;
+    }
+    virtual int pread(char* data, size_t numBytes, uint64_t offset) const {
+        if (check1(fseek(fd, (long)offset, SEEK_SET))) return 1;
+        size_t const rc = fread(data, 1, numBytes, fd);
+        if (check1((int)rc)) {
+            errs << " reading" << std::endl;
+            return 1;
+        }
+        if (rc != numBytes) {
+            errs << "Read " << rc << " bytes instead of " << numBytes << std::endl;
+            return 1;
+        }
+        return 0;
+    }
+    ~FileAdapter() {
+        if (fd) {
+            fclose(fd);
+        }
+    }
+};
+#endif
 
 // MEMORY ADAPTER
 
 struct VectorAdapter : public ReadWriteAdapter {
     std::vector<char> &buf;
+    mutable size_t     pos;
     VectorAdapter(std::vector<char> &buf_, std::ostream &errs_)
         : IOAdapter(errs_)
         , ReadWriteAdapter(errs_)
         , buf(buf_)
+        , pos(0)
     {
     }
+    virtual Position getPos() const { 
+        return pos;
+    }
+    virtual void setPos(Position p) {
+        pos = (size_t)p;
+    }
     virtual int write(const char* data, size_t numBytes) const {
-        buf.insert(buf.end(), data, data + numBytes);
+        size_t newSize = pos + numBytes;
+        if (newSize > buf.size()) {
+            buf.resize(newSize);
+        }
+        std::copy(data, data + numBytes, buf.begin() + pos);
+        pos += numBytes;
         return 0;
     }
     virtual int pread(char* data, size_t numBytes, uint64_t offset) const {
@@ -650,6 +748,12 @@ struct MemoryAdapter : public ReadWriteAdapter {
         , bufSize(bufSize_)
         , pos(0)
     {
+    }
+    virtual Position getPos() const { 
+        return pos;
+    }
+    virtual void setPos(Position p) {
+        pos = (size_t)p;
     }
     virtual int write(const char* data, size_t numBytes) const {
         if (pos + numBytes > bufSize) {
@@ -682,6 +786,14 @@ struct istreamAdapter : public ReadAdapter {
         , is(is_)
     {}
     ~istreamAdapter() {}
+
+    virtual Position getPos() const {
+        return (Position)is.tellg();
+    }
+
+    virtual void setPos(Position p) {
+        is.seekg(static_cast<std::streamoff>(p), std::ios_base::beg);
+    }
 
     virtual int pread(char* data, size_t numBytes, uint64_t offset) const {
         if ((offset + numBytes) > static_cast<uint64_t>((std::numeric_limits<std::streamoff>::max)())) {
@@ -763,6 +875,9 @@ int BrigIO::load(BrigContainer &dst,
     if (0 != src.pread((char*)ident, 16, 0)) {
         return 1;
     }
+    if (memcmp("HSA BRIG", ident, 8)==0) {
+        return HSAIL_ASM::readContainer(src, dst) ? 0 : 1;
+    }
     switch(ident[EI_CLASS]) {
     case Elf32Policy::ELFCLASS: {
         BrigIOImpl<Elf32Policy> impl(fmt);
@@ -782,6 +897,9 @@ int BrigIO::save(BrigContainer &src,
                  int           fmt,
                  WriteAdapter& dst)
 {
+    if (fmt == FILE_FORMAT_BRIG) {
+        return src.write(dst) ? 0 : 1;
+    } 
     BrigIOImpl<Elf32Policy> impl(fmt);
     return impl.writeContainer(&dst, src);
 }

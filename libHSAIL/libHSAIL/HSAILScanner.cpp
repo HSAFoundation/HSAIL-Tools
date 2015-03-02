@@ -184,14 +184,12 @@ EScanContext Scanner::getTokenContext(ETokens token)
         switch(token) {
         case EMAtomicOp: return EInstModifierInstAtomicContext;
         case EMImageQuery: return EInstModifierInstQueryContext;
-        case EMMemoryFenceSegments: return EInstModifierInstFenceContext;
         case EMMemoryScope:
         default: return EInstModifierContext;
         }
     } else {
         switch(token) {
         case EImageOrder: return EImageOrderContext;
-        case EMemoryScope: return EMemoryScopeContext;
         default:;
         }
     }
@@ -493,7 +491,7 @@ void Scanner::throwTokenExpected(ETokens token, const char* message, const SrcLo
         case EIDLocal:        message = "local identifier"; break;
         case ELabel:          message = "label"; break;
         case ESemi:           message = "';'"; break;
-        case EKWVersion:      message = "'version'"; break;
+        case EKWModule:       message = "'module'"; break;
         case EColon:          message = "':'"; break;
         case ELCurl:          message = "'{'"; break;
         case ERCurl:          message = "'}'"; break;
@@ -514,22 +512,19 @@ void Scanner::throwTokenExpected(ETokens token, const char* message, const SrcLo
         case ESamplerCoord:   message = "sampler coord value"; break;
         case EMMemoryOrder:   message = "memory order value"; break;
         case EMMemoryScope:   message = "memory scope value"; break;
-        case EMemoryScope:    message = "memory scope value"; break;
         case ETargetMachine:  message = "machine model"; break;
         case ETargetProfile:  message = "target profile"; break;
+        case EDefaultRound:   message = "default rounding"; break;
         case ESamplerAddressingMode: message = "sampler addressing mode value"; break;
         case EImageFormat:    message = "image channel type"; break;
         case EImageOrder:     message = "image channel order"; break;
         case EImageGeometry:  message = "image geometry"; break;
-        case EKWRWImg:        message = "read-write image initializer"; break;
-        case EKWROImg:        message = "read-only image initializer"; break;
-        case EKWWOImg:        message = "write-only image initializer"; break;
-        case EKWSamp:         message = "sampler initializer"; break;
+        case EKWImage:        message = "image constant"; break;
+        case EKWSampler:      message = "sampler constant"; break;
         case EKWFunction:     message = "function"; break;
         case EMImageQuery:    message = "image query"; break;
         case EMSamplerQuery:  message = "sampler query"; break;
-        case EMMemoryFenceSegments: message = "memory fence segment"; break;
-        case EIntLiteral:     message = "integer literal"; break;
+        case EIntLiteral:     message = "integer literal"; break; //F1.0: replace "literal" with "constant" to match PRM terminology
         case EF16Literal:     message = "f16 literal"; break;
         case EF32Literal:     message = "f32 literal"; break;
         case EF64Literal:     message = "f64 literal"; break;

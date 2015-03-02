@@ -6,6 +6,18 @@
 #include "HSAILParser.h"
 #include "HSAILDisassembler.h"
 #include "HSAILValidator.h"
+#ifdef _WIN32
+extern "C" {
+    int __setargv(void);
+    int _setargv(void) { return __setargv(); }
+}
+#include <direct.h>
+#else
+#include <unistd.h>
+#endif
+#ifdef WITH_LIBBRIGDWARF
+#include "BrigDwarfGenerator.h"
+#endif
 
 using namespace HSAIL_ASM;
 
@@ -35,11 +47,31 @@ struct Api {
     }
 };
 
-static int assemble(brig_container_t handle, std::istream& is)
+static int assemble(brig_container_t handle, std::istream& is, const char *options, const char *sourceDir = 0, const char *sourceFileName = 0)
 {
+    bool DisableValidator = false, IncludeSource = false;
+#ifdef WITH_LIBBRIGDWARF
+    bool EnableDebugInfo = false;
+#endif // WITH_LIBBRIGDWARF
+
+    std::istringstream iss(options);
+    std::string opt;
+    while (iss >> opt) {
+               if (opt == "-include-source") { IncludeSource = true; }
+          else if (opt == "-disable-validator") { DisableValidator = true; }
+#ifdef WITH_LIBBRIGDWARF
+          else if (opt == "-g") { EnableDebugInfo = true; }
+#endif // WITH_LIBBRIGDWARF
+          else {
+            ((Api*)handle)->errorText = "Invalid option: " + opt;
+            return 1;
+          }
+    }
+
+    BrigContainer& c = ((Api*)handle)->container;
     try {
         Scanner s(is, true);
-        Parser p(s, ((Api*)handle)->container);
+        Parser p(s, c);
         p.parseSource();
     }
     catch(const SyntaxError& e) {
@@ -48,14 +80,31 @@ static int assemble(brig_container_t handle, std::istream& is)
         ((Api*)handle)->errorText = ss.str();
         return 1;
     }
-    Validator v(((Api*)handle)->container);
-    if (!v.validate(true)) {
-        std::stringstream ss;
-        ss << v.getErrorMsg(&is) << "\n";
-        int rc = v.getErrorCode();
-        ((Api*)handle)->errorText = ss.str();
-        return rc;
+    if (!DisableValidator) {
+        Validator v(c);
+        if (!v.validate(true)) {
+            std::stringstream ss;
+            ss << v.getErrorMsg(&is) << "\n";
+            int rc = v.getErrorCode();
+            ((Api*)handle)->errorText = ss.str();
+            return rc;
+        }
     }
+#ifdef WITH_LIBBRIGDWARF
+    if (EnableDebugInfo) {
+        std::stringstream ssVersion;
+        ssVersion << "HSAIL Assembler (C) AMD 2015, all rights reserved, ";
+        ssVersion << "HSAIL version ";
+        ssVersion << Brig::BRIG_VERSION_HSAIL_MAJOR << ':' << Brig::BRIG_VERSION_HSAIL_MINOR;
+
+        std::unique_ptr<BrigDebug::BrigDwarfGenerator> pBdig(
+            BrigDebug::BrigDwarfGenerator::Create(ssVersion.str(),
+                                                   sourceDir ? sourceDir : "<unknown source dir>",
+                                                   sourceFileName ? sourceFileName : "<unknown source file>"));
+        pBdig->generate(c);
+        pBdig->storeInBrig(c);
+    }
+#endif
     return 0;
 }
 
@@ -115,14 +164,26 @@ HSAIL_C_API size_t brig_container_get_section_size(brig_container_t handle, int 
     return ((Api*)handle)->container.sectionById(section_id).size();
 }
 
-HSAIL_C_API int brig_container_assemble_from_memory(brig_container_t handle, const char* text, size_t text_length)
+HSAIL_C_API int brig_container_assemble_from_memory(brig_container_t handle, const char* text, size_t text_length, const char *options)
 {
     std::string s((char*)text, text_length);
     std::istringstream is(s);
-    return assemble(handle, is);
+    return assemble(handle, is, options);
 }
 
-HSAIL_C_API int brig_container_assemble_from_file(brig_container_t handle, const char* filename)
+static char *GetCurrentWorkingDirectory()
+{
+    char *pCwd = 0;
+
+#ifdef _WIN32
+    pCwd = _getcwd(0, 0);
+#else
+    pCwd = getcwd(0, 0);
+#endif
+    return pCwd;
+}
+
+HSAIL_C_API int brig_container_assemble_from_file(brig_container_t handle, const char* filename, const char *options)
 {
     std::ifstream ifs(filename, std::ifstream::in | std::ifstream::binary);
     std::stringstream ss;
@@ -131,7 +192,10 @@ HSAIL_C_API int brig_container_assemble_from_file(brig_container_t handle, const
         ((Api*)handle)->errorText = ss.str();
         return 1;
     }
-    return assemble(handle, ifs);
+    char *cwd = GetCurrentWorkingDirectory();
+    int result = assemble(handle, ifs, options, cwd, filename);
+    free(cwd);
+    return result;
 }
 
 HSAIL_C_API int brig_container_disassemble_to_file(brig_container_t handle, const char* filename)

@@ -78,8 +78,22 @@ add_custom_command(
   COMMENT "Generating libHSAIL sources"
 )
 
+if(BUILD_LIBBRIGDWARF)
+  set(libbrigdwarf_srcs
+    BrigDwarfGenerator.cpp
+    hsa_dwarf.h
+    BrigDwarfGenerator.h
+    SectionHeaderTable.h
+  )
+
+  include_directories(${LIBELF_INCLUDE_DIRS})
+  include_directories(${LIBDWARF_INCLUDE_DIRS})
+else()
+  set(libbrigdwarf_srcs)
+endif()
+
 add_custom_target(libhsail-includes ALL DEPENDS ${generated_srcs})
-add_library(hsail ${libhsail_srcs} ${generated_srcs})
+add_library(hsail ${libhsail_srcs} ${libbrigdwarf_srcs} ${generated_srcs})
 add_dependencies(hsail libhsail-includes)
 
 if(UNIX)

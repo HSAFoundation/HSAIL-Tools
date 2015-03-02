@@ -481,6 +481,9 @@ class BrigContainerSectionByIndex<Brig::BRIG_SECTION_INDEX_OPERAND> {
     typedef OperandSection type;
 };
 
+class ReadAdapter;
+class WriteAdapter;
+
 /// container for Brig sections. This is a basically a set of sections that
 /// comprise Brig.
 class BrigContainer {
@@ -565,7 +568,11 @@ public:
     void initSectionRaw(int index, SRef name);
 
     const Brig::BrigModule* getBrigModule();
+
+    bool write(WriteAdapter& w) const;
 };
+
+bool readContainer(ReadAdapter& r, BrigContainer& c);
 
 // non-const
 inline DataSection& BrigContainer::strings()  {
