@@ -22,7 +22,7 @@ find_library(CURSES_LIB curses)
 #include(LLVM-Config.cmake)
 
 if(BUILD_LIBBRIGDWARF)
-  add_dependencies(HSAILasm libbrigdwarf)
+  add_dependencies(HSAILasm brigdwarf)
   include_directories(${CMAKE_SOURCE_DIR}/libBRIGdwarf)
   target_link_libraries(HSAILasm brigdwarf)
   target_link_libraries(HSAILasm ${LIBELF_LIBRARIES})

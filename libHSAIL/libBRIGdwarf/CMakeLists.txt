@@ -2,8 +2,7 @@ include_directories(${PROJECT_SOURCE_DIR}/libHSAIL)
 include_directories(${PROJECT_BINARY_DIR}/libHSAIL/generated)
 
 include_directories(${LIBELF_INCLUDE_DIRS})
-include_directories(${LIBDWARF_PATH})
-include_directories(${LIBDWARF_PATH}/src)
+include_directories(${LIBDWARF_INCLUDE_DIRS})
 
 add_library(brigdwarf
   BrigDwarfGenerator.cpp

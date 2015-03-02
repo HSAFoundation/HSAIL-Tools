@@ -71,7 +71,7 @@ if (LIBDWARF_LIBRARIES AND LIBDWARF_INCLUDE_DIRS)
       # Check to see if we can use a const name.
       unset(DW_CONST CACHE)
 
-      if (NOT "${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
+      if (NOT ${CMAKE_CXX_COMPILER_ID} STREQUAL "Clang")
         # -std=c++11 is already set in HPHPCompiler.cmake, don't
         # add -std=c++0x on top of that or clang will give errors
         set(CMAKE_REQUIRED_FLAGS "-std=c++0x")
