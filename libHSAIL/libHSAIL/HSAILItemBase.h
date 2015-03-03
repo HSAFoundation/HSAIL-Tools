@@ -589,7 +589,7 @@ public:
 template <typename DstItem, typename SrcItem>
 inline bool isa(SrcItem src) {
     DstItem dst = src;
-    return dst!=false;
+    return dst;
 }
 
 /// grows an item size. Item should be the last item in it's section.
