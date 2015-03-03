@@ -620,10 +620,10 @@ enum BrigOpcode { //.tdcaption="Instruction Opcodes"
     BRIG_OPCODE_GCNMAX3 = (1u << 15) | 2,
     BRIG_OPCODE_GCNMIN3 = (1u << 15) | 3,
     BRIG_OPCODE_GCNMED3 = (1u << 15) | 4,
-    BRIG_OPCODE_GCNFLDEXP = (1u << 15) | 5,
-    BRIG_OPCODE_GCNFREXP_EXP = (1u << 15) | 6,
-    BRIG_OPCODE_GCNFREXP_MANT = (1u << 15) | 7,
-    BRIG_OPCODE_GCNTRIG_PREOP = (1u << 15) | 8,
+    BRIG_OPCODE_GCNFLDEXP = (1u << 15) | 5, //.k=BASIC_OR_MOD
+    BRIG_OPCODE_GCNFREXP_EXP = (1u << 15) | 6, //.k=BASIC_OR_MOD
+    BRIG_OPCODE_GCNFREXP_MANT = (1u << 15) | 7, //.k=BASIC_OR_MOD
+    BRIG_OPCODE_GCNTRIG_PREOP = (1u << 15) | 8, //.k=BASIC_OR_MOD
     BRIG_OPCODE_GCNBFM = (1u << 15) | 9,
     BRIG_OPCODE_GCNLD = (1u << 15) | 10, //.k=MEM //.has_memory_order //.vecOpndIndex=0
     BRIG_OPCODE_GCNST = (1u << 15) | 11, //.k=MEM //.has_memory_order //.vecOpndIndex=0
@@ -644,7 +644,7 @@ enum BrigOpcode { //.tdcaption="Instruction Opcodes"
     BRIG_OPCODE_GCNB32XCHG = (1u << 15) | 26, //.mnemo=gcn_b32xchg
     BRIG_OPCODE_GCNMAX = (1u << 15) | 27,
     BRIG_OPCODE_GCNMIN = (1u << 15) | 28,
-    BRIG_OPCODE_GCNDIVRELAXED = (1u << 15) | 29,
+    BRIG_OPCODE_GCNDIVRELAXED = (1u << 15) | 29, //.k=BASIC_OR_MOD
     BRIG_OPCODE_GCNDIVRELAXEDNARROW = (1u << 15) | 30,
 };
 
