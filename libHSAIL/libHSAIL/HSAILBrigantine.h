@@ -419,6 +419,7 @@ private:
     void addSymbolToFunctionScope(DirectiveVariable sym);
     void addSymbolToGlobalScope(DirectiveExecutable sym);
     void addSymbolToGlobalScope(DirectiveVariable sym);
+    void addSymbolToGlobalScope(DirectiveModule sym);
 
     bool checkForUnboundLabels();
     void recordLabelRef(ItemRef<Code> ref, const SRef& name, const SourceInfo*);

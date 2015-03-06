@@ -525,9 +525,9 @@ void Scanner::throwTokenExpected(ETokens token, const char* message, const SrcLo
         case EMImageQuery:    message = "image query"; break;
         case EMSamplerQuery:  message = "sampler query"; break;
         case EIntLiteral:     message = "integer literal"; break; //F1.0: replace "literal" with "constant" to match PRM terminology
-        case EF16Literal:     message = "f16 literal"; break;
-        case EF32Literal:     message = "f32 literal"; break;
-        case EF64Literal:     message = "f64 literal"; break;
+        case EF16Literal:     message = "f16 literal"; break;     //F1.0: replace "literal" with "constant" to match PRM terminology
+        case EF32Literal:     message = "f32 literal"; break;     //F1.0: replace "literal" with "constant" to match PRM terminology
+        case EF64Literal:     message = "f64 literal"; break;     //F1.0: replace "literal" with "constant" to match PRM terminology
         case EAllocKind:      message = "allocation kind"; break;
         case EInstruction:    message = "instruction"; break;
         default:  {

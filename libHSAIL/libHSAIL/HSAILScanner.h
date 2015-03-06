@@ -126,6 +126,8 @@ protected:
 
 public:
     StreamScannerBase(std::istream& is);
+
+    HSAIL_ASM::SRef getPlainText() const { return HSAIL_ASM::SRef(m_buffer); }
 };
 
 namespace HSAIL_ASM

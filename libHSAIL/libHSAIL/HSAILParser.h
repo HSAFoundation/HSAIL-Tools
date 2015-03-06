@@ -60,7 +60,14 @@ class Parser
 public:
     Parser(Scanner& scanner, BrigContainer& container);
 
-    void parseSource();
+    void parseSource(bool saveSource=false);
+
+private:
+    enum ImmKind {
+        TYPED_IMM = 1,
+        UNTYPED_IMM = 2,
+        ANY_IMM = TYPED_IMM | UNTYPED_IMM
+    };
 
 private:
     Scanner&    m_scanner;
@@ -141,7 +148,8 @@ private:
     Operand parseOperandGeneric(Inst inst, unsigned opndIdx);
     Operand parseConstantGeneric(unsigned requiredType);
 
-    unsigned parseImmediate(ArbitraryData *data, unsigned requiredType, size_t pos);
+    unsigned parseImmediate(ArbitraryData *data, unsigned requiredType, size_t pos, unsigned expectedImmKind = ANY_IMM);
+    void validateTypedImmConversion(unsigned requiredType, unsigned actualType);
 
     OperandCodeRef parseOperandRef();
     OperandRegister parseOperandReg();

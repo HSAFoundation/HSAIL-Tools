@@ -118,6 +118,8 @@ DirectiveModule Brigantine::module(
     module.defaultFloatRound() = defaultRound;
     m_profile = profile;
     m_machine = machineModel;
+
+    addSymbolToGlobalScope(module);
     return module;
 }
 
@@ -605,6 +607,12 @@ void Brigantine::addSymbolToGlobalScope(DirectiveExecutable sym) {
 }
 
 void Brigantine::addSymbolToGlobalScope(DirectiveVariable sym) {
+    assert(isGlobalName(sym.name()));
+    assert(m_globalScope.get()!=NULL);
+    m_globalScope->add(sym.name(), sym);
+}
+
+void Brigantine::addSymbolToGlobalScope(DirectiveModule sym) {
     assert(isGlobalName(sym.name()));
     assert(m_globalScope.get()!=NULL);
     m_globalScope->add(sym.name(), sym);

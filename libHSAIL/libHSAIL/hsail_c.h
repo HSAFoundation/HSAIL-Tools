@@ -184,11 +184,14 @@ HSAIL_C_API int         brig_container_save_to_file(brig_container_t handle, con
 HSAIL_C_API int         brig_container_validate(brig_container_t handle);
 
 /**
- * Obtain a pointer to BrigModule corresponding to this container (currently as void*)
+ * Obtain a pointer to BrigModule corresponding to this container (as void*)
+ *
+ * The container cannot be modified after this function is called and
+ * it owns the module, so the pointer is only valid until brig_container_destroy.
  *
  * @param handle - BRIG container handle.
  *
- * @return - the pointer to BrigModule.
+ * @return - the pointer to BrigModuleHeader.
  */
 HSAIL_C_API void* brig_container_get_brig_module(brig_container_t handle);
 

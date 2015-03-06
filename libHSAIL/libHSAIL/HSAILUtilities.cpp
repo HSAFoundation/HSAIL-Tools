@@ -166,11 +166,12 @@ bool isDirective(unsigned id)
 
 SRef getName(Directive d)
 {
-    if      (DirectiveExecutable   dn = d) return dn.name();
-    else if (DirectiveVariable     dn = d) return dn.name();
-    else if (DirectiveLabel        dn = d) return dn.name();
-    else if (DirectiveSignature    dn = d) return dn.name();
-    else if (DirectiveFbarrier     dn = d) return dn.name();
+    if      (DirectiveModule     dn = d) return dn.name();
+    else if (DirectiveExecutable dn = d) return dn.name();
+    else if (DirectiveVariable   dn = d) return dn.name();
+    else if (DirectiveLabel      dn = d) return dn.name();
+    else if (DirectiveSignature  dn = d) return dn.name();
+    else if (DirectiveFbarrier   dn = d) return dn.name();
 
     assert(false);
     return SRef();
@@ -226,6 +227,13 @@ DirectiveVariable getInputArg(DirectiveExecutable sbr, unsigned idx)
 uint64_t getVariableNumBytes(DirectiveVariable var)
 {
     return getBrigTypeNumBytes(arrayElementType(var.type())) * std::max((uint64_t) var.dim(), (uint64_t) 1);
+}
+
+unsigned getVariableAlignment(DirectiveVariable var)
+{
+    return (std::max)(
+        HSAIL_ASM::align2num(getNaturalAlignment(var.elementType())),
+        HSAIL_ASM::align2num(var.align()));
 }
 
 unsigned getCtlDirOperandType(unsigned kind, unsigned idx)
@@ -1253,6 +1261,18 @@ size_t zeroPaddedCopy(void *dst, const void* src, size_t len, size_t room)
 }
 
 //============================================================================
+
+const Brig::BrigSectionHeader* getBrigSection(
+    Brig::BrigModule_t brigModule,
+    unsigned index) {
+    assert(index < brigModule->sectionCount);
+    uint64_t const secOfs = ((uint64_t*)
+        ((const char*)brigModule + brigModule->sectionIndex))[index];
+
+    assert(secOfs < (std::numeric_limits<uint32_t>::max)());
+    return (const Brig::BrigSectionHeader*)
+        ((const char*)brigModule + (uint32_t)secOfs);
+}
 
 } // end namespace
 

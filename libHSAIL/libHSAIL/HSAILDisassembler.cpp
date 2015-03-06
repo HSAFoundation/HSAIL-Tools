@@ -148,6 +148,15 @@ string Disassembler::get(Directive d, unsigned model, unsigned profile)  { mMode
 string Disassembler::get(Inst i,      unsigned model, unsigned profile)  { mModel = model; mProfile = profile; return getImpl(i); }
 string Disassembler::get(Operand i,   unsigned model, unsigned profile)  { mModel = model; mProfile = profile; return getImpl(i); }
 
+string Disassembler::getInstMnemonic(Inst inst, unsigned model, unsigned profile)
+{
+    Disassembler disasm(*inst.container());
+    string res = disasm.get(inst, model, profile);
+    string::size_type pos = res.find_first_of("\t");
+    if (pos != string::npos) res = res.substr(0, pos);
+    return res;
+}
+
 void Disassembler::log(std::ostream &s) { err = &s; }
 
 // ============================================================================
@@ -1105,12 +1114,15 @@ void Disassembler::printOperandCodeList(OperandCodeList opr) const
     print(')');
 }
 
+//F1.0 there is similar code somewhere
+//F1.0 see what code could be moved to utils
 SRef Disassembler::getSymbolName(Directive d) const
 {
     if (DirectiveExecutable    sym = d) return sym.name();
     else if (DirectiveVariable sym = d) return sym.name();
     else if (DirectiveLabel    sym = d) return sym.name();
     else if (DirectiveFbarrier sym = d) return sym.name();
+    else if (DirectiveModule   sym = d) return sym.name();
     else assert(false);                 return SRef();
 }
 

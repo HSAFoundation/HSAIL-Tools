@@ -1,6 +1,7 @@
 #include "hsail_c.h"
 #include <fstream>
 #include <sstream>
+#include <cstdlib>
 #include "HSAILBrigContainer.h"
 #include "HSAILBrigObjectFile.h"
 #include "HSAILParser.h"
@@ -33,18 +34,18 @@ struct Api {
     {
     }
 
-    Api(const void *data_bytes,
-        const void *code_bytes,
-        const void *operand_bytes,
-        const void * debug_bytes)
-    : container(
-            data_bytes,
-            code_bytes,
-            operand_bytes,
-            debug_bytes)
-    , errorText()
-    {
-    }
+    //Api(const void *data_bytes,
+    //    const void *code_bytes,
+    //    const void *operand_bytes,
+    //    const void * debug_bytes)
+    //: container(
+    //        data_bytes,
+    //        code_bytes,
+    //        operand_bytes,
+    //        debug_bytes)
+    //, errorText()
+    //{
+    //}
 };
 
 static int assemble(brig_container_t handle, std::istream& is, const char *options, const char *sourceDir = 0, const char *sourceFileName = 0)
@@ -54,7 +55,13 @@ static int assemble(brig_container_t handle, std::istream& is, const char *optio
     bool EnableDebugInfo = false;
 #endif // WITH_LIBBRIGDWARF
 
-    std::istringstream iss(options);
+    std::string opts(options);
+    if (const char *eoptions = getenv("LIBHSAIL_ASSEMBLER_OPTIONS")) {
+      opts += " ";
+      opts += eoptions;
+    }
+
+    std::istringstream iss(opts);
     std::string opt;
     while (iss >> opt) {
                if (opt == "-include-source") { IncludeSource = true; }
@@ -72,7 +79,7 @@ static int assemble(brig_container_t handle, std::istream& is, const char *optio
     try {
         Scanner s(is, true);
         Parser p(s, c);
-        p.parseSource();
+        p.parseSource(IncludeSource);
     }
     catch(const SyntaxError& e) {
         std::stringstream ss;
@@ -123,11 +130,12 @@ HSAIL_C_API brig_container_t brig_container_create_view(
     const void *operand_bytes,
     const void* debug_bytes)
 {
-    return (brig_container_t)new Api(
-            data_bytes,
-            code_bytes,
-            operand_bytes,
-            debug_bytes);
+    //return (brig_container_t)new Api(
+    //        data_bytes,
+    //        code_bytes,
+    //        operand_bytes,
+    //        debug_bytes);
+    return nullptr;
 }
 
 HSAIL_C_API brig_container_t brig_container_create_copy(

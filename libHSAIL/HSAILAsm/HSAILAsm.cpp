@@ -87,7 +87,7 @@ using std::string;
 
 // ============================================================================
 
-#define BRIG_ASM_VERSION "2.0"
+#define BRIG_ASM_VERSION "3.0"
 
 // ============================================================================
 
@@ -149,6 +149,10 @@ static cl::opt<bool>
 
 static cl::opt<bool>
     DumpFormatError("dump-format-error", cl::Hidden, cl::desc("Dump items which do not pass validation (experimental)"));
+
+static cl::opt<bool>
+    SaveSourceText("include-source", cl::init(false), cl::desc("Save assembly source text in BRIG"));
+
 
 // ============================================================================
 
@@ -234,7 +238,7 @@ static int AssembleInput() {
     try {
         Scanner s(ifs,!EnableComments);
         Parser p(s, c);
-        p.parseSource();
+        p.parseSource(SaveSourceText);
     }
     catch (const SyntaxError& e) {
         e.print(cerr,ifs);
@@ -247,7 +251,7 @@ static int AssembleInput() {
     if ( EnableDebugInfo ) {
 #ifdef WITH_LIBBRIGDWARF
         std::stringstream ssVersion;
-        ssVersion << "HSAIL Assembler (C) AMD 2013, all rights reserved, ";
+        ssVersion << "HSAIL Assembler (C) AMD 2015, all rights reserved, ";
         ssVersion << "Version " << BRIG_ASM_VERSION;
         ssVersion << ", HSAIL version ";
         ssVersion << Brig::BRIG_VERSION_HSAIL_MAJOR << ':' << Brig::BRIG_VERSION_HSAIL_MINOR;
@@ -271,14 +275,23 @@ static int AssembleInput() {
     /*if (!DisableOperandOptimizer) {
         c.optimizeOperands();
     }*/
+#if 0
     int format = (BifFileFormat ? FILE_FORMAT_BIF : FILE_FORMAT_BRIG)
                | (Elf64FileFormat ? FILE_FORMAT_ELF64 : FILE_FORMAT_ELF32);
+#else
+    int const format = FILE_FORMAT_BRIG;
+#endif 
     return BrigIO::save(c, format, BrigIO::fileWritingAdapter(getOutputFileName().c_str()));
 }
 
 static int DisassembleInput() {
     BrigContainer c;
+#if 0
     int format = BifFileFormat ? FILE_FORMAT_BIF : FILE_FORMAT_AUTO;
+#else
+    int const format = FILE_FORMAT_AUTO;
+#endif 
+
     if (BrigIO::load(c, format, BrigIO::fileReadingAdapter(InputFilename.c_str()))) {
       return 1;
     }
@@ -316,7 +329,7 @@ static int Repeat(int (*func)()) {
 
 static void printVersion() {
     std::cout << "HSAIL Assembler and Disassembler.\n";
-    std::cout << "  (C) AMD 2013, all rights reserved.\n";
+    std::cout << "  (C) AMD 2015, all rights reserved.\n";
     std::cout << "  Built " << __DATE__ << " (" << __TIME__ << ").\n";
     std::cout << "  Version " << BRIG_ASM_VERSION << ".\n";
 

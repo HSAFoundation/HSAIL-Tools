@@ -131,6 +131,7 @@ public:
     }
 
     virtual int pread(char* data, size_t numBytes, uint64_t ofs) const = 0;
+    virtual Position getSize() const { return (Position)-1; };
 
     virtual ~ReadAdapter() = 0;
 };
@@ -174,6 +175,12 @@ struct BrigIO {
                     std::istream&               is,
                     std::ostream&               errs = defaultErrs());
 
+
+    static std::unique_ptr<WriteAdapter> vectorWritingAdapter(
+                    std::vector<char>& v,
+                    std::ostream&               errs = defaultErrs());
+
+
     // normal API using adapter references
 
     static int save(BrigContainer&              src,
@@ -200,6 +207,14 @@ struct BrigIO {
     {
         return !src.get() || load(dst, fmt, *src);
     }
+
+    static int validate(int                     fmt,
+                        ReadAdapter&            src);
+
+    static uint64_t validateSection(ReadAdapter&     fd, 
+                                    unsigned         sectionIndex,
+                                    uint64_t         sectionOffset,
+                                    uint64_t         fileSize);
 };
 
 // old style compatibility API

@@ -558,12 +558,20 @@ Parser::Parser(Scanner& scanner, BrigContainer& container)
 {
 }
 
-void Parser::parseSource()
+void Parser::parseSource(bool saveSource)
 {
     PDBG;
+
     do {
         parseProgram();
     } while (peek().kind()!=EEndOfSource);
+
+    if (saveSource) {
+        std::unique_ptr<BrigSectionImpl> sec(new BrigSectionRaw(SRef("source")));
+        SRef const t = m_scanner.getPlainText();
+        sec->insertData(sec->secHeader()->headerByteCount, t.begin, t.end);
+        m_bw.container().addSection(std::move(sec));
+    }
 }
 
 void Parser::parseProgram()
@@ -826,10 +834,11 @@ void Parser::parseOpaqueArray(ItemList& list, unsigned expectedType)
 
 Operand Parser::parseImageProperties(unsigned type)
 {
-    eatToken(ELParen);
     SourceInfo const srcInfo = sourceInfo(token());
     OperandConstantImage props = m_bw.append<OperandConstantImage>(&srcInfo);
     props.type() = type;
+
+    eatToken(ELParen);
 
     do {
         ETokens const t = scan().kind();
@@ -924,10 +933,11 @@ Operand Parser::parseImageProperties(unsigned type)
 
 Operand Parser::parseSamplerProperties()
 {
-    eatToken(ELParen);
     SourceInfo const srcInfo = sourceInfo(token());
     OperandConstantSampler props = m_bw.append<OperandConstantSampler>(&srcInfo);
     props.type() = Brig::BRIG_TYPE_SAMP;
+
+    eatToken(ELParen);
 
     unsigned propMask = 0;
     do {
@@ -1083,9 +1093,7 @@ Operand Parser::parseAggregateOperand()
         default: {
             SourceInfo const srcInfo = sourceInfo(peek());
             ArbitraryData values;
-            //F1.0: only typed constants may be used in aggregates; 
-            //F1.0: allow arrays in aggregates but unfold arrays of opaques
-            unsigned literalType = parseImmediate(&values, Brig::BRIG_TYPE_NONE, 0); //F1.0 how to avoid passing BRIG_TYPE_NONE?
+            unsigned literalType = parseImmediate(&values, Brig::BRIG_TYPE_NONE, 0, TYPED_IMM); //F1.0 how to avoid passing BRIG_TYPE_NONE?
             list.push_back(
                m_bw.createOperandConstantBytes(values.toSRef(),
                                                arrayElementType(literalType), isArrayType(literalType),
@@ -1095,7 +1103,11 @@ Operand Parser::parseAggregateOperand()
         }
     } while(tryEatToken(EComma));
     eatToken(ERCurl);
-    return m_bw.createConstantOperandList(list, Brig::BRIG_TYPE_NONE, &srcInfo);
+    OperandConstantOperandList aggregate = m_bw.createConstantOperandList(list, Brig::BRIG_TYPE_NONE, &srcInfo);
+    if (getAggregateNumBytes(aggregate) == 0) {
+        syntaxError("An aggregate constant cannot consist of only alignment request elements");
+    }
+    return aggregate;
 }
 
 DirectiveVariable Parser::parseVariable(bool nameRequired /*=true*/, const ModuleStatementPrefix* modPfx)
@@ -1185,12 +1197,13 @@ DirectiveVariable Parser::parseVariable(bool nameRequired /*=true*/, const Modul
             dim = list ? list.elements().size() : 1;
         } else if (peek().kind() == ELCurl) { // this is an aggregate
             sym.init() = parseAggregateOperand();
+            assert(getAggregateNumBytes(sym.init()) > 0);
             dim = getAggregateNumBytes(sym.init()) / getBrigTypeNumBytes(sym.elementType());
         } else {
             SourceInfo const srcInfo = sourceInfo(peek());
             ArbitraryData values;
 
-            unsigned literalType = parseImmediate(&values, expectedType, 0);
+            unsigned literalType = parseImmediate(&values, isArray? elementType2arrayType(expectedType) : expectedType, 0);
 
             if (isBitType(expectedType) && !isArrayType(literalType) && 
                 getBrigTypeNumBytes(expectedType) == getBrigTypeNumBytes(literalType)) {
@@ -1545,7 +1558,8 @@ template<typename R> void parseFloatImmediate(
 {
     unsigned brigType  = CType2Brig<R, 1>::value;
 
-    if (requiredType == Brig::BRIG_TYPE_INVALID ||
+    if (isArrayType(requiredType) ||
+        requiredType == Brig::BRIG_TYPE_INVALID ||
         requiredType == Brig::BRIG_TYPE_NONE) { // Malformed instruction; type cannot be identified
         requiredType = brigType; // Use actual literal type and let validator handle errors
     }
@@ -1554,16 +1568,14 @@ template<typename R> void parseFloatImmediate(
     R value = (scanner.*scanFunc)(); // NB: error reporting must follow literal scanning to show correct position in scr code
 
     if (requiredType != brigType && requiredType != getBitType(getBrigTypeNumBits(brigType))) {
-        scanner.syntaxError(std::string(litKind) + " literal cannot initialize " + typeX2str(requiredType));
+        scanner.syntaxError(std::string(litKind) + " literal cannot initialize " + typeX2str(requiredType)); //F1.0 unify err reporting
     }
     data->write(hasMinus ? value.neg().rawBits() : value.rawBits(), pos);
     return;
 }
 
-unsigned Parser::parseImmediate(ArbitraryData *data, unsigned requiredType, size_t pos)
+unsigned Parser::parseImmediate(ArbitraryData *data, unsigned requiredType, size_t pos, unsigned expectedImmKind /*=ANY_IMM*/)
 {
-    assert(!isArrayType(requiredType));
-
     ETokens tokenAhead = peek().kind();
 
     SourceInfo signSI;
@@ -1575,71 +1587,64 @@ unsigned Parser::parseImmediate(ArbitraryData *data, unsigned requiredType, size
         tokenAhead = peek().kind();
     }
 
+    if (expectedImmKind == TYPED_IMM && tokenAhead != ETypedLiteral) {
+        eatToken(tokenAhead);
+        syntaxError("Expected a typed constant");
+    } else if (expectedImmKind == UNTYPED_IMM && tokenAhead == ETypedLiteral) {
+        eatToken(tokenAhead);
+        syntaxError("Typed constants are not allowed");
+    }
+
     switch(tokenAhead) {
     case ETypedLiteral:
         {
             unsigned const typeFromToken = eatToken(ETypedLiteral);
 
-            if (tryEatToken(ELBrace)) {
+            if (tryEatToken(ELBrace)) {  // This is an array
+
                 if (signSI.column >= 0) {
                     syntaxError("Sign is not allowed before an array", &signSI);
                 }
                 eatToken(ERBrace);
                 eatToken(ELParen);
                 do {
-                    parseImmediate(data, typeFromToken, data->numBytes());
+                    unsigned elementType = parseImmediate(data, typeFromToken, data->numBytes());
+                    validateTypedImmConversion(typeFromToken, elementType);
                 } while(tryEatToken(EComma));
                 eatToken(ERParen);
-                //F1.0 test with b1 type: should report error
+
                 return elementType2arrayType(typeFromToken);
-            }
+            
+            } else { // This is a scalar
 
-            if (signSI.column >= 0) {
-                syntaxError("Sign is not allowed before a typed literal", &signSI);
-            }
-
-            if (requiredType == (unsigned)Brig::BRIG_TYPE_INVALID ||
-                requiredType == (unsigned)Brig::BRIG_TYPE_NONE) { // Malformed instruction; type cannot be identified
-                requiredType = typeFromToken; // Use actual literal type and let validator handle errors
-            }
-
-            unsigned const requiredTypeSize = getBrigTypeNumBits(requiredType);
-            unsigned const foundTypeSize = getBrigTypeNumBits(typeFromToken);
-
-            if (isPackedType(typeFromToken)) {
-                if (isPackedType(requiredType)) {
-                    // "Type and length rule"
-                    if (typeFromToken != requiredType) {
-                        syntaxError("Packed literal type does not match expected type");
-                        return typeFromToken;
-                    }
-                } else if (isBitType(requiredType)) {
-                    // "Length-only rule"
-                    if (requiredTypeSize != foundTypeSize) {
-                        syntaxError("Packed literal size does not match expected type size");
-                        return typeFromToken;
-                    }
-                } else { //F1.0: replace "literal" with "constant" to match PRM terminology
-                    syntaxError(std::string("Packed literal cannot initialize ") + typeX2str(requiredType));
-                    return typeFromToken;
+                if (signSI.column >= 0) {
+                    syntaxError("Sign is not allowed before a typed literal", &signSI); //F1.0 unify err reporting
                 }
-            }
 
-            eatToken(ELParen);
-            unsigned elementType = typeFromToken & Brig::BRIG_TYPE_BASE_MASK;
-            unsigned elementBytes = getBrigTypeNumBytes(elementType);
-            unsigned numPackElem = foundTypeSize / getBrigTypeNumBits(elementType);
-            assert(numPackElem != 0);
-
-            for(unsigned i = 0; i < numPackElem; ++i) {
-                if (i) {
-                    eatToken(EComma);
+                if (isArrayType(requiredType) ||
+                    requiredType == Brig::BRIG_TYPE_INVALID ||
+                    requiredType == Brig::BRIG_TYPE_NONE) { // Malformed instruction; type cannot be identified
+                    requiredType = typeFromToken; // Use actual literal type and let validator handle errors
                 }
-                parseImmediate(data, elementType, pos + (numPackElem - i - 1) * elementBytes);
-            }
-            eatToken(ERParen);
 
-            return typeFromToken;
+                validateTypedImmConversion(requiredType, typeFromToken);
+
+                eatToken(ELParen);
+                unsigned elementType = typeFromToken & Brig::BRIG_TYPE_BASE_MASK;
+                unsigned elementBytes = getBrigTypeNumBytes(elementType);
+                unsigned numPackElem = getBrigTypeNumBits(typeFromToken) / getBrigTypeNumBits(elementType);
+                assert(numPackElem != 0);
+
+                for(unsigned i = 0; i < numPackElem; ++i) {
+                    if (i) {
+                        eatToken(EComma);
+                    }
+                    parseImmediate(data, elementType, pos + (numPackElem - i - 1) * elementBytes, UNTYPED_IMM);
+                }
+                eatToken(ERParen);
+
+                return typeFromToken;
+            }
         }
     case EF16Literal:
         parseFloatImmediate(data, requiredType, pos, m_scanner, &Scanner::readF16Literal, hasMinus, "f16");
@@ -1654,13 +1659,14 @@ unsigned Parser::parseImmediate(ArbitraryData *data, unsigned requiredType, size
         {
             uint64_t value = m_scanner.readIntLiteral(); // NB: error reporting must follow literal scanning to show correct position in scr code
 
-            if (requiredType == (unsigned)Brig::BRIG_TYPE_INVALID ||
-                requiredType == (unsigned)Brig::BRIG_TYPE_NONE) { // Malformed instruction; type cannot be identified
+            if (isArrayType(requiredType) ||
+                requiredType == Brig::BRIG_TYPE_INVALID ||
+                requiredType == Brig::BRIG_TYPE_NONE) { // Malformed instruction; type cannot be identified
                 requiredType = Brig::BRIG_TYPE_U64; // Use actual literal type and let validator handle errors
             } else if (isPackedType(requiredType) || 
                        isFloatType(requiredType)  || 
                        getBrigTypeNumBits(requiredType) > 64) {
-                syntaxError(std::string("Integer literal cannot initialize ") + typeX2str(requiredType));
+                syntaxError(std::string("Integer literal cannot initialize ") + typeX2str(requiredType)); //F1.0 unify err reporting
             }
 
             if (hasMinus) { value = (uint64_t) -(int64_t)value; }
@@ -1684,11 +1690,56 @@ unsigned Parser::parseImmediate(ArbitraryData *data, unsigned requiredType, size
                    isBitType(requiredType)?    bitType2uType(requiredType) :
                                                getUnsignedType(getBrigTypeNumBits(requiredType));
         }
+    case EKWImage:
+    case EKWSampler:    // This code is only needed to improve diagnostic
+        {   
+            assert(!isImageType(requiredType));
+            assert(!isSamplerType(requiredType));
+
+            SourceInfo const srcInfo = sourceInfo(peek());
+            unsigned const typeFromToken = eatToken(peek().kind() == EKWImage? EKWImage : EKWSampler);
+            validateTypedImmConversion(requiredType, typeFromToken);
+            assert(false);
+            return Brig::BRIG_TYPE_NONE;
+        }
+    
     default:
         eatToken(tokenAhead); // set error position
-        syntaxError("Constant value expected");
+        if (tokenAhead == ELCurl && requiredType != Brig::BRIG_TYPE_NONE) {
+            syntaxError(std::string("Aggregate constant cannot be converted to ") + type2str(requiredType));
+        } else {
+            syntaxError("Constant value expected");
+        }
         return Brig::BRIG_TYPE_NONE;
     }
+}
+
+//F1.0 Replace all conversion checks with this function
+//F1.0 Add version for untyped constants (which allow truncation)
+void Parser::validateTypedImmConversion(unsigned requiredType, unsigned actualType)
+{
+    assert(!isBitType(actualType));
+
+    if (requiredType == actualType) return;
+    if (requiredType == Brig::BRIG_TYPE_NONE) return; // No specific type expected
+
+    //F1.0 convert required type from 'b' to 'u' to improve diagnostics
+
+    unsigned const requiredTypeSize = isArrayType(requiredType)? 0 : getBrigTypeNumBits(requiredType);
+    unsigned const actualTypeSize   = isArrayType(actualType)?   0 : getBrigTypeNumBits(actualType);
+
+    if (isPackedType(actualType)) { 
+        if (isPackedType(requiredType) && actualType == requiredType) return;
+        if (isBitType(requiredType) && requiredTypeSize == actualTypeSize) return;
+    } else if (isFloatType(actualType)) {
+        if (isFloatType(requiredType) && actualType == requiredType) return;
+        if (isBitType(requiredType) && requiredTypeSize == actualTypeSize) return;
+    } else if (isSignedType(actualType) || isUnsignedType(actualType)) {
+        if ((isSignedType(requiredType) || isUnsignedType(requiredType)) && actualType == requiredType) return;
+        if (isBitType(requiredType) && requiredTypeSize == actualTypeSize) return;
+    }
+
+    syntaxError(std::string(type2str(actualType)) + " constant cannot be converted to " + type2str(requiredType));
 }
 
 Operand Parser::parseConstantGeneric(unsigned requiredType)

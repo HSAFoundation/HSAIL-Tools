@@ -253,7 +253,7 @@ public:
     }
 
     /// size of the section in bytes.
-    Offset size() const { return secHeader()->byteCount; }
+    Offset size() const { return (Offset)secHeader()->byteCount; }
 
     /// section data ptrs encapsulated in SRef
     SRef data() const { return SRef((const char*)m_data, (const char*)m_data + size()); }
@@ -408,7 +408,7 @@ public:
 
     SRef payload() const {
         return SRef(getData<char>(secHeader()->headerByteCount),
-               getData<char>(secHeader()->byteCount));
+               getData<char>((Offset)secHeader()->byteCount));
     }
 };
 
@@ -489,20 +489,25 @@ class WriteAdapter;
 class BrigContainer {
     // INSTANCE DATA
 private:
-    std::vector< std::unique_ptr<BrigSectionImpl> > m_sections;
+    typedef std::vector< std::unique_ptr<BrigSectionImpl> > SectionVector;
+    SectionVector m_sections;
 
+    const Brig::BrigModuleHeader* m_brigModuleHeader;
     std::vector<char> m_brigModuleBuffer;
+
+    void initSections(const Brig::BrigModuleHeader& brigModule,
+                      BrigContainer::SectionVector& secs);
+
 
 public:
 
-    BrigContainer();
+    bool isROContainer() const { return m_brigModuleHeader!=nullptr; }
+    bool isRWContainer() const { return !isROContainer(); }
+    bool hasOwnBuffer() const { return !m_brigModuleBuffer.empty(); }
 
-    BrigContainer(const void *dataData,
-                  const void *codeData,
-                  const void *operandData,
-                  const void *debugData = 0);
+    BrigContainer(); // RW container
 
-    BrigContainer(const Brig::BrigModule* brigModule);
+    BrigContainer(const Brig::BrigModuleHeader* brigModule); // RO container
 
     int validate(std::string *outErrorMessage, const SourceInfo **outSourceInfo);
     // Validate the structure of this BRIG container.
@@ -531,6 +536,8 @@ public:
     const BrigSectionImpl&     sectionById(int id) const {
         return *m_sections[id];
     }
+
+    int addSection(std::unique_ptr<BrigSectionImpl>&&);
 
     // Append a default-initialized item (i.e. an instruction, operand, directive or debug info) to
     // a corresponding section of this container, and return the appropriate item proxy.
@@ -567,12 +574,25 @@ public:
 
     void initSectionRaw(int index, SRef name);
 
-    const Brig::BrigModule* getBrigModule();
+    bool makeRO();
+
+    void setContents(std::vector<char>& buf);
+
+    const Brig::BrigModuleHeader* getBrigModuleHeader() const {
+        assert(isROContainer());
+        return m_brigModuleHeader;
+    }
+
+    Brig::BrigModule_t getBrigModule() {
+        makeRO();
+        // TODO should be const
+        return const_cast<Brig::BrigModuleHeader*>(getBrigModuleHeader());
+    }
 
     bool write(WriteAdapter& w) const;
 };
 
-bool readContainer(ReadAdapter& r, BrigContainer& c);
+bool readContainer(ReadAdapter& r, BrigContainer& c, bool writeable=false);
 
 // non-const
 inline DataSection& BrigContainer::strings()  {

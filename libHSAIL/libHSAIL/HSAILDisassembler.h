@@ -115,6 +115,7 @@ public:
         return "";
       }
     }
+    static std::string getInstMnemonic(Inst inst, unsigned model, unsigned profile);
 
     void log(std::ostream &s);                 // Request errors logging into stream s
     bool hasError() const { return hasErr; }   // Return error flag

@@ -87,6 +87,7 @@ bool     isDecl(Directive d);
 bool     isDef(Directive d);
 DirectiveVariable getInputArg(DirectiveExecutable kernel, unsigned idx);
 uint64_t getVariableNumBytes(DirectiveVariable var);
+unsigned getVariableAlignment(DirectiveVariable var);
 unsigned getCtlDirOperandType(unsigned kind, unsigned idx);
 const char* validateCtlDirOperandBounds(unsigned kind, unsigned idx, uint64_t val);
 bool allowCtlDirOperandWs(unsigned kind);
@@ -226,6 +227,19 @@ size_t     align(size_t s, size_t pow2);
 size_t     zeroPaddedCopy(void *dst, const void* src, size_t len, size_t room);
 
 //============================================================================
+
+const Brig::BrigSectionHeader* getBrigSection(
+    Brig::BrigModule_t brigModule,
+    unsigned index);
+
+inline 
+const Brig::BrigSectionHeader* getBrigSection(
+    const Brig::BrigModuleHeader& brigModule,
+    unsigned index) {
+    // TODO remove const_cast
+    return getBrigSection(const_cast<Brig::BrigModuleHeader*>(&brigModule),
+                          index);
+}
 
 } // end namespace
 

@@ -57,6 +57,9 @@
 #include <sstream>
 #include <iostream>
 #include <cstdio>
+#include <map>
+
+using std::map;
 
 namespace HSAIL_ASM {
 
@@ -658,6 +661,22 @@ struct FileAdapter : public ReadWriteAdapter {
             return 0;
         }
     }
+    virtual Position getSize() const {
+        Position pos = getPos();
+        if (((int64_t)pos) < 0) return (Position)-1;
+
+        int ok = fseek(fd, (long)0, SEEK_END);
+        if (ok != 0) return (Position)-1;
+        
+        Position size = getPos();
+        if (((int64_t)size) < 0) return (Position)-1;
+
+        ok = fseek(fd, (long)pos, SEEK_SET);
+        if (ok != 0) return (Position)-1;
+
+        return size;
+    }
+
     virtual Position getPos() const {
         return (Position)ftell(fd);
     }
@@ -867,10 +886,19 @@ std::unique_ptr<ReadAdapter> BrigIO::istreamReadingAdapter(
             new istreamAdapter(is, errs));
 }
 
+std::unique_ptr<WriteAdapter> BrigIO::vectorWritingAdapter(
+                    std::vector<char>& v,
+                    std::ostream&      errs) {
+    return std::unique_ptr<WriteAdapter>(
+            new VectorAdapter(v, errs));
+}
+
 int BrigIO::load(BrigContainer &dst,
                  int           fmt,
                  ReadAdapter&  src)
 {
+    if (validate(fmt, src)) return 1;
+
     unsigned char ident[16];
     if (0 != src.pread((char*)ident, 16, 0)) {
         return 1;
@@ -888,7 +916,7 @@ int BrigIO::load(BrigContainer &dst,
         return impl.readContainer(dst, &src);
         }
     default:
-        src.errs << "Invalid ELFCLASS" << std::endl;
+        src.errs << "Unsupported file format" << std::endl;
         return 1;
     }
 }
@@ -902,6 +930,138 @@ int BrigIO::save(BrigContainer &src,
     } 
     BrigIOImpl<Elf32Policy> impl(fmt);
     return impl.writeContainer(&dst, src);
+}
+
+// --------------------------------------------------------------------------------
+// BRIG FORMAT VALIDATOR
+
+#define MODULE_SIZE_ALIGNMENT               (16)
+#define MODULE_SECTION_ALIGNMENT            (16)
+#define MODULE_SECTION_SIZE_ALIGNMENT        (4)
+#define MODULE_INDEX_ALIGNMENT               (8)
+#define MAX_PREDEFINED_SECTION_NAME_LENGTH  (16)
+
+#define VALIDATE(cond, msg) if (!(cond)) { fd.errs << msg << std::endl; return 1; }
+
+typedef map<uint64_t, uint64_t> ModuleMap;
+
+int BrigIO::validate(int            fmt,
+                     ReadAdapter&   fd)
+{
+    using namespace Brig;
+    Brig::BrigModuleHeader moduleHdr;
+    ModuleMap map;
+
+    if (fmt != FILE_FORMAT_AUTO && fmt != FILE_FORMAT_BRIG) return 0;
+
+    uint64_t fileSize = (uint64_t)fd.getSize();
+    VALIDATE(fileSize != (uint64_t)-1, "Filed to read file size");
+
+    VALIDATE(fileSize > sizeof(Brig::BrigModuleHeader), "File is too small for BRIG or ELF");
+    VALIDATE(fd.pread((char*)&moduleHdr, sizeof(Brig::BrigModuleHeader), 0) == 0, "Failed to read BrigModuleHeader");
+
+    if (memcmp("HSA BRIG", moduleHdr.identification, MODULE_IDENTIFICATION_LENGTH) != 0) {
+        if (fmt == FILE_FORMAT_AUTO) return 0;
+        VALIDATE(false, "Unsupported file format");
+    }
+
+    uint64_t secIdxSize = moduleHdr.sectionCount * sizeof(uint64_t);
+
+    VALIDATE(moduleHdr.brigMajor == BRIG_VERSION_BRIG_MAJOR,        "Unsupported major BRIG version");
+    VALIDATE(moduleHdr.brigMinor <= BRIG_VERSION_BRIG_MINOR,        "Unsupported minor BRIG version");
+    VALIDATE(moduleHdr.byteCount == fileSize,                       "Invalid BrigModuleHeader.size: must be equal to BRIG size");
+    VALIDATE(moduleHdr.byteCount % MODULE_SIZE_ALIGNMENT == 0,      "Invalid BRIG module size: must be a multiple of " << MODULE_SIZE_ALIGNMENT);
+    VALIDATE(moduleHdr.reserved == 0,                               "Invalid BrigModuleHeader.reserved: must be zero");
+    VALIDATE(moduleHdr.sectionCount >= 3,                           "Invalid BrigModuleHeader.sectionCount: must be greater than or equal to 3");
+    VALIDATE(moduleHdr.sectionIndex % MODULE_INDEX_ALIGNMENT == 0,  "Invalid BrigModuleHeader.sectionIndex: must be a multiple of " << MODULE_INDEX_ALIGNMENT);
+    VALIDATE(moduleHdr.sectionIndex < fileSize,                     "Invalid BrigModuleHeader.sectionIndex: position of section index is outside of BRIG module");
+    VALIDATE(secIdxSize <= fileSize - moduleHdr.sectionIndex,       "Invalid BrigModuleHeader.sectionIndex: section index does not fit into BRIG module");
+
+    map[0]                      = sizeof(Brig::BrigModuleHeader);
+    map[moduleHdr.sectionIndex] = moduleHdr.sectionCount * sizeof(uint64_t);
+
+    uint64_t sectionSize;
+    uint64_t sectionOffset;
+    for (unsigned idx = 0; idx < moduleHdr.sectionCount; ++idx)
+    {
+        VALIDATE(fd.pread((char*)&sectionOffset, sizeof(uint64_t), moduleHdr.sectionIndex + idx * sizeof(uint64_t)) == 0, "Failed to read section index");
+        sectionSize = validateSection(fd, idx, sectionOffset, fileSize);
+        if (sectionSize == 1) return 1;
+        
+        VALIDATE(map.count(sectionOffset) == 0, "BRIG module elements must not overlap");
+        map[sectionOffset] = sectionSize;
+    }
+
+    uint64_t actualSize = 0;
+
+    // Each section must start immediately after the previous one
+    // Gaps between sections are only allowed to satisfy the required alignment
+    for (ModuleMap::iterator it = map.begin(); it != map.end(); ++it)
+    {
+        uint64_t nextPos;
+        uint64_t pos = it->first + it->second;
+        assert(pos <= fileSize);
+
+        for (nextPos = pos; nextPos - pos < MODULE_SECTION_ALIGNMENT && nextPos < fileSize && map.count(nextPos) == 0; ++nextPos);
+
+        VALIDATE(nextPos == fileSize || map.count(nextPos) != 0, "BRIG module elements must follow each other without gaps and overlapping");
+        VALIDATE(nextPos != moduleHdr.sectionIndex || 
+                 nextPos - pos < MODULE_INDEX_ALIGNMENT,         "Gaps between BRIG module elements are only allowed to satisfy alignment requirements");
+
+        actualSize += it->second + (nextPos - pos);
+
+        for (; pos < nextPos; ++pos)
+        {
+            char pad;
+            VALIDATE(fd.pread(&pad, 1, pos) == 0, "Failed to read section alignment bytes");
+            VALIDATE(pad == 0,                    "Padding between BRIG module elements must be filled with zero");
+        }
+    }
+
+    // This is to make sure there are no nested elements
+    VALIDATE(actualSize == fileSize, "BRIG module elements must not overlap");
+
+    return 0;
+}
+
+uint64_t BrigIO::validateSection(ReadAdapter&    fd, 
+                                 unsigned        sectionIndex,
+                                 uint64_t        sectionOffset,
+                                 uint64_t        fileSize)
+{
+    Brig::BrigSectionHeader sectionHeader;
+
+    VALIDATE(sectionOffset % MODULE_SECTION_ALIGNMENT == 0,                                         "Invalid section offset: must be a multiple of " << MODULE_SECTION_ALIGNMENT);
+    VALIDATE(sectionOffset < fileSize,                                                              "Invalid section offset: section offset is outside of BRIG module");
+    VALIDATE(fileSize - sectionOffset > sizeof(Brig::BrigSectionHeader),                            "Invalid section offset: section header does not fit into BRIG module");
+    VALIDATE(fd.pread((char*)&sectionHeader, sizeof(Brig::BrigSectionHeader), sectionOffset) == 0,  "Failed to read section header");
+    VALIDATE(sectionHeader.byteCount % MODULE_SECTION_SIZE_ALIGNMENT == 0,                          "Invalid section size: must be a multiple of " << MODULE_SECTION_SIZE_ALIGNMENT);
+    VALIDATE(fileSize - sectionOffset >= sectionHeader.byteCount,                                   "Invalid section size: section does not fit into BRIG module");
+
+    VALIDATE(sectionHeader.headerByteCount % MODULE_SECTION_SIZE_ALIGNMENT == 0,                    "Invalid section header size: must be a multiple of " << MODULE_SECTION_SIZE_ALIGNMENT);
+    VALIDATE(sectionHeader.headerByteCount <= sectionHeader.byteCount,                              "Invalid section header size: header size must not exceed section size");
+
+    VALIDATE(sectionHeader.headerByteCount - sizeof(Brig::BrigSectionHeader) >= sectionHeader.nameLength - 1, "Invalid section name: name does not fit into section header");
+
+    const char* name = 0;
+    switch (sectionIndex)
+    {
+    case Brig::BRIG_SECTION_INDEX_DATA:     name = "hsa_data";    break;
+    case Brig::BRIG_SECTION_INDEX_CODE:     name = "hsa_code";    break;
+    case Brig::BRIG_SECTION_INDEX_OPERAND:  name = "hsa_operand"; break;
+    }
+
+    if (strlen(name) > 0)
+    {
+        assert(strlen(name) < MAX_PREDEFINED_SECTION_NAME_LENGTH);
+        char buf[MAX_PREDEFINED_SECTION_NAME_LENGTH];
+        VALIDATE(fd.pread((char*)&buf, strlen(name), sectionOffset + offsetof(Brig::BrigSectionHeader, name)) == 0, "Failed to read section name");
+        VALIDATE(sectionHeader.nameLength == strlen(name) && memcmp(name, buf, strlen(name)) == 0, "Invalid name of a standard section");
+    }
+
+    //NB: validation of other section requirements are performed by HSAILValidator
+
+    return sectionHeader.byteCount;
 }
 
 }

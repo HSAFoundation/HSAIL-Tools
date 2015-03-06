@@ -1864,6 +1864,11 @@ private:
         {
             context.checkLabelUse(owner, sym);
         }
+        else if (DirectiveModule(sym))
+        {
+            assert(DirectivePragma(owner));
+            //F1.0
+        }
         else
         {
             assert(false);
@@ -1938,16 +1943,14 @@ private:
 
     void validateModule() const
     {
-        const Brig::BrigModule* module = getBrigModule();
-
-        if (module->sectionCount < 3) throw BrigFormatError("Module must include at least 3 sections");
+        if (brig.getNumSections() < 3) throw BrigFormatError("Module must include at least 3 sections");
     }
 
     void validateSection(int section)
     {
         const Brig::BrigSectionHeader* header = getSectionHeader(section);
 
-        uint32_t secSize = header->byteCount;
+        uint32_t secSize = (uint32_t)header->byteCount; //F1.0 validate that section size does not exceed 32 bit
         uint32_t hdrSize = header->headerByteCount;
         uint32_t nameLength = header->nameLength;
 
@@ -2086,7 +2089,8 @@ private:
             case BRIG_KIND_OPERAND_CODE_REF: {
                 OperandCodeRef ref = opr;
                 Code sym = ref.ref();
-                validate(d, DirectiveVariable(sym) ||
+                validate(d, DirectiveModule(sym) ||
+                            DirectiveVariable(sym) ||
                             DirectiveFbarrier(sym) ||
                             DirectiveLabel(sym) ||
                             DirectiveExecutable(sym), "Invalid operand of pragma directive");
@@ -2162,12 +2166,15 @@ private:
             validatePragma(d);
             break;
 
+        case BRIG_KIND_DIRECTIVE_MODULE: //F1.0
+            validateName(d, "&");
+            break;
+
         // Need no additional checks
         case BRIG_KIND_DIRECTIVE_ARG_BLOCK_START:   break;
         case BRIG_KIND_DIRECTIVE_ARG_BLOCK_END:     break;
         case BRIG_KIND_DIRECTIVE_EXTENSION:         break;
         case BRIG_KIND_DIRECTIVE_LOC:               break;
-        case BRIG_KIND_DIRECTIVE_MODULE:            break;
 
         default:
             // should not get here!
@@ -2637,8 +2644,10 @@ private:
 
         uint64_t dim           = getArraySize(sym);        
         unsigned elemSize      = getBrigTypeNumBytes(sym.elementType());
-        uint64_t aggregateSize = getAggregateNumBytes(sym.init());
+        uint64_t aggregateSize = getAggregateNumBytes(init);
 
+        validate(init, init.elementCount() != 0, "An aggregate constant must include at least one element");
+        validate(init, aggregateSize != 0, "An aggregate constant cannot consist of only alignment request elements");
         validate(init, (aggregateSize % elemSize) == 0, "Invalid initializer size, must be a multiple of array element type size");
         validate(init, sym.dim() * elemSize == aggregateSize, "Initializer size does not match array size"); //F1.0 "sym.dim() * elemSize" may cause overflow; add positive tests
     }
@@ -2657,7 +2666,7 @@ private:
                 s << "an aggregate constant";
                 if (init) s << " (OperandConstantOperandList with type 'none')";
             } else if (isArrayType(expectedType)) {
-                s << typeX2str(arrayType2elementType(expectedType)) << " array constant";
+                s << typeX2str(arrayType2elementType(expectedType)) << " array constant"; //F1.0 "array" -> "[]"
             } else {
                 s << typeX2str(expectedType) << " constant";
             }
@@ -3185,8 +3194,7 @@ private:
 
     //-------------------------------------------------------------------------
     // Access to Brig module
-
-    const Brig::BrigModule* getBrigModule() const { return brig.getBrigModule(); }
+    // const BrigModule_t getBrigModule() const { return brig.getBrigModule(); }
 
     //-------------------------------------------------------------------------
     // Access to Brig sections
@@ -3194,7 +3202,7 @@ private:
     const Brig::BrigSectionHeader* getSectionHeader(int section) const
     {
         assert(0 <= section && section < BRIG_NUM_SECTIONS);
-        return getBrigModule()->section[section];
+        return brig.sectionById(section).secHeader();
     }
 
     const char* getSectionAddr(int section, unsigned offset) const
@@ -3216,7 +3224,7 @@ private:
 
     unsigned getSectionSize(int section) const
     {
-        return getSectionHeader(section)->byteCount;
+        return (Offset)getSectionHeader(section)->byteCount;
     }
 
     string getSectionName(int section) const
