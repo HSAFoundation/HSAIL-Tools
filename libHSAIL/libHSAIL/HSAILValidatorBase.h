@@ -130,9 +130,8 @@ public:
 
     template<class T> unsigned getRoundEx(T inst)
     {
-        if      (InstCmp   i = inst) return i.modifier().round();
-        else if (InstCvt   i = inst) return i.modifier().round();
-        else if (InstMod   i = inst) return i.modifier().round();
+        if      (InstCvt   i = inst) return i.round();
+        else if (InstMod   i = inst) return i.round();
         else if (InstBasic i = inst) return getDefRounding(i, mModel, mProfile);
         assert(false);               return Brig::BRIG_ROUND_NONE;
     }
@@ -166,8 +165,8 @@ private:
 private:
     bool validateDstVector(Inst inst, OperandOperandList vector, unsigned oprIdx, bool isAssert);
     bool validateOperandType(Inst inst, unsigned oprIdx, bool isDst, unsigned attr, bool isAssert);
-    bool validateOperandReg(Inst inst, OperandReg opr, unsigned oprIdx, unsigned type, unsigned attr, bool isAssert);
-    bool validateOperandImmed(Inst inst, OperandData opr, unsigned oprIdx, unsigned type, unsigned attr, bool isAssert);
+    bool validateOperandReg(Inst inst, OperandRegister opr, unsigned oprIdx, unsigned type, unsigned attr, bool isAssert);
+    bool validateOperandImmed(Inst inst, OperandConstantBytes opr, unsigned oprIdx, unsigned type, unsigned attr, bool isAssert);
     bool validateOperandWavesize(Inst inst, unsigned oprIdx, unsigned type, unsigned attr, bool isAssert);
     bool validateOperandVector(Inst inst, OperandOperandList opr, unsigned oprIdx, unsigned type, unsigned attr, bool isAssert);
     bool validateInstTypeSize(Inst inst, unsigned type, const char* typeName, bool isAssert);
@@ -178,8 +177,8 @@ private:
     string getErrHeader(unsigned oprIdx, const char* oprPref);
     void operandError(Inst inst, unsigned oprIdx, string msg1, string msg2 = "");
     void wavesizeError(Inst inst, unsigned oprIdx, unsigned type, unsigned attr);
-    void operandTypeError(Inst inst, unsigned oprIdx, unsigned type);
     void operandSizeError(Inst inst, unsigned oprIdx, unsigned type, unsigned attr);
+    void immTypeError(Inst inst, unsigned oprIdx, unsigned type, unsigned expectedType, bool isB1Error);
 
 }; // class PropValidator
 

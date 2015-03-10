@@ -1270,10 +1270,10 @@ make "HSAILBrigPropsVisitor_gen.hpp", \&makeBrigPropsVisitor;
 make "HSAILBrigPropsName_gen.hpp", \&makeBrigPropsName;
 make "HSAILBrigInstUtils_gen.hpp", \&makeBrigInstUtils;
 
-if ($genextra) {
+#if ($genextra) {
     make "HSAILEnums.td", \&makeLLVMEnums;
     make "HSAILOperandPrinters.inc", \&makeLLVMPrinters;
-}
+#}
 
 for my $s (values %scanner) {
     my $text;

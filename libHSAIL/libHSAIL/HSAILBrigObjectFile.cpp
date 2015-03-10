@@ -57,6 +57,9 @@
 #include <sstream>
 #include <iostream>
 #include <cstdio>
+#include <map>
+
+using std::map;
 
 namespace HSAIL_ASM {
 
@@ -250,6 +253,17 @@ IOAdapter::~IOAdapter() {
 WriteAdapter::~WriteAdapter() {
 }
 
+int WriteAdapter::writeAlignPad(unsigned pow2) {
+    const char zeropad[] = "\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0";
+    size_t const p = (size_t)getPos();
+    size_t const numBytesWrite = align(p, pow2) - p;
+    if (numBytesWrite > 0) {
+        assert(numBytesWrite <= sizeof zeropad);
+        return write((const char*)zeropad, numBytesWrite);
+    }
+    return 0;
+}
+
 ReadAdapter::~ReadAdapter() {
 }
 
@@ -317,7 +331,7 @@ public:
 
             std::vector<char> data;
             if (readSection(data, s, i)) return 1;
-
+            
             bool includesHeader =
                   desc->sectionId < Brig::BRIG_SECTION_INDEX_IMPLEMENTATION_DEFINED;
             if (c.loadSection(desc->sectionId, data, includesHeader, s->errs)) {
@@ -543,6 +557,7 @@ private:
 
 // FILE ADAPTER
 
+#if 0
 struct FileAdapter : public ReadWriteAdapter {
     mutable int fd;
     FileAdapter(std::ostream& errs_)
@@ -574,6 +589,12 @@ struct FileAdapter : public ReadWriteAdapter {
         } else {
             return 0;
         }
+    }
+    virtual Position getPos() const {
+        return ::LSEEK(fd, 0, SEEK_CUR);
+    }
+    virtual void setPos(Position ofs) {
+        int64_t lrc = ::LSEEK(fd, ofs, SEEK_SET);
     }
     virtual int write(const char* data, size_t numBytes) const {
         int res = ::write(fd, data, (unsigned)numBytes);
@@ -611,19 +632,115 @@ struct FileAdapter : public ReadWriteAdapter {
         }
     }
 };
+#else
+struct FileAdapter : public ReadWriteAdapter {
+    mutable FILE* fd;
+    FileAdapter(std::ostream& errs_)
+        : IOAdapter(errs_)
+        , ReadWriteAdapter(errs_)
+        , fd(nullptr)
+    {
+    }
+    static void printErr(std::ostream& s) {
+        s << "Error " << errno << " (" << strerror(errno) << ")";
+    }
+    int open(const char* filename, bool forWriting) {
+        fd = fopen(filename, forWriting ? "wb+" : "rb");
+        if (!fd) {
+            printErr(errs);
+            errs << " opening \"" << filename << "\"" << std::endl;
+            return 1;
+        }
+        return 0;
+    }
+    int check1(int val) const {
+        if (val < 0) {
+            printErr(errs);
+            return 1;
+        } else {
+            return 0;
+        }
+    }
+    virtual Position getSize() const {
+        Position pos = getPos();
+        if (((int64_t)pos) < 0) return (Position)-1;
+
+        int ok = fseek(fd, (long)0, SEEK_END);
+        if (ok != 0) return (Position)-1;
+        
+        Position size = getPos();
+        if (((int64_t)size) < 0) return (Position)-1;
+
+        ok = fseek(fd, (long)pos, SEEK_SET);
+        if (ok != 0) return (Position)-1;
+
+        return size;
+    }
+
+    virtual Position getPos() const {
+        return (Position)ftell(fd);
+    }
+    virtual void setPos(Position ofs) {
+        fseek(fd, 0, SEEK_SET);
+    }
+    virtual int write(const char* data, size_t numBytes) const {
+        size_t const res = fwrite(data, 1, numBytes, fd);
+        if (check1((int)res)) {
+            errs << " writing" << std::endl;
+            return 1;
+        }
+        if (res != numBytes) {
+            errs << "Wrote " << res << " bytes instead of " << numBytes << std::endl;
+            return 1;
+        }
+        return 0;
+    }
+    virtual int pread(char* data, size_t numBytes, uint64_t offset) const {
+        if (check1(fseek(fd, (long)offset, SEEK_SET))) return 1;
+        size_t const rc = fread(data, 1, numBytes, fd);
+        if (check1((int)rc)) {
+            errs << " reading" << std::endl;
+            return 1;
+        }
+        if (rc != numBytes) {
+            errs << "Read " << rc << " bytes instead of " << numBytes << std::endl;
+            return 1;
+        }
+        return 0;
+    }
+    ~FileAdapter() {
+        if (fd) {
+            fclose(fd);
+        }
+    }
+};
+#endif
 
 // MEMORY ADAPTER
 
 struct VectorAdapter : public ReadWriteAdapter {
     std::vector<char> &buf;
+    mutable size_t     pos;
     VectorAdapter(std::vector<char> &buf_, std::ostream &errs_)
         : IOAdapter(errs_)
         , ReadWriteAdapter(errs_)
         , buf(buf_)
+        , pos(0)
     {
     }
+    virtual Position getPos() const { 
+        return pos;
+    }
+    virtual void setPos(Position p) {
+        pos = (size_t)p;
+    }
     virtual int write(const char* data, size_t numBytes) const {
-        buf.insert(buf.end(), data, data + numBytes);
+        size_t newSize = pos + numBytes;
+        if (newSize > buf.size()) {
+            buf.resize(newSize);
+        }
+        std::copy(data, data + numBytes, buf.begin() + pos);
+        pos += numBytes;
         return 0;
     }
     virtual int pread(char* data, size_t numBytes, uint64_t offset) const {
@@ -650,6 +767,12 @@ struct MemoryAdapter : public ReadWriteAdapter {
         , bufSize(bufSize_)
         , pos(0)
     {
+    }
+    virtual Position getPos() const { 
+        return pos;
+    }
+    virtual void setPos(Position p) {
+        pos = (size_t)p;
     }
     virtual int write(const char* data, size_t numBytes) const {
         if (pos + numBytes > bufSize) {
@@ -682,6 +805,14 @@ struct istreamAdapter : public ReadAdapter {
         , is(is_)
     {}
     ~istreamAdapter() {}
+
+    virtual Position getPos() const {
+        return (Position)is.tellg();
+    }
+
+    virtual void setPos(Position p) {
+        is.seekg(static_cast<std::streamoff>(p), std::ios_base::beg);
+    }
 
     virtual int pread(char* data, size_t numBytes, uint64_t offset) const {
         if ((offset + numBytes) > static_cast<uint64_t>((std::numeric_limits<std::streamoff>::max)())) {
@@ -755,13 +886,25 @@ std::unique_ptr<ReadAdapter> BrigIO::istreamReadingAdapter(
             new istreamAdapter(is, errs));
 }
 
+std::unique_ptr<WriteAdapter> BrigIO::vectorWritingAdapter(
+                    std::vector<char>& v,
+                    std::ostream&      errs) {
+    return std::unique_ptr<WriteAdapter>(
+            new VectorAdapter(v, errs));
+}
+
 int BrigIO::load(BrigContainer &dst,
                  int           fmt,
                  ReadAdapter&  src)
 {
+    if (validate(fmt, src)) return 1;
+
     unsigned char ident[16];
     if (0 != src.pread((char*)ident, 16, 0)) {
         return 1;
+    }
+    if (memcmp("HSA BRIG", ident, 8)==0) {
+        return HSAIL_ASM::readContainer(src, dst) ? 0 : 1;
     }
     switch(ident[EI_CLASS]) {
     case Elf32Policy::ELFCLASS: {
@@ -773,7 +916,7 @@ int BrigIO::load(BrigContainer &dst,
         return impl.readContainer(dst, &src);
         }
     default:
-        src.errs << "Invalid ELFCLASS" << std::endl;
+        src.errs << "Unsupported file format" << std::endl;
         return 1;
     }
 }
@@ -782,8 +925,143 @@ int BrigIO::save(BrigContainer &src,
                  int           fmt,
                  WriteAdapter& dst)
 {
+    if (fmt == FILE_FORMAT_BRIG) {
+        return src.write(dst) ? 0 : 1;
+    } 
     BrigIOImpl<Elf32Policy> impl(fmt);
     return impl.writeContainer(&dst, src);
+}
+
+// --------------------------------------------------------------------------------
+// BRIG FORMAT VALIDATOR
+
+#define MODULE_SIZE_ALIGNMENT               (16)
+#define MODULE_SECTION_ALIGNMENT            (16)
+#define MODULE_SECTION_SIZE_ALIGNMENT        (4)
+#define MODULE_INDEX_ALIGNMENT               (8)
+#define MAX_PREDEFINED_SECTION_NAME_LENGTH  (16)
+
+#define VALIDATE(cond, msg) if (!(cond)) { fd.errs << msg << std::endl; return 1; }
+
+typedef map<uint64_t, uint64_t> ModuleMap;
+
+int BrigIO::validate(int            fmt,
+                     ReadAdapter&   fd)
+{
+    using namespace Brig;
+    Brig::BrigModuleHeader moduleHdr;
+    ModuleMap map;
+
+    if (fmt != FILE_FORMAT_AUTO && fmt != FILE_FORMAT_BRIG) return 0;
+
+    uint64_t fileSize = (uint64_t)fd.getSize();
+    VALIDATE(fileSize != (uint64_t)-1, "Filed to read file size");
+
+    VALIDATE(fileSize > sizeof(Brig::BrigModuleHeader), "File is too small for BRIG or ELF");
+    VALIDATE(fd.pread((char*)&moduleHdr, sizeof(Brig::BrigModuleHeader), 0) == 0, "Failed to read BrigModuleHeader");
+
+    if (memcmp("HSA BRIG", moduleHdr.identification, MODULE_IDENTIFICATION_LENGTH) != 0) {
+        if (fmt == FILE_FORMAT_AUTO) return 0;
+        VALIDATE(false, "Unsupported file format");
+    }
+
+    uint64_t secIdxSize = moduleHdr.sectionCount * sizeof(uint64_t);
+
+    VALIDATE(moduleHdr.brigMajor == BRIG_VERSION_BRIG_MAJOR,        "Unsupported major BRIG version");
+    VALIDATE(moduleHdr.brigMinor <= BRIG_VERSION_BRIG_MINOR,        "Unsupported minor BRIG version");
+    VALIDATE(moduleHdr.byteCount == fileSize,                       "Invalid BrigModuleHeader.size: must be equal to BRIG size");
+    VALIDATE(moduleHdr.byteCount % MODULE_SIZE_ALIGNMENT == 0,      "Invalid BRIG module size: must be a multiple of " << MODULE_SIZE_ALIGNMENT);
+    VALIDATE(moduleHdr.reserved == 0,                               "Invalid BrigModuleHeader.reserved: must be zero");
+    VALIDATE(moduleHdr.sectionCount >= 3,                           "Invalid BrigModuleHeader.sectionCount: must be greater than or equal to 3");
+    VALIDATE(moduleHdr.sectionIndex % MODULE_INDEX_ALIGNMENT == 0,  "Invalid BrigModuleHeader.sectionIndex: must be a multiple of " << MODULE_INDEX_ALIGNMENT);
+    VALIDATE(moduleHdr.sectionIndex < fileSize,                     "Invalid BrigModuleHeader.sectionIndex: position of section index is outside of BRIG module");
+    VALIDATE(secIdxSize <= fileSize - moduleHdr.sectionIndex,       "Invalid BrigModuleHeader.sectionIndex: section index does not fit into BRIG module");
+
+    map[0]                      = sizeof(Brig::BrigModuleHeader);
+    map[moduleHdr.sectionIndex] = moduleHdr.sectionCount * sizeof(uint64_t);
+
+    uint64_t sectionSize;
+    uint64_t sectionOffset;
+    for (unsigned idx = 0; idx < moduleHdr.sectionCount; ++idx)
+    {
+        VALIDATE(fd.pread((char*)&sectionOffset, sizeof(uint64_t), moduleHdr.sectionIndex + idx * sizeof(uint64_t)) == 0, "Failed to read section index");
+        sectionSize = validateSection(fd, idx, sectionOffset, fileSize);
+        if (sectionSize == 1) return 1;
+        
+        VALIDATE(map.count(sectionOffset) == 0, "BRIG module elements must not overlap");
+        map[sectionOffset] = sectionSize;
+    }
+
+    uint64_t actualSize = 0;
+
+    // Each section must start immediately after the previous one
+    // Gaps between sections are only allowed to satisfy the required alignment
+    for (ModuleMap::iterator it = map.begin(); it != map.end(); ++it)
+    {
+        uint64_t nextPos;
+        uint64_t pos = it->first + it->second;
+        assert(pos <= fileSize);
+
+        for (nextPos = pos; nextPos - pos < MODULE_SECTION_ALIGNMENT && nextPos < fileSize && map.count(nextPos) == 0; ++nextPos);
+
+        VALIDATE(nextPos == fileSize || map.count(nextPos) != 0, "BRIG module elements must follow each other without gaps and overlapping");
+        VALIDATE(nextPos != moduleHdr.sectionIndex || 
+                 nextPos - pos < MODULE_INDEX_ALIGNMENT,         "Gaps between BRIG module elements are only allowed to satisfy alignment requirements");
+
+        actualSize += it->second + (nextPos - pos);
+
+        for (; pos < nextPos; ++pos)
+        {
+            char pad;
+            VALIDATE(fd.pread(&pad, 1, pos) == 0, "Failed to read section alignment bytes");
+            VALIDATE(pad == 0,                    "Padding between BRIG module elements must be filled with zero");
+        }
+    }
+
+    // This is to make sure there are no nested elements
+    VALIDATE(actualSize == fileSize, "BRIG module elements must not overlap");
+
+    return 0;
+}
+
+uint64_t BrigIO::validateSection(ReadAdapter&    fd, 
+                                 unsigned        sectionIndex,
+                                 uint64_t        sectionOffset,
+                                 uint64_t        fileSize)
+{
+    Brig::BrigSectionHeader sectionHeader;
+
+    VALIDATE(sectionOffset % MODULE_SECTION_ALIGNMENT == 0,                                         "Invalid section offset: must be a multiple of " << MODULE_SECTION_ALIGNMENT);
+    VALIDATE(sectionOffset < fileSize,                                                              "Invalid section offset: section offset is outside of BRIG module");
+    VALIDATE(fileSize - sectionOffset > sizeof(Brig::BrigSectionHeader),                            "Invalid section offset: section header does not fit into BRIG module");
+    VALIDATE(fd.pread((char*)&sectionHeader, sizeof(Brig::BrigSectionHeader), sectionOffset) == 0,  "Failed to read section header");
+    VALIDATE(sectionHeader.byteCount % MODULE_SECTION_SIZE_ALIGNMENT == 0,                          "Invalid section size: must be a multiple of " << MODULE_SECTION_SIZE_ALIGNMENT);
+    VALIDATE(fileSize - sectionOffset >= sectionHeader.byteCount,                                   "Invalid section size: section does not fit into BRIG module");
+
+    VALIDATE(sectionHeader.headerByteCount % MODULE_SECTION_SIZE_ALIGNMENT == 0,                    "Invalid section header size: must be a multiple of " << MODULE_SECTION_SIZE_ALIGNMENT);
+    VALIDATE(sectionHeader.headerByteCount <= sectionHeader.byteCount,                              "Invalid section header size: header size must not exceed section size");
+
+    VALIDATE(sectionHeader.headerByteCount - sizeof(Brig::BrigSectionHeader) >= sectionHeader.nameLength - 1, "Invalid section name: name does not fit into section header");
+
+    const char* name = 0;
+    switch (sectionIndex)
+    {
+    case Brig::BRIG_SECTION_INDEX_DATA:     name = "hsa_data";    break;
+    case Brig::BRIG_SECTION_INDEX_CODE:     name = "hsa_code";    break;
+    case Brig::BRIG_SECTION_INDEX_OPERAND:  name = "hsa_operand"; break;
+    }
+
+    if (strlen(name) > 0)
+    {
+        assert(strlen(name) < MAX_PREDEFINED_SECTION_NAME_LENGTH);
+        char buf[MAX_PREDEFINED_SECTION_NAME_LENGTH];
+        VALIDATE(fd.pread((char*)&buf, strlen(name), sectionOffset + offsetof(Brig::BrigSectionHeader, name)) == 0, "Failed to read section name");
+        VALIDATE(sectionHeader.nameLength == strlen(name) && memcmp(name, buf, strlen(name)) == 0, "Invalid name of a standard section");
+    }
+
+    //NB: validation of other section requirements are performed by HSAILValidator
+
+    return sectionHeader.byteCount;
 }
 
 }

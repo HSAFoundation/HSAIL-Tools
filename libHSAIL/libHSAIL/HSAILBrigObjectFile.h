@@ -70,6 +70,11 @@ public:
     std::ostream& errs;
     ///
 
+    typedef uint64_t Position;
+
+    virtual Position getPos() const = 0;
+    virtual void setPos(Position) = 0;
+
     IOAdapter(std::ostream& errs_)
         : errs(errs_)
     {
@@ -83,11 +88,38 @@ class WriteAdapter : public virtual IOAdapter {
 public:
     WriteAdapter(std::ostream& errs_)
         : IOAdapter(errs_)
-    {
-    }
+    {}
+    virtual ~WriteAdapter() = 0;
     virtual int write(const char* data, size_t numBytes) const = 0;
 
-    virtual ~WriteAdapter() = 0;
+    int writeAlignPad(unsigned pow2);
+
+    template <typename C>
+    int write(const C& c,
+               const typename std::enable_if<std::is_pod<C>::value>::type* x=nullptr) {
+        return write((const char*)&c, sizeof c);
+    }
+
+    template <typename T, unsigned N>
+    int write(const T (&a)[N], unsigned numElems = 0) {
+        return write((const char*)a, sizeof a[0] * numElems? numElems : N);
+    }
+};
+
+class NullWriteAdapter : public WriteAdapter {
+    mutable Position pos;
+public:
+    NullWriteAdapter(std::ostream& errs_)
+        : IOAdapter(errs_)
+        , WriteAdapter(errs_)
+        , pos(0)
+    {}
+    virtual Position getPos() const { return pos; }
+    virtual void setPos(Position p) { pos = p; }
+    virtual int write(const char* data, size_t numBytes) const {
+        pos += (Position)numBytes;
+        return 0;
+    }
 };
 
 /// read-only adapter
@@ -99,6 +131,7 @@ public:
     }
 
     virtual int pread(char* data, size_t numBytes, uint64_t ofs) const = 0;
+    virtual Position getSize() const { return (Position)-1; };
 
     virtual ~ReadAdapter() = 0;
 };
@@ -142,6 +175,12 @@ struct BrigIO {
                     std::istream&               is,
                     std::ostream&               errs = defaultErrs());
 
+
+    static std::unique_ptr<WriteAdapter> vectorWritingAdapter(
+                    std::vector<char>& v,
+                    std::ostream&               errs = defaultErrs());
+
+
     // normal API using adapter references
 
     static int save(BrigContainer&              src,
@@ -168,6 +207,14 @@ struct BrigIO {
     {
         return !src.get() || load(dst, fmt, *src);
     }
+
+    static int validate(int                     fmt,
+                        ReadAdapter&            src);
+
+    static uint64_t validateSection(ReadAdapter&     fd, 
+                                    unsigned         sectionIndex,
+                                    uint64_t         sectionOffset,
+                                    uint64_t         fileSize);
 };
 
 // old style compatibility API
@@ -210,6 +257,7 @@ typedef BinaryStreamer<FILE_FORMAT_BIF |FILE_FORMAT_ELF32>  Bif32Streamer;
 typedef BinaryStreamer<FILE_FORMAT_BRIG|FILE_FORMAT_ELF32>  Brig32Streamer;
 typedef BinaryStreamer<FILE_FORMAT_BIF |FILE_FORMAT_ELF64>  Bif64Streamer;
 typedef BinaryStreamer<FILE_FORMAT_BRIG|FILE_FORMAT_ELF64>  Brig64Streamer;
+typedef BinaryStreamer<FILE_FORMAT_BRIG>                    BrigStreamer;
 typedef BinaryStreamer<FILE_FORMAT_AUTO>                    AutoBinaryStreamer;
 
 typedef Bif32Streamer BifStreamer;

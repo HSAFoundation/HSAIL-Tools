@@ -121,7 +121,7 @@ HSAIL_C_API size_t      brig_container_get_section_size(brig_container_t handle,
  *
  * @return zero on success, or a non-zero error code on failure. Use brig_container_get_error_text() to receive further error info.
  */
-HSAIL_C_API int         brig_container_assemble_from_memory(brig_container_t handle, const char* text, size_t text_length);
+HSAIL_C_API int         brig_container_assemble_from_memory(brig_container_t handle, const char* text, size_t text_length, const char *options);
 
 /**
  * Assemble HSAIL text from a file and store it in a BRIG container.
@@ -131,7 +131,7 @@ HSAIL_C_API int         brig_container_assemble_from_memory(brig_container_t han
  *
  * @return zero on success, or a non-zero error code on failure. Use brig_container_get_error_text() to receive further error info.
  */
-HSAIL_C_API int         brig_container_assemble_from_file(brig_container_t handle, const char* filename);
+HSAIL_C_API int         brig_container_assemble_from_file(brig_container_t handle, const char* filename, const char *options);
 
 /**
  * Disassemble a BRIG container and save HSAIL text to a file.
@@ -184,11 +184,14 @@ HSAIL_C_API int         brig_container_save_to_file(brig_container_t handle, con
 HSAIL_C_API int         brig_container_validate(brig_container_t handle);
 
 /**
- * Obtain a pointer to BrigModule corresponding to this container (currently as void*)
+ * Obtain a pointer to BrigModule corresponding to this container (as void*)
+ *
+ * The container cannot be modified after this function is called and
+ * it owns the module, so the pointer is only valid until brig_container_destroy.
  *
  * @param handle - BRIG container handle.
  *
- * @return - the pointer to BrigModule.
+ * @return - the pointer to BrigModuleHeader.
  */
 HSAIL_C_API void* brig_container_get_brig_module(brig_container_t handle);
 

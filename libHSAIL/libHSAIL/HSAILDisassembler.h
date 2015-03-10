@@ -115,6 +115,7 @@ public:
         return "";
       }
     }
+    static std::string getInstMnemonic(Inst inst, unsigned model, unsigned profile);
 
     void log(std::ostream &s);                 // Request errors logging into stream s
     bool hasError() const { return hasErr; }   // Return error flag
@@ -127,7 +128,7 @@ private:
     void printDirectiveFmt(Code d) const;
     void printDirective(Directive d, bool dump = false) const;
 
-    void printDirective(DirectiveVersion d) const;
+    void printDirective(DirectiveModule d) const;
     void printDirective(DirectiveExecutable d) const;
     void printDirective(DirectiveLabel d) const;
     void printDirective(DirectiveComment d) const;
@@ -137,11 +138,8 @@ private:
     void printDirective(DirectivePragma d) const;
     void printDirective(DirectiveArgBlockStart d) const;
     void printDirective(DirectiveArgBlockEnd d) const;
-
     void printDirective(DirectiveVariable d) const;
     void printDirective(DirectiveFbarrier d) const;
-    void printMemFenceScope(unsigned segment, unsigned scope) const;
-
 
     void printArgs(Directive arg, unsigned paramNum) const;
     template <typename List>
@@ -152,7 +150,7 @@ private:
     void printSymDecl(DirectiveVariable d, bool isArg = false) const;
     void printArgDecl(Directive d) const;
 
-    void printValueList(SRef data, Brig::BrigType16_t type, uint64_t dim) const;
+    void printOperandConstantBytes(OperandConstantBytes opr) const;
 
     void printStringLiteral(SRef s) const;
     void printComment(SRef s) const;
@@ -203,20 +201,22 @@ private:
     // Operands
 
     void printInstOperand(Inst i, unsigned operandIdx) const;
-    void printOperand(Operand opr, Brig::BrigType16_t type, bool dump = false) const;
+    void printOperand(Operand opr, bool dump = false) const;
+    void printTypedOperand(Operand opr, bool strict = true) const;
 
-    void printOperandReg(OperandReg opr) const;
+    void printOperandReg(OperandRegister opr) const;
     void printOperandCodeRef(OperandCodeRef opr) const;
     void printOperandCodeList(OperandCodeList opr) const;
-    void printListOfOperands(ListRef<Operand> list, Brig::BrigType16_t type, bool singleLine = true) const;
+    void printListOfOperands(ListRef<Operand> list, bool singleLine = true, bool typed = false, bool strict = true) const;
     void printOperandWavesize(OperandWavesize opr) const;
     void printOperandAddress(OperandAddress opr) const;
-    void printOperandImageProperties(OperandImageProperties opr, Brig::BrigType16_t type) const;
-    void printOperandSamplerProperties(OperandSamplerProperties opr, Brig::BrigType16_t type) const;
+    void printOperandConstantImage(OperandConstantImage opr) const;
+    void printOperandConstantOperandList(OperandConstantOperandList opr) const;
+    void printOperandConstantSampler(OperandConstantSampler opr) const;
     void printOperandString(OperandString opr) const;
+    void printOperandAlign(OperandAlign opr) const;
 
-    void printVector(OperandOperandList opr, Brig::BrigType16_t type) const;
-    void printImmed(OperandData opr, Brig::BrigType16_t type) const;
+    void printVector(OperandOperandList opr) const;
 
     SRef getSymbolName(Directive d) const;
 
@@ -236,11 +236,11 @@ private:
     const char* samplerQuery2str(unsigned g) const;
     const char* imageQuery2str(unsigned g) const;
     const char* machineModel2str(unsigned machineModel) const;
+    const char* defaultRound2str(unsigned round) const;
     const char* profile2str(unsigned profile) const;
     const char* ftz2str(unsigned ftz) const;
     const char* round2str(unsigned val) const;
     const char* memoryOrder2str(unsigned memOrder) const;
-    const char* memoryFenceSegments2str(unsigned flags) const;
     const char* memoryScope2str(unsigned flags) const;
     const char* class2str(unsigned val) const;
     const char* v2str(Operand opr) const;
@@ -287,7 +287,7 @@ private:
 
     template<typename T, size_t N>
     void printPackedValue(const T (&val)[N]) const {
-        *stream << '_' << typeX2str(CType2Brig<T,N>::value) << '(';
+        *stream << typeX2str(CType2Brig<T,N>::value) << '(';
         for(int i=N-1; i>0; --i) {
             printValue(val[i]);
             *stream << ',';

@@ -85,6 +85,11 @@ public:
         memcpy(&m_buffer[pos], p, n);
     }
 
+    void alignBack(unsigned a) {
+        for(unsigned s = m_buffer.size() % a; s > 0; --s)
+          m_buffer.push_back(0);
+    }
+
     size_t numBytes() const { return m_buffer.size(); }
 };
 

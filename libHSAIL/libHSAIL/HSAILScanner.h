@@ -126,6 +126,8 @@ protected:
 
 public:
     StreamScannerBase(std::istream& is);
+
+    HSAIL_ASM::SRef getPlainText() const { return HSAIL_ASM::SRef(m_buffer); }
 };
 
 namespace HSAIL_ASM
@@ -164,7 +166,7 @@ enum ETokens
     EEqual,
 
     // Keywords
-    EKWVersion,
+    EKWModule,
     EKWKernel,
     EKWFunction,
     EKWPragma,
@@ -188,8 +190,6 @@ enum ETokens
     EKWImageGeometry,
     EKWImageArray,
 
-    EMemoryScope,
-
     ESamplerFirstProp,
     EKWSamplerAddressing = ESamplerFirstProp,
     EKWSamplerCoord,
@@ -205,13 +205,12 @@ enum ETokens
     EKWBlockStr,
     EKWBlockEnd,
 
-    EKWSignature,
     EKWWidthAll,
+
+    EKWSignature,
     EKWFbarrier,
-    EKWRWImg,
-    EKWROImg,
-    EKWWOImg,
-    EKWSamp,
+    EKWImage,
+    EKWSampler,
 
     // constants
 
@@ -219,7 +218,7 @@ enum ETokens
     EF16Literal,
     EF32Literal,
     EF64Literal,
-    EPackedLiteral,
+    ETypedLiteral,
     EStringLiteral,
     EEmbeddedText,
 
@@ -240,6 +239,7 @@ enum ETokens
     ETargetMachine,
     ETargetProfile,
     ETargetSftz,
+    EDefaultRound,
     EImageFormat,
     EImageOrder,
     EImageGeometry,
@@ -285,7 +285,6 @@ enum ETokens
     EMGeom,
     EMFBar,
     EMConst,
-    EMMemoryFenceSegments,
     EMImageQuery,
     EMSamplerQuery,
     EMSkip, // TBD remove
@@ -294,12 +293,10 @@ enum ETokens
 
 enum EScanContext {
     EDefaultContext,
-    EMemoryScopeContext,
     EImageOrderContext,
     EInstModifierContext,
     EInstModifierInstAtomicContext,
     EInstModifierInstQueryContext,
-    EInstModifierInstFenceContext,
 };
 
 class Scanner : public StreamScannerBase

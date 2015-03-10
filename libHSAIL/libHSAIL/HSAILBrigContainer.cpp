@@ -43,6 +43,7 @@
 #include "HSAILItems.h"
 #include "HSAILScope.h"
 #include "HSAILBrigantine.h"
+#include "HSAILBrigObjectFile.h"
 
 #include <algorithm>
 #include <ostream>
@@ -51,33 +52,38 @@
 namespace HSAIL_ASM {
 
 BrigContainer::BrigContainer()
+  : m_brigModuleHeader(0)
 {
     m_sections.push_back(std::unique_ptr<BrigSectionImpl>(new DataSection(this)));
     m_sections.push_back(std::unique_ptr<BrigSectionImpl>(new CodeSection(this)));
     m_sections.push_back(std::unique_ptr<BrigSectionImpl>(new OperandSection(this)));
 }
 
-BrigContainer::BrigContainer(const void *dataData,
-              const void *codeData,
-              const void *operandData,
-              const void *debugData)
+int BrigContainer::addSection(std::unique_ptr<BrigSectionImpl>&& s)
 {
-    m_sections.push_back(std::unique_ptr<BrigSectionImpl>(new DataSection(dataData, this)));
-    m_sections.push_back(std::unique_ptr<BrigSectionImpl>(new CodeSection(codeData, this)));
-    m_sections.push_back(std::unique_ptr<BrigSectionImpl>(new OperandSection(operandData, this)));
-    if (debugData) {
-        m_sections.push_back(std::unique_ptr<BrigSectionImpl>(new BrigSectionRaw(debugData, this)));
+    assert(s->container()==nullptr);
+    s->container(this);
+    m_sections.push_back(std::move(s));
+    return (int)m_sections.size()-1;
+}
+
+void BrigContainer::initSections(const Brig::BrigModuleHeader& brigModule,
+                                 BrigContainer::SectionVector& secs) {
+    assert(brigModule.sectionCount >= Brig::BRIG_SECTION_INDEX_IMPLEMENTATION_DEFINED);
+    typedef std::unique_ptr<BrigSectionImpl> SecPtr;
+    using namespace Brig;
+
+    secs.push_back(SecPtr(new DataSection(getBrigSection(brigModule, BRIG_SECTION_INDEX_DATA), this)));
+    secs.push_back(SecPtr(new CodeSection(getBrigSection(brigModule, BRIG_SECTION_INDEX_CODE), this)));
+    secs.push_back(SecPtr(new OperandSection(getBrigSection(brigModule, BRIG_SECTION_INDEX_OPERAND), this)));
+    for(unsigned i=Brig::BRIG_SECTION_INDEX_IMPLEMENTATION_DEFINED; i < brigModule.sectionCount; ++i) {
+        m_sections.push_back(SecPtr(new BrigSectionRaw(getBrigSection(brigModule, i), this)));
     }
 }
 
-BrigContainer::BrigContainer(const Brig::BrigModule* brigModule) {
-    assert(brigModule->sectionCount >= Brig::BRIG_SECTION_INDEX_IMPLEMENTATION_DEFINED);
-    m_sections.push_back(std::unique_ptr<BrigSectionImpl>(new DataSection(brigModule->section[Brig::BRIG_SECTION_INDEX_DATA], this)));
-    m_sections.push_back(std::unique_ptr<BrigSectionImpl>(new CodeSection(brigModule->section[Brig::BRIG_SECTION_INDEX_CODE], this)));
-    m_sections.push_back(std::unique_ptr<BrigSectionImpl>(new OperandSection(brigModule->section[Brig::BRIG_SECTION_INDEX_OPERAND], this)));
-    for(unsigned i=3; i<brigModule->sectionCount; ++i) {
-        m_sections.push_back(std::unique_ptr<BrigSectionImpl>(new BrigSectionRaw(brigModule->section[i], this)));
-    }
+BrigContainer::BrigContainer(const Brig::BrigModuleHeader* brigModule) {
+    m_brigModuleHeader = brigModule;
+    initSections(*brigModule, m_sections);
 }
 
 SRef brigSectionNameById(int id)
@@ -160,13 +166,12 @@ int BrigContainer::loadSection(int index, BrigSectionImpl::Buffer& data, bool in
     if (index >= Brig::BRIG_SECTION_INDEX_IMPLEMENTATION_DEFINED) {
         initSectionRaw(index, "dummy"); // \todo1.0
     }
+    BrigSectionImpl& s = sectionById(index);
     if (includesHeader) {
-        sectionById(index).swapInData(data);
+        s.swapInData(data);
     } else {
-        sectionById(index).clear();
-        sectionById(index).insertData(
-            sectionById(index).size(),
-            &data[0], (&data[0]) + data.size());
+        s.clear();
+        s.insertData(s.size(), &data[0], (&data[0]) + data.size());
     }
     return 0;
 }
@@ -187,7 +192,7 @@ public:
 void DataSection::initStringSet()
 {
     const char * const s_begin = getData(secHeader()->headerByteCount);
-    const char * const s_end   = getData(secHeader()->byteCount);
+    const char * const s_end   = getData((Offset)secHeader()->byteCount);
     size_t const hdrSize = offsetof(Brig::BrigData,bytes);
     for (const char *p = s_begin; p < s_end;
          p += hdrSize + align(reinterpret_cast<const Brig::BrigData*>(p)->byteCount,ITEM_ALIGNMENT)) { // TBD095 make this cleaner
@@ -368,7 +373,7 @@ public:
         , m_overallScope(overallScope) {
         resetModuleScope();
     }
-    Code operator()(DirectiveVersion v) {
+    Code operator()(DirectiveModule v) {
         resetModuleScope();
         return v.next();
     }
@@ -422,17 +427,154 @@ void BrigContainer::patchDecl2Defs() {
     }
 }
 
-const Brig::BrigModule*
-BrigContainer::getBrigModule() {
-    using namespace Brig;
-    m_brigModuleBuffer.resize(offsetof(BrigModule, section) + sizeof(BrigSectionHeader*) * getNumSections());
-    BrigModule* module = (BrigModule*)&m_brigModuleBuffer[0];
-    module->sectionCount = getNumSections();
-    for(int i=0; i<getNumSections(); ++i) {
-        module->section[i] = (BrigSectionHeader*)sectionById(i).getData(0);
-    }
-    return module;
+bool BrigContainer::makeRO() {
+    if (isROContainer()) return true;
+
+    std::vector<char> buf;
+    if (!write(*BrigIO::vectorWritingAdapter(buf)))
+        return false;
+
+    setContents(buf);
+    return true;
 }
 
+void BrigContainer::setContents(std::vector<char>& buf) {
+    const Brig::BrigModuleHeader* const hdr = 
+        (const Brig::BrigModuleHeader*)&buf[0];
+
+    SectionVector secs;
+    initSections(*hdr, secs);
+
+    m_brigModuleBuffer.swap(buf);
+    m_sections.swap(secs);
+    m_brigModuleHeader = hdr;
+}
+
+
+static bool writeSection(WriteAdapter& w,
+                         const BrigContainer& c,
+                         int index,
+                         uint64_t& secStartOut) {
+    const BrigSectionImpl& s = c.sectionById(index);
+    w.writeAlignPad(16);
+    uint64_t const secStart = w.getPos();
+    if (w.write(s.getData(0), s.size())) {
+        w.errs << "cannot write section data at " << index << " index" << std::endl;
+        return false;
+    }
+    w.writeAlignPad(4);
+    secStartOut = secStart;
+    return true;
+}
+
+static bool writeContents(WriteAdapter& w,
+                          const BrigContainer& c,
+                          Brig::BrigModuleHeader& hdr,
+                          uint64_t sectionIndex[]) {
+    if (w.write(hdr)) {
+        w.errs << "cannot write BrigModuleHeader" << std::endl;
+        return false;
+    }
+
+    w.writeAlignPad(8);
+    hdr.sectionIndex = w.getPos();
+    if (w.write((const char*)&sectionIndex[0], hdr.sectionCount * sizeof sectionIndex[0])) {
+        w.errs << "cannot write section index" << std::endl;
+        return false;
+    }
+
+    for(int i=0; i < (int)hdr.sectionCount; ++i) {
+        if (!writeSection(w, c, i, sectionIndex[i])) {
+            return false;
+        }
+    }
+
+    w.writeAlignPad(16);
+    hdr.byteCount = w.getPos();
+    return true;
+}
+
+bool BrigContainer::write(WriteAdapter& w) const {
+    using namespace Brig;
+    BrigModuleHeader hdr;
+
+    const char magic[] = "HSA BRIG";
+    memcpy(hdr.identification, magic,
+           (std::min)(sizeof magic - 1, sizeof hdr.identification));
+    std::fill(&hdr.hash[0], &hdr.hash[sizeof hdr.hash/sizeof hdr.hash[0]], 0);
+    hdr.reserved = 0;
+
+    hdr.brigMajor = BRIG_VERSION_HSAIL_MAJOR;
+    hdr.brigMinor = BRIG_VERSION_HSAIL_MINOR;
+
+    hdr.sectionCount = getNumSections();
+    hdr.sectionIndex = 0; // will set later
+    hdr.byteCount = 0;
+
+    std::vector<uint64_t> sectionIndex;
+    sectionIndex.resize(hdr.sectionCount);
+
+    NullWriteAdapter nullWA(w.errs);
+    return writeContents(nullWA, *this, hdr, &sectionIndex[0]) &&
+           writeContents(w, *this, hdr, &sectionIndex[0]);
+}
+
+static bool readSection(ReadAdapter& r,
+                        BrigContainer& c,
+                        int index,
+                        uint64_t startPos) {
+    Brig::BrigSectionHeader hdr;
+
+    if (r.pread((char*)&hdr, sizeof hdr - 1, startPos)) {
+        r.errs << "cannot read BrigSectionHeader" << std::endl;
+        return false;
+    }
+
+    std::vector<char> secData;
+    secData.resize((Offset)hdr.byteCount);
+
+    if (r.pread((char*)&secData[0], (Offset)hdr.byteCount, startPos)) {
+        r.errs << "cannot read section data at " << index << " index" << std::endl;
+        return false;
+    }
+    return c.loadSection(index, secData, true, r.errs)==0;
+}
+
+bool readContainer(ReadAdapter& r, BrigContainer& c, bool writeable) {
+    Brig::BrigModuleHeader hdr;
+    if (r.pread((char*)&hdr, sizeof hdr, 0)) {
+        r.errs << "cannot read BrigModuleHeader" << std::endl;
+        return false;
+    }
+    if (hdr.byteCount >= (std::numeric_limits<size_t>::max)()) {
+        r.errs << "Brig is too big" << std::endl;
+        return false;
+    }
+
+    if (!writeable) {
+        std::vector<char> buf;
+        buf.resize((size_t)hdr.byteCount);
+        if (r.pread(&buf[0], (size_t)hdr.byteCount, 0)) {
+            r.errs << "cannot read Brig" << std::endl;
+        }
+        c.setContents(buf);
+    } else {
+      std::vector<uint64_t> sectionIndex;
+      sectionIndex.resize(hdr.sectionCount);
+      
+      if (r.pread((char*)&sectionIndex[0],
+          sizeof sectionIndex[0] * hdr.sectionCount,
+          hdr.sectionIndex)) {
+          r.errs << "cannot read section index" << std::endl;
+          return false;
+      }
+      for(int i=0; i < (int)hdr.sectionCount; ++i) {
+          if (!readSection(r, c, i, sectionIndex[i])) {
+              return false;
+          }
+      }
+    }
+    return true;
+}
 
 }

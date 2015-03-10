@@ -15,19 +15,15 @@ target_link_libraries(HSAILasm hsail)
 add_dependencies(HSAILasm libhsail-includes)
 
 # FIXME: We also need to get the link dependencies of the libLLVMSupport
-target_link_libraries(HSAILasm ${LLVMSupport})
+target_link_libraries(HSAILasm ${LLVM_SUPPORT_LIB})
 
 find_library(CURSES_LIB curses)
 
 #include(LLVM-Config.cmake)
 
 if(BUILD_LIBBRIGDWARF)
-  add_dependencies(HSAILasm brigdwarf)
-  include_directories(${CMAKE_SOURCE_DIR}/libBRIGdwarf)
-  target_link_libraries(HSAILasm brigdwarf)
   target_link_libraries(HSAILasm ${LIBELF_LIBRARIES})
   target_link_libraries(HSAILasm ${LIBDWARF_LIBRARIES})
-  target_link_libraries(HSAILasm ${LLVM_SUPPORT_LIB})
 
   if(CURSES_LIB)
      # FIXME: Find dependencies pulled in by LLVMSupport
