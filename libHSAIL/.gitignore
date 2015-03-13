@@ -19,3 +19,6 @@
 vsvars.inc
 build_*/
 build/
+
+cmake_lnx_local.sh
+cmake_win_local.bat
