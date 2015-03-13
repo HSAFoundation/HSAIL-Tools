@@ -254,7 +254,7 @@ static int AssembleInput() {
         ssVersion << "HSAIL Assembler (C) AMD 2015, all rights reserved, ";
         ssVersion << "Version " << BRIG_ASM_VERSION;
         ssVersion << ", HSAIL version ";
-        ssVersion << Brig::BRIG_VERSION_HSAIL_MAJOR << ':' << Brig::BRIG_VERSION_HSAIL_MINOR;
+        ssVersion << BRIG_VERSION_HSAIL_MAJOR << ':' << BRIG_VERSION_HSAIL_MINOR;
 
         std::unique_ptr<BrigDebug::BrigDwarfGenerator> pBdig(
             BrigDebug::BrigDwarfGenerator::Create( ssVersion.str(),
@@ -333,8 +333,8 @@ static void printVersion() {
     std::cout << "  Built " << __DATE__ << " (" << __TIME__ << ").\n";
     std::cout << "  Version " << BRIG_ASM_VERSION << ".\n";
 
-    std::cout << "  HSAIL version " << Brig::BRIG_VERSION_HSAIL_MAJOR << ':' << Brig::BRIG_VERSION_HSAIL_MINOR << ".\n";
-    std::cout << "  BRIG version "  << Brig::BRIG_VERSION_BRIG_MAJOR  << ':' << Brig::BRIG_VERSION_BRIG_MINOR  << ".\n";
+    std::cout << "  HSAIL version " << BRIG_VERSION_HSAIL_MAJOR << ':' << BRIG_VERSION_HSAIL_MINOR << ".\n";
+    std::cout << "  BRIG version "  << BRIG_VERSION_BRIG_MAJOR  << ':' << BRIG_VERSION_BRIG_MINOR  << ".\n";
 }
 
 int main(int argc, char **argv) {

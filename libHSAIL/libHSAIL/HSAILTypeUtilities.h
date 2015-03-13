@@ -212,7 +212,7 @@ template <typename T> struct is_unsigned_int : is_1st_descendant_or_same_of_2nd<
 template <typename T> struct is_float        : is_1st_descendant_or_same_of_2nd< value_class<T>, float_class        >::type {};
 
 
-template <Brig::BrigTypeX BrigTypeId> struct BrigType;
+template <BrigType BrigTypeId> struct BrigTypeTraits;
 
 struct BrigTypeAny {};
 
@@ -239,240 +239,240 @@ struct BrigTypePacked : BrigTypeAnyPacked {
     typedef MySmallArray<typename ElementType::CType,N> CType;
 };
 
-template <> struct BrigType<Brig::BRIG_TYPE_SIG32>   : BrigTypeAny {
-    static const Brig::BrigTypeX value = Brig::BRIG_TYPE_SIG32;
+template <> struct BrigTypeTraits<BRIG_TYPE_SIG32>   : BrigTypeAny {
+    static const BrigType value = BRIG_TYPE_SIG32;
     typedef uint64_t CType;
-    typedef BrigType<Brig::BRIG_TYPE_B64>  asBitType;
+    typedef BrigTypeTraits<BRIG_TYPE_B64>  asBitType;
 };
 
-template <> struct BrigType<Brig::BRIG_TYPE_SIG64>   : BrigTypeAny {
-    static const Brig::BrigTypeX value = Brig::BRIG_TYPE_SIG64;
+template <> struct BrigTypeTraits<BRIG_TYPE_SIG64>   : BrigTypeAny {
+    static const BrigType value = BRIG_TYPE_SIG64;
     typedef uint64_t CType;
-    typedef BrigType<Brig::BRIG_TYPE_B64>  asBitType;
+    typedef BrigTypeTraits<BRIG_TYPE_B64>  asBitType;
 };
 
 
 // bitstrings
-template <> struct BrigType<Brig::BRIG_TYPE_B1>   : BrigTypeB {
-    static const Brig::BrigTypeX value = Brig::BRIG_TYPE_B1;
+template <> struct BrigTypeTraits<BRIG_TYPE_B1>   : BrigTypeB {
+    static const BrigType value = BRIG_TYPE_B1;
     typedef bool CType;
-    typedef BrigType<Brig::BRIG_TYPE_B1>  asBitType;
+    typedef BrigTypeTraits<BRIG_TYPE_B1>  asBitType;
 };
-template <> struct BrigType<Brig::BRIG_TYPE_B8>   : BrigTypeB {
-    static const Brig::BrigTypeX value = Brig::BRIG_TYPE_B8;
+template <> struct BrigTypeTraits<BRIG_TYPE_B8>   : BrigTypeB {
+    static const BrigType value = BRIG_TYPE_B8;
     typedef uint8_t CType;
-    typedef BrigType<Brig::BRIG_TYPE_B8>  asBitType;
+    typedef BrigTypeTraits<BRIG_TYPE_B8>  asBitType;
 };
-template <> struct BrigType<Brig::BRIG_TYPE_B16>  : BrigTypeB {
-    static const Brig::BrigTypeX value = Brig::BRIG_TYPE_B16;
+template <> struct BrigTypeTraits<BRIG_TYPE_B16>  : BrigTypeB {
+    static const BrigType value = BRIG_TYPE_B16;
     typedef uint16_t CType;
-    typedef BrigType<Brig::BRIG_TYPE_B16>  asBitType;
+    typedef BrigTypeTraits<BRIG_TYPE_B16>  asBitType;
 };
-template <> struct BrigType<Brig::BRIG_TYPE_B32>  : BrigTypeB {
-    static const Brig::BrigTypeX value = Brig::BRIG_TYPE_B32;
+template <> struct BrigTypeTraits<BRIG_TYPE_B32>  : BrigTypeB {
+    static const BrigType value = BRIG_TYPE_B32;
     typedef uint32_t CType;
-    typedef BrigType<Brig::BRIG_TYPE_B32>  asBitType;
+    typedef BrigTypeTraits<BRIG_TYPE_B32>  asBitType;
 };
-template <> struct BrigType<Brig::BRIG_TYPE_B64>  : BrigTypeB {
-    static const Brig::BrigTypeX value = Brig::BRIG_TYPE_B64;
+template <> struct BrigTypeTraits<BRIG_TYPE_B64>  : BrigTypeB {
+    static const BrigType value = BRIG_TYPE_B64;
     typedef uint64_t CType;
-    typedef BrigType<Brig::BRIG_TYPE_B64>  asBitType;
+    typedef BrigTypeTraits<BRIG_TYPE_B64>  asBitType;
 };
 
 class b128_t;
-template <> struct BrigType<Brig::BRIG_TYPE_B128> : BrigTypeB {
-    static const Brig::BrigTypeX value = Brig::BRIG_TYPE_B128;
+template <> struct BrigTypeTraits<BRIG_TYPE_B128> : BrigTypeB {
+    static const BrigType value = BRIG_TYPE_B128;
     typedef b128_t CType;
-    typedef BrigType<Brig::BRIG_TYPE_B128>  asBitType;
+    typedef BrigTypeTraits<BRIG_TYPE_B128>  asBitType;
 };
 
 // signed ints
-template <> struct BrigType<Brig::BRIG_TYPE_S8>  : BrigTypeS {
-    static const Brig::BrigTypeX value = Brig::BRIG_TYPE_S8;
+template <> struct BrigTypeTraits<BRIG_TYPE_S8>  : BrigTypeS {
+    static const BrigType value = BRIG_TYPE_S8;
     typedef int8_t  CType;
-    typedef BrigType<Brig::BRIG_TYPE_B8>  asBitType;
+    typedef BrigTypeTraits<BRIG_TYPE_B8>  asBitType;
 };
-template <> struct BrigType<Brig::BRIG_TYPE_S16> : BrigTypeS {
-    static const Brig::BrigTypeX value = Brig::BRIG_TYPE_S16;
+template <> struct BrigTypeTraits<BRIG_TYPE_S16> : BrigTypeS {
+    static const BrigType value = BRIG_TYPE_S16;
     typedef int16_t CType;
-    typedef BrigType<Brig::BRIG_TYPE_B16>  asBitType;
+    typedef BrigTypeTraits<BRIG_TYPE_B16>  asBitType;
 };
-template <> struct BrigType<Brig::BRIG_TYPE_S32> : BrigTypeS {
-    static const Brig::BrigTypeX value = Brig::BRIG_TYPE_S32;
+template <> struct BrigTypeTraits<BRIG_TYPE_S32> : BrigTypeS {
+    static const BrigType value = BRIG_TYPE_S32;
     typedef int32_t CType;
-    typedef BrigType<Brig::BRIG_TYPE_B32>  asBitType;
+    typedef BrigTypeTraits<BRIG_TYPE_B32>  asBitType;
 };
-template <> struct BrigType<Brig::BRIG_TYPE_S64> : BrigTypeS {
-    static const Brig::BrigTypeX value = Brig::BRIG_TYPE_S64;
+template <> struct BrigTypeTraits<BRIG_TYPE_S64> : BrigTypeS {
+    static const BrigType value = BRIG_TYPE_S64;
     typedef int64_t CType;
-    typedef BrigType<Brig::BRIG_TYPE_B64>  asBitType;
+    typedef BrigTypeTraits<BRIG_TYPE_B64>  asBitType;
 };
 
 // unsigned ints
-template <> struct BrigType<Brig::BRIG_TYPE_U8>  : BrigTypeU {
-    static const Brig::BrigTypeX value = Brig::BRIG_TYPE_U8;
+template <> struct BrigTypeTraits<BRIG_TYPE_U8>  : BrigTypeU {
+    static const BrigType value = BRIG_TYPE_U8;
     typedef uint8_t  CType;
-    typedef BrigType<Brig::BRIG_TYPE_B8>  asBitType;
+    typedef BrigTypeTraits<BRIG_TYPE_B8>  asBitType;
 };
-template <> struct BrigType<Brig::BRIG_TYPE_U16> : BrigTypeU {
-    static const Brig::BrigTypeX value = Brig::BRIG_TYPE_U16;
+template <> struct BrigTypeTraits<BRIG_TYPE_U16> : BrigTypeU {
+    static const BrigType value = BRIG_TYPE_U16;
     typedef uint16_t CType;
-    typedef BrigType<Brig::BRIG_TYPE_B16>  asBitType;
+    typedef BrigTypeTraits<BRIG_TYPE_B16>  asBitType;
 };
-template <> struct BrigType<Brig::BRIG_TYPE_U32> : BrigTypeU {
-    static const Brig::BrigTypeX value = Brig::BRIG_TYPE_U32;
+template <> struct BrigTypeTraits<BRIG_TYPE_U32> : BrigTypeU {
+    static const BrigType value = BRIG_TYPE_U32;
     typedef uint32_t CType;
-    typedef BrigType<Brig::BRIG_TYPE_B32>  asBitType;
+    typedef BrigTypeTraits<BRIG_TYPE_B32>  asBitType;
 };
-template <> struct BrigType<Brig::BRIG_TYPE_U64> : BrigTypeU {
-    static const Brig::BrigTypeX value = Brig::BRIG_TYPE_U64;
+template <> struct BrigTypeTraits<BRIG_TYPE_U64> : BrigTypeU {
+    static const BrigType value = BRIG_TYPE_U64;
     typedef uint64_t CType;
-    typedef BrigType<Brig::BRIG_TYPE_B64>  asBitType;
+    typedef BrigTypeTraits<BRIG_TYPE_B64>  asBitType;
 };
 
 // floats
 class f16_t;
-template <> struct BrigType<Brig::BRIG_TYPE_F16> : BrigTypeF {
-    static const Brig::BrigTypeX value = Brig::BRIG_TYPE_F16;
+template <> struct BrigTypeTraits<BRIG_TYPE_F16> : BrigTypeF {
+    static const BrigType value = BRIG_TYPE_F16;
     typedef f16_t CType;
-    typedef BrigType<Brig::BRIG_TYPE_B16>  asBitType;
+    typedef BrigTypeTraits<BRIG_TYPE_B16>  asBitType;
 };
-template <> struct BrigType<Brig::BRIG_TYPE_F32> : BrigTypeF {
-    static const Brig::BrigTypeX value = Brig::BRIG_TYPE_F32;
+template <> struct BrigTypeTraits<BRIG_TYPE_F32> : BrigTypeF {
+    static const BrigType value = BRIG_TYPE_F32;
     typedef f32_t CType;
-    typedef BrigType<Brig::BRIG_TYPE_B32>  asBitType;
+    typedef BrigTypeTraits<BRIG_TYPE_B32>  asBitType;
 };
-template <> struct BrigType<Brig::BRIG_TYPE_F64> : BrigTypeF {
-    static const Brig::BrigTypeX value = Brig::BRIG_TYPE_F64;
+template <> struct BrigTypeTraits<BRIG_TYPE_F64> : BrigTypeF {
+    static const BrigType value = BRIG_TYPE_F64;
     typedef f64_t CType;
-    typedef BrigType<Brig::BRIG_TYPE_B64>  asBitType;
+    typedef BrigTypeTraits<BRIG_TYPE_B64>  asBitType;
 };
 
 // packed
 
-template <> struct BrigType<Brig::BRIG_TYPE_U8X4>   : BrigTypePacked< BrigType<Brig::BRIG_TYPE_U8>, 4> {
-    static const Brig::BrigTypeX value = Brig::BRIG_TYPE_U8X4;
-    typedef BrigType<Brig::BRIG_TYPE_B32>  asBitType;
+template <> struct BrigTypeTraits<BRIG_TYPE_U8X4>   : BrigTypePacked< BrigTypeTraits<BRIG_TYPE_U8>, 4> {
+    static const BrigType value = BRIG_TYPE_U8X4;
+    typedef BrigTypeTraits<BRIG_TYPE_B32>  asBitType;
 };
 
-template <> struct BrigType<Brig::BRIG_TYPE_U8X8>   : BrigTypePacked< BrigType<Brig::BRIG_TYPE_U8>, 8> {
-    static const Brig::BrigTypeX value = Brig::BRIG_TYPE_U8X8;
-    typedef BrigType<Brig::BRIG_TYPE_B64>  asBitType;
+template <> struct BrigTypeTraits<BRIG_TYPE_U8X8>   : BrigTypePacked< BrigTypeTraits<BRIG_TYPE_U8>, 8> {
+    static const BrigType value = BRIG_TYPE_U8X8;
+    typedef BrigTypeTraits<BRIG_TYPE_B64>  asBitType;
 };
 
-template <> struct BrigType<Brig::BRIG_TYPE_U8X16>  : BrigTypePacked< BrigType<Brig::BRIG_TYPE_U8>, 16> {
-    static const Brig::BrigTypeX value = Brig::BRIG_TYPE_U8X16;
-    typedef BrigType<Brig::BRIG_TYPE_B128> asBitType;
+template <> struct BrigTypeTraits<BRIG_TYPE_U8X16>  : BrigTypePacked< BrigTypeTraits<BRIG_TYPE_U8>, 16> {
+    static const BrigType value = BRIG_TYPE_U8X16;
+    typedef BrigTypeTraits<BRIG_TYPE_B128> asBitType;
 };
 
-template <> struct BrigType<Brig::BRIG_TYPE_U16X2>  : BrigTypePacked< BrigType<Brig::BRIG_TYPE_U16>, 2> {
-    static const Brig::BrigTypeX value = Brig::BRIG_TYPE_U16X2;
-    typedef BrigType<Brig::BRIG_TYPE_B32>  asBitType;
+template <> struct BrigTypeTraits<BRIG_TYPE_U16X2>  : BrigTypePacked< BrigTypeTraits<BRIG_TYPE_U16>, 2> {
+    static const BrigType value = BRIG_TYPE_U16X2;
+    typedef BrigTypeTraits<BRIG_TYPE_B32>  asBitType;
 };
 
-template <> struct BrigType<Brig::BRIG_TYPE_U16X4>  : BrigTypePacked< BrigType<Brig::BRIG_TYPE_U16>, 4> {
-    static const Brig::BrigTypeX value = Brig::BRIG_TYPE_U16X4;
-    typedef BrigType<Brig::BRIG_TYPE_B64>  asBitType;
+template <> struct BrigTypeTraits<BRIG_TYPE_U16X4>  : BrigTypePacked< BrigTypeTraits<BRIG_TYPE_U16>, 4> {
+    static const BrigType value = BRIG_TYPE_U16X4;
+    typedef BrigTypeTraits<BRIG_TYPE_B64>  asBitType;
 };
 
-template <> struct BrigType<Brig::BRIG_TYPE_U16X8>  : BrigTypePacked< BrigType<Brig::BRIG_TYPE_U16>, 8> {
-    static const Brig::BrigTypeX value = Brig::BRIG_TYPE_U16X8;
-    typedef BrigType<Brig::BRIG_TYPE_B128> asBitType;
+template <> struct BrigTypeTraits<BRIG_TYPE_U16X8>  : BrigTypePacked< BrigTypeTraits<BRIG_TYPE_U16>, 8> {
+    static const BrigType value = BRIG_TYPE_U16X8;
+    typedef BrigTypeTraits<BRIG_TYPE_B128> asBitType;
 };
 
-template <> struct BrigType<Brig::BRIG_TYPE_U32X2>  : BrigTypePacked< BrigType<Brig::BRIG_TYPE_U32>, 2> {
-    static const Brig::BrigTypeX value = Brig::BRIG_TYPE_U32X2;
-    typedef BrigType<Brig::BRIG_TYPE_B64>  asBitType;
+template <> struct BrigTypeTraits<BRIG_TYPE_U32X2>  : BrigTypePacked< BrigTypeTraits<BRIG_TYPE_U32>, 2> {
+    static const BrigType value = BRIG_TYPE_U32X2;
+    typedef BrigTypeTraits<BRIG_TYPE_B64>  asBitType;
 };
 
-template <> struct BrigType<Brig::BRIG_TYPE_U32X4>  : BrigTypePacked< BrigType<Brig::BRIG_TYPE_U32>, 4> {
-    static const Brig::BrigTypeX value = Brig::BRIG_TYPE_U32X4;
-    typedef BrigType<Brig::BRIG_TYPE_B128> asBitType;
+template <> struct BrigTypeTraits<BRIG_TYPE_U32X4>  : BrigTypePacked< BrigTypeTraits<BRIG_TYPE_U32>, 4> {
+    static const BrigType value = BRIG_TYPE_U32X4;
+    typedef BrigTypeTraits<BRIG_TYPE_B128> asBitType;
 };
 
-template <> struct BrigType<Brig::BRIG_TYPE_U64X2>  : BrigTypePacked< BrigType<Brig::BRIG_TYPE_U64>, 2> {
-    static const Brig::BrigTypeX value = Brig::BRIG_TYPE_U64X2;
-    typedef BrigType<Brig::BRIG_TYPE_B128> asBitType;
-};
-
-
-
-
-
-template <> struct BrigType<Brig::BRIG_TYPE_S8X4>   : BrigTypePacked< BrigType<Brig::BRIG_TYPE_S8>, 4> {
-    static const Brig::BrigTypeX value = Brig::BRIG_TYPE_S8X4;
-    typedef BrigType<Brig::BRIG_TYPE_B32>  asBitType;
-};
-
-template <> struct BrigType<Brig::BRIG_TYPE_S8X8>   : BrigTypePacked< BrigType<Brig::BRIG_TYPE_S8>, 8> {
-    static const Brig::BrigTypeX value = Brig::BRIG_TYPE_S8X8;
-    typedef BrigType<Brig::BRIG_TYPE_B64>  asBitType;
-};
-
-template <> struct BrigType<Brig::BRIG_TYPE_S8X16>  : BrigTypePacked< BrigType<Brig::BRIG_TYPE_S8>, 16> {
-    static const Brig::BrigTypeX value = Brig::BRIG_TYPE_S8X16;
-    typedef BrigType<Brig::BRIG_TYPE_B128> asBitType;
-};
-
-template <> struct BrigType<Brig::BRIG_TYPE_S16X2>  : BrigTypePacked< BrigType<Brig::BRIG_TYPE_S16>, 2> {
-    static const Brig::BrigTypeX value = Brig::BRIG_TYPE_S16X2;
-    typedef BrigType<Brig::BRIG_TYPE_B32>  asBitType;
-};
-
-template <> struct BrigType<Brig::BRIG_TYPE_S16X4>  : BrigTypePacked< BrigType<Brig::BRIG_TYPE_S16>, 4> {
-    static const Brig::BrigTypeX value = Brig::BRIG_TYPE_S16X4;
-    typedef BrigType<Brig::BRIG_TYPE_B64>  asBitType;
-};
-
-template <> struct BrigType<Brig::BRIG_TYPE_S16X8>  : BrigTypePacked< BrigType<Brig::BRIG_TYPE_S16>, 8> {
-    static const Brig::BrigTypeX value = Brig::BRIG_TYPE_S16X8;
-    typedef BrigType<Brig::BRIG_TYPE_B128> asBitType;
-};
-
-template <> struct BrigType<Brig::BRIG_TYPE_S32X2>  : BrigTypePacked< BrigType<Brig::BRIG_TYPE_S32>, 2> {
-    static const Brig::BrigTypeX value = Brig::BRIG_TYPE_S32X2;
-    typedef BrigType<Brig::BRIG_TYPE_B64>  asBitType;
-};
-
-template <> struct BrigType<Brig::BRIG_TYPE_S32X4>  : BrigTypePacked< BrigType<Brig::BRIG_TYPE_S32>, 4> {
-    static const Brig::BrigTypeX value = Brig::BRIG_TYPE_S32X4;
-    typedef BrigType<Brig::BRIG_TYPE_B128> asBitType;
-};
-
-template <> struct BrigType<Brig::BRIG_TYPE_S64X2>  : BrigTypePacked< BrigType<Brig::BRIG_TYPE_S64>, 2> {
-    static const Brig::BrigTypeX value = Brig::BRIG_TYPE_S64X2;
-    typedef BrigType<Brig::BRIG_TYPE_B128> asBitType;
+template <> struct BrigTypeTraits<BRIG_TYPE_U64X2>  : BrigTypePacked< BrigTypeTraits<BRIG_TYPE_U64>, 2> {
+    static const BrigType value = BRIG_TYPE_U64X2;
+    typedef BrigTypeTraits<BRIG_TYPE_B128> asBitType;
 };
 
 
-template <> struct BrigType<Brig::BRIG_TYPE_F16X2>  : BrigTypePacked< BrigType<Brig::BRIG_TYPE_F16>, 2> {
-    static const Brig::BrigTypeX value = Brig::BRIG_TYPE_F16X2;
-    typedef BrigType<Brig::BRIG_TYPE_B32>  asBitType;
+
+
+
+template <> struct BrigTypeTraits<BRIG_TYPE_S8X4>   : BrigTypePacked< BrigTypeTraits<BRIG_TYPE_S8>, 4> {
+    static const BrigType value = BRIG_TYPE_S8X4;
+    typedef BrigTypeTraits<BRIG_TYPE_B32>  asBitType;
 };
 
-template <> struct BrigType<Brig::BRIG_TYPE_F16X4>  : BrigTypePacked< BrigType<Brig::BRIG_TYPE_F16>, 4> {
-    static const Brig::BrigTypeX value = Brig::BRIG_TYPE_F16X4;
-    typedef BrigType<Brig::BRIG_TYPE_B64>  asBitType;
+template <> struct BrigTypeTraits<BRIG_TYPE_S8X8>   : BrigTypePacked< BrigTypeTraits<BRIG_TYPE_S8>, 8> {
+    static const BrigType value = BRIG_TYPE_S8X8;
+    typedef BrigTypeTraits<BRIG_TYPE_B64>  asBitType;
 };
 
-template <> struct BrigType<Brig::BRIG_TYPE_F16X8>  : BrigTypePacked< BrigType<Brig::BRIG_TYPE_F16>, 8> {
-    static const Brig::BrigTypeX value = Brig::BRIG_TYPE_F16X8;
-    typedef BrigType<Brig::BRIG_TYPE_B128> asBitType;
+template <> struct BrigTypeTraits<BRIG_TYPE_S8X16>  : BrigTypePacked< BrigTypeTraits<BRIG_TYPE_S8>, 16> {
+    static const BrigType value = BRIG_TYPE_S8X16;
+    typedef BrigTypeTraits<BRIG_TYPE_B128> asBitType;
 };
 
-template <> struct BrigType<Brig::BRIG_TYPE_F32X2>  : BrigTypePacked< BrigType<Brig::BRIG_TYPE_F32>, 2> {
-    static const Brig::BrigTypeX value = Brig::BRIG_TYPE_F32X2;
-    typedef BrigType<Brig::BRIG_TYPE_B64>  asBitType;
+template <> struct BrigTypeTraits<BRIG_TYPE_S16X2>  : BrigTypePacked< BrigTypeTraits<BRIG_TYPE_S16>, 2> {
+    static const BrigType value = BRIG_TYPE_S16X2;
+    typedef BrigTypeTraits<BRIG_TYPE_B32>  asBitType;
 };
 
-template <> struct BrigType<Brig::BRIG_TYPE_F32X4>  : BrigTypePacked< BrigType<Brig::BRIG_TYPE_F32>, 4> {
-    static const Brig::BrigTypeX value = Brig::BRIG_TYPE_F32X4;
-    typedef BrigType<Brig::BRIG_TYPE_B128> asBitType;
+template <> struct BrigTypeTraits<BRIG_TYPE_S16X4>  : BrigTypePacked< BrigTypeTraits<BRIG_TYPE_S16>, 4> {
+    static const BrigType value = BRIG_TYPE_S16X4;
+    typedef BrigTypeTraits<BRIG_TYPE_B64>  asBitType;
 };
 
-template <> struct BrigType<Brig::BRIG_TYPE_F64X2>  : BrigTypePacked< BrigType<Brig::BRIG_TYPE_F64>, 2> {
-    static const Brig::BrigTypeX value = Brig::BRIG_TYPE_F64X2;
-    typedef BrigType<Brig::BRIG_TYPE_B128> asBitType;
+template <> struct BrigTypeTraits<BRIG_TYPE_S16X8>  : BrigTypePacked< BrigTypeTraits<BRIG_TYPE_S16>, 8> {
+    static const BrigType value = BRIG_TYPE_S16X8;
+    typedef BrigTypeTraits<BRIG_TYPE_B128> asBitType;
+};
+
+template <> struct BrigTypeTraits<BRIG_TYPE_S32X2>  : BrigTypePacked< BrigTypeTraits<BRIG_TYPE_S32>, 2> {
+    static const BrigType value = BRIG_TYPE_S32X2;
+    typedef BrigTypeTraits<BRIG_TYPE_B64>  asBitType;
+};
+
+template <> struct BrigTypeTraits<BRIG_TYPE_S32X4>  : BrigTypePacked< BrigTypeTraits<BRIG_TYPE_S32>, 4> {
+    static const BrigType value = BRIG_TYPE_S32X4;
+    typedef BrigTypeTraits<BRIG_TYPE_B128> asBitType;
+};
+
+template <> struct BrigTypeTraits<BRIG_TYPE_S64X2>  : BrigTypePacked< BrigTypeTraits<BRIG_TYPE_S64>, 2> {
+    static const BrigType value = BRIG_TYPE_S64X2;
+    typedef BrigTypeTraits<BRIG_TYPE_B128> asBitType;
+};
+
+
+template <> struct BrigTypeTraits<BRIG_TYPE_F16X2>  : BrigTypePacked< BrigTypeTraits<BRIG_TYPE_F16>, 2> {
+    static const BrigType value = BRIG_TYPE_F16X2;
+    typedef BrigTypeTraits<BRIG_TYPE_B32>  asBitType;
+};
+
+template <> struct BrigTypeTraits<BRIG_TYPE_F16X4>  : BrigTypePacked< BrigTypeTraits<BRIG_TYPE_F16>, 4> {
+    static const BrigType value = BRIG_TYPE_F16X4;
+    typedef BrigTypeTraits<BRIG_TYPE_B64>  asBitType;
+};
+
+template <> struct BrigTypeTraits<BRIG_TYPE_F16X8>  : BrigTypePacked< BrigTypeTraits<BRIG_TYPE_F16>, 8> {
+    static const BrigType value = BRIG_TYPE_F16X8;
+    typedef BrigTypeTraits<BRIG_TYPE_B128> asBitType;
+};
+
+template <> struct BrigTypeTraits<BRIG_TYPE_F32X2>  : BrigTypePacked< BrigTypeTraits<BRIG_TYPE_F32>, 2> {
+    static const BrigType value = BRIG_TYPE_F32X2;
+    typedef BrigTypeTraits<BRIG_TYPE_B64>  asBitType;
+};
+
+template <> struct BrigTypeTraits<BRIG_TYPE_F32X4>  : BrigTypePacked< BrigTypeTraits<BRIG_TYPE_F32>, 4> {
+    static const BrigType value = BRIG_TYPE_F32X4;
+    typedef BrigTypeTraits<BRIG_TYPE_B128> asBitType;
+};
+
+template <> struct BrigTypeTraits<BRIG_TYPE_F64X2>  : BrigTypePacked< BrigTypeTraits<BRIG_TYPE_F64>, 2> {
+    static const BrigType value = BRIG_TYPE_F64X2;
+    typedef BrigTypeTraits<BRIG_TYPE_B128> asBitType;
 };
 
 
@@ -491,48 +491,48 @@ struct CType2Brig< const T (&)[N] > : CType2Brig<T,N> {};
 template <typename T,size_t N>
 struct CType2Brig< const T (*)[N] > : CType2Brig<T,N> {};
 
-template <> struct CType2Brig< int8_t,1u>    : BrigType<Brig::BRIG_TYPE_S8>  {};
-template <> struct CType2Brig< int16_t,1u>   : BrigType<Brig::BRIG_TYPE_S16> {};
-template <> struct CType2Brig< int32_t,1u>   : BrigType<Brig::BRIG_TYPE_S32> {};
-template <> struct CType2Brig< int64_t,1u>   : BrigType<Brig::BRIG_TYPE_S64> {};
+template <> struct CType2Brig< int8_t,1u>    : BrigTypeTraits<BRIG_TYPE_S8>  {};
+template <> struct CType2Brig< int16_t,1u>   : BrigTypeTraits<BRIG_TYPE_S16> {};
+template <> struct CType2Brig< int32_t,1u>   : BrigTypeTraits<BRIG_TYPE_S32> {};
+template <> struct CType2Brig< int64_t,1u>   : BrigTypeTraits<BRIG_TYPE_S64> {};
 
-template <> struct CType2Brig< uint8_t,1u>   : BrigType<Brig::BRIG_TYPE_U8>  {};
-template <> struct CType2Brig< uint16_t,1u>  : BrigType<Brig::BRIG_TYPE_U16> {};
-template <> struct CType2Brig< uint32_t,1u>  : BrigType<Brig::BRIG_TYPE_U32> {};
-template <> struct CType2Brig< uint64_t,1u>  : BrigType<Brig::BRIG_TYPE_U64> {};
+template <> struct CType2Brig< uint8_t,1u>   : BrigTypeTraits<BRIG_TYPE_U8>  {};
+template <> struct CType2Brig< uint16_t,1u>  : BrigTypeTraits<BRIG_TYPE_U16> {};
+template <> struct CType2Brig< uint32_t,1u>  : BrigTypeTraits<BRIG_TYPE_U32> {};
+template <> struct CType2Brig< uint64_t,1u>  : BrigTypeTraits<BRIG_TYPE_U64> {};
 
-template <> struct CType2Brig< b128_t,1u>    : BrigType<Brig::BRIG_TYPE_B128> {};
+template <> struct CType2Brig< b128_t,1u>    : BrigTypeTraits<BRIG_TYPE_B128> {};
 
-template <> struct CType2Brig< f16_t,1u>     : BrigType<Brig::BRIG_TYPE_F16> {};
-template <> struct CType2Brig< f32_t,1u>     : BrigType<Brig::BRIG_TYPE_F32> {};
-template <> struct CType2Brig< f64_t,1u>    : BrigType<Brig::BRIG_TYPE_F64> {};
+template <> struct CType2Brig< f16_t,1u>     : BrigTypeTraits<BRIG_TYPE_F16> {};
+template <> struct CType2Brig< f32_t,1u>     : BrigTypeTraits<BRIG_TYPE_F32> {};
+template <> struct CType2Brig< f64_t,1u>    : BrigTypeTraits<BRIG_TYPE_F64> {};
 
-template <> struct CType2Brig< int8_t,4u >   : BrigType<Brig::BRIG_TYPE_S8X4>  {};
-template <> struct CType2Brig< int8_t,8u >   : BrigType<Brig::BRIG_TYPE_S8X8>  {};
-template <> struct CType2Brig< int8_t,16u >  : BrigType<Brig::BRIG_TYPE_S8X16> {};
-template <> struct CType2Brig< int16_t,2u >  : BrigType<Brig::BRIG_TYPE_S16X2> {};
-template <> struct CType2Brig< int16_t,4u >  : BrigType<Brig::BRIG_TYPE_S16X4> {};
-template <> struct CType2Brig< int16_t,8u >  : BrigType<Brig::BRIG_TYPE_S16X8> {};
-template <> struct CType2Brig< int32_t,2u >  : BrigType<Brig::BRIG_TYPE_S32X2> {};
-template <> struct CType2Brig< int32_t,4u >  : BrigType<Brig::BRIG_TYPE_S32X4> {};
-template <> struct CType2Brig< int64_t,2u >  : BrigType<Brig::BRIG_TYPE_S64X2> {};
+template <> struct CType2Brig< int8_t,4u >   : BrigTypeTraits<BRIG_TYPE_S8X4>  {};
+template <> struct CType2Brig< int8_t,8u >   : BrigTypeTraits<BRIG_TYPE_S8X8>  {};
+template <> struct CType2Brig< int8_t,16u >  : BrigTypeTraits<BRIG_TYPE_S8X16> {};
+template <> struct CType2Brig< int16_t,2u >  : BrigTypeTraits<BRIG_TYPE_S16X2> {};
+template <> struct CType2Brig< int16_t,4u >  : BrigTypeTraits<BRIG_TYPE_S16X4> {};
+template <> struct CType2Brig< int16_t,8u >  : BrigTypeTraits<BRIG_TYPE_S16X8> {};
+template <> struct CType2Brig< int32_t,2u >  : BrigTypeTraits<BRIG_TYPE_S32X2> {};
+template <> struct CType2Brig< int32_t,4u >  : BrigTypeTraits<BRIG_TYPE_S32X4> {};
+template <> struct CType2Brig< int64_t,2u >  : BrigTypeTraits<BRIG_TYPE_S64X2> {};
 
-template <> struct CType2Brig< uint8_t,4u >  : BrigType<Brig::BRIG_TYPE_U8X4>  {};
-template <> struct CType2Brig< uint8_t,8u >  : BrigType<Brig::BRIG_TYPE_U8X8>  {};
-template <> struct CType2Brig< uint8_t,16u > : BrigType<Brig::BRIG_TYPE_U8X16> {};
-template <> struct CType2Brig< uint16_t,2u > : BrigType<Brig::BRIG_TYPE_U16X2> {};
-template <> struct CType2Brig< uint16_t,4u > : BrigType<Brig::BRIG_TYPE_U16X4> {};
-template <> struct CType2Brig< uint16_t,8u > : BrigType<Brig::BRIG_TYPE_U16X8> {};
-template <> struct CType2Brig< uint32_t,2u > : BrigType<Brig::BRIG_TYPE_U32X2> {};
-template <> struct CType2Brig< uint32_t,4u > : BrigType<Brig::BRIG_TYPE_U32X4> {};
-template <> struct CType2Brig< uint64_t,2u > : BrigType<Brig::BRIG_TYPE_U64X2> {};
+template <> struct CType2Brig< uint8_t,4u >  : BrigTypeTraits<BRIG_TYPE_U8X4>  {};
+template <> struct CType2Brig< uint8_t,8u >  : BrigTypeTraits<BRIG_TYPE_U8X8>  {};
+template <> struct CType2Brig< uint8_t,16u > : BrigTypeTraits<BRIG_TYPE_U8X16> {};
+template <> struct CType2Brig< uint16_t,2u > : BrigTypeTraits<BRIG_TYPE_U16X2> {};
+template <> struct CType2Brig< uint16_t,4u > : BrigTypeTraits<BRIG_TYPE_U16X4> {};
+template <> struct CType2Brig< uint16_t,8u > : BrigTypeTraits<BRIG_TYPE_U16X8> {};
+template <> struct CType2Brig< uint32_t,2u > : BrigTypeTraits<BRIG_TYPE_U32X2> {};
+template <> struct CType2Brig< uint32_t,4u > : BrigTypeTraits<BRIG_TYPE_U32X4> {};
+template <> struct CType2Brig< uint64_t,2u > : BrigTypeTraits<BRIG_TYPE_U64X2> {};
 
-template <> struct CType2Brig< f16_t,2u >    : BrigType<Brig::BRIG_TYPE_F16X2> {};
-template <> struct CType2Brig< f16_t,4u >    : BrigType<Brig::BRIG_TYPE_F16X4> {};
-template <> struct CType2Brig< f16_t,8u >    : BrigType<Brig::BRIG_TYPE_F16X8> {};
-template <> struct CType2Brig< f32_t,2u >    : BrigType<Brig::BRIG_TYPE_F32X2> {};
-template <> struct CType2Brig< f32_t,4u >    : BrigType<Brig::BRIG_TYPE_F32X4> {};
-template <> struct CType2Brig< f64_t,2u >   : BrigType<Brig::BRIG_TYPE_F64X2> {};
+template <> struct CType2Brig< f16_t,2u >    : BrigTypeTraits<BRIG_TYPE_F16X2> {};
+template <> struct CType2Brig< f16_t,4u >    : BrigTypeTraits<BRIG_TYPE_F16X4> {};
+template <> struct CType2Brig< f16_t,8u >    : BrigTypeTraits<BRIG_TYPE_F16X8> {};
+template <> struct CType2Brig< f32_t,2u >    : BrigTypeTraits<BRIG_TYPE_F32X2> {};
+template <> struct CType2Brig< f32_t,4u >    : BrigTypeTraits<BRIG_TYPE_F32X4> {};
+template <> struct CType2Brig< f64_t,2u >   : BrigTypeTraits<BRIG_TYPE_F64X2> {};
 
 
 #include "HSAILTemplateUtilities_gen.hpp"

@@ -165,7 +165,6 @@ void Disassembler::log(std::ostream &s) { err = &s; }
 
 void Disassembler::printDirectiveFmt(Code d) const
 {
-    using namespace Brig;
     assert(d);
 
     unsigned kind = d.kind();
@@ -187,7 +186,6 @@ void Disassembler::printDirectiveFmt(Code d) const
 
 void Disassembler::printDirective(Directive d, bool dump /*=false*/) const
 {
-    using namespace Brig;
     assert(d);
 
     switch (d.kind())
@@ -324,7 +322,7 @@ void Disassembler::printOperandConstantImage(OperandConstantImage d) const
     add2ValList(valList, "channel_type",  imageChannelType2str(d.channelType()));
     add2ValList(valList, "channel_order", imageChannelOrder2str(d.channelOrder()));
 
-    print(string(typeX2str(d.type())) + "(" + valList + ")");
+    print(string(type2str(d.type())) + "(" + valList + ")");
 }
 
 void Disassembler::printOperandConstantSampler(OperandConstantSampler d) const
@@ -336,7 +334,7 @@ void Disassembler::printOperandConstantSampler(OperandConstantSampler d) const
     add2ValList(valList, "filter",       samplerFilter2str(d.filter()));
     add2ValList(valList, "addressing",   samplerAddressing2str(d.addressing()));
 
-    print(string(typeX2str(d.type())) + "(" + valList + ")");
+    print(string(type2str(d.type())) + "(" + valList + ")");
 }
 
 void Disassembler::printListOfOperands(ListRef<Operand> operands, bool singleLine /*=true*/, bool typed /*=false*/, bool strict /*=true*/) const
@@ -360,11 +358,11 @@ void Disassembler::printTypedOperand(Operand operand, bool strict /*=true*/) con
     {       
         unsigned type = cnst.type();
         bool implicitlyTyped = isIntType(type) || isFloatType(type);
-        bool implicitTypeAllowed = !strict && (type == Brig::BRIG_TYPE_U64 || isFloatType(type));
+        bool implicitTypeAllowed = !strict && (type == BRIG_TYPE_U64 || isFloatType(type));
 
         if (implicitlyTyped && !implicitTypeAllowed) // explicit type suffix required
         {
-            print(typeX2str(cnst.type()), "(");
+            print(type2str(cnst.type()), "(");
             printOperand(operand);
             print(")");
         }
@@ -381,7 +379,7 @@ void Disassembler::printTypedOperand(Operand operand, bool strict /*=true*/) con
 
 void Disassembler::printOperandConstantOperandList(OperandConstantOperandList opr) const
 {
-    if (opr.type() == Brig::BRIG_TYPE_NONE)
+    if (opr.type() == BRIG_TYPE_NONE)
     {
         print("{");
         printListOfOperands(opr.elements(), false, true);
@@ -389,7 +387,7 @@ void Disassembler::printOperandConstantOperandList(OperandConstantOperandList op
     }
     else
     {
-        print(typeX2str(arrayElementType(opr.type())), "[](");
+        print(type2str(arrayElementType(opr.type())), "[](");
         printListOfOperands(opr.elements(), false);
         printIndent();
         print(")");
@@ -484,7 +482,6 @@ void Disassembler::printBody(Code start, Code end, bool isDefinition /* = true *
 
 void Disassembler::printArgDecl(Directive d) const
 {
-    using namespace Brig;
     assert(d);
     printSymDecl(DirectiveVariable(d), true);
 }
@@ -578,23 +575,23 @@ void printValue(const char* pref, Type val) const
 };
 
 template <>
-void Disassembler::ValuePrinter::visit< BrigType<Brig::BRIG_TYPE_B1> >() const // special case for bool
+void Disassembler::ValuePrinter::visit< BrigTypeTraits<BRIG_TYPE_B1> >() const // special case for bool
 {
     m_self->printValue((int)(m_data.begin[0] & 0x1U));
 }
 
 //F1.0 remove
 template <>
-void Disassembler::ValuePrinter::visit< BrigType<Brig::BRIG_TYPE_SIG32> >() const
+void Disassembler::ValuePrinter::visit< BrigTypeTraits<BRIG_TYPE_SIG32> >() const
 {
-    print< BrigType<Brig::BRIG_TYPE_SIG32> >("sig32("); //F1.0 should be removed; define CType for signals (see how packed types are handled)
+    print< BrigTypeTraits<BRIG_TYPE_SIG32> >("sig32("); //F1.0 should be removed; define CType for signals (see how packed types are handled)
 }
 
 //F1.0 remove
 template <>
-void Disassembler::ValuePrinter::visit< BrigType<Brig::BRIG_TYPE_SIG64> >() const
+void Disassembler::ValuePrinter::visit< BrigTypeTraits<BRIG_TYPE_SIG64> >() const
 {
-    print< BrigType<Brig::BRIG_TYPE_SIG64> >("sig64(");
+    print< BrigTypeTraits<BRIG_TYPE_SIG64> >("sig64(");
 }
 
 void Disassembler::printOperandConstantBytes(OperandConstantBytes opr) const
@@ -602,13 +599,13 @@ void Disassembler::printOperandConstantBytes(OperandConstantBytes opr) const
     unsigned type = opr.type();
     unsigned elementType = arrayElementType(type);
     
-    if (isArrayType(type)) print(typeX2str(elementType), "[](");
+    if (isArrayType(type)) print(type2str(elementType), "[](");
 
-    if (elementType == Brig::BRIG_TYPE_B128)
+    if (elementType == BRIG_TYPE_B128)
     {
         // There are no b128 imm operands, only packed imms may be 128 bit wide.
         // So replace b128 with any 128-bit packed type
-        elementType = Brig::BRIG_TYPE_U8X16;
+        elementType = BRIG_TYPE_U8X16;
     }
 
     dispatchByType(elementType, ValuePrinter(this, opr.bytes()));
@@ -641,7 +638,6 @@ void Disassembler::printInstFmt(Inst i) const
 
 void Disassembler::printInst(Inst i) const
 {
-    using namespace Brig;
     assert(i);
 
     switch(i.kind())
@@ -711,7 +707,7 @@ void Disassembler::printInst(InstBr i) const
     if (instHasType(i.opcode())) print_(type2str(i.type()));
 
     if (isCallInst(i.opcode())) printCallArgs(i);
-    else if (i.opcode() == Brig::BRIG_OPCODE_SBR) printSbrArgs(i);
+    else if (i.opcode() == BRIG_OPCODE_SBR) printSbrArgs(i);
     else printInstArgs(i);
 }
 
@@ -719,7 +715,7 @@ void Disassembler::printInst(InstMem i) const
 {
     print(opcode2str(i.opcode()));
     print_v(i);
-    if (i.opcode() != Brig::BRIG_OPCODE_ALLOCA) print_(seg2str(i.segment()));
+    if (i.opcode() != BRIG_OPCODE_ALLOCA) print_(seg2str(i.segment()));
     print_(align2str(i.align()));
     print_(const2str(i.modifier().isConst()));
     print_(equiv2str(i.equivClass()));
@@ -816,7 +812,7 @@ void Disassembler::printInst(InstLane i) const
     print_v(i);
     print_width(i);
     print_(type2str(i.type()));
-    if (i.sourceType() != Brig::BRIG_TYPE_NONE) print_(type2str(i.sourceType()));
+    if (i.sourceType() != BRIG_TYPE_NONE) print_(type2str(i.sourceType()));
     printInstArgs(i);
 }
 
@@ -870,18 +866,18 @@ void Disassembler::print_v(Inst i) const
 {
     switch (i.opcode())
     {
-    case Brig::BRIG_OPCODE_LD:
-    case Brig::BRIG_OPCODE_GCNLD:
-    case Brig::BRIG_OPCODE_ST:
-    case Brig::BRIG_OPCODE_GCNST:
-    case Brig::BRIG_OPCODE_EXPAND:
-    case Brig::BRIG_OPCODE_RDIMAGE:
-    case Brig::BRIG_OPCODE_LDIMAGE:
-    case Brig::BRIG_OPCODE_STIMAGE:
-    case Brig::BRIG_OPCODE_ACTIVELANEMASK:
+    case BRIG_OPCODE_LD:
+    case BRIG_OPCODE_GCNLD:
+    case BRIG_OPCODE_ST:
+    case BRIG_OPCODE_GCNST:
+    case BRIG_OPCODE_EXPAND:
+    case BRIG_OPCODE_RDIMAGE:
+    case BRIG_OPCODE_LDIMAGE:
+    case BRIG_OPCODE_STIMAGE:
+    case BRIG_OPCODE_ACTIVELANEMASK:
         print_(v2str(i.operand(0)));
         break;
-    case Brig::BRIG_OPCODE_COMBINE:
+    case BRIG_OPCODE_COMBINE:
         print_(v2str(i.operand(1)));
         break;
     default:
@@ -956,7 +952,7 @@ void Disassembler::printCallArgs(Inst i) const
 
 void Disassembler::printSbrArgs(Inst i) const
 {
-    assert(i.opcode() == Brig::BRIG_OPCODE_SBR);
+    assert(i.opcode() == BRIG_OPCODE_SBR);
     assert(i.operand(0));
     assert(i.operand(1));
     assert(!i.operand(2));
@@ -983,7 +979,6 @@ void Disassembler::printSbrArgs(Inst i) const
 
 void Disassembler::printInstOperand(Inst inst, unsigned operandIdx) const
 {
-    using namespace Brig;
     assert(inst && operandIdx <= 4);
 
     Operand opr = inst.operand(operandIdx);
@@ -994,7 +989,6 @@ void Disassembler::printInstOperand(Inst inst, unsigned operandIdx) const
 
 void Disassembler::printOperand(Operand opr, bool dump /*=false*/) const
 {
-    using namespace Brig;
     assert(opr);
 
     switch (opr.kind())
@@ -1046,7 +1040,7 @@ void Disassembler::printOperandAddress(OperandAddress opr) const
     int64_t offset = (int64_t)opr.offset();
     OperandRegister reg = opr.reg();
 
-    if (getAddrSize(opr, mModel == Brig::BRIG_MACHINE_LARGE) == 32) 
+    if (getAddrSize(opr, mModel == BRIG_MACHINE_LARGE) == 32) 
     {
         offset = (int32_t)offset; // sign-extend 32-bit offset
     }
@@ -1134,8 +1128,8 @@ const char* Disassembler::machineModel2str(unsigned model) const
 {
     switch(model)
     {
-    case Brig::BRIG_MACHINE_LARGE: return "$large";
-    case Brig::BRIG_MACHINE_SMALL: return "$small";
+    case BRIG_MACHINE_LARGE: return "$large";
+    case BRIG_MACHINE_SMALL: return "$small";
     default:               return invalid("MachineModel", model);
     }
 }
@@ -1144,8 +1138,8 @@ const char* Disassembler::profile2str(unsigned profile) const
 {
     switch(profile)
     {
-    case Brig::BRIG_PROFILE_FULL: return "$full";
-    case Brig::BRIG_PROFILE_BASE: return "$base";
+    case BRIG_PROFILE_FULL: return "$full";
+    case BRIG_PROFILE_BASE: return "$base";
     default:                      return invalid("Profile", profile);
     }
 }
@@ -1154,14 +1148,14 @@ const char* Disassembler::defaultRound2str(unsigned round) const
 {
     switch(round)
     {
-    case Brig::BRIG_ROUND_FLOAT_DEFAULT:   return "$default";
-    case Brig::BRIG_ROUND_FLOAT_NEAR_EVEN: return "$near";
-    case Brig::BRIG_ROUND_FLOAT_ZERO:      return "$zero";
+    case BRIG_ROUND_FLOAT_DEFAULT:   return "$default";
+    case BRIG_ROUND_FLOAT_NEAR_EVEN: return "$near";
+    case BRIG_ROUND_FLOAT_ZERO:      return "$zero";
     default:                               return invalid("DefaultFloatRound", round);
     }
 }
 
-const char* Disassembler::seg2str(Brig::BrigSegment8_t segment) const
+const char* Disassembler::seg2str(BrigSegment8_t segment) const
 {
     const char *result = HSAIL_ASM::segment2str(segment);
     if (result != NULL) return result;
@@ -1172,7 +1166,7 @@ const char* Disassembler::type2str(unsigned t) const
 {
     assert(!isArrayType(t));
 
-    const char *result = HSAIL_ASM::typeX2str(t);
+    const char *result = HSAIL_ASM::type2str(t);
     if (result != NULL)
     {
         return strcmp(result, "none") == 0? "" : result;
@@ -1279,8 +1273,8 @@ const char* Disassembler::round2str(unsigned val) const
 {
     const char *result = HSAIL_ASM::round2str(val);
     if (result != NULL) return result;
-    else if (val == Brig::BRIG_ROUND_NONE) return "";
-    else if (val == Brig::BRIG_ROUND_FLOAT_DEFAULT) return "";
+    else if (val == BRIG_ROUND_NONE) return "";
+    else if (val == BRIG_ROUND_FLOAT_DEFAULT) return "";
     else return invalid("Rounding", val);
 }
 
@@ -1325,14 +1319,14 @@ const char* Disassembler::v2str(Operand opr) const
     return invalid("vX operand", opr? opr.kind() : -1);
 }
 
-const char* Disassembler::imageChannelType2str(Brig::BrigImageChannelType8_t fmt) const
+const char* Disassembler::imageChannelType2str(BrigImageChannelType8_t fmt) const
 {
     const char *result = HSAIL_ASM::imageChannelType2str(fmt);
     if (result != NULL) return result;
     else return invalid("ImageChannelType", fmt);
 }
 
-const char* Disassembler::imageChannelOrder2str(Brig::BrigImageChannelOrder8_t order) const
+const char* Disassembler::imageChannelOrder2str(BrigImageChannelOrder8_t order) const
 {
     const char *result = HSAIL_ASM::imageChannelOrder2str(order);
     if (result != NULL) return result;
@@ -1362,13 +1356,13 @@ string Disassembler::exec2str_(DirectiveExecutable d) const
     return "";
 }
 
-string Disassembler::attr2str_(Brig::BrigLinkage8_t attr) const
+string Disassembler::attr2str_(BrigLinkage8_t attr) const
 {
     ostringstream s;
     const char *c_str = HSAIL_ASM::linkage2str(attr);
     if (c_str != NULL)
     {
-        if (attr == Brig::BRIG_LINKAGE_PROGRAM) s << "prog ";
+        if (attr == BRIG_LINKAGE_PROGRAM) s << "prog ";
     }
     else s << invalid("Linkage", attr) << " ";
     return s.str();
@@ -1380,7 +1374,7 @@ string Disassembler::alloc2str_(unsigned alloc, unsigned segment) const
     const char *c_str = HSAIL_ASM::allocation2str(alloc);
     if (c_str != NULL)
     {
-        if (alloc == Brig::BRIG_ALLOCATION_AGENT && segment != Brig::BRIG_SEGMENT_READONLY) s << "alloc(agent) ";
+        if (alloc == BRIG_ALLOCATION_AGENT && segment != BRIG_SEGMENT_READONLY) s << "alloc(agent) ";
     }
     else s << invalid("Allocation", alloc) << " ";
     return s.str();

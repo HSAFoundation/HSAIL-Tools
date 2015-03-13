@@ -289,7 +289,7 @@ use strict;
 #### For example:
 ####
 ####     BrigProp geom = 1d,  2d,  3d, 1db, 1da, 2da;
-####     BrigPrefix GEOMETRY; // Generated values will look like this: Brig::BRIG_GEOMETRY_1D
+####     BrigPrefix GEOMETRY; // Generated values will look like this: BRIG_GEOMETRY_1D
 ####
 #### 1.12 TESTGEN-SPECIFIC DIRECTIVES
 ####
@@ -1221,9 +1221,9 @@ sub getTargetPropName
 #
 # Externally-defined names
 #
-sub getTargetInstName         { my $name = shift;                   return "Brig::BRIG_OPCODE_" . uc($name); }
+sub getTargetInstName         { my $name = shift;                   return "BRIG_OPCODE_" . uc($name); }
 sub getTargetFormatClass      { my $name = shift; $name =~ s/_//g;  return 'Inst' . $name ; }
-sub getTargetFormatName       { my $name = shift;                   return 'Brig::BRIG_KIND_INST_' . uc($name); }
+sub getTargetFormatName       { my $name = shift;                   return 'BRIG_KIND_INST_' . uc($name); }
 sub getTargetCategoryName     { my $name = shift; $name =~ s/\./_/g; return "C_" . uc($name); }
 sub genTargetGetAttr          { my $prop = ucfirst(shift());         return "get${prop}Attr"; }
 
@@ -1247,7 +1247,7 @@ sub getTargetBrigValName
     {
         my $pref = uc(getBaseProp($prop)); # default value
         if ($hdlPropPref{getBaseProp($prop)}) { $pref = $hdlPropPref{getBaseProp($prop)} };
-        return 'Brig::BRIG_' . $pref . '_' . uc($val);
+        return 'BRIG_' . $pref . '_' . uc($val);
     }
 
     return $val;

@@ -124,7 +124,7 @@ private:
     void parseControl();
 
     typedef ItemList (Parser::*OperandParser)(Inst);
-    static OperandParser getOperandParser(Brig::BrigOpcode16_t opcode);
+    static OperandParser getOperandParser(BrigOpcode16_t opcode);
 
     Inst parseInstLdSt();
     Inst parseInstLane();

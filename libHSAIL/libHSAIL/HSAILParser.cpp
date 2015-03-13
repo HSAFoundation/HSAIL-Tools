@@ -61,45 +61,45 @@ struct ModuleStatementPrefix
 // Mnemo parsers
 
 
-Brig::BrigWidth toBrigWidth(uint32_t v)
+BrigWidth toBrigWidth(uint32_t v)
 {
     assert( (v & (v-1))==0 ); // must be a power of two
     switch(v) {
-    case 1u          : return Brig::BRIG_WIDTH_1;
-    case 2u          : return Brig::BRIG_WIDTH_2;
-    case 4u          : return Brig::BRIG_WIDTH_4;
-    case 8u          : return Brig::BRIG_WIDTH_8;
-    case 16u         : return Brig::BRIG_WIDTH_16;
-    case 32u         : return Brig::BRIG_WIDTH_32;
-    case 64u         : return Brig::BRIG_WIDTH_64;
-    case 128u        : return Brig::BRIG_WIDTH_128;
-    case 256u        : return Brig::BRIG_WIDTH_256;
-    case 512u        : return Brig::BRIG_WIDTH_512;
-    case 1024u       : return Brig::BRIG_WIDTH_1024;
-    case 2048u       : return Brig::BRIG_WIDTH_2048;
-    case 4096u       : return Brig::BRIG_WIDTH_4096;
-    case 8192u       : return Brig::BRIG_WIDTH_8192;
-    case 16384u      : return Brig::BRIG_WIDTH_16384;
-    case 32768u      : return Brig::BRIG_WIDTH_32768;
-    case 65536u      : return Brig::BRIG_WIDTH_65536;
-    case 131072u     : return Brig::BRIG_WIDTH_131072;
-    case 262144u     : return Brig::BRIG_WIDTH_262144;
-    case 524288u     : return Brig::BRIG_WIDTH_524288;
-    case 1048576u    : return Brig::BRIG_WIDTH_1048576;
-    case 2097152u    : return Brig::BRIG_WIDTH_2097152;
-    case 4194304u    : return Brig::BRIG_WIDTH_4194304;
-    case 8388608u    : return Brig::BRIG_WIDTH_8388608;
-    case 16777216u   : return Brig::BRIG_WIDTH_16777216;
-    case 33554432u   : return Brig::BRIG_WIDTH_33554432;
-    case 67108864u   : return Brig::BRIG_WIDTH_67108864;
-    case 134217728u  : return Brig::BRIG_WIDTH_134217728;
-    case 268435456u  : return Brig::BRIG_WIDTH_268435456;
-    case 536870912u  : return Brig::BRIG_WIDTH_536870912;
-    case 1073741824u : return Brig::BRIG_WIDTH_1073741824;
-    case 2147483648u : return Brig::BRIG_WIDTH_2147483648;
+    case 1u          : return BRIG_WIDTH_1;
+    case 2u          : return BRIG_WIDTH_2;
+    case 4u          : return BRIG_WIDTH_4;
+    case 8u          : return BRIG_WIDTH_8;
+    case 16u         : return BRIG_WIDTH_16;
+    case 32u         : return BRIG_WIDTH_32;
+    case 64u         : return BRIG_WIDTH_64;
+    case 128u        : return BRIG_WIDTH_128;
+    case 256u        : return BRIG_WIDTH_256;
+    case 512u        : return BRIG_WIDTH_512;
+    case 1024u       : return BRIG_WIDTH_1024;
+    case 2048u       : return BRIG_WIDTH_2048;
+    case 4096u       : return BRIG_WIDTH_4096;
+    case 8192u       : return BRIG_WIDTH_8192;
+    case 16384u      : return BRIG_WIDTH_16384;
+    case 32768u      : return BRIG_WIDTH_32768;
+    case 65536u      : return BRIG_WIDTH_65536;
+    case 131072u     : return BRIG_WIDTH_131072;
+    case 262144u     : return BRIG_WIDTH_262144;
+    case 524288u     : return BRIG_WIDTH_524288;
+    case 1048576u    : return BRIG_WIDTH_1048576;
+    case 2097152u    : return BRIG_WIDTH_2097152;
+    case 4194304u    : return BRIG_WIDTH_4194304;
+    case 8388608u    : return BRIG_WIDTH_8388608;
+    case 16777216u   : return BRIG_WIDTH_16777216;
+    case 33554432u   : return BRIG_WIDTH_33554432;
+    case 67108864u   : return BRIG_WIDTH_67108864;
+    case 134217728u  : return BRIG_WIDTH_134217728;
+    case 268435456u  : return BRIG_WIDTH_268435456;
+    case 536870912u  : return BRIG_WIDTH_536870912;
+    case 1073741824u : return BRIG_WIDTH_1073741824;
+    case 2147483648u : return BRIG_WIDTH_2147483648;
     default: assert(false);
     }
-    return Brig::BRIG_WIDTH_NONE;
+    return BRIG_WIDTH_NONE;
 }
 
 OptionalU tryParseWidthModifier(Scanner& scanner) {
@@ -107,8 +107,8 @@ OptionalU tryParseWidthModifier(Scanner& scanner) {
     if (scanner.tryEatToken(EMWidth)) {
         scanner.eatToken(ELParen);
         switch(scanner.peek().kind()) {
-        case EKWWidthAll:    scanner.scan(); res = Brig::BRIG_WIDTH_ALL;      break;
-        case EWaveSizeMacro: scanner.scan(); res = Brig::BRIG_WIDTH_WAVESIZE; break;
+        case EKWWidthAll:    scanner.scan(); res = BRIG_WIDTH_ALL;      break;
+        case EWaveSizeMacro: scanner.scan(); res = BRIG_WIDTH_WAVESIZE; break;
         default:
             uint64_t const width = scanner.readIntLiteral();
             if (width < 1ull || width > 2147483648ull) {
@@ -128,7 +128,7 @@ OptionalU tryParseWidthModifier(Scanner& scanner) {
 static unsigned parseAlign(Scanner& scanner) {
     scanner.eatToken(ELParen);
     unsigned res = num2align(scanner.readIntLiteral());
-    if (res == Brig::BRIG_ALIGNMENT_LAST) {
+    if (res == BRIG_ALIGNMENT_LAST) {
         scanner.syntaxError("Invalid alignment");
     }
     scanner.eatToken(ERParen);
@@ -157,7 +157,7 @@ Inst parseMnemoBasic(Scanner& scanner, Brigantine& bw, bool expectType) {
     // parse done
 
     InstBasic inst = bw.addInst<InstBasic>(opCode);
-    inst.type() = type.isInitialized() ? Brig::BrigTypeX(type.value()) : Brig::BRIG_TYPE_NONE;
+    inst.type() = type.isInitialized() ? BrigType(type.value()) : BRIG_TYPE_NONE;
     return inst;
 }
 
@@ -167,7 +167,7 @@ Inst parseMnemoBasic(Scanner& scanner, Brigantine& bw, int*) {
 
 Inst parseMnemoBasicNoType(Scanner& scanner, Brigantine& bw, int*) {
     Inst res = parseMnemoBasic(scanner,bw,false);
-    if (isGcnInst(res.opcode())) res.type() = Brig::BRIG_TYPE_B32; // default type for GCN
+    if (isGcnInst(res.opcode())) res.type() = BRIG_TYPE_B32; // default type for GCN
     return res;
 }
 
@@ -183,7 +183,7 @@ Inst parseMnemoBasicOrMod(Scanner& scanner, Brigantine& bw, int*) {
     if (ftz.isInitialized() || round.isInitialized() || packing.isInitialized()) {
         InstMod inst = bw.addInst<InstMod>(opCode);
         inst.modifier().ftz() = ftz.isInitialized();
-        inst.pack() = packing.isInitialized() ? Brig::BrigPack(packing.value()) : Brig::BRIG_PACK_NONE;
+        inst.pack() = packing.isInitialized() ? BrigPack(packing.value()) : BRIG_PACK_NONE;
         inst.type() = type;
 
         // NB: getDefRounding must be called after all other fields are initialized
@@ -222,7 +222,7 @@ Inst parseMnemoSeg(Scanner& scanner, Brigantine& bw, int*) {
     // parse done
 
     InstSeg inst = bw.addInst<InstSeg>(opCode);
-    inst.segment() = segment.isInitialized()  ? Brig::BrigSegment(segment.value()) : Brig::BRIG_SEGMENT_FLAT;
+    inst.segment() = segment.isInitialized()  ? BrigSegment(segment.value()) : BRIG_SEGMENT_FLAT;
     inst.type() = type;
     return inst;
 }
@@ -237,7 +237,7 @@ Inst parseMnemoAddr(Scanner& scanner, Brigantine& bw, int*) {
     InstAddr inst = bw.addInst<InstAddr>(opCode);
     inst.segment() = segment.isInitialized() ?
         segment.value() :
-        isGcnInst(inst.opcode())? Brig::BRIG_SEGMENT_AMD_GCN : Brig::BRIG_SEGMENT_FLAT;
+        isGcnInst(inst.opcode())? BRIG_SEGMENT_AMD_GCN : BRIG_SEGMENT_FLAT;
     inst.type() = type;
     return inst;
 }
@@ -247,7 +247,7 @@ Inst parseMnemoMem(Scanner& scanner, Brigantine& bw, int* outVector/* out */) {
     OptionalU const vector     = scanner.tryEatToken(EMVector);
     OptionalU       segment    = scanner.tryEatToken(EMSegment);
 
-    if (opCode==Brig::BRIG_OPCODE_ALLOCA && segment.isInitialized()) {
+    if (opCode==BRIG_OPCODE_ALLOCA && segment.isInitialized()) {
         scanner.syntaxError("segment modifier is not supported");
     }
 
@@ -258,7 +258,7 @@ Inst parseMnemoMem(Scanner& scanner, Brigantine& bw, int* outVector/* out */) {
     OptionalU const isConst    = scanner.tryEatToken(EMConst);
     OptionalU const equivClass = tryParseEquiv(scanner);
 
-    if (opCode==Brig::BRIG_OPCODE_ALLOCA && equivClass.isInitialized()) {
+    if (opCode==BRIG_OPCODE_ALLOCA && equivClass.isInitialized()) {
         scanner.syntaxError("equiv modifier is not supported");
     }
 
@@ -269,14 +269,14 @@ Inst parseMnemoMem(Scanner& scanner, Brigantine& bw, int* outVector/* out */) {
 
     InstMem inst = bw.addInst<InstMem>(opCode);
     inst.type()       = type;
-    inst.segment()    = segment.isInitialized() ?    Brig::BrigSegment(segment.value())    : Brig::BRIG_SEGMENT_FLAT;
+    inst.segment()    = segment.isInitialized() ?    BrigSegment(segment.value())    : BRIG_SEGMENT_FLAT;
     inst.equivClass() = equivClass.isInitialized() ? equivClass.value() : 0;
     inst.width()      = width.isInitialized() ?      width.value()      : getDefWidth(inst, bw.getMachineModel(), bw.getProfile());
-    inst.align()      = align.isInitialized() ?      align.value()      : Brig::BRIG_ALIGNMENT_1;
+    inst.align()      = align.isInitialized() ?      align.value()      : BRIG_ALIGNMENT_1;
     inst.modifier().isConst()  = isConst.isInitialized();
 
-    if (opCode==Brig::BRIG_OPCODE_ALLOCA) {
-        inst.segment() = Brig::BRIG_SEGMENT_PRIVATE;
+    if (opCode==BRIG_OPCODE_ALLOCA) {
+        inst.segment() = BRIG_SEGMENT_PRIVATE;
     }
 
     if (outVector!=NULL) {
@@ -289,9 +289,9 @@ Inst parseMnemoBr(Scanner& scanner, Brigantine& bw, int*) {
     unsigned  const opCode = scanner.eatToken(EInstruction);
     OptionalU const  width = tryParseWidthModifier(scanner);
     if (width.isInitialized()) {
-        if (opCode==Brig::BRIG_OPCODE_WAVEBARRIER ||
-            opCode==Brig::BRIG_OPCODE_CALL ||
-            opCode==Brig::BRIG_OPCODE_BR) {
+        if (opCode==BRIG_OPCODE_WAVEBARRIER ||
+            opCode==BRIG_OPCODE_CALL ||
+            opCode==BRIG_OPCODE_BR) {
             scanner.syntaxError("width modifier is not supported");
         }
     }
@@ -303,12 +303,12 @@ Inst parseMnemoBr(Scanner& scanner, Brigantine& bw, int*) {
     scanner.eatToken(EMNone);
     // parse done
 
-    InstBr inst = bw.addInst<InstBr>(opCode,Brig::BRIG_TYPE_NONE);
+    InstBr inst = bw.addInst<InstBr>(opCode,BRIG_TYPE_NONE);
 
-    inst.type() = type.isInitialized() ? type.value() : Brig::BRIG_TYPE_NONE;
+    inst.type() = type.isInitialized() ? type.value() : BRIG_TYPE_NONE;
 
     if (width.isInitialized()) {
-        inst.width() = Brig::BrigWidth(width.value());
+        inst.width() = BrigWidth(width.value());
     } else {
         inst.width() = getDefWidth(inst, bw.getMachineModel(), bw.getProfile());
     }
@@ -330,7 +330,7 @@ Inst parseMnemoCmp(Scanner& scanner, Brigantine& bw, int*) {
     inst.compare()        = compOp;
     inst.sourceType()     = srcType;
     inst.modifier().ftz() = ftz.isInitialized();
-    inst.pack()           = packing.isInitialized() ? Brig::BrigPack(packing.value()) : Brig::BRIG_PACK_NONE;
+    inst.pack()           = packing.isInitialized() ? BrigPack(packing.value()) : BRIG_PACK_NONE;
     return inst;
 }
 
@@ -366,7 +366,7 @@ Inst parseMnemoAtomic(Scanner& scanner, Brigantine& bw, int*) {
 
     InstAtomic inst = bw.addInst<InstAtomic>(opCode,type);
     inst.atomicOperation() = atomicOperation;
-    inst.segment()         = segment.isInitialized() ? Brig::BrigSegment(segment.value()) : Brig::BRIG_SEGMENT_FLAT;
+    inst.segment()         = segment.isInitialized() ? BrigSegment(segment.value()) : BRIG_SEGMENT_FLAT;
     inst.equivClass()      = equivClass.isInitialized() ? equivClass.value() : 0;
     inst.memoryOrder()     = memoryOrder;
     inst.memoryScope()     = memoryScope;
@@ -380,12 +380,12 @@ Inst parseMnemoMemFence(Scanner& scanner, Brigantine& bw, int*) {
     scanner.eatToken(EMNone);
     // parse done
 
-    InstMemFence inst = bw.addInst<InstMemFence>(opCode,Brig::BRIG_TYPE_NONE);
+    InstMemFence inst = bw.addInst<InstMemFence>(opCode,BRIG_TYPE_NONE);
 
     inst.memoryOrder()              = memoryOrder;
     inst.globalSegmentMemoryScope() = memoryScope;
     inst.groupSegmentMemoryScope()  = memoryScope;
-    inst.imageSegmentMemoryScope()  = Brig::BRIG_MEMORY_SCOPE_NONE;
+    inst.imageSegmentMemoryScope()  = BRIG_MEMORY_SCOPE_NONE;
     return inst;
 }
 
@@ -451,7 +451,7 @@ Inst parseMnemoLane(Scanner& scanner, Brigantine& bw, int* outVector/* out */) {
     // parse done
 
     InstLane inst = bw.addInst<InstLane>(opCode);
-    inst.sourceType() = stype.isInitialized() ? stype.value() : Brig::BRIG_TYPE_NONE;
+    inst.sourceType() = stype.isInitialized() ? stype.value() : BRIG_TYPE_NONE;
     inst.width() = width.isInitialized() ? width.value() : getDefWidth(inst, bw.getMachineModel(), bw.getProfile());
     inst.type() = dtype;
 
@@ -463,8 +463,8 @@ Inst parseMnemoLane(Scanner& scanner, Brigantine& bw, int* outVector/* out */) {
 
 Inst parseMnemoNop(Scanner& scanner, Brigantine& bw, int*) {
     scanner.eatToken(EInstruction);
-    InstBasic inst = bw.addInst<InstBasic>(Brig::BRIG_OPCODE_NOP);
-    inst.type() = Brig::BRIG_TYPE_NONE;
+    InstBasic inst = bw.addInst<InstBasic>(BRIG_OPCODE_NOP);
+    inst.type() = BRIG_TYPE_NONE;
     return inst;
 }
 
@@ -477,7 +477,7 @@ Inst parseMnemoQueue(Scanner& scanner, Brigantine& bw, int*) {
     // parse done
 
     InstQueue inst = bw.addInst<InstQueue>(opCode);
-    inst.segment() = segment.isInitialized()  ? Brig::BrigSegment(segment.value()) : Brig::BRIG_SEGMENT_FLAT;
+    inst.segment() = segment.isInitialized()  ? BrigSegment(segment.value()) : BRIG_SEGMENT_FLAT;
     inst.memoryOrder() = memoryOrder;
     inst.type() = type;
     return inst;
@@ -510,16 +510,16 @@ Inst parseMnemoSegCvt(Scanner& scanner, Brigantine& bw, int*) {
     // parse done
 
     InstSegCvt inst = bw.addInst<InstSegCvt>(opCode);
-    inst.sourceType() = stype.isInitialized() ? Brig::BrigTypeX(stype.value()) : Brig::BRIG_TYPE_NONE;
-    inst.segment() = segment.isInitialized()  ? Brig::BrigSegment(segment.value()) : Brig::BRIG_SEGMENT_FLAT;
+    inst.sourceType() = stype.isInitialized() ? BrigType(stype.value()) : BRIG_TYPE_NONE;
+    inst.segment() = segment.isInitialized()  ? BrigSegment(segment.value()) : BRIG_SEGMENT_FLAT;
     inst.modifier().isNoNull() = isNoNull.isInitialized();
     inst.type() = dtype;
     return inst;
 }
 
 typedef Inst (*OpcodeParser)(Scanner&, Brigantine &, int*);
-OpcodeParser getOpcodeParser(Brig::BrigOpcode16_t opcode); // generated
-int vecOpndIndex(Brig::BrigOpcode16_t arg); // generated;
+OpcodeParser getOpcodeParser(BrigOpcode16_t opcode); // generated
+int vecOpndIndex(BrigOpcode16_t arg); // generated;
 
 Inst parseMnemo(Scanner& scanner, Brigantine& bw, int* outVector) {
     Inst res;
@@ -685,7 +685,7 @@ void Parser::parseTopLevelStatement()
     if (tryEatToken(EColon)) {
         eatToken(EKWFbarrier);
         eatToken(ELParen);
-        res = readNonNegativeInt<Brig::BRIG_TYPE_U16>(m_scanner);
+        res = readNonNegativeInt<BRIG_TYPE_U16>(m_scanner);
         eatToken(ERParen);
     }
     return res;
@@ -779,7 +779,7 @@ Operand Parser::parseOpaqueObject() {
         ItemList list;
         parseOpaqueArray(list, initType);
         return m_bw.createConstantOperandList(list, initType, &srcInfo);
-    } else if (initType == Brig::BRIG_TYPE_SAMP) {
+    } else if (initType == BRIG_TYPE_SAMP) {
         return parseSamplerProperties();
     } else {
         return parseImageProperties(initType);
@@ -794,7 +794,7 @@ void Parser::parseAndUnfoldOpaqueObject(ItemList& list) {
 
     if (peek().kind() == ELBrace) {
         parseOpaqueArray(list, initType);
-    } else if (initType == Brig::BRIG_TYPE_SAMP) {
+    } else if (initType == BRIG_TYPE_SAMP) {
         list.push_back(parseSamplerProperties());
     } else {
         list.push_back(parseImageProperties(initType));
@@ -803,8 +803,6 @@ void Parser::parseAndUnfoldOpaqueObject(ItemList& list) {
 
 void Parser::parseOpaqueArray(ItemList& list, unsigned expectedType)
 {
-    using namespace Brig;
-
     eatToken(ELBrace);
     eatToken(ERBrace);
     eatToken(ELParen);
@@ -874,19 +872,19 @@ Operand Parser::parseImageProperties(unsigned type)
             if (props.array() == 0) syntaxError("array must be positive");
             break;
         case EKWImageChannelType:
-            if (props.channelType() != Brig::BRIG_CHANNEL_TYPE_UNKNOWN) {
+            if (props.channelType() != BRIG_CHANNEL_TYPE_UNKNOWN) {
                 syntaxError("Channel type already set");
             }
             props.channelType() = eatToken(EImageFormat);
             break;
         case EKWImageChannelOrder:
-            if (props.channelOrder() != Brig::BRIG_CHANNEL_ORDER_UNKNOWN) {
+            if (props.channelOrder() != BRIG_CHANNEL_ORDER_UNKNOWN) {
                 syntaxError("Channel order already set");
             }
             props.channelOrder() = eatToken(EImageOrder);
             break;
         case EKWImageGeometry:
-            if (props.geometry() != Brig::BRIG_GEOMETRY_UNKNOWN) {
+            if (props.geometry() != BRIG_GEOMETRY_UNKNOWN) {
                 syntaxError("Geometry already set");
             }
             props.geometry() = eatToken(EImageGeometry);
@@ -897,32 +895,32 @@ Operand Parser::parseImageProperties(unsigned type)
     } while (tryEatToken(EComma));
     eatToken(ERParen);
 
-    if (props.geometry()     == Brig::BRIG_GEOMETRY_UNKNOWN)      syntaxError("Missing image geometry",      &srcInfo);
-    if (props.channelOrder() == Brig::BRIG_CHANNEL_ORDER_UNKNOWN) syntaxError("Missing image channel order", &srcInfo);
-    if (props.channelType()  == Brig::BRIG_CHANNEL_TYPE_UNKNOWN)  syntaxError("Missing image channel type",  &srcInfo);
+    if (props.geometry()     == BRIG_GEOMETRY_UNKNOWN)      syntaxError("Missing image geometry",      &srcInfo);
+    if (props.channelOrder() == BRIG_CHANNEL_ORDER_UNKNOWN) syntaxError("Missing image channel order", &srcInfo);
+    if (props.channelType()  == BRIG_CHANNEL_TYPE_UNKNOWN)  syntaxError("Missing image channel type",  &srcInfo);
     if (props.width()        == 0)                                syntaxError("Missing image width",         &srcInfo);
 
     unsigned geom = props.geometry();
 
-    if (geom == Brig::BRIG_GEOMETRY_2D      ||
-        geom == Brig::BRIG_GEOMETRY_3D      ||
-        geom == Brig::BRIG_GEOMETRY_2DA     ||
-        geom == Brig::BRIG_GEOMETRY_2DDEPTH ||
-        geom == Brig::BRIG_GEOMETRY_2DADEPTH) {
+    if (geom == BRIG_GEOMETRY_2D      ||
+        geom == BRIG_GEOMETRY_3D      ||
+        geom == BRIG_GEOMETRY_2DA     ||
+        geom == BRIG_GEOMETRY_2DDEPTH ||
+        geom == BRIG_GEOMETRY_2DADEPTH) {
         if (props.height() == 0) syntaxError("Missing image height", &srcInfo);
     } else {
         if (props.height() > 0) syntaxError("Image height cannot be specified for this image geometry", &srcInfo);
     }
 
-    if (geom == Brig::BRIG_GEOMETRY_3D) {
+    if (geom == BRIG_GEOMETRY_3D) {
         if (props.depth() == 0) syntaxError("Missing image depth", &srcInfo);
     } else {
         if (props.depth() > 0) syntaxError("Image depth cannot be specified for this image geometry", &srcInfo);
     }
 
-    if (geom == Brig::BRIG_GEOMETRY_1DA     ||
-        geom == Brig::BRIG_GEOMETRY_2DA     ||
-        geom == Brig::BRIG_GEOMETRY_2DADEPTH) {
+    if (geom == BRIG_GEOMETRY_1DA     ||
+        geom == BRIG_GEOMETRY_2DA     ||
+        geom == BRIG_GEOMETRY_2DADEPTH) {
         if (props.array() == 0) syntaxError("Missing image array", &srcInfo);
     } else {
         if (props.array() > 0) syntaxError("Image array cannot be specified for this image geometry", &srcInfo);
@@ -935,7 +933,7 @@ Operand Parser::parseSamplerProperties()
 {
     SourceInfo const srcInfo = sourceInfo(token());
     OperandConstantSampler props = m_bw.append<OperandConstantSampler>(&srcInfo);
-    props.type() = Brig::BRIG_TYPE_SAMP;
+    props.type() = BRIG_TYPE_SAMP;
 
     eatToken(ELParen);
 
@@ -1019,7 +1017,7 @@ void Parser::parseExecutable(ETokens kw, const ModuleStatementPrefix* modPfx)
     if (modPfx->linkage.isInitialized()) {
         exe.linkage() = modPfx->linkage.value();
     } else if (kw == EKWFunction || kw == EKWKernel) {
-        exe.linkage() = Brig::BRIG_LINKAGE_MODULE;
+        exe.linkage() = BRIG_LINKAGE_MODULE;
     }
 
     if (kw == EKWFunction || kw == EKWSignature) {
@@ -1093,7 +1091,7 @@ Operand Parser::parseAggregateOperand()
         default: {
             SourceInfo const srcInfo = sourceInfo(peek());
             ArbitraryData values;
-            unsigned literalType = parseImmediate(&values, Brig::BRIG_TYPE_NONE, 0, TYPED_IMM); //F1.0 how to avoid passing BRIG_TYPE_NONE?
+            unsigned literalType = parseImmediate(&values, BRIG_TYPE_NONE, 0, TYPED_IMM); //F1.0 how to avoid passing BRIG_TYPE_NONE?
             list.push_back(
                m_bw.createOperandConstantBytes(values.toSRef(),
                                                arrayElementType(literalType), isArrayType(literalType),
@@ -1103,7 +1101,7 @@ Operand Parser::parseAggregateOperand()
         }
     } while(tryEatToken(EComma));
     eatToken(ERCurl);
-    OperandConstantOperandList aggregate = m_bw.createConstantOperandList(list, Brig::BRIG_TYPE_NONE, &srcInfo);
+    OperandConstantOperandList aggregate = m_bw.createConstantOperandList(list, BRIG_TYPE_NONE, &srcInfo);
     if (getAggregateNumBytes(aggregate) == 0) {
         syntaxError("An aggregate constant cannot consist of only alignment request elements");
     }
@@ -1146,13 +1144,13 @@ DirectiveVariable Parser::parseVariable(bool nameRequired /*=true*/, const Modul
 
     DirectiveVariable sym;
     switch(expectedType) {
-    case Brig::BRIG_TYPE_ROIMG:
-    case Brig::BRIG_TYPE_RWIMG:
-    case Brig::BRIG_TYPE_WOIMG:
+    case BRIG_TYPE_ROIMG:
+    case BRIG_TYPE_RWIMG:
+    case BRIG_TYPE_WOIMG:
         sym = m_bw.addImage(name,segment,&srcInfo);
         sym.type() = expectedType;
         break;
-    case Brig::BRIG_TYPE_SAMP:
+    case BRIG_TYPE_SAMP:
         sym = m_bw.addSampler(name,segment,&srcInfo);
         break;
     default:
@@ -1169,7 +1167,7 @@ DirectiveVariable Parser::parseVariable(bool nameRequired /*=true*/, const Modul
         sym.linkage() = modPfx->linkage.value();
 
     if (allocKind.isInitialized()) {
-        if (segment == Brig::BRIG_SEGMENT_READONLY) 
+        if (segment == BRIG_SEGMENT_READONLY) 
             syntaxError("Allocation cannot be specified because readonly "
                         "segment variables have implicit agent allocation");
         sym.allocation() = allocKind.value();
@@ -1237,9 +1235,9 @@ void Parser::parseFbarrier(const ModuleStatementPrefix* modPfx) {
     if (modPfx && modPfx->linkage.isInitialized()) {
         fbar.linkage() = modPfx->linkage.value();
     } else if (modPfx) {
-        fbar.linkage() = Brig::BRIG_LINKAGE_MODULE;
+        fbar.linkage() = BRIG_LINKAGE_MODULE;
     } else {
-        fbar.linkage() = Brig::BRIG_LINKAGE_FUNCTION;
+        fbar.linkage() = BRIG_LINKAGE_FUNCTION;
     }
 
     fbar.modifier().isDefinition() = !(modPfx && modPfx->decl.isInitialized());
@@ -1264,7 +1262,7 @@ Inst Parser::parseInst()
 
     res.annotate(srcInfo);
 
-    if (res.kind()!=Brig::BRIG_KIND_NONE) {
+    if (res.kind()!=BRIG_KIND_NONE) {
         OperandParser const parser = getOperandParser(res.opcode());
         assert(parser);
         m_bw.setOperands(res, (this->*parser)(res));
@@ -1360,7 +1358,7 @@ ItemList Parser::parseCallOperands(Inst inst)
     Operand inArgs;
 
     unsigned type = inst.type();
-    Operand target = parseOperandGeneric(isUnsignedType(type) ? type : Brig::BRIG_TYPE_U64);
+    Operand target = parseOperandGeneric(isUnsignedType(type) ? type : BRIG_TYPE_U64);
 
     if (peek().kind()==ELParen) {
         outArgs = parseActualParamList();
@@ -1377,7 +1375,7 @@ ItemList Parser::parseCallOperands(Inst inst)
     list.push_back(target);
     list.push_back(inArgs);
 
-    if (inst.opcode() != Brig::BRIG_OPCODE_CALL && peek().kind()!=ESemi) {
+    if (inst.opcode() != BRIG_OPCODE_CALL && peek().kind()!=ESemi) {
         if (tryEatToken(ELBrace)) {
             SourceInfo const srcInfo = sourceInfo(token());
             ItemList targets;
@@ -1559,8 +1557,8 @@ template<typename R> void parseFloatImmediate(
     unsigned brigType  = CType2Brig<R, 1>::value;
 
     if (isArrayType(requiredType) ||
-        requiredType == Brig::BRIG_TYPE_INVALID ||
-        requiredType == Brig::BRIG_TYPE_NONE) { // Malformed instruction; type cannot be identified
+        requiredType == BRIG_TYPE_INVALID ||
+        requiredType == BRIG_TYPE_NONE) { // Malformed instruction; type cannot be identified
         requiredType = brigType; // Use actual literal type and let validator handle errors
     }
     assert(!isArrayType(requiredType));
@@ -1568,7 +1566,7 @@ template<typename R> void parseFloatImmediate(
     R value = (scanner.*scanFunc)(); // NB: error reporting must follow literal scanning to show correct position in scr code
 
     if (requiredType != brigType && requiredType != getBitType(getBrigTypeNumBits(brigType))) {
-        scanner.syntaxError(std::string(litKind) + " literal cannot initialize " + typeX2str(requiredType)); //F1.0 unify err reporting
+        scanner.syntaxError(std::string(litKind) + " constant cannot be converted to " + type2str(requiredType));
     }
     data->write(hasMinus ? value.neg().rawBits() : value.rawBits(), pos);
     return;
@@ -1618,19 +1616,19 @@ unsigned Parser::parseImmediate(ArbitraryData *data, unsigned requiredType, size
             } else { // This is a scalar
 
                 if (signSI.column >= 0) {
-                    syntaxError("Sign is not allowed before a typed literal", &signSI); //F1.0 unify err reporting
+                    syntaxError("Sign is not allowed before a typed constant", &signSI);
                 }
 
                 if (isArrayType(requiredType) ||
-                    requiredType == Brig::BRIG_TYPE_INVALID ||
-                    requiredType == Brig::BRIG_TYPE_NONE) { // Malformed instruction; type cannot be identified
+                    requiredType == BRIG_TYPE_INVALID ||
+                    requiredType == BRIG_TYPE_NONE) { // Malformed instruction; type cannot be identified
                     requiredType = typeFromToken; // Use actual literal type and let validator handle errors
                 }
 
                 validateTypedImmConversion(requiredType, typeFromToken);
 
                 eatToken(ELParen);
-                unsigned elementType = typeFromToken & Brig::BRIG_TYPE_BASE_MASK;
+                unsigned elementType = typeFromToken & BRIG_TYPE_BASE_MASK;
                 unsigned elementBytes = getBrigTypeNumBytes(elementType);
                 unsigned numPackElem = getBrigTypeNumBits(typeFromToken) / getBrigTypeNumBits(elementType);
                 assert(numPackElem != 0);
@@ -1648,35 +1646,35 @@ unsigned Parser::parseImmediate(ArbitraryData *data, unsigned requiredType, size
         }
     case EF16Literal:
         parseFloatImmediate(data, requiredType, pos, m_scanner, &Scanner::readF16Literal, hasMinus, "f16");
-        return Brig::BRIG_TYPE_F16;
+        return BRIG_TYPE_F16;
     case EF32Literal:
         parseFloatImmediate(data, requiredType, pos, m_scanner, &Scanner::readF32Literal, hasMinus, "f32");
-        return Brig::BRIG_TYPE_F32;
+        return BRIG_TYPE_F32;
     case EF64Literal:
         parseFloatImmediate(data, requiredType, pos, m_scanner, &Scanner::readF64Literal, hasMinus, "f64");
-        return Brig::BRIG_TYPE_F64;
+        return BRIG_TYPE_F64;
     case EIntLiteral:
         {
             uint64_t value = m_scanner.readIntLiteral(); // NB: error reporting must follow literal scanning to show correct position in scr code
 
             if (isArrayType(requiredType) ||
-                requiredType == Brig::BRIG_TYPE_INVALID ||
-                requiredType == Brig::BRIG_TYPE_NONE) { // Malformed instruction; type cannot be identified
-                requiredType = Brig::BRIG_TYPE_U64; // Use actual literal type and let validator handle errors
+                requiredType == BRIG_TYPE_INVALID ||
+                requiredType == BRIG_TYPE_NONE) { // Malformed instruction; type cannot be identified
+                requiredType = BRIG_TYPE_U64; // Use actual literal type and let validator handle errors
             } else if (isPackedType(requiredType) || 
                        isFloatType(requiredType)  || 
                        getBrigTypeNumBits(requiredType) > 64) {
-                syntaxError(std::string("Integer literal cannot initialize ") + typeX2str(requiredType)); //F1.0 unify err reporting
+                syntaxError(std::string("Integer constant cannot be converted to ") + type2str(requiredType));
             }
 
             if (hasMinus) { value = (uint64_t) -(int64_t)value; }
 
             switch(requiredType) {
-            case Brig::BRIG_TYPE_B1:
+            case BRIG_TYPE_B1:
                 value = value ? 1 : 0;
                 break;
-            case Brig::BRIG_TYPE_SIG32:
-            case Brig::BRIG_TYPE_SIG64:
+            case BRIG_TYPE_SIG32:
+            case BRIG_TYPE_SIG64:
                 if (value != 0) {
                     syntaxError("Signal handle can only be initialized with 0");
                 }
@@ -1700,17 +1698,17 @@ unsigned Parser::parseImmediate(ArbitraryData *data, unsigned requiredType, size
             unsigned const typeFromToken = eatToken(peek().kind() == EKWImage? EKWImage : EKWSampler);
             validateTypedImmConversion(requiredType, typeFromToken);
             assert(false);
-            return Brig::BRIG_TYPE_NONE;
+            return BRIG_TYPE_NONE;
         }
     
     default:
         eatToken(tokenAhead); // set error position
-        if (tokenAhead == ELCurl && requiredType != Brig::BRIG_TYPE_NONE) {
+        if (tokenAhead == ELCurl && requiredType != BRIG_TYPE_NONE) {
             syntaxError(std::string("Aggregate constant cannot be converted to ") + type2str(requiredType));
         } else {
             syntaxError("Constant value expected");
         }
-        return Brig::BRIG_TYPE_NONE;
+        return BRIG_TYPE_NONE;
     }
 }
 
@@ -1721,9 +1719,7 @@ void Parser::validateTypedImmConversion(unsigned requiredType, unsigned actualTy
     assert(!isBitType(actualType));
 
     if (requiredType == actualType) return;
-    if (requiredType == Brig::BRIG_TYPE_NONE) return; // No specific type expected
-
-    //F1.0 convert required type from 'b' to 'u' to improve diagnostics
+    if (requiredType == BRIG_TYPE_NONE) return; // No specific type expected
 
     unsigned const requiredTypeSize = isArrayType(requiredType)? 0 : getBrigTypeNumBits(requiredType);
     unsigned const actualTypeSize   = isArrayType(actualType)?   0 : getBrigTypeNumBits(actualType);
@@ -1824,7 +1820,7 @@ Operand Parser::parseOperandInBraces(unsigned requiredType)
         parseAddress(reg, offset);
         eatToken(ERBrace);
     }
-    return m_bw.createRef(name, reg, offset, requiredType == Brig::BRIG_TYPE_U32, &srcInfo);
+    return m_bw.createRef(name, reg, offset, requiredType == BRIG_TYPE_U32, &srcInfo);
 }
 
 
@@ -1875,7 +1871,7 @@ void Parser::parsePragma()
         default: {
                 ArbitraryData values;
                 SourceInfo const oprSrcInfo = sourceInfo(peek());
-                unsigned literalType = parseImmediate(&values, Brig::BRIG_TYPE_NONE, 0); //F1.0 how to avoid passing BRIG_TYPE_NONE?
+                unsigned literalType = parseImmediate(&values, BRIG_TYPE_NONE, 0); //F1.0 how to avoid passing BRIG_TYPE_NONE?
                 opr = m_bw.createOperandConstantBytes(values.toSRef(),
                                                       arrayElementType(literalType), isArrayType(literalType),
                                                       &oprSrcInfo);
@@ -1973,7 +1969,7 @@ void Parser::parseControl()
 
         Operand res;
         unsigned type = getCtlDirOperandType(ctrlId, idx);
-        if (type == Brig::BRIG_TYPE_NONE) {
+        if (type == BRIG_TYPE_NONE) {
             if (idx == 0) {
                 syntaxError("directive has no arguments");
             } else {
@@ -1982,7 +1978,12 @@ void Parser::parseControl()
         } else if (tryEatToken(EWaveSizeMacro)) {
             res = m_bw.createWaveSz(&srcInfo);
         } else {
-            res = parseConstantGeneric(type);
+            uint64_t value = m_scanner.readIntLiteral();
+            if (type == BRIG_TYPE_U32) value &= 0xFFFFFFFF;
+
+            ArbitraryData data;
+            data.write(&value, getBrigTypeNumBytes(type), 0);
+            res = m_bw.createImmed(data.toSRef(), type, &srcInfo);
         }
         values.push_back( res );
         idx++;

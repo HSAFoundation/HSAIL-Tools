@@ -91,7 +91,7 @@ sub MACRO2Name {
 }
 
 do {
-    open F,"<$indir/Brig_new.hpp" or die;
+    open F,"<$indir/Brig.h" or die;
     local $/ = undef;
     $_ = <F>;
     close F;
@@ -108,7 +108,7 @@ sub gvalue($) {
 }
 
 sub parseError() {
-        my $pos = pos($_);
+    my $pos = pos($_);
     my $text = substr($_, 0, $pos, "");
     my $ln = 1;
     my $lpos = 0;
@@ -375,7 +375,7 @@ for my $s (@wstructs) {
         if ($typedefs->{$ftype}) {
             my $tt = $typedefs->{$ftype};
             $f->{wtype} //= $tt->{wtype} if exists $tt->{wtype};
-            $f->{wtype} //= "EnumValRef<Brig::$f->{enum},$tt->{type}>" if exists $f->{enum};
+            $f->{wtype} //= "EnumValRef<$f->{enum},$tt->{type}>" if exists $f->{enum};
             $f->{wtype} //= "ValRef<$tt->{type}>";
             $f->{defValue} //= $tt->{defValue} if exists $tt->{defValue};
         }
@@ -402,7 +402,7 @@ sub makeHSAILInitBrig {
     for my $s (@sortedStructs) {
         printf "void ".$s->{wname}."::initBrig() {\n";
         if (!$s->{generic} && !$s->{standalone}) {
-          print "  initBrigBase(sizeof(Brig::",$s->{rawbrig},"), Brig::",$s->{enum},");\n";
+          print "  initBrigBase(sizeof(",$s->{rawbrig},"), ",$s->{enum},");\n";
         }
         if (!$s->{isroot}) {
           my $pwname = $structs->{$s->{parent}}->{wname};
@@ -419,9 +419,9 @@ sub makeHSAILInitBrig {
             }
 
             my $rhs;
-            $rhs //= "sizeof(Brig::".$s->{name}.")"
+            $rhs //= "sizeof(".$s->{name}.")"
                             if ($fname eq "byteCount");
-            $rhs //= "Brig::".$s->{enum}    if ($fname eq "kind");
+            $rhs //= "".$s->{enum}    if ($fname eq "kind");
             $rhs //= $f->{defValue}         if (exists $f->{defValue});
 
             if ($rhs ne undef) {
@@ -449,7 +449,6 @@ sub makeSwitch($$%) {
     my $text = \$utilities->{$options{incfile} // "BrigUtilities"};
     $wrapperImpls .= "$proto;\n" unless $options{incfile};
     $$text .= "$proto {\n";
-    $$text .= "  using namespace Brig;\n";
     $$text .= "  $options{pre}\n" if $options{pre};
     $$text .= "  switch( $arg ) {\n";
     my $e = $enums->{$ename} or die "makeSwitch: bad enum: $ename";
@@ -474,14 +473,14 @@ sub makeSwitch($$%) {
                 } else {
                   $tokenText .= ($scanner eq "Instructions") ? "/EOMOD" : "/EOKW";
                 }
-                $block = "brigId = Brig::$entryName; return $token;";
+                $block = "brigId = $entryName; return $token;";
                 if ($context) {
                     $scanner{$scanner}->{$tokenText}->{$context} = $block;
                 } else {
                     $scanner{$scanner}->{$tokenText} = $block;
                 }
             } else {
-                $block = "return Brig::$entryName;";
+                $block = "return $entryName;";
                 $scanner{$scanner}->{$tokenText} = $block;
             }
 
@@ -524,7 +523,7 @@ sub generateBrigUtilities {
     }
     for my $en (sort keys %$enums) {
         next if $enums->{$en}->{nodump};
-        makeSwitch "name", $en, proto=>"const char* anyEnum2str( Brig::$en arg )", default=>"return \"??\"";
+        makeSwitch "name", $en, proto=>"const char* anyEnum2str( $en arg )", default=>"return \"??\"";
     }
 }
 
@@ -562,7 +561,7 @@ sub makeWrappers {
 
         if ($s->{isroot} && !$s->{standalone}) {
             print "\n\ttypedef $swname Kind;\n" ;
-            print "\n\tenum { SECTION = Brig::",$s->{section}," };\n";
+            print "\n\tenum { SECTION = ",$s->{section}," };\n";
         }
 
         print "\n\t/// accessors\n";
@@ -622,7 +621,7 @@ sub makeWrappers {
         if (!$s->{standalone}) {
             print "\n\t/// assignment\n";
             print "\tstatic bool isAssignable(const ItemBase& rhs) {\n\t\treturn ",
-                join("\n\t\t    || ", (map { "rhs.kind() == Brig::".$_->{enum} } sort { $a->{enum} cmp $b->{enum} } @children ))
+                join("\n\t\t    || ", (map { "rhs.kind() == ".$_->{enum} } sort { $a->{enum} cmp $b->{enum} } @children ))
                 ,";\n\t}\n";
             print "\t$swname(const ItemBase& rhs) { assignItem(*this,rhs); }\n";
             print "\t$swname& operator=(const ItemBase& rhs) { assignItem(*this,rhs); return *this; }\n";
@@ -632,7 +631,7 @@ sub makeWrappers {
         }
 
         print "\n\t/// raw brig access\n";
-        print "\ttypedef Brig::$s->{rawbrig} BrigStruct;\n";
+        print "\ttypedef $s->{rawbrig} BrigStruct;\n";
         print "\t      BrigStruct* brig()       { return reinterpret_cast<BrigStruct*>      (m_section->getData(m_offset)); }\n";
         print "\tconst BrigStruct* brig() const { return reinterpret_cast<const BrigStruct*>(m_section->getData(m_offset)); }\n";
         print "\tvoid initBrig();\n";
@@ -659,7 +658,6 @@ sub makeDispatchByItem {
         next unless $s->{generic};
         print "template <typename RetType, typename Visitor>\n";
         print "RetType dispatchByItemKind_gen($s->{wname} item,Visitor& vis) {\n";
-        print "\tusing namespace Brig;\n";
         print "\tswitch(item.kind()) {\n";
         for my $c (sort { $a->{enum} cmp $b->{enum} } values %{$s->{children}}) {
             next if $c->{generic};
@@ -732,7 +730,7 @@ sub makeEnumFlds {
 sub makeStaticChecks {
     printf $textLicense;
     for my $s (@sortedStructs) {
-        my $sn = "Brig::".$s->{name};
+        my $sn = "".$s->{name};
         my @fields = grep { !exists $_->{phantomof} } @{$s->{fields}};
         my $n = @fields;
         for(my $i = 0; $i < $n; ++$i) {
@@ -782,8 +780,6 @@ sub makeValidatorFunc {
         |
         |bool ValidatorImpl::ValidateBrig${name}${suff}($name item) const
         |{
-        |    using namespace Brig;
-        |
         |    unsigned kind = item.kind();
         |
         |    switch (kind)
@@ -996,7 +992,6 @@ sub genPropVisitor {
 
     print cpp(<<"EOT");
         |{
-        |    using namespace Brig;
         |    using namespace HSAIL_PROPS;
         |
         |    switch(inst.kind())
@@ -1140,8 +1135,6 @@ sub makeBrigInstUtils {
     print cpp(<<"EOT");
         |Inst appendInst(BrigContainer &container, unsigned instFormat)
         |{
-        |    using namespace Brig;
-        |
         |    switch(instFormat)
         |    {
 EOT

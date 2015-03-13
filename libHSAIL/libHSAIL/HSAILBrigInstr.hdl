@@ -2189,7 +2189,7 @@ Req gcn_div_relaxed
 {
     type  = f32;
     pack  = none;
-    round = none;
+    round = none; // Implementation should always round to near.
     ftz   = any;
     d0.s1.s2;
 }
@@ -2210,7 +2210,7 @@ Req gcn_fldexp
 {
     type  = f(32, 64);
     pack  = none;
-    round = none;
+    round = none; // Implementation should always round to near.
     ftz   = any;
 
     d0 = reg;
@@ -2224,7 +2224,7 @@ Req gcn_frexp_exp
 {
     type  = f(32, 64);
     pack  = none;
-    round = none;
+    round = none; // No rounding implied.
     ftz   = any;
 
     d0 = reg.s32;
@@ -2238,7 +2238,7 @@ Req gcn_frexp_mant
 {
     type  = f(32, 64);
     pack  = none;
-    round = none;
+    round = none; // No rounding implied.
     ftz   = any;
 
     d0 = reg;
@@ -2252,7 +2252,7 @@ Req gcn_trig_preop
 {
     type  = f64;
     pack  = none;
-    round = none;
+    round = none; // Always rounds to zero.
     ftz   = any;
 
     d0 = reg;

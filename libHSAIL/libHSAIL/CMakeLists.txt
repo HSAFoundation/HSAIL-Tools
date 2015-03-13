@@ -2,7 +2,6 @@ find_package(Perl REQUIRED)
 
 set(libhsail_srcs
   Brig.h
-  Brig_new.hpp
   HSAILb128_t.h
   HSAILBrigantine.cpp
   HSAILBrigantine.h
@@ -74,7 +73,7 @@ add_custom_command(
   COMMAND ${PERL_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/generate.pl
                              ${CMAKE_CURRENT_SOURCE_DIR}
                              ${generated_dir}
-  DEPENDS Brig_new.hpp
+  DEPENDS Brig.h
   COMMENT "Generating libHSAIL sources"
 )
 

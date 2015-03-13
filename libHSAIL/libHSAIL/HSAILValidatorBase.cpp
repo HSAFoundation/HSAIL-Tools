@@ -173,7 +173,6 @@ const char* PropValidator::operand2str(unsigned valId)
 
 const char* PropValidator::operandKind2str(unsigned kind)
 {
-    using namespace Brig;
     switch(kind)
     {
     case BRIG_KIND_OPERAND_ADDRESS:                 return "Address";
@@ -198,7 +197,6 @@ const char* PropValidator::val2str(unsigned prop, unsigned val)
 {
     const char* res = 0;
 
-    using namespace Brig;
     switch(prop)
     {
     case PROP_TYPE:
@@ -256,7 +254,6 @@ const char* PropValidator::val2str(unsigned prop, unsigned val)
 
 unsigned PropValidator::attr2type(Inst inst, unsigned idx, unsigned attr)
 {
-    using namespace Brig;
     assert(idx < 5);
 
     switch(attr)
@@ -421,8 +418,8 @@ bool PropValidator::validateTypeSz(Inst inst, unsigned propVal, unsigned type, c
         return validateInstTypeSize(inst, type, typeName, isAssert);
 
     case TYPESIZE_VAL_SIGNAL:
-        if (type == Brig::BRIG_TYPE_SIG64 && isLargeModel())  return true;
-        if (type == Brig::BRIG_TYPE_SIG32 && !isLargeModel()) return true;
+        if (type == BRIG_TYPE_SIG64 && isLargeModel())  return true;
+        if (type == BRIG_TYPE_SIG32 && !isLargeModel()) return true;
         if (isAssert) validate(inst, false, "Instruction type must match machine model");
         break;
 
@@ -498,7 +495,7 @@ bool PropValidator::checkAddrSeg(Inst inst, unsigned operandIdx, bool isAssert)
     OperandAddress opr = inst.operand(operandIdx);
     assert(opr);
 
-    if (HSAIL_ASM::getSegment(inst) == Brig::BRIG_SEGMENT_FLAT && opr.symbol())
+    if (HSAIL_ASM::getSegment(inst) == BRIG_SEGMENT_FLAT && opr.symbol())
     {
         if (isAssert) validate(inst, operandIdx, false, "Address segment does not match instruction segment (expected flat address)");
         return false;
@@ -594,8 +591,6 @@ bool PropValidator::checkOperandKind(Inst inst, unsigned operandIdx, unsigned* v
     assert(inst);
     assert(operandIdx <= 4);
     assert(vals && length > 0);
-
-    using namespace Brig;
 
     Operand opr = inst.operand(operandIdx);
 
@@ -829,16 +824,19 @@ void PropValidator::operandSizeError(Inst inst, unsigned oprIdx, unsigned type, 
     validate(inst, oprIdx, false, errHdr + " size: expected " + errMsg);
 }
 
-void PropValidator::immTypeError(Inst inst, unsigned oprIdx, unsigned type, unsigned expectedType, bool isB1Error)
+//F1.0 print actual type
+//F1.0 print only expected type in BRIG
+void PropValidator::immTypeError(Inst inst, unsigned oprIdx, unsigned actualType, unsigned expectedType, bool isB1Error)
 {
     assert(inst);
     assert(oprIdx <= 4);
 
-    string brigType;
-    if (type != expectedType)
-    {
-        brigType = string("( ") + type2str(expectedType) + " in BRIG)";
-    }
+    //F1.0
+    //string brigType;
+    //if (type != expectedType)
+    //{
+    //    brigType = string(" (") + type2str(expectedType) + " in BRIG)";
+    //}
 
     if (isB1Error)
     {
@@ -850,12 +848,12 @@ void PropValidator::immTypeError(Inst inst, unsigned oprIdx, unsigned type, unsi
     else if (OperandOperandList(inst.operand(oprIdx)))
     {
         string errHdr = getErrHeader(oprIdx, "Vector operand");
-        validate(inst, oprIdx, false, errHdr + " has invalid type of immediate value; expected " + type2str(type) + brigType);
+        validate(inst, oprIdx, false, errHdr + " has invalid type of immediate value (" + type2str(actualType) + "); expected " + type2str(expectedType));
     }
     else
     {
         string errHdr = getErrHeader(oprIdx, "Invalid type of immediate operand");
-        validate(inst, oprIdx, false, errHdr + ": expected " + type2str(type) + brigType);
+        validate(inst, oprIdx, false, errHdr + " (" + type2str(actualType) + "); expected " + type2str(expectedType));
     }
 }
 
@@ -919,13 +917,11 @@ bool PropValidator::validateOperandImmed(Inst inst, OperandConstantBytes opr, un
 {
     assert(opr == inst.operand(oprIdx) || OperandOperandList(inst.operand(oprIdx)));
 
-    using namespace Brig;
-
     bool b1Error = (type == BRIG_TYPE_B1 && !isImmB1(opr));
     unsigned expectedType = isBitType(type)? bitType2uType(type) : type;
 
     if (expectedType == opr.type() && !b1Error) return true;
-    if (isAssert) immTypeError(inst, oprIdx, type, expectedType, b1Error);
+    if (isAssert) immTypeError(inst, oprIdx, opr.type(), expectedType, b1Error);
     return false;
 
     //F1.0 Make sure image and sampler initializers are not allowed as operands
@@ -949,7 +945,7 @@ bool PropValidator::validateOperandWavesize(Inst inst, unsigned oprIdx, unsigned
 {
     assert(OperandWavesize(inst.operand(oprIdx)) || OperandOperandList(inst.operand(oprIdx)));
 
-    if (isIntType(type) && type != Brig::BRIG_TYPE_B128) return true;
+    if (isIntType(type) && type != BRIG_TYPE_B128) return true;
     if (isAssert) wavesizeError(inst, oprIdx, type, attr);
     return false;
 }
@@ -958,7 +954,6 @@ bool PropValidator::validateOperandType(Inst inst, unsigned oprIdx, bool isDst, 
 {
     assert(inst);
     assert(oprIdx <= 4);
-    using namespace Brig;
 
     Operand opr   = inst.operand(oprIdx);
     unsigned type = attr2type(inst, oprIdx, attr);

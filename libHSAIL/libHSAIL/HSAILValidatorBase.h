@@ -77,8 +77,8 @@ public:
     PropValidator(unsigned model, unsigned profile) : mModel(model), mProfile(profile) {}
 
     unsigned getMachineSize()  { return isLargeModel()? 64 : 32; }
-    bool isLargeModel()        { return mModel   == Brig::BRIG_MACHINE_LARGE; }
-    bool isFullProfile()       { return mProfile == Brig::BRIG_PROFILE_FULL; }
+    bool isLargeModel()        { return mModel   == BRIG_MACHINE_LARGE; }
+    bool isFullProfile()       { return mProfile == BRIG_PROFILE_FULL; }
 
     //==========================================================================
     // Interface with HDL-generated code
@@ -124,8 +124,8 @@ public:
     {
         if      (InstCmp   i = inst) return i.pack();
         else if (InstMod   i = inst) return i.pack();
-        else if (InstBasic i = inst) return Brig::BRIG_PACK_NONE;
-        assert(false);               return Brig::BRIG_PACK_NONE;
+        else if (InstBasic i = inst) return BRIG_PACK_NONE;
+        assert(false);               return BRIG_PACK_NONE;
     }
 
     template<class T> unsigned getRoundEx(T inst)
@@ -133,7 +133,7 @@ public:
         if      (InstCvt   i = inst) return i.round();
         else if (InstMod   i = inst) return i.round();
         else if (InstBasic i = inst) return getDefRounding(i, mModel, mProfile);
-        assert(false);               return Brig::BRIG_ROUND_NONE;
+        assert(false);               return BRIG_ROUND_NONE;
     }
 
     template<class T> unsigned getFtzEx(T inst)

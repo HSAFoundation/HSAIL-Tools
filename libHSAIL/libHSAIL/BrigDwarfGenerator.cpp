@@ -543,7 +543,7 @@ void BrigDwarfGenerator_impl::generateDwarfForBrig( HSAIL_ASM::BrigContainer & c
     {
         switch ( d.kind() )
         {
-        case Brig::BRIG_KIND_DIRECTIVE_VARIABLE:
+        case BRIG_KIND_DIRECTIVE_VARIABLE:
          {
              // add this symbol's entry as a child of the compile unit
              // of type "variable"
@@ -553,8 +553,8 @@ void BrigDwarfGenerator_impl::generateDwarfForBrig( HSAIL_ASM::BrigContainer & c
              break;
          }
 
-         case Brig::BRIG_KIND_DIRECTIVE_FUNCTION:
-         case Brig::BRIG_KIND_DIRECTIVE_KERNEL:
+         case BRIG_KIND_DIRECTIVE_FUNCTION:
+         case BRIG_KIND_DIRECTIVE_KERNEL:
          {
              HSAIL_ASM::DirectiveExecutable dExe( d );
              generateDwarfForBrigKernelFunction( dExe );
@@ -579,7 +579,7 @@ BrigDwarfGenerator_impl::generateDwarfForBrigSymbol( HSAIL_ASM::Directive d,
                                                      unsigned dwarfTag)
 {
     HSAIL_ASM::DirectiveVariable dSym( d );
-    Brig::BrigDirectiveVariable * pBds( dSym.brig() );
+    BrigDirectiveVariable * pBds( dSym.brig() );
     Dwarf_Error * nullError( 0 );
     Dwarf_P_Die nullSibling( 0 );
 
@@ -655,7 +655,7 @@ void BrigDwarfGenerator_impl::generateDwarfForBrigKernelFunction( HSAIL_ASM::Dir
     declColumn = pSrcInfo->column + 1;
     firstInArg = d.firstInArg();
     numInParams = d.inArgCount();
-    if ( d.kind() == Brig::BRIG_KIND_DIRECTIVE_FUNCTION ) {
+    if ( d.kind() == BRIG_KIND_DIRECTIVE_FUNCTION ) {
       isKernel = false;
       firstOutParam = d.next();
       numOutParams = d.outArgCount();
@@ -813,10 +813,10 @@ void BrigDwarfGenerator_impl::generateDwarfForBrigSubprogramBody(
     {
         switch ( d.kind() )
         {
-         case Brig::BRIG_KIND_DIRECTIVE_VARIABLE:
+         case BRIG_KIND_DIRECTIVE_VARIABLE:
          {
              HSAIL_ASM::DirectiveVariable dSym( d );
-             if ( inArgScope && ( dSym.segment() == Brig::BRIG_SEGMENT_ARG ) )
+             if ( inArgScope && ( dSym.segment() == BRIG_SEGMENT_ARG ) )
              {
                  // argument variable, parent entry is arg scope
                  //
@@ -838,11 +838,11 @@ void BrigDwarfGenerator_impl::generateDwarfForBrigSubprogramBody(
              break;
          }
 
-         case Brig::BRIG_KIND_DIRECTIVE_ARG_BLOCK_START:
+         case BRIG_KIND_DIRECTIVE_ARG_BLOCK_START:
             inArgScope = true;
             break;
 
-         case Brig::BRIG_KIND_DIRECTIVE_ARG_BLOCK_END:
+         case BRIG_KIND_DIRECTIVE_ARG_BLOCK_END:
             // We have reached the end of the current argument scope -- "forget" the
             // current argscope entry (if there is one).
             // This is not a leak of pArgScopeEntry, dwarf tracks all allocations
@@ -868,7 +868,7 @@ void BrigDwarfGenerator_impl::generateDwarfForBrigSubprogramBody(
 
 bool BrigDwarfGenerator_impl::storeInBrig( HSAIL_ASM::BrigContainer & c ) const
 {
-  c.initSectionRaw(Brig::BRIG_SECTION_INDEX_IMPLEMENTATION_DEFINED, "hsa_debug");
+  c.initSectionRaw(BRIG_SECTION_INDEX_IMPLEMENTATION_DEFINED, "hsa_debug");
   if (!m_elfContainer.empty()) {
     c.debugInfo().insertData(c.debugInfo().size(), (const char*)&m_elfContainer[0], (const char*)&m_elfContainer[0] + m_elfContainer.size());
   }

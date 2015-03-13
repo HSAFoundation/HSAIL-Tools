@@ -66,8 +66,6 @@ namespace HSAIL_ASM {
 
 const char* validateProp(unsigned propId, unsigned val, unsigned* vals, unsigned length, unsigned model, unsigned profile)
 {
-    using namespace Brig;
-
     if (profile == BRIG_PROFILE_FULL) return 0;
 
     if (propId == HSAIL_PROPS::PROP_FTZ)
@@ -98,8 +96,6 @@ const char* validateProp(unsigned propId, unsigned val, unsigned* vals, unsigned
 
 const char* validateProp(unsigned propId, unsigned val, unsigned model, unsigned profile, bool imageExt)
 {
-    using namespace Brig;
-
     assert(model   == BRIG_MACHINE_SMALL || model == BRIG_MACHINE_LARGE);
     assert(profile == BRIG_PROFILE_BASE  || profile == BRIG_PROFILE_FULL);
 
@@ -130,8 +126,6 @@ const char* validateProp(Inst inst, unsigned propId, unsigned model, unsigned pr
 
 bool hasImageExtProps(Inst inst)
 {
-    using namespace Brig;
-
     if (isImageInst(inst.opcode())       ||
         isImageExtType(getType(inst))    ||
         isImageExtType(getSrcType(inst)) ||
@@ -161,7 +155,7 @@ bool hasImageExtProps(Inst inst)
 
 bool isDirective(unsigned id)
 {
-    return Brig::BRIG_KIND_DIRECTIVE_BEGIN <= id && id < Brig::BRIG_KIND_DIRECTIVE_END;
+    return BRIG_KIND_DIRECTIVE_BEGIN <= id && id < BRIG_KIND_DIRECTIVE_END;
 }
 
 SRef getName(Directive d)
@@ -180,10 +174,10 @@ SRef getName(Directive d)
 unsigned getSegment(Directive d)
 {
     if (DirectiveVariable sym = d) return sym.segment();
-    else if (DirectiveFbarrier(d)) return Brig::BRIG_SEGMENT_GROUP;
+    else if (DirectiveFbarrier(d)) return BRIG_SEGMENT_GROUP;
 
     assert(false);
-    return Brig::BRIG_SEGMENT_NONE;
+    return BRIG_SEGMENT_NONE;
 }
 
 unsigned getSymLinkage(Directive d)
@@ -193,7 +187,7 @@ unsigned getSymLinkage(Directive d)
     else if (DirectiveFbarrier   ds = d) return ds.linkage();
 
     assert(false);
-    return Brig::BRIG_LINKAGE_NONE;
+    return BRIG_LINKAGE_NONE;
 }
 
 bool isDecl(Directive d)
@@ -238,8 +232,6 @@ unsigned getVariableAlignment(DirectiveVariable var)
 
 unsigned getCtlDirOperandType(unsigned kind, unsigned idx)
 {
-    using namespace Brig;
-
     switch(kind)
     {
     case BRIG_CONTROL_ENABLEBREAKEXCEPTIONS:
@@ -270,8 +262,6 @@ unsigned getCtlDirOperandType(unsigned kind, unsigned idx)
 
 const char* validateCtlDirOperandBounds(unsigned kind, unsigned idx, uint64_t val)
 {
-    using namespace Brig;
-
     switch(kind)
     {
     case BRIG_CONTROL_REQUIREDDIM:
@@ -301,8 +291,6 @@ const char* validateCtlDirOperandBounds(unsigned kind, unsigned idx, uint64_t va
 
 bool allowCtlDirOperandWs(unsigned kind)
 {
-    using namespace Brig;
-
     switch(kind)
     {
     case BRIG_CONTROL_REQUIREDGRIDSIZE:
@@ -327,23 +315,21 @@ bool allowCtlDirOperandWs(unsigned kind)
 //============================================================================
 // Operations with instructions
 
-bool isInstruction(unsigned id){ return Brig::BRIG_KIND_INST_BEGIN <= id && id < Brig::BRIG_KIND_INST_END; }
+bool isInstruction(unsigned id){ return BRIG_KIND_INST_BEGIN <= id && id < BRIG_KIND_INST_END; }
 
-unsigned getType(Inst inst)    { return getBrigProp(inst, HSAIL_PROPS::PROP_TYPE,       true, Brig::BRIG_TYPE_NONE);    }
-unsigned getSrcType(Inst inst) { return getBrigProp(inst, HSAIL_PROPS::PROP_SOURCETYPE, true, Brig::BRIG_TYPE_NONE);    }
-unsigned getCrdType(Inst inst) { return getBrigProp(inst, HSAIL_PROPS::PROP_COORDTYPE,  true, Brig::BRIG_TYPE_NONE);    }
-unsigned getSigType(Inst inst) { return getBrigProp(inst, HSAIL_PROPS::PROP_SIGNALTYPE, true, Brig::BRIG_TYPE_NONE);    }
-unsigned getImgType(Inst inst) { return getBrigProp(inst, HSAIL_PROPS::PROP_IMAGETYPE,  true, Brig::BRIG_TYPE_NONE);    }
-unsigned getSegment(Inst inst) { return getBrigProp(inst, HSAIL_PROPS::PROP_SEGMENT,    true, Brig::BRIG_SEGMENT_NONE); }
-unsigned getPacking(Inst inst) { return getBrigProp(inst, HSAIL_PROPS::PROP_PACK,       true, Brig::BRIG_PACK_NONE);    }
+unsigned getType(Inst inst)    { return getBrigProp(inst, HSAIL_PROPS::PROP_TYPE,       true, BRIG_TYPE_NONE);    }
+unsigned getSrcType(Inst inst) { return getBrigProp(inst, HSAIL_PROPS::PROP_SOURCETYPE, true, BRIG_TYPE_NONE);    }
+unsigned getCrdType(Inst inst) { return getBrigProp(inst, HSAIL_PROPS::PROP_COORDTYPE,  true, BRIG_TYPE_NONE);    }
+unsigned getSigType(Inst inst) { return getBrigProp(inst, HSAIL_PROPS::PROP_SIGNALTYPE, true, BRIG_TYPE_NONE);    }
+unsigned getImgType(Inst inst) { return getBrigProp(inst, HSAIL_PROPS::PROP_IMAGETYPE,  true, BRIG_TYPE_NONE);    }
+unsigned getSegment(Inst inst) { return getBrigProp(inst, HSAIL_PROPS::PROP_SEGMENT,    true, BRIG_SEGMENT_NONE); }
+unsigned getPacking(Inst inst) { return getBrigProp(inst, HSAIL_PROPS::PROP_PACK,       true, BRIG_PACK_NONE);    }
 unsigned getEqClass(Inst inst) { return getBrigProp(inst, HSAIL_PROPS::PROP_EQUIVCLASS, true, 0);                       }
 
 unsigned getOperandsNum(Inst inst) { return inst.operands().size(); }
 
 bool isImageInst(unsigned opcode)
 {
-    using namespace Brig;
-
     switch(opcode)
     {
     case BRIG_OPCODE_RDIMAGE:
@@ -359,7 +345,6 @@ bool isImageInst(unsigned opcode)
 
 bool isCallInst(unsigned opcode)
 {
-    using namespace Brig;
     return opcode == BRIG_OPCODE_CALL  ||
            opcode == BRIG_OPCODE_SCALL ||
            opcode == BRIG_OPCODE_ICALL;
@@ -367,7 +352,6 @@ bool isCallInst(unsigned opcode)
 
 bool isBranchInst(unsigned opcode)
 {
-    using namespace Brig;
     return opcode == BRIG_OPCODE_BR  ||
            opcode == BRIG_OPCODE_CBR ||
            opcode == BRIG_OPCODE_SBR;
@@ -375,7 +359,6 @@ bool isBranchInst(unsigned opcode)
 
 bool isTermInst(unsigned opcode)
 {
-    using namespace Brig;
     return opcode == BRIG_OPCODE_BR  ||
            opcode == BRIG_OPCODE_SBR ||
            opcode == BRIG_OPCODE_RET;
@@ -386,7 +369,7 @@ bool isTermInst(unsigned opcode)
 
 bool isOperand(unsigned id)
 {
-    return Brig::BRIG_KIND_OPERAND_BEGIN <= id && id < Brig::BRIG_KIND_OPERAND_END;
+    return BRIG_KIND_OPERAND_BEGIN <= id && id < BRIG_KIND_OPERAND_END;
 }
 
 bool isCodeRef(OperandCodeRef cr, unsigned targetKind)
@@ -452,7 +435,7 @@ uint64_t getImmAsU64(OperandConstantBytes opr)
 uint64_t getAggregateNumBytes(OperandConstantOperandList opr)
 {
     assert(opr);
-    assert(opr.type() == Brig::BRIG_TYPE_NONE);
+    assert(opr.type() == BRIG_TYPE_NONE);
 
     unsigned numBytes = 0;
     unsigned size = opr.elements().size();
@@ -499,8 +482,6 @@ unsigned getAddrSize(OperandAddress addr, bool isLargeModel)
 
 unsigned getSegAddrSize(unsigned segment, bool isLargeModel)
 {
-    using namespace Brig;
-
     switch (segment)
     {
     case BRIG_SEGMENT_FLAT:
@@ -516,8 +497,6 @@ unsigned getSegAddrSize(unsigned segment, bool isLargeModel)
 
 bool isAddressableSeg(unsigned segment)
 {
-    using namespace Brig;
-
     switch (segment)
     {
     case BRIG_SEGMENT_ARG:
@@ -534,7 +513,6 @@ bool isAddressableSeg(unsigned segment)
 
 bool isIntType(unsigned type)
 {
-    using namespace Brig;
     switch(type)
     {
     case BRIG_TYPE_B1:
@@ -562,8 +540,6 @@ bool isIntType(unsigned type)
 
 bool isSignedType(unsigned type)
 {
-    using namespace Brig;
-
     switch(type)
     {
     case BRIG_TYPE_S8:
@@ -579,8 +555,6 @@ bool isSignedType(unsigned type)
 
 bool isUnsignedType(unsigned type)
 {
-    using namespace Brig;
-
     switch(type)
     {
     case BRIG_TYPE_U8:
@@ -596,7 +570,6 @@ bool isUnsignedType(unsigned type)
 
 bool isBitType(unsigned type)
 {
-    using namespace Brig;
     switch(type)
     {
     case BRIG_TYPE_B1:
@@ -614,7 +587,6 @@ bool isBitType(unsigned type)
 
 bool isOpaqueType(unsigned type)
 {
-    using namespace Brig;
     switch(type)
     {
     case BRIG_TYPE_SAMP:
@@ -632,7 +604,6 @@ bool isOpaqueType(unsigned type)
 
 bool isImageExtType(unsigned type)
 {
-    using namespace Brig;
     switch(type)
     {
     case BRIG_TYPE_SAMP:
@@ -648,7 +619,6 @@ bool isImageExtType(unsigned type)
 
 bool isImageType(unsigned type)
 {
-    using namespace Brig;
     switch(type)
     {
     case BRIG_TYPE_ROIMG:
@@ -663,7 +633,6 @@ bool isImageType(unsigned type)
 
 bool isSamplerType(unsigned type)
 {
-    using namespace Brig;
     switch(type)
     {
     case BRIG_TYPE_SAMP:
@@ -676,7 +645,6 @@ bool isSamplerType(unsigned type)
 
 bool isSignalType(unsigned type)
 {
-    using namespace Brig;
     switch(type)
     {
     case BRIG_TYPE_SIG32:
@@ -690,7 +658,6 @@ bool isSignalType(unsigned type)
 
 bool isFullProfileOnlyType(unsigned type)
 {
-    using namespace Brig;
     switch(type)
     {
     case BRIG_TYPE_F64:
@@ -704,7 +671,6 @@ bool isFullProfileOnlyType(unsigned type)
 
 bool isFloatType(unsigned type)
 {
-    using namespace Brig;
     return type == BRIG_TYPE_F16 || type == BRIG_TYPE_F32 || type == BRIG_TYPE_F64;
 }
 
@@ -715,7 +681,6 @@ bool isPackedType(unsigned type)
 
 bool isIntPackedType(unsigned type)
 {
-    using namespace Brig;
     switch(type)
     {
     case BRIG_TYPE_U8X4:
@@ -745,7 +710,6 @@ bool isIntPackedType(unsigned type)
 
 bool isFloatPackedType(unsigned type)
 {
-    using namespace Brig;
     switch(type)
     {
     case BRIG_TYPE_F16X2:
@@ -762,7 +726,6 @@ bool isFloatPackedType(unsigned type)
 
 unsigned bitType2uType(unsigned type)
 {
-    using namespace Brig;
     switch(type)
     {
     case BRIG_TYPE_B1:     return BRIG_TYPE_U8;
@@ -779,7 +742,6 @@ unsigned bitType2uType(unsigned type)
 
 unsigned type2bitType(unsigned type)
 {
-    using namespace Brig;
     switch(type)
     {
     case BRIG_TYPE_B1:     return BRIG_TYPE_B1;
@@ -843,7 +805,6 @@ unsigned type2bitType(unsigned type)
 
 unsigned packedType2uType(unsigned type)
 {
-    using namespace Brig;
     switch(type)
     {
     case BRIG_TYPE_U8X4:   return BRIG_TYPE_U8X4;
@@ -878,9 +839,7 @@ unsigned packedType2uType(unsigned type)
 
 unsigned type2immType(unsigned elementType, bool isArray)
 {
-    using namespace Brig;
-
-    if (elementType == Brig::BRIG_TYPE_NONE ||
+    if (elementType == BRIG_TYPE_NONE ||
         isArrayType(elementType) ||
         isImageType(elementType) || 
         isSamplerType(elementType)) return BRIG_TYPE_NONE;
@@ -893,18 +852,16 @@ unsigned type2immType(unsigned elementType, bool isArray)
 
 bool isValidImmType(unsigned type)
 {
-    return type != Brig::BRIG_TYPE_NONE && !isImageType(type) && !isSamplerType(type); //F1.0
+    return type != BRIG_TYPE_NONE && !isImageType(type) && !isSamplerType(type); //F1.0
 }
 
 bool isValidVarType(unsigned type)
 {
-    return type != Brig::BRIG_TYPE_NONE && type != Brig::BRIG_TYPE_B1;
+    return type != BRIG_TYPE_NONE && type != BRIG_TYPE_B1;
 }
 
 unsigned getBitType(unsigned size)
 {
-    using namespace Brig;
-
     switch(size)
     {
     case 1:   return BRIG_TYPE_B1;
@@ -921,8 +878,6 @@ unsigned getBitType(unsigned size)
 
 unsigned getSignedType(unsigned size)
 {
-    using namespace Brig;
-
     switch(size)
     {
     case 8:   return BRIG_TYPE_S8;
@@ -937,8 +892,6 @@ unsigned getSignedType(unsigned size)
 
 unsigned getUnsignedType(unsigned size)
 {
-    using namespace Brig;
-
     switch(size)
     {
     case 8:   return BRIG_TYPE_U8;
@@ -953,8 +906,6 @@ unsigned getUnsignedType(unsigned size)
 
 unsigned expandSubwordType(unsigned type)
 {
-    using namespace Brig;
-
     switch(type)
     {
     case BRIG_TYPE_B1:  assert(false);
@@ -974,8 +925,6 @@ unsigned expandSubwordType(unsigned type)
 
 unsigned packedType2elementType(unsigned type)
 {
-    using namespace Brig;
-
     switch(type)
     {
     case BRIG_TYPE_U8X4:
@@ -1034,8 +983,6 @@ unsigned arrayElementType(unsigned type)
 
 bool isSatPacking(unsigned packing)
 {
-    using namespace Brig;
-
     switch(packing)
     {
     case BRIG_PACK_PP:
@@ -1062,8 +1009,6 @@ bool isSatPacking(unsigned packing)
 
 bool isUnrPacking(unsigned packing)
 {
-    using namespace Brig;
-
     switch(packing)
     {
     case BRIG_PACK_S:
@@ -1095,8 +1040,6 @@ bool isBinPacking(unsigned packing)
 
 unsigned getPackedTypeDim(unsigned type)
 {
-    using namespace Brig;
-
     switch(type)
     {
     case BRIG_TYPE_U16X2:
@@ -1135,8 +1078,6 @@ char getPackingControl(unsigned srcOperandIdx, unsigned packing)
 {
     assert(srcOperandIdx == 0 || srcOperandIdx == 1);
 
-    using namespace Brig;
-
     const char* ctl;
     switch(packing)
     {
@@ -1169,14 +1110,14 @@ unsigned getPackedDstDim(unsigned type, unsigned packing)
 //============================================================================
 // Operations with alignment
 
-Brig::BrigAlignment getNaturalAlignment(unsigned type)
+BrigAlignment getNaturalAlignment(unsigned type)
 {
     return num2align(getBrigTypeNumBytes(type));
 }
 
-Brig::BrigAlignment getMaxAlignment()
+BrigAlignment getMaxAlignment()
 {
-    return Brig::BRIG_ALIGNMENT_MAX;
+    return BRIG_ALIGNMENT_MAX;
 }
 
 bool isValidAlignment(unsigned align, unsigned type)
@@ -1189,8 +1130,6 @@ bool isValidAlignment(unsigned align, unsigned type)
 
 const char* width2str(unsigned val)
 {
-    using namespace Brig;
-
     switch(val)
     {
     case BRIG_WIDTH_1                   : return "width(1)";
@@ -1262,15 +1201,15 @@ size_t zeroPaddedCopy(void *dst, const void* src, size_t len, size_t room)
 
 //============================================================================
 
-const Brig::BrigSectionHeader* getBrigSection(
-    Brig::BrigModule_t brigModule,
+const BrigSectionHeader* getBrigSection(
+    BrigModule_t brigModule,
     unsigned index) {
     assert(index < brigModule->sectionCount);
     uint64_t const secOfs = ((uint64_t*)
         ((const char*)brigModule + brigModule->sectionIndex))[index];
 
     assert(secOfs < (std::numeric_limits<uint32_t>::max)());
-    return (const Brig::BrigSectionHeader*)
+    return (const BrigSectionHeader*)
         ((const char*)brigModule + (uint32_t)secOfs);
 }
 

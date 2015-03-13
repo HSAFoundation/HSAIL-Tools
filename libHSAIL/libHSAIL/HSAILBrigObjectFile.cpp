@@ -215,10 +215,10 @@ struct SectionDesc {
     unsigned    flags;
     unsigned    align;
 } sectionDescs[] = {
-    { Brig::BRIG_SECTION_INDEX_DATA,                   "hsa_data",    ".brig_strtab",   "__BRIG__strtab",   SHT_PROGBITS, 0,           4 },
-    { Brig::BRIG_SECTION_INDEX_CODE,                   "hsa_code",    ".brig_code",     "__BRIG__code",     SHT_PROGBITS, 0,           4 },
-    { Brig::BRIG_SECTION_INDEX_OPERAND,                "hsa_operand", ".brig_operands", "__BRIG__operands", SHT_PROGBITS, 0,           4 },
-    { Brig::BRIG_SECTION_INDEX_IMPLEMENTATION_DEFINED, "hsa_debug",   ".debug_hsa",     "__debug_brig__",   SHT_PROGBITS, 0,           4 },
+    { BRIG_SECTION_INDEX_DATA,                   "hsa_data",    ".brig_strtab",   "__BRIG__strtab",   SHT_PROGBITS, 0,           4 },
+    { BRIG_SECTION_INDEX_CODE,                   "hsa_code",    ".brig_code",     "__BRIG__code",     SHT_PROGBITS, 0,           4 },
+    { BRIG_SECTION_INDEX_OPERAND,                "hsa_operand", ".brig_operands", "__BRIG__operands", SHT_PROGBITS, 0,           4 },
+    { BRIG_SECTION_INDEX_IMPLEMENTATION_DEFINED, "hsa_debug",   ".debug_hsa",     "__debug_brig__",   SHT_PROGBITS, 0,           4 },
     { ELF_SECTION_STRTAB,                              0,             ".strtab",        0,                  SHT_STRTAB,   SHF_STRINGS, 1 },
     { ELF_SECTION_SYMTAB,                              0,             ".symtab",        0,                  SHT_SYMTAB,   0,           8 },
     { ELF_SECTION_SHSTRTAB,                            ".shstrtab",   ".shstrtab",      0,                  SHT_STRTAB,   SHF_STRINGS, 1 },
@@ -333,7 +333,7 @@ public:
             if (readSection(data, s, i)) return 1;
             
             bool includesHeader =
-                  desc->sectionId < Brig::BRIG_SECTION_INDEX_IMPLEMENTATION_DEFINED;
+                  desc->sectionId < BRIG_SECTION_INDEX_IMPLEMENTATION_DEFINED;
             if (c.loadSection(desc->sectionId, data, includesHeader, s->errs)) {
                 return 1;
             }
@@ -470,9 +470,9 @@ private:
         assert(data.length() < INT_MAX);
         bool includesHeader =
             desc.sectionId >= 0 &&
-            desc.sectionId < Brig::BRIG_SECTION_INDEX_IMPLEMENTATION_DEFINED;
+            desc.sectionId < BRIG_SECTION_INDEX_IMPLEMENTATION_DEFINED;
         if (!includesHeader) {
-            Brig::BrigSectionHeader *header = (Brig::BrigSectionHeader*)data.begin;
+            BrigSectionHeader *header = (BrigSectionHeader*)data.begin;
             data.begin += header->headerByteCount;
         }
         unsigned shndx = (unsigned)sectionHeaders.size();
@@ -948,8 +948,7 @@ typedef map<uint64_t, uint64_t> ModuleMap;
 int BrigIO::validate(int            fmt,
                      ReadAdapter&   fd)
 {
-    using namespace Brig;
-    Brig::BrigModuleHeader moduleHdr;
+    BrigModuleHeader moduleHdr;
     ModuleMap map;
 
     if (fmt != FILE_FORMAT_AUTO && fmt != FILE_FORMAT_BRIG) return 0;
@@ -957,10 +956,10 @@ int BrigIO::validate(int            fmt,
     uint64_t fileSize = (uint64_t)fd.getSize();
     VALIDATE(fileSize != (uint64_t)-1, "Filed to read file size");
 
-    VALIDATE(fileSize > sizeof(Brig::BrigModuleHeader), "File is too small for BRIG or ELF");
-    VALIDATE(fd.pread((char*)&moduleHdr, sizeof(Brig::BrigModuleHeader), 0) == 0, "Failed to read BrigModuleHeader");
+    VALIDATE(fileSize > sizeof(BrigModuleHeader), "File is too small for BRIG or ELF");
+    VALIDATE(fd.pread((char*)&moduleHdr, sizeof(BrigModuleHeader), 0) == 0, "Failed to read BrigModuleHeader");
 
-    if (memcmp("HSA BRIG", moduleHdr.identification, MODULE_IDENTIFICATION_LENGTH) != 0) {
+    if (memcmp("HSA BRIG", moduleHdr.identification, sizeof(moduleHdr.identification)) != 0) {
         if (fmt == FILE_FORMAT_AUTO) return 0;
         VALIDATE(false, "Unsupported file format");
     }
@@ -972,13 +971,14 @@ int BrigIO::validate(int            fmt,
     VALIDATE(moduleHdr.byteCount == fileSize,                       "Invalid BrigModuleHeader.size: must be equal to BRIG size");
     VALIDATE(moduleHdr.byteCount % MODULE_SIZE_ALIGNMENT == 0,      "Invalid BRIG module size: must be a multiple of " << MODULE_SIZE_ALIGNMENT);
     VALIDATE(moduleHdr.reserved == 0,                               "Invalid BrigModuleHeader.reserved: must be zero");
+    VALIDATE(secIdxSize > moduleHdr.sectionCount,                   "Invalid BrigModuleHeader.sectionCount: too large value"); // overflow
     VALIDATE(moduleHdr.sectionCount >= 3,                           "Invalid BrigModuleHeader.sectionCount: must be greater than or equal to 3");
     VALIDATE(moduleHdr.sectionIndex % MODULE_INDEX_ALIGNMENT == 0,  "Invalid BrigModuleHeader.sectionIndex: must be a multiple of " << MODULE_INDEX_ALIGNMENT);
     VALIDATE(moduleHdr.sectionIndex < fileSize,                     "Invalid BrigModuleHeader.sectionIndex: position of section index is outside of BRIG module");
     VALIDATE(secIdxSize <= fileSize - moduleHdr.sectionIndex,       "Invalid BrigModuleHeader.sectionIndex: section index does not fit into BRIG module");
 
-    map[0]                      = sizeof(Brig::BrigModuleHeader);
-    map[moduleHdr.sectionIndex] = moduleHdr.sectionCount * sizeof(uint64_t);
+    map[0]                      = sizeof(BrigModuleHeader);
+    map[moduleHdr.sectionIndex] = secIdxSize;
 
     uint64_t sectionSize;
     uint64_t sectionOffset;
@@ -1029,33 +1029,33 @@ uint64_t BrigIO::validateSection(ReadAdapter&    fd,
                                  uint64_t        sectionOffset,
                                  uint64_t        fileSize)
 {
-    Brig::BrigSectionHeader sectionHeader;
+    BrigSectionHeader sectionHeader;
 
     VALIDATE(sectionOffset % MODULE_SECTION_ALIGNMENT == 0,                                         "Invalid section offset: must be a multiple of " << MODULE_SECTION_ALIGNMENT);
     VALIDATE(sectionOffset < fileSize,                                                              "Invalid section offset: section offset is outside of BRIG module");
-    VALIDATE(fileSize - sectionOffset > sizeof(Brig::BrigSectionHeader),                            "Invalid section offset: section header does not fit into BRIG module");
-    VALIDATE(fd.pread((char*)&sectionHeader, sizeof(Brig::BrigSectionHeader), sectionOffset) == 0,  "Failed to read section header");
+    VALIDATE(fileSize - sectionOffset > sizeof(BrigSectionHeader),                            "Invalid section offset: section header does not fit into BRIG module");
+    VALIDATE(fd.pread((char*)&sectionHeader, sizeof(BrigSectionHeader), sectionOffset) == 0,  "Failed to read section header");
     VALIDATE(sectionHeader.byteCount % MODULE_SECTION_SIZE_ALIGNMENT == 0,                          "Invalid section size: must be a multiple of " << MODULE_SECTION_SIZE_ALIGNMENT);
     VALIDATE(fileSize - sectionOffset >= sectionHeader.byteCount,                                   "Invalid section size: section does not fit into BRIG module");
 
     VALIDATE(sectionHeader.headerByteCount % MODULE_SECTION_SIZE_ALIGNMENT == 0,                    "Invalid section header size: must be a multiple of " << MODULE_SECTION_SIZE_ALIGNMENT);
     VALIDATE(sectionHeader.headerByteCount <= sectionHeader.byteCount,                              "Invalid section header size: header size must not exceed section size");
 
-    VALIDATE(sectionHeader.headerByteCount - sizeof(Brig::BrigSectionHeader) >= sectionHeader.nameLength - 1, "Invalid section name: name does not fit into section header");
+    VALIDATE(sectionHeader.headerByteCount - sizeof(BrigSectionHeader) >= sectionHeader.nameLength - 1, "Invalid section name: name does not fit into section header");
 
     const char* name = 0;
     switch (sectionIndex)
     {
-    case Brig::BRIG_SECTION_INDEX_DATA:     name = "hsa_data";    break;
-    case Brig::BRIG_SECTION_INDEX_CODE:     name = "hsa_code";    break;
-    case Brig::BRIG_SECTION_INDEX_OPERAND:  name = "hsa_operand"; break;
+    case BRIG_SECTION_INDEX_DATA:     name = "hsa_data";    break;
+    case BRIG_SECTION_INDEX_CODE:     name = "hsa_code";    break;
+    case BRIG_SECTION_INDEX_OPERAND:  name = "hsa_operand"; break;
     }
 
-    if (strlen(name) > 0)
+    if (name && strlen(name) > 0)
     {
         assert(strlen(name) < MAX_PREDEFINED_SECTION_NAME_LENGTH);
         char buf[MAX_PREDEFINED_SECTION_NAME_LENGTH];
-        VALIDATE(fd.pread((char*)&buf, strlen(name), sectionOffset + offsetof(Brig::BrigSectionHeader, name)) == 0, "Failed to read section name");
+        VALIDATE(fd.pread((char*)&buf, strlen(name), sectionOffset + offsetof(BrigSectionHeader, name)) == 0, "Failed to read section name");
         VALIDATE(sectionHeader.nameLength == strlen(name) && memcmp(name, buf, strlen(name)) == 0, "Invalid name of a standard section");
     }
 

@@ -211,8 +211,8 @@ unsigned   getPackedDstDim(unsigned type, unsigned packing);
 //============================================================================
 // Operations with alignment
 
-Brig::BrigAlignment getNaturalAlignment(unsigned type);
-Brig::BrigAlignment getMaxAlignment();
+BrigAlignment getNaturalAlignment(unsigned type);
+BrigAlignment getMaxAlignment();
 bool                isValidAlignment(unsigned align, unsigned type);
 
 //============================================================================
@@ -228,16 +228,16 @@ size_t     zeroPaddedCopy(void *dst, const void* src, size_t len, size_t room);
 
 //============================================================================
 
-const Brig::BrigSectionHeader* getBrigSection(
-    Brig::BrigModule_t brigModule,
+const BrigSectionHeader* getBrigSection(
+    BrigModule_t brigModule,
     unsigned index);
 
 inline 
-const Brig::BrigSectionHeader* getBrigSection(
-    const Brig::BrigModuleHeader& brigModule,
+const BrigSectionHeader* getBrigSection(
+    const BrigModuleHeader& brigModule,
     unsigned index) {
     // TODO remove const_cast
-    return getBrigSection(const_cast<Brig::BrigModuleHeader*>(&brigModule),
+    return getBrigSection(const_cast<BrigModuleHeader*>(&brigModule),
                           index);
 }
 

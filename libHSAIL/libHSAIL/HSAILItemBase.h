@@ -497,8 +497,8 @@ public:
     /// return offset of the item in the section.
     Offset brigOffset() const { return m_offset;  }
 
-    const Brig::BrigBase* brig() const { return m_section->getData<Brig::BrigBase>(m_offset); }
-    Brig::BrigBase* brig() { return m_section->getData<Brig::BrigBase>(m_offset); }
+    const BrigBase* brig() const { return m_section->getData<BrigBase>(m_offset); }
+    BrigBase* brig() { return m_section->getData<BrigBase>(m_offset); }
 
 	unsigned kind() const { return brig()->kind; }
 	unsigned byteCount() const { return brig()->byteCount; }

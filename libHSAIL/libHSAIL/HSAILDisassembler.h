@@ -92,7 +92,7 @@ public:
 
     Disassembler(BrigContainer& c, EFloatDisassemblyMode fmode=FloatDisassemblyModeRawBits)
         : brig(c), err(0), stream(0), indent(0), hasErr(false),
-          mModel(Brig::BRIG_MACHINE_LARGE), mProfile(Brig::BRIG_PROFILE_FULL),
+          mModel(BRIG_MACHINE_LARGE), mProfile(BRIG_PROFILE_FULL),
           m_options(fmode)
     {}
 
@@ -226,7 +226,7 @@ private:
     const char* opcode2str(unsigned opcode) const;
     const char* type2str(unsigned t) const;
     const char* pack2str(unsigned t) const;
-    const char* seg2str(Brig::BrigSegment8_t  segment) const;
+    const char* seg2str(BrigSegment8_t  segment) const;
     const char* cmpOp2str(unsigned opcode) const;
     const char* atomicOperation2str(unsigned op) const;
     const char* imageGeometry2str(unsigned g) const;
@@ -244,14 +244,14 @@ private:
     const char* memoryScope2str(unsigned flags) const;
     const char* class2str(unsigned val) const;
     const char* v2str(Operand opr) const;
-    const char* imageChannelType2str(Brig::BrigImageChannelType8_t fmt) const;
-    const char* imageChannelOrder2str(Brig::BrigImageChannelOrder8_t order) const;
+    const char* imageChannelType2str(BrigImageChannelType8_t fmt) const;
+    const char* imageChannelOrder2str(BrigImageChannelOrder8_t order) const;
     const char* width2str(unsigned val) const;
     const char* const2str(bool isConst) const;
     const char* nonull2str(bool isNoNull) const;
 
     std::string decl2str_(bool isDecl) const;
-    std::string attr2str_(Brig::BrigLinkage8_t attr) const;
+    std::string attr2str_(BrigLinkage8_t attr) const;
     std::string alloc2str_(unsigned alloc, unsigned segment) const;
     std::string exec2str_(DirectiveExecutable d) const;
     const char* const2str_(bool isConst) const;
@@ -287,7 +287,7 @@ private:
 
     template<typename T, size_t N>
     void printPackedValue(const T (&val)[N]) const {
-        *stream << typeX2str(CType2Brig<T,N>::value) << '(';
+        *stream << type2str(CType2Brig<T,N>::value) << '(';
         for(int i=N-1; i>0; --i) {
             printValue(val[i]);
             *stream << ',';
@@ -357,9 +357,9 @@ private:
     void printBrig(Operand opr) const { printOperand(opr, true); }
 
     bool wantsExtraNewLineBefore(Directive d) const {
-        return (    (d.kind() == Brig::BRIG_KIND_DIRECTIVE_LABEL)
-                 || (d.kind() == Brig::BRIG_KIND_DIRECTIVE_KERNEL)
-                 || (d.kind() == Brig::BRIG_KIND_DIRECTIVE_FUNCTION));
+        return (    (d.kind() == BRIG_KIND_DIRECTIVE_LABEL)
+                 || (d.kind() == BRIG_KIND_DIRECTIVE_KERNEL)
+                 || (d.kind() == BRIG_KIND_DIRECTIVE_FUNCTION));
     }
 
     //-------------------------------------------------------------------------
@@ -374,7 +374,7 @@ private:
 
     const char* invalid(const char* type, unsigned val) const {
         hasErr = true;
-        if (err) *err << "Invalid Brig::" << type << " value " << val << '\n';
+        if (err) *err << "Invalid " << type << " value " << val << '\n';
         return "/*INVALID*/";
     }
 

@@ -102,7 +102,7 @@ static int assemble(brig_container_t handle, std::istream& is, const char *optio
         std::stringstream ssVersion;
         ssVersion << "HSAIL Assembler (C) AMD 2015, all rights reserved, ";
         ssVersion << "HSAIL version ";
-        ssVersion << Brig::BRIG_VERSION_HSAIL_MAJOR << ':' << Brig::BRIG_VERSION_HSAIL_MINOR;
+        ssVersion << BRIG_VERSION_HSAIL_MAJOR << ':' << BRIG_VERSION_HSAIL_MINOR;
 
         std::unique_ptr<BrigDebug::BrigDwarfGenerator> pBdig(
             BrigDebug::BrigDwarfGenerator::Create(ssVersion.str(),

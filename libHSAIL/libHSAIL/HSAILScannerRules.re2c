@@ -149,22 +149,22 @@ ETokens Scanner::scanModifier(EScanContext ctx, Scanner::Token &t)
 
 @print $scanner{_mods_}
 
-    "_1d"/EOMOD        { brigId = Brig::BRIG_GEOMETRY_1D;  return EMGeom; }
-    "_1db"/EOMOD       { brigId = Brig::BRIG_GEOMETRY_1DB; return EMGeom; }
-    "_1da"/EOMOD       { brigId = Brig::BRIG_GEOMETRY_1DA; return EMGeom; }
-    "_3d"/EOMOD        { brigId = Brig::BRIG_GEOMETRY_3D;  return EMGeom; }
-    "_2d"/EOMOD        { brigId = Brig::BRIG_GEOMETRY_2D;  return EMGeom; }
-    "_2da"/EOMOD       { brigId = Brig::BRIG_GEOMETRY_2DA; return EMGeom; }
-    "_2ddepth"/EOMOD   { brigId = Brig::BRIG_GEOMETRY_2DDEPTH; return EMGeom; }
-    "_2dadepth"/EOMOD  { brigId = Brig::BRIG_GEOMETRY_2DADEPTH; return EMGeom; }
+    "_1d"/EOMOD        { brigId = BRIG_GEOMETRY_1D;  return EMGeom; }
+    "_1db"/EOMOD       { brigId = BRIG_GEOMETRY_1DB; return EMGeom; }
+    "_1da"/EOMOD       { brigId = BRIG_GEOMETRY_1DA; return EMGeom; }
+    "_3d"/EOMOD        { brigId = BRIG_GEOMETRY_3D;  return EMGeom; }
+    "_2d"/EOMOD        { brigId = BRIG_GEOMETRY_2D;  return EMGeom; }
+    "_2da"/EOMOD       { brigId = BRIG_GEOMETRY_2DA; return EMGeom; }
+    "_2ddepth"/EOMOD   { brigId = BRIG_GEOMETRY_2DDEPTH; return EMGeom; }
+    "_2dadepth"/EOMOD  { brigId = BRIG_GEOMETRY_2DADEPTH; return EMGeom; }
 
-    "_height"/EOMOD       { brigId = Brig::BRIG_IMAGE_QUERY_HEIGHT;       return EMImageQuery; }
-    "_depth"/EOMOD        { brigId = Brig::BRIG_IMAGE_QUERY_DEPTH;        return EMImageQuery; }
-    "_array"/EOMOD        { brigId = Brig::BRIG_IMAGE_QUERY_ARRAY;        return EMImageQuery; }
-    "_channelorder"/EOMOD { brigId = Brig::BRIG_IMAGE_QUERY_CHANNELORDER; return EMImageQuery; }
-    "_channeltype"/EOMOD  { brigId = Brig::BRIG_IMAGE_QUERY_CHANNELTYPE;  return EMImageQuery; }
+    "_height"/EOMOD       { brigId = BRIG_IMAGE_QUERY_HEIGHT;       return EMImageQuery; }
+    "_depth"/EOMOD        { brigId = BRIG_IMAGE_QUERY_DEPTH;        return EMImageQuery; }
+    "_array"/EOMOD        { brigId = BRIG_IMAGE_QUERY_ARRAY;        return EMImageQuery; }
+    "_channelorder"/EOMOD { brigId = BRIG_IMAGE_QUERY_CHANNELORDER; return EMImageQuery; }
+    "_channeltype"/EOMOD  { brigId = BRIG_IMAGE_QUERY_CHANNELTYPE;  return EMImageQuery; }
     "_width"/EOMOD        { switch(ctx) {
-                      case EInstModifierInstQueryContext: brigId = Brig::BRIG_IMAGE_QUERY_WIDTH; return EMImageQuery;
+                      case EInstModifierInstQueryContext: brigId = BRIG_IMAGE_QUERY_WIDTH; return EMImageQuery;
                       default:                            brigId = 0;                            return EMWidth;
                       }
                     }
@@ -174,9 +174,9 @@ ETokens Scanner::scanModifier(EScanContext ctx, Scanner::Token &t)
     "_v4"/EOMOD        { brigId = 4; return EMVector; }
     "_equiv"/EOMOD     { brigId = 0; return EMEquiv;  }
     "_ftz"/EOMOD       { brigId = 0; return EMFTZ;    }
-    "_region"/EOMOD    { brigId = Brig::BRIG_SEGMENT_EXTSPACE0; return EMSegment; }
-    "_const"/EOMOD     { brigId = Brig::BRIG_MEMORY_CONST;      return EMConst;   }
-    "_nonull"/EOMOD    { brigId = Brig::BRIG_SEG_CVT_NONULL;    return EMNoNull;  }
+    "_region"/EOMOD    { brigId = BRIG_SEGMENT_EXTSPACE0; return EMSegment; }
+    "_const"/EOMOD     { brigId = BRIG_MEMORY_CONST;      return EMConst;   }
+    "_nonull"/EOMOD    { brigId = BRIG_SEG_CVT_NONULL;    return EMNoNull;  }
 
     ""           { brigId = 0; return EMNone; }
 */
@@ -236,16 +236,16 @@ ETokens Scanner::scanDefault(EScanContext ctx, Scanner::Token &t)
     "signature"/EOKW          { return EKWSignature; }
     "all"/EOKW                { return EKWWidthAll;  }
     "fbarrier"/EOKW           { return EKWFbarrier; }
-    "prog"/EOKW               { brigId = Brig::BRIG_LINKAGE_PROGRAM; return ELinkage; }
+    "prog"/EOKW               { brigId = BRIG_LINKAGE_PROGRAM; return ELinkage; }
     "decl"/EOKW               { brigId = 1; return EKWDecl; }
     "indirect"/EOKW           { brigId = 1; return EKWIndirect; }
     "width"/EOKW              { return EKWImageWidth; }
     "height"/EOKW             { return EKWImageHeight; }
     "depth"/EOKW              { switch(ctx) {
-                           case EImageOrderContext: brigId = Brig::BRIG_CHANNEL_ORDER_DEPTH; return EImageOrder;
+                           case EImageOrderContext: brigId = BRIG_CHANNEL_ORDER_DEPTH; return EImageOrder;
                            default: return EKWImageDepth;
                            } }
-    "agent"/EOKW              { brigId = Brig::BRIG_ALLOCATION_AGENT; return EAllocKind; }
+    "agent"/EOKW              { brigId = BRIG_ALLOCATION_AGENT; return EAllocKind; }
     "channel_type"/EOKW       { return EKWImageChannelType; }
     "channel_order"/EOKW      { return EKWImageChannelOrder; }
     "geometry"/EOKW           { return EKWImageGeometry; }
@@ -259,66 +259,66 @@ ETokens Scanner::scanDefault(EScanContext ctx, Scanner::Token &t)
 
     "WAVESIZE"/EOKW           { return EWaveSizeMacro; }
 
-    "nearest"/EOKW            { brigId = Brig::BRIG_FILTER_NEAREST;    return ESamplerFilter; }
-    "linear"/EOKW             { brigId = Brig::BRIG_FILTER_LINEAR;     return ESamplerFilter; }
+    "nearest"/EOKW            { brigId = BRIG_FILTER_NEAREST;    return ESamplerFilter; }
+    "linear"/EOKW             { brigId = BRIG_FILTER_LINEAR;     return ESamplerFilter; }
 
-    "global"/EOMOD             { brigId = Brig::BRIG_SEGMENT_GLOBAL;    return ESegment; }
-    "group"/EOMOD              { brigId = Brig::BRIG_SEGMENT_GROUP;     return ESegment; }
-    "private"/EOMOD            { brigId = Brig::BRIG_SEGMENT_PRIVATE;   return ESegment; }
-    "kernarg"/EOMOD            { brigId = Brig::BRIG_SEGMENT_KERNARG;   return ESegment; }
-    "readonly"/EOMOD           { brigId = Brig::BRIG_SEGMENT_READONLY;  return ESegment; }
-    "spill"/EOMOD              { brigId = Brig::BRIG_SEGMENT_SPILL;     return ESegment; }
-    "arg"/EOMOD                { brigId = Brig::BRIG_SEGMENT_ARG;       return ESegment; }
-    "flat"/EOMOD               { brigId = Brig::BRIG_SEGMENT_FLAT;      return ESegment; }
+    "global"/EOMOD             { brigId = BRIG_SEGMENT_GLOBAL;    return ESegment; }
+    "group"/EOMOD              { brigId = BRIG_SEGMENT_GROUP;     return ESegment; }
+    "private"/EOMOD            { brigId = BRIG_SEGMENT_PRIVATE;   return ESegment; }
+    "kernarg"/EOMOD            { brigId = BRIG_SEGMENT_KERNARG;   return ESegment; }
+    "readonly"/EOMOD           { brigId = BRIG_SEGMENT_READONLY;  return ESegment; }
+    "spill"/EOMOD              { brigId = BRIG_SEGMENT_SPILL;     return ESegment; }
+    "arg"/EOMOD                { brigId = BRIG_SEGMENT_ARG;       return ESegment; }
+    "flat"/EOMOD               { brigId = BRIG_SEGMENT_FLAT;      return ESegment; }
 
-    "u8"/EOKW                 { brigId = Brig::BRIG_TYPE_U8;  return ETypedLiteral; }
-    "s8"/EOKW                 { brigId = Brig::BRIG_TYPE_S8;  return ETypedLiteral; }
-    "u16"/EOKW                { brigId = Brig::BRIG_TYPE_U16; return ETypedLiteral; }
-    "s16"/EOKW                { brigId = Brig::BRIG_TYPE_S16; return ETypedLiteral; }
-    "f16"/EOKW                { brigId = Brig::BRIG_TYPE_F16; return ETypedLiteral; }
-    "u32"/EOKW                { brigId = Brig::BRIG_TYPE_U32; return ETypedLiteral; }
-    "s32"/EOKW                { brigId = Brig::BRIG_TYPE_S32; return ETypedLiteral; }
-    "f32"/EOKW                { brigId = Brig::BRIG_TYPE_F32; return ETypedLiteral; }
-    "u64"/EOKW                { brigId = Brig::BRIG_TYPE_U64; return ETypedLiteral; }
-    "s64"/EOKW                { brigId = Brig::BRIG_TYPE_S64; return ETypedLiteral; }
-    "f64"/EOKW                { brigId = Brig::BRIG_TYPE_F64; return ETypedLiteral; }
+    "u8"/EOKW                 { brigId = BRIG_TYPE_U8;  return ETypedLiteral; }
+    "s8"/EOKW                 { brigId = BRIG_TYPE_S8;  return ETypedLiteral; }
+    "u16"/EOKW                { brigId = BRIG_TYPE_U16; return ETypedLiteral; }
+    "s16"/EOKW                { brigId = BRIG_TYPE_S16; return ETypedLiteral; }
+    "f16"/EOKW                { brigId = BRIG_TYPE_F16; return ETypedLiteral; }
+    "u32"/EOKW                { brigId = BRIG_TYPE_U32; return ETypedLiteral; }
+    "s32"/EOKW                { brigId = BRIG_TYPE_S32; return ETypedLiteral; }
+    "f32"/EOKW                { brigId = BRIG_TYPE_F32; return ETypedLiteral; }
+    "u64"/EOKW                { brigId = BRIG_TYPE_U64; return ETypedLiteral; }
+    "s64"/EOKW                { brigId = BRIG_TYPE_S64; return ETypedLiteral; }
+    "f64"/EOKW                { brigId = BRIG_TYPE_F64; return ETypedLiteral; }
 
-    "u8x4"/EOKW               { brigId = Brig::BRIG_TYPE_U8X4;  return ETypedLiteral; }
-    "s8x4"/EOKW               { brigId = Brig::BRIG_TYPE_S8X4;  return ETypedLiteral; }
-    "u8x8"/EOKW               { brigId = Brig::BRIG_TYPE_U8X8;  return ETypedLiteral; }
-    "s8x8"/EOKW               { brigId = Brig::BRIG_TYPE_S8X8;  return ETypedLiteral; }
-    "u8x16"/EOKW              { brigId = Brig::BRIG_TYPE_U8X16; return ETypedLiteral; }
-    "s8x16"/EOKW              { brigId = Brig::BRIG_TYPE_S8X16; return ETypedLiteral; }
-    "u16x2"/EOKW              { brigId = Brig::BRIG_TYPE_U16X2; return ETypedLiteral; }
-    "s16x2"/EOKW              { brigId = Brig::BRIG_TYPE_S16X2; return ETypedLiteral; }
-    "f16x2"/EOKW              { brigId = Brig::BRIG_TYPE_F16X2; return ETypedLiteral; }
-    "u16x4"/EOKW              { brigId = Brig::BRIG_TYPE_U16X4; return ETypedLiteral; }
-    "s16x4"/EOKW              { brigId = Brig::BRIG_TYPE_S16X4; return ETypedLiteral; }
-    "f16x4"/EOKW              { brigId = Brig::BRIG_TYPE_F16X4; return ETypedLiteral; }
-    "u16x8"/EOKW              { brigId = Brig::BRIG_TYPE_U16X8; return ETypedLiteral; }
-    "s16x8"/EOKW              { brigId = Brig::BRIG_TYPE_S16X8; return ETypedLiteral; }
-    "f16x8"/EOKW              { brigId = Brig::BRIG_TYPE_F16X8; return ETypedLiteral; }
-    "u32x2"/EOKW              { brigId = Brig::BRIG_TYPE_U32X2; return ETypedLiteral; }
-    "s32x2"/EOKW              { brigId = Brig::BRIG_TYPE_S32X2; return ETypedLiteral; }
-    "f32x2"/EOKW              { brigId = Brig::BRIG_TYPE_F32X2; return ETypedLiteral; }
-    "u32x4"/EOKW              { brigId = Brig::BRIG_TYPE_U32X4; return ETypedLiteral; }
-    "s32x4"/EOKW              { brigId = Brig::BRIG_TYPE_S32X4; return ETypedLiteral; }
-    "f32x4"/EOKW              { brigId = Brig::BRIG_TYPE_F32X4; return ETypedLiteral; }
-    "u64x2"/EOKW              { brigId = Brig::BRIG_TYPE_U64X2; return ETypedLiteral; }
-    "s64x2"/EOKW              { brigId = Brig::BRIG_TYPE_S64X2; return ETypedLiteral; }
-    "f64x2"/EOKW              { brigId = Brig::BRIG_TYPE_F64X2; return ETypedLiteral; }
+    "u8x4"/EOKW               { brigId = BRIG_TYPE_U8X4;  return ETypedLiteral; }
+    "s8x4"/EOKW               { brigId = BRIG_TYPE_S8X4;  return ETypedLiteral; }
+    "u8x8"/EOKW               { brigId = BRIG_TYPE_U8X8;  return ETypedLiteral; }
+    "s8x8"/EOKW               { brigId = BRIG_TYPE_S8X8;  return ETypedLiteral; }
+    "u8x16"/EOKW              { brigId = BRIG_TYPE_U8X16; return ETypedLiteral; }
+    "s8x16"/EOKW              { brigId = BRIG_TYPE_S8X16; return ETypedLiteral; }
+    "u16x2"/EOKW              { brigId = BRIG_TYPE_U16X2; return ETypedLiteral; }
+    "s16x2"/EOKW              { brigId = BRIG_TYPE_S16X2; return ETypedLiteral; }
+    "f16x2"/EOKW              { brigId = BRIG_TYPE_F16X2; return ETypedLiteral; }
+    "u16x4"/EOKW              { brigId = BRIG_TYPE_U16X4; return ETypedLiteral; }
+    "s16x4"/EOKW              { brigId = BRIG_TYPE_S16X4; return ETypedLiteral; }
+    "f16x4"/EOKW              { brigId = BRIG_TYPE_F16X4; return ETypedLiteral; }
+    "u16x8"/EOKW              { brigId = BRIG_TYPE_U16X8; return ETypedLiteral; }
+    "s16x8"/EOKW              { brigId = BRIG_TYPE_S16X8; return ETypedLiteral; }
+    "f16x8"/EOKW              { brigId = BRIG_TYPE_F16X8; return ETypedLiteral; }
+    "u32x2"/EOKW              { brigId = BRIG_TYPE_U32X2; return ETypedLiteral; }
+    "s32x2"/EOKW              { brigId = BRIG_TYPE_S32X2; return ETypedLiteral; }
+    "f32x2"/EOKW              { brigId = BRIG_TYPE_F32X2; return ETypedLiteral; }
+    "u32x4"/EOKW              { brigId = BRIG_TYPE_U32X4; return ETypedLiteral; }
+    "s32x4"/EOKW              { brigId = BRIG_TYPE_S32X4; return ETypedLiteral; }
+    "f32x4"/EOKW              { brigId = BRIG_TYPE_F32X4; return ETypedLiteral; }
+    "u64x2"/EOKW              { brigId = BRIG_TYPE_U64X2; return ETypedLiteral; }
+    "s64x2"/EOKW              { brigId = BRIG_TYPE_S64X2; return ETypedLiteral; }
+    "f64x2"/EOKW              { brigId = BRIG_TYPE_F64X2; return ETypedLiteral; }
 
-    "sig32"/EOKW              { brigId = Brig::BRIG_TYPE_SIG32; return ETypedLiteral; }
-    "sig64"/EOKW              { brigId = Brig::BRIG_TYPE_SIG64; return ETypedLiteral; }
+    "sig32"/EOKW              { brigId = BRIG_TYPE_SIG32; return ETypedLiteral; }
+    "sig64"/EOKW              { brigId = BRIG_TYPE_SIG64; return ETypedLiteral; }
 
-    "rwimg"/EOKW              { brigId = Brig::BRIG_TYPE_RWIMG; return EKWImage; }
-    "roimg"/EOKW              { brigId = Brig::BRIG_TYPE_ROIMG; return EKWImage; }
-    "woimg"/EOKW              { brigId = Brig::BRIG_TYPE_WOIMG; return EKWImage; }
-    "samp"/EOKW               { brigId = Brig::BRIG_TYPE_SAMP;  return EKWSampler; }
+    "rwimg"/EOKW              { brigId = BRIG_TYPE_RWIMG; return EKWImage; }
+    "roimg"/EOKW              { brigId = BRIG_TYPE_ROIMG; return EKWImage; }
+    "woimg"/EOKW              { brigId = BRIG_TYPE_WOIMG; return EKWImage; }
+    "samp"/EOKW               { brigId = BRIG_TYPE_SAMP;  return EKWSampler; }
 
-    "$default"/EOKW           { brigId = Brig::BRIG_ROUND_FLOAT_DEFAULT;   return EDefaultRound; }
-    "$near"/EOKW              { brigId = Brig::BRIG_ROUND_FLOAT_NEAR_EVEN; return EDefaultRound; }
-    "$zero"/EOKW              { brigId = Brig::BRIG_ROUND_FLOAT_ZERO;      return EDefaultRound; }
+    "$default"/EOKW           { brigId = BRIG_ROUND_FLOAT_DEFAULT;   return EDefaultRound; }
+    "$near"/EOKW              { brigId = BRIG_ROUND_FLOAT_NEAR_EVEN; return EDefaultRound; }
+    "$zero"/EOKW              { brigId = BRIG_ROUND_FLOAT_ZERO;      return EDefaultRound; }
 
 @print $scanner{EControl}
 

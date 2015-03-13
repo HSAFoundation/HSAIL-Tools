@@ -44,7 +44,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="hsail_c.h" />
-    <ClInclude Include="Brig_new.hpp" />
     <ClInclude Include="$(ProjectDir)\generated\HSAILBrigStaticChecks_gen.hpp" />
     <ClInclude Include="$(ProjectDir)\generated\HSAILBrigValidation_gen.hpp" />
     <ClInclude Include="$(ProjectDir)\generated\HSAILBrigProps_gen.hpp" />
