@@ -203,7 +203,7 @@ const char* PropValidator::val2str(unsigned prop, unsigned val)
     case PROP_SOURCETYPE:
     case PROP_IMAGETYPE:
     case PROP_COORDTYPE:
-    case PROP_SIGNALTYPE:      res = (val == BRIG_TYPE_NONE)?         "none" : type2str(val);                break;
+    case PROP_SIGNALTYPE:      res = (val == BRIG_TYPE_NONE)?         "none" : type2name(val);               break;
     case PROP_PACK:            res = (val == BRIG_PACK_NONE)?         "none" : pack2str(val);                break;
     case PROP_WIDTH:           res = (val == BRIG_WIDTH_NONE)?        "none" : width2str(val);               break;
     case PROP_MEMORYORDER:     res = (val == BRIG_MEMORY_ORDER_NONE)? "none" : memoryOrder2str(val);         break;
@@ -754,7 +754,7 @@ static string getOperandTypeName(unsigned attr)
 
 static string getExpectedTypeName(unsigned type)
 {
-    return "(" + string(type2str(type)) + ")";
+    return "(" + string(type2name(type)) + ")";
 }
 
 string PropValidator::getErrHeader(unsigned oprIdx, const char* oprPref)
@@ -848,12 +848,12 @@ void PropValidator::immTypeError(Inst inst, unsigned oprIdx, unsigned actualType
     else if (OperandOperandList(inst.operand(oprIdx)))
     {
         string errHdr = getErrHeader(oprIdx, "Vector operand");
-        validate(inst, oprIdx, false, errHdr + " has invalid type of immediate value (" + type2str(actualType) + "); expected " + type2str(expectedType));
+        validate(inst, oprIdx, false, errHdr + " has invalid type of immediate value (" + type2name(actualType) + "); expected " + type2name(expectedType));
     }
     else
     {
         string errHdr = getErrHeader(oprIdx, "Invalid type of immediate operand");
-        validate(inst, oprIdx, false, errHdr + " (" + type2str(actualType) + "); expected " + type2str(expectedType));
+        validate(inst, oprIdx, false, errHdr + " (" + type2name(actualType) + "); expected " + type2name(expectedType));
     }
 }
 

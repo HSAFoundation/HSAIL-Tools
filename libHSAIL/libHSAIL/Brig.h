@@ -978,6 +978,10 @@ enum BrigType {
     //.e2a_switch //.e2a_proto="unsigned elementType2arrayType(unsigned type)" //.e2a_arg="type"
     //.e2a_default="return BRIG_TYPE_NONE"
     //
+    //.t2s={s/^BRIG_TYPE_//;lc s/_ARRAY$/[]/;lc}
+    //.t2s_switch //.t2s_proto="const char* type2name(unsigned type)" //.t2s_arg="type"
+    //.t2s_default="return NULL"
+    //
     //.dispatch_switch //.dispatch_incfile=TemplateUtilities
     //.dispatch_proto="template<typename RetType, typename Visitor>\nRetType dispatchByType_gen(unsigned type, Visitor& v)"
     //.dispatch={ /ARRAY$/ ? "v.visitNone(type)" : /^BRIG_TYPE_([BUSF]|SIG)[0-9]+/ ? "v.template visit< BrigTypeTraits<$_> >()" : "v.visitNone(type)" }
@@ -1085,7 +1089,7 @@ enum BrigType {
     BRIG_TYPE_F64X2_ARRAY = BRIG_TYPE_F64X2 | BRIG_TYPE_ARRAY,  //.mnemo=""     //.print=""
 
     // Used internally
-    BRIG_TYPE_INVALID = -1 //.skip
+    BRIG_TYPE_INVALID = (unsigned) -1 //.skip
 };
 
 enum BrigVariableModifierMask {

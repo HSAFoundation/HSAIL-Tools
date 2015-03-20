@@ -1566,7 +1566,7 @@ template<typename R> void parseFloatImmediate(
     R value = (scanner.*scanFunc)(); // NB: error reporting must follow literal scanning to show correct position in scr code
 
     if (requiredType != brigType && requiredType != getBitType(getBrigTypeNumBits(brigType))) {
-        scanner.syntaxError(std::string(litKind) + " constant cannot be converted to " + type2str(requiredType));
+        scanner.syntaxError(std::string(litKind) + " constant cannot be converted to " + type2name(requiredType));
     }
     data->write(hasMinus ? value.neg().rawBits() : value.rawBits(), pos);
     return;
@@ -1664,7 +1664,7 @@ unsigned Parser::parseImmediate(ArbitraryData *data, unsigned requiredType, size
             } else if (isPackedType(requiredType) || 
                        isFloatType(requiredType)  || 
                        getBrigTypeNumBits(requiredType) > 64) {
-                syntaxError(std::string("Integer constant cannot be converted to ") + type2str(requiredType));
+                syntaxError(std::string("Integer constant cannot be converted to ") + type2name(requiredType));
             }
 
             if (hasMinus) { value = (uint64_t) -(int64_t)value; }
@@ -1704,7 +1704,7 @@ unsigned Parser::parseImmediate(ArbitraryData *data, unsigned requiredType, size
     default:
         eatToken(tokenAhead); // set error position
         if (tokenAhead == ELCurl && requiredType != BRIG_TYPE_NONE) {
-            syntaxError(std::string("Aggregate constant cannot be converted to ") + type2str(requiredType));
+            syntaxError(std::string("Aggregate constant cannot be converted to ") + type2name(requiredType));
         } else {
             syntaxError("Constant value expected");
         }
@@ -1735,7 +1735,7 @@ void Parser::validateTypedImmConversion(unsigned requiredType, unsigned actualTy
         if (isBitType(requiredType) && requiredTypeSize == actualTypeSize) return;
     }
 
-    syntaxError(std::string(type2str(actualType)) + " constant cannot be converted to " + type2str(requiredType));
+    syntaxError(std::string(type2name(actualType)) + " constant cannot be converted to " + type2name(requiredType));
 }
 
 Operand Parser::parseConstantGeneric(unsigned requiredType)

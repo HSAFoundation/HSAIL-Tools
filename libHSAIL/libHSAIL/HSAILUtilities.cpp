@@ -272,7 +272,7 @@ const char* validateCtlDirOperandBounds(unsigned kind, unsigned idx, uint64_t va
     case BRIG_CONTROL_MAXFLATWORKGROUPSIZE:
     case BRIG_CONTROL_REQUIREDGRIDSIZE:
     case BRIG_CONTROL_REQUIREDWORKGROUPSIZE:
-        if (val == 0) return "Operand must be greater than 0";
+        if (val == 0) return "Operand value must be greater than 0";
         break;
 
     case BRIG_CONTROL_ENABLEBREAKEXCEPTIONS:
@@ -404,6 +404,8 @@ string getRegName(OperandRegister reg)
 
     return s.str();
 }
+
+//F1.0 Working with constants should be redesigned because they now have type
 
 unsigned getImmSize(OperandConstantBytes imm)
 {

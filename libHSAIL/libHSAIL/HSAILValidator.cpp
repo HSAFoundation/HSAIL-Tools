@@ -2030,7 +2030,7 @@ private:
 
                 validate(imm, imm.type() == type, 
                          string("Control directive has invalid type of immediate operand (") + 
-                         type2str(imm.type()) + "); expected " + type2str(type));
+                         type2name(imm.type()) + "); expected " + type2name(type));
 
                 uint64_t val = (type == BRIG_TYPE_U32)? getImmAsU32(imm) : getImmAsU64(imm);
                 const char* err = validateCtlDirOperandBounds(d.control(), i, val);
@@ -2703,7 +2703,7 @@ private:
                 s << "an aggregate constant";
                 if (init) s << " (OperandConstantOperandList with type 'none')";
             } else {
-                s << type2str(expectedType) << " constant";
+                s << type2name(expectedType) << " constant";
             }
             validate(opr, false, s.str());
         }

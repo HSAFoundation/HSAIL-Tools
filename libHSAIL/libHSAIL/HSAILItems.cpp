@@ -40,9 +40,7 @@
 // SOFTWARE.
 #include "HSAILItems.h"
 
-namespace Brig {
 // #include "HSAILBrigStaticChecks_gen.hpp"
-}
 
 namespace HSAIL_ASM
 {

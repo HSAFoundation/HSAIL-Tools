@@ -768,6 +768,10 @@ struct MemoryAdapter : public ReadWriteAdapter {
         , pos(0)
     {
     }
+    virtual Position getSize() const {
+      return bufSize;
+    }
+
     virtual Position getPos() const { 
         return pos;
     }

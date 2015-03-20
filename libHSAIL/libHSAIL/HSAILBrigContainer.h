@@ -589,6 +589,8 @@ public:
         return const_cast<BrigModuleHeader*>(getBrigModuleHeader());
     }
 
+    void setData(void *data, size_t size);
+
     bool write(WriteAdapter& w) const;
 };
 

@@ -449,6 +449,15 @@ void BrigContainer::setContents(std::vector<char>& buf) {
     m_brigModuleHeader = hdr;
 }
 
+void BrigContainer::setData(void *data, size_t size)
+{
+  clear();
+  std::vector<char> tmpBuf((const char*)data, (const char*)data + size);
+  m_brigModuleBuffer.swap(tmpBuf);
+  m_brigModuleHeader = (const BrigModuleHeader*) &m_brigModuleBuffer[0];
+  m_sections.clear();
+  initSections(*m_brigModuleHeader, m_sections);
+}
 
 static bool writeSection(WriteAdapter& w,
                          const BrigContainer& c,
