@@ -76,7 +76,7 @@ void BrigContainer::initSections(const BrigModuleHeader& brigModule,
     secs.push_back(SecPtr(new CodeSection(getBrigSection(brigModule, BRIG_SECTION_INDEX_CODE), this)));
     secs.push_back(SecPtr(new OperandSection(getBrigSection(brigModule, BRIG_SECTION_INDEX_OPERAND), this)));
     for(unsigned i=BRIG_SECTION_INDEX_IMPLEMENTATION_DEFINED; i < brigModule.sectionCount; ++i) {
-        m_sections.push_back(SecPtr(new BrigSectionRaw(getBrigSection(brigModule, i), this)));
+        secs.push_back(SecPtr(new BrigSectionRaw(getBrigSection(brigModule, i), this)));
     }
 }
 
