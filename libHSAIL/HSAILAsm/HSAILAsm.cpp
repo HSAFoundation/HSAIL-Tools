@@ -43,6 +43,7 @@
 // HSAIL Assembler/disassembler
 //
 //===----------------------------------------------------------------------===//
+#define DEBUG_TYPE "hsailasm"
 #include "llvm/Support/CommandLine.h"
 #ifdef _DEBUG
 #ifdef DEBUG
