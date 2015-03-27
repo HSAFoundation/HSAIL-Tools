@@ -2,109 +2,79 @@
 
 1. PREREQUISITES:
 
-Use GNU make. A native (e.g. MinGW) build of make should be used on Windows.
+libHSAIL requires the following components:
+- CMake 
+- libelf (if BUILD_WITH_LIBBRIGDWARF=1)
+- libdwarf (if BUILD_WITH_LIBBRIGDWARF=1)
+- LLVM (only Support and Object libraries, if BUILD_HSAILASM=1)
+- perl
+- re2c
 
-Building HSAILasm currently requires some components from LLVM (only Support
-and Object libs are used). This dependency may be removed in the future.
-libHSAIL can be built without LLVM. The only LLVM dependency it has is the ELF
-header file, which can be obtained from alternative sources.
+libHSAIL CMake build will automatically find these dependencies if installed.
 
-LLVM can be downloaded from http://llvm.org/releases/.
-Most modern linux distributions include a precompiled LLVM package.
-Building LLVM from source requires CMake: http://www.cmake.org/
+libHSAIL itself can be built without debug support and does not require libdwarf
+in this case.
 
-On modern Linux distributions a LLVM package is typically provided out  of  the
-box (e.g. on Ubuntu run "sudo apt-get install llvm-3.1-dev" to install).
 
-libBRIGdwarf (debug info generation package) requires libelf and  libdwarf.  On
-modern Linux distributions these are typically provided out of the box (e.g. on
-Ubuntu run "sudo apt-get  install  libelf-dev  libdwarf-dev"  to  install).  On
-Windows debug info generation is not supported at this point.
+2. BUILDING (general)
 
-A part of libHSAIL source files is generated using perl (5.10+) and re2c.
-Pre-generated files are included in the source tree, so perl and re2c are not
-mandatory prerequisites for building libHSAIL. However they are necessary if
-you want to modify BRIG  data structures libHSAIL operates on, or HSAIL parser.
+We recommend to use out-of-source CMake build and create separate directory to run CMake.
 
-re2c is a lexer generator used in many open source projects including PHP. re2c
-source, Windows binaries and some linux packages can be donwloaded from
-http://sourceforge.net/projects/re2c/. Most linux distributions include a
-re2c package (e.g. on Unbuntu run "sudo apt-get install re2c" to install).
+To build libHSAIL without libBRIGDwarf (no debug support), specify
+-DBUILD_WITH_LIBBRIGDWARF=0 option to CMake.
 
-Perl is typically included in any modern linux distribution.
-Perl for Windows can be obtained from any of the following sources:
+To avoid building HSAILAsm, specify -DBUILD_HSAILASM=0 option to CMake.
 
-* Activestate ActivePerl : http://www.activestate.com/activeperl
-* Strawberry Perl : http://strawberryperl.com/
-* as a part of Cygwin: http://www.cygwin.com/
+
+3. BUILDING (Linux)
+
+
+  mkdir -p build/lnx64
+  cd build/lnx64
+  cmake ../..
+  make -j
+
+On modern Linux distributions libHSAIL dependencies are typically provided
+by the distribution. For example, the following command can be used to install
+them on Ubuntu 14.04 system:
+  sudo apt-get install cmake libdwarf-dev libelf-dev llvm-dev ncurses-dev re2c perl
 
 Building on Linux requires GCC 4.4+.
 
-Building on Windows requires MSVC (Visual Studio 2012 or 2010).
 
-Alternatively you can use GCC (MinGW, TDM-GCC) on Windows. It can be
-obtained from http://tdm-gcc.tdragon.net/download .
+4. BUILDING (Windows)
 
-2. BUILDING:
+Building on Windows requires MSVC (Visual Studio 2012 Update 4 or later).
 
-You should define the following variables on make command line or pre-define
-them in the environment:
+CMake command line should specify compiler configuration:
 
-    LLVM_CONFIG:path to llvm-config binary. If specified, no  further  info
-                about LLVM is necessary.
-    LLVM_SRC:   pointing to LLVM source files.
-    LLVM_BUILD: pointing to LLVM build directory  matching  your  build
-                settings. Windows build attempts  to  locate  the  libs  in
-                Debug or Release subdirectories of this path.
-    LLVM_LIBS:  (optional, deduced from LLVM_BUILD) pointing  the  directory
-                with LLVM libs.
-    _OPT:       (optional) define for an optimized build
-    _DBG:       (optional) define for a build with debug symbols
-    _M64:       (optional) define for a 64-bit build
-    _M32:       (optional) define for a 32-bit build
-    _GCC:       define to use use MinGW (or other GCC build) instead of  MSVC  on
-                Windows
+  md build/win64
+  cd build/win64
+  cmake -G "Visual Studio 11 2012 Win64" ...
 
+CMake will attempt to locate corresponding compiler and generate Visual Studio
+solution file which can be opened and built in Visual Studio.
 
-On Linux (e.g. Ubuntu) a standard LLVM package may be used. It is sufficient to
-specify the path to its llvm-config binary:
+For Windows, it is possible to obtain dependencies from corresponding software sources:
 
-    make -j LLVM_CONFIG=llvm-config-3.2
+* LLVM can be downloaded from http://llvm.org/releases/.
+* re2c source, Windows binaries and some linux packages can be donwloaded from
+  http://sourceforge.net/projects/re2c/.
+* Perl for Windows can be obtained from any of the following sources:
+  * Activestate ActivePerl : http://www.activestate.com/activeperl
+  * Strawberry Perl : http://strawberryperl.com/
+  * as a part of Cygwin: http://www.cygwin.com/
 
-Any combination of _OPT and _DBG is allowed. _M64 and _M32 can not be combined.
+On Windows, cmake command line additionally might need to include the location
+of dependencies.  Refer to cmake_win.bat for an example how to specify them.
 
-example: make -j LLVM_SRC=llvm31 LLVM_BUILD=llvm31/build _OPT=1 _M64=1
-
-If you have 32-bit or 64-bit build of MSVC (cl.exe) in the path, it defines
-32-bit or 64-bit target configuration, which may not  conflict  with  _M64
-or  _M32.  No attempts to auto-configure MSVC environment are made in this case.
-
-If you are building with MSVC but do not have cl.exe in path, the build process
-attempts  to  locate  the 32-bit (if _M64 is unset) or 64-bit (if _M64 is set)
-build  of  the  compiler using the following environment variables, in order of
-decreasing  preference:
-
-    %VCINSTALLDIR%
-    %VS110COMNTOOLS%
-    %VS100COMNTOOLS%
-
-Normally  %VS..COMNTOOLS%  variables  are added  to   the   system   environment
-automatically. If there are any issues  with  auto-detection,  you  should  set
-VCINSTALLDIR explicitly or just configure the paths manually.
-
-3. SOURCE GENERATION:
-
-To regenerate libHSAIL source files, run the following:
-
-    cd libHSAIL
-    perl generate.pl . generated
-
-where "." is the input file path and "generated" is the output file path. If
-necessary, path to re2c build may be explicitly specified:
-
-    perl generate.pl --re2c=my/build/of/re2c . generated
-
-4. CMAKE BUILD:
-
-Experimental CMake build and example scripts to invoke cmake (cmake_win.bat
-and cmake_lnx.sh) are provided. You might want to edit them for your environment.
+For Windows, it is possible to obtain dependencies from corresponding software sources:
+* LLVM can be downloaded from http://llvm.org/releases/.
+* re2c source, Windows binaries and some linux packages can be donwloaded from
+  http://sourceforge.net/projects/re2c/.
+* Perl for Windows can be obtained from any of the following sources:
+  * Activestate ActivePerl : http://www.activestate.com/activeperl
+  * Strawberry Perl : http://strawberryperl.com/
+  * as a part of Cygwin: http://www.cygwin.com/
+* It is possible to build and use libelf and libdwarf for libHSAIL on Windows. We
+do not officially support this configuration at this point.

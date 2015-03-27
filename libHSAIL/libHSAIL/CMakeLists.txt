@@ -71,6 +71,7 @@ add_custom_command(
   OUTPUT ${generated_srcs}
   PRE_BUILD
   COMMAND ${PERL_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/generate.pl
+                             -re2c ${RE2C_EXECUTABLE}
                              ${CMAKE_CURRENT_SOURCE_DIR}
                              ${generated_dir}
   DEPENDS Brig.h

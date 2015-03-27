@@ -9,8 +9,10 @@ option(BUILD_HSAILASM "Build HSAILAsm" ON)
 
 find_package(LibElf REQUIRED)
 find_package(LibDwarf REQUIRED)
+find_package(RE2C REQUIRED)
+find_package(LLVM REQUIRED)
 
-find_library(LLVM_SUPPORT_LIB LLVMSupport)
+#find_library(LLVM_SUPPORT_LIB LLVMSupport)
 
 if(MSVC)
   set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} /MT")
