@@ -548,6 +548,8 @@ static bool readSection(ReadAdapter& r,
 }
 
 bool readContainer(ReadAdapter& r, BrigContainer& c, bool writeable) {
+    if (BrigIO::validateBrigBlob(r)!=0) return false;
+
     BrigModuleHeader hdr;
     if (r.pread((char*)&hdr, sizeof hdr, 0)) {
         r.errs << "cannot read BrigModuleHeader" << std::endl;

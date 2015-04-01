@@ -201,7 +201,9 @@ struct Elf64Policy : public ElfPolicyBase<uint64_t> {
 enum {
     ELF_SECTION_STRTAB = -1,
     ELF_SECTION_SYMTAB = -2,
-    ELF_SECTION_SHSTRTAB = -3
+    ELF_SECTION_SHSTRTAB = -3,
+    BRIG_SECTION_INDEX_DEBUG = BRIG_SECTION_INDEX_IMPLEMENTATION_DEFINED,
+    BRIG_SECTION_INDEX_BLOB = BRIG_SECTION_INDEX_IMPLEMENTATION_DEFINED + 1
 };
 
 struct BrigIoImpl;
@@ -218,10 +220,11 @@ struct SectionDesc {
     { BRIG_SECTION_INDEX_DATA,                   "hsa_data",    ".brig_strtab",   "__BRIG__strtab",   SHT_PROGBITS, 0,           4 },
     { BRIG_SECTION_INDEX_CODE,                   "hsa_code",    ".brig_code",     "__BRIG__code",     SHT_PROGBITS, 0,           4 },
     { BRIG_SECTION_INDEX_OPERAND,                "hsa_operand", ".brig_operands", "__BRIG__operands", SHT_PROGBITS, 0,           4 },
-    { BRIG_SECTION_INDEX_IMPLEMENTATION_DEFINED, "hsa_debug",   ".debug_hsa",     "__debug_brig__",   SHT_PROGBITS, 0,           4 },
+    { BRIG_SECTION_INDEX_DEBUG,                  "hsa_debug",   ".debug_hsa",     "__debug_brig__",   SHT_PROGBITS, 0,           4 },
     { ELF_SECTION_STRTAB,                              0,             ".strtab",        0,                  SHT_STRTAB,   SHF_STRINGS, 1 },
     { ELF_SECTION_SYMTAB,                              0,             ".symtab",        0,                  SHT_SYMTAB,   0,           8 },
     { ELF_SECTION_SHSTRTAB,                            ".shstrtab",   ".shstrtab",      0,                  SHT_STRTAB,   SHF_STRINGS, 1 },
+    { BRIG_SECTION_INDEX_BLOB,                   "hsa_brig",    ".brig",          "__BRIG__",         SHT_PROGBITS, 0,           16 },
 };
 
 const int NUM_PREDEFINED_ELF_SECTIONS = sizeof(sectionDescs)/sizeof(const SectionDesc*);
@@ -326,8 +329,17 @@ public:
             if (!name) continue;
 
             const SectionDesc* desc = descByKey(predefinedSectionName(), name);
-            if (!desc) continue;
-            if (desc->sectionId < 0) continue;
+            if (!desc || desc->sectionId < 0) continue;
+
+            if (desc->sectionId == BRIG_SECTION_INDEX_BLOB) {
+                const Shdr &h = sectionHeaders[i];
+                if (!readContainer(c,
+                       BrigIO::fragmentReadingAdapter(s, h.sh_size,
+                                                         h.sh_offset).get())) {
+                    return 1;
+                }
+                break;
+            }
 
             std::vector<char> data;
             if (readSection(data, s, i)) return 1;
@@ -395,9 +407,13 @@ public:
 
     int writeContainer(WriteAdapter *s, const BrigContainer& c) {
         reset();
-        for(int i = 0; i < c.getNumSections(); ++i) {
-            addSection(descById(i), c.sectionById(i).data());
-        }
+
+        std::vector<char> buf;
+        if (!c.write(*BrigIO::vectorWritingAdapter(buf)))
+           return 1;
+
+        addSection(descById(BRIG_SECTION_INDEX_BLOB), buf, true);
+
         unsigned strTabNdx = 0;
         unsigned symTabNdx = 0;
         if (fmt == FILE_FORMAT_BIF) {
@@ -461,6 +477,13 @@ private:
     }
 
     unsigned addSection(const SectionDesc& desc, SRef data) {
+        bool const includesHeader =
+            desc.sectionId >= 0 &&
+            desc.sectionId < BRIG_SECTION_INDEX_IMPLEMENTATION_DEFINED;
+        return addSection(desc, data, includesHeader);
+    }
+
+    unsigned addSection(const SectionDesc& desc, SRef data, bool includesHeader) {
         Shdr thisSec;
         memset(&thisSec, 0, sizeof(thisSec));
         if (sectionHeaders.empty()) {
@@ -468,9 +491,6 @@ private:
             sectionData.push_back("");
         }
         assert(data.length() < INT_MAX);
-        bool includesHeader =
-            desc.sectionId >= 0 &&
-            desc.sectionId < BRIG_SECTION_INDEX_IMPLEMENTATION_DEFINED;
         if (!includesHeader) {
             BrigSectionHeader *header = (BrigSectionHeader*)data.begin;
             data.begin += header->headerByteCount;
@@ -716,7 +736,36 @@ struct FileAdapter : public ReadWriteAdapter {
 };
 #endif
 
-// MEMORY ADAPTER
+struct FragmentReadAdapter : ReadAdapter {
+    ReadAdapter& r;
+    Position const size;
+    Position const offset;
+
+    FragmentReadAdapter(ReadAdapter& r_,
+                        Position size_,
+                        Position offset_ = 0)
+        : IOAdapter(r_.errs)
+        , ReadAdapter(r_.errs)
+        , r(r_), size(size_), offset(offset_) {}
+
+    virtual Position getPos() const {
+        return r.getPos() - offset;
+    }
+
+    virtual void setPos(Position p) {
+        r.setPos(p + offset);
+    }
+
+    virtual int pread(char* data, size_t numBytes, uint64_t ofs) const {
+        if (numBytes > size) {
+            errs << "reading beyond fragment end" << std::endl;
+            return 1;
+        }
+        return r.pread(data, numBytes, ofs + this->offset);
+    }
+
+    virtual Position getSize() const { return size; };
+};
 
 struct VectorAdapter : public ReadWriteAdapter {
     std::vector<char> &buf;
@@ -727,6 +776,9 @@ struct VectorAdapter : public ReadWriteAdapter {
         , buf(buf_)
         , pos(0)
     {
+    }
+    virtual Position getSize() const {
+      return buf.size();
     }
     virtual Position getPos() const { 
         return pos;
@@ -755,6 +807,8 @@ struct VectorAdapter : public ReadWriteAdapter {
     ~VectorAdapter() {
     }
 };
+
+// MEMORY ADAPTER
 
 struct MemoryAdapter : public ReadWriteAdapter {
     char           *buf;
@@ -897,12 +951,19 @@ std::unique_ptr<WriteAdapter> BrigIO::vectorWritingAdapter(
             new VectorAdapter(v, errs));
 }
 
+std::unique_ptr<ReadAdapter> BrigIO::fragmentReadingAdapter(
+                    ReadAdapter *r,
+                    IOAdapter::Position size,
+                    IOAdapter::Position offset) {
+    return std::unique_ptr<ReadAdapter>(
+            new FragmentReadAdapter(*r, size, offset));
+}
+
+
 int BrigIO::load(BrigContainer &dst,
                  int           fmt,
                  ReadAdapter&  src)
 {
-    if (validate(fmt, src)) return 1;
-
     unsigned char ident[16];
     if (0 != src.pread((char*)ident, 16, 0)) {
         return 1;
@@ -949,13 +1010,10 @@ int BrigIO::save(BrigContainer &src,
 
 typedef map<uint64_t, uint64_t> ModuleMap;
 
-int BrigIO::validate(int            fmt,
-                     ReadAdapter&   fd)
+int BrigIO::validateBrigBlob(ReadAdapter&   fd)
 {
     BrigModuleHeader moduleHdr;
     ModuleMap map;
-
-    if (fmt != FILE_FORMAT_AUTO && fmt != FILE_FORMAT_BRIG) return 0;
 
     uint64_t fileSize = (uint64_t)fd.getSize();
     VALIDATE(fileSize != (uint64_t)-1, "Filed to read file size");
@@ -964,7 +1022,6 @@ int BrigIO::validate(int            fmt,
     VALIDATE(fd.pread((char*)&moduleHdr, sizeof(BrigModuleHeader), 0) == 0, "Failed to read BrigModuleHeader");
 
     if (memcmp("HSA BRIG", moduleHdr.identification, sizeof(moduleHdr.identification)) != 0) {
-        if (fmt == FILE_FORMAT_AUTO) return 0;
         VALIDATE(false, "Unsupported file format");
     }
 

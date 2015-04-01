@@ -276,12 +276,8 @@ static int AssembleInput() {
     /*if (!DisableOperandOptimizer) {
         c.optimizeOperands();
     }*/
-#if 0
     int format = (BifFileFormat ? FILE_FORMAT_BIF : FILE_FORMAT_BRIG)
                | (Elf64FileFormat ? FILE_FORMAT_ELF64 : FILE_FORMAT_ELF32);
-#else
-    int const format = FILE_FORMAT_BRIG;
-#endif 
     return BrigIO::save(c, format, BrigIO::fileWritingAdapter(getOutputFileName().c_str()));
 }
 

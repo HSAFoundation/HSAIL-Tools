@@ -181,6 +181,11 @@ struct BrigIO {
                     std::ostream&               errs = defaultErrs());
 
 
+    static std::unique_ptr<ReadAdapter> fragmentReadingAdapter(
+                    ReadAdapter *r,
+                    IOAdapter::Position size,
+                    IOAdapter::Position offset = 0);
+
     // normal API using adapter references
 
     static int save(BrigContainer&              src,
@@ -208,8 +213,7 @@ struct BrigIO {
         return !src.get() || load(dst, fmt, *src);
     }
 
-    static int validate(int                     fmt,
-                        ReadAdapter&            src);
+    static int validateBrigBlob(ReadAdapter&         src);
 
     static uint64_t validateSection(ReadAdapter&     fd, 
                                     unsigned         sectionIndex,
