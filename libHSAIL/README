@@ -67,14 +67,3 @@ For Windows, it is possible to obtain dependencies from corresponding software s
 
 On Windows, cmake command line additionally might need to include the location
 of dependencies.  Refer to cmake_win.bat for an example how to specify them.
-
-For Windows, it is possible to obtain dependencies from corresponding software sources:
-* LLVM can be downloaded from http://llvm.org/releases/.
-* re2c source, Windows binaries and some linux packages can be donwloaded from
-  http://sourceforge.net/projects/re2c/.
-* Perl for Windows can be obtained from any of the following sources:
-  * Activestate ActivePerl : http://www.activestate.com/activeperl
-  * Strawberry Perl : http://strawberryperl.com/
-  * as a part of Cygwin: http://www.cygwin.com/
-* It is possible to build and use libelf and libdwarf for libHSAIL on Windows. We
-do not officially support this configuration at this point.

@@ -211,7 +211,7 @@ public:
     //
     bool storeInBrig( HSAIL_ASM::BrigContainer & c ) const;
 
-    int DwarfProducerCallback2( char * name,
+    int DwarfProducerCallback2( const char * name,
                                 int    size,
                                 Dwarf_Unsigned type,
                                 Dwarf_Unsigned flags,
@@ -397,6 +397,21 @@ bool BrigDwarfGenerator_impl::generate( HSAIL_ASM::BrigContainer & c )
 // *sec_name_index is an OUT parameter, a pointer to the shared string table
 // (.shrstrtab) offset for thte name of the section
 //
+static int DwarfProducerCallbackFunc2( const char * name,
+                                       int    size,
+                                       Dwarf_Unsigned type,
+                                       Dwarf_Unsigned flags,
+                                       Dwarf_Unsigned link,
+                                       Dwarf_Unsigned info,
+                                       Dwarf_Unsigned * sect_name_index,
+                                       void * user_data,
+                                       int  * error ){
+    BrigDwarfGenerator_impl * pBdig = (BrigDwarfGenerator_impl *) user_data;
+    return pBdig->DwarfProducerCallback2( name, size, type, flags, link,
+                                            info, sect_name_index );
+}
+
+#if defined(LIBDWARF_USE_INIT_C)
 static int DwarfProducerCallbackFunc( char * name,
                                       int    size,
                                       Dwarf_Unsigned type,
@@ -407,14 +422,13 @@ static int DwarfProducerCallbackFunc( char * name,
                                       void * user_data,
                                       int  * error )
 {
-    BrigDwarfGenerator_impl * pBdig = (BrigDwarfGenerator_impl *) user_data;
-    int rv = pBdig->DwarfProducerCallback2( name, size, type, flags, link,
-                                            info, sect_name_index );
-    return rv;
+    return DwarfProducerCallbackFunc2( name, size, type, flags, link, info,
+                                      sect_name_index, user_data, error );
 }
+#endif
 
 int
-BrigDwarfGenerator_impl::DwarfProducerCallback2( char * name,
+BrigDwarfGenerator_impl::DwarfProducerCallback2( const char * name,
                                                  int    size,
                                                  Dwarf_Unsigned type,
                                                  Dwarf_Unsigned flags,
@@ -470,7 +484,6 @@ static void DwarfErrorHandler( Dwarf_Error theError, Dwarf_Ptr errarg)
 void BrigDwarfGenerator_impl::initializeDwarfProducer()
 {
     int pointerSize = DW_DLC_SIZE_32;
-    Dwarf_Ptr errarg = 0;
     Dwarf_Error pErr  = 0;
     Dwarf_Error * nullError = 0;
 
@@ -480,21 +493,30 @@ void BrigDwarfGenerator_impl::initializeDwarfProducer()
     //
     //unsigned initFlags = DW_DLC_WRITE | pointerSize | DW_DLC_SYMBOLIC_RELOCATIONS;
     unsigned initFlags = DW_DLC_WRITE | pointerSize | DW_DLC_STREAM_RELOCATIONS;
-    Dwarf_Handler errorHandlerFunc = 0;
-    void * userData = this;
-
-    m_pDwarfDebug = dwarf_producer_init_c( initFlags,
-                                           DwarfProducerCallbackFunc,
-                                           DwarfErrorHandler,
-                                           0 /* errarg */, userData, &pErr );
 
     // only on the init call do we need to check the return value, for all
     // other calls we pass in a "nullError" so that the DwarfErrorHandler
     // is called
     //
-
+#if defined(LIBDWARF_USE_INIT_C)
+    m_pDwarfDebug = dwarf_producer_init_c( initFlags,
+                                           DwarfProducerCallbackFunc,
+                                           DwarfErrorHandler,
+                                           nullptr, this, &pErr );
     if ( pErr != 0 )
         error( "dwarf_producer_init_c", pErr );
+#else
+    auto ret = dwarf_producer_init( initFlags,
+                                           DwarfProducerCallbackFunc2,
+                                           DwarfErrorHandler,
+                                           nullptr, this,
+                                           "x86", "V2", nullptr,
+                                           &m_pDwarfDebug,
+                                           &pErr );
+    if (ret != DW_DLV_OK)
+        error( "dwarf_producer_init", pErr );
+#endif
+
 
     Dwarf_P_Die pParent = 0;
     Dwarf_P_Die pChild = 0;
@@ -1082,7 +1104,6 @@ void BrigDwarfGenerator_impl::createDwarfElfSections()
             {
                 Elf32_Rel *rr = static_cast<Elf32_Rel *>((void*)(relBytes + rrOffset));
                 unsigned relSym  = ELF32_R_SYM(rr->r_info);
-                unsigned relType = ELF32_R_TYPE(rr->r_info);
 
                 if(relSym == m_codeSymbol)
                 {
@@ -1092,12 +1113,13 @@ void BrigDwarfGenerator_impl::createDwarfElfSections()
                 {
                     rr->r_info = ELF32_R_INFO(relSym, __R_HSA_DWARF_TO_BRIG_DIRECTIVES32);
                 }
+#if defined(AMD_LIBELF)
                 else
                 {
                     /* libDWARF must set default type of relocations */
-                    assert(relType == __R_HSA_DWARF_32);
+                    assert(__R_HSA_DWARF_32 == ELF32_R_TYPE(rr->r_info));
                 }
-
+#endif // defined(AMD_LIBELF)
             }
         }
     }
