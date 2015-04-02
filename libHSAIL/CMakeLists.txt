@@ -13,6 +13,9 @@ find_package(RE2C REQUIRED)
 find_package(LLVM REQUIRED)
 
 #find_library(LLVM_SUPPORT_LIB LLVMSupport)
+if (LIBDWARF_USE_INIT_C)
+  add_definitions("-DLIBDWARF_USE_INIT_C")
+endif()
 
 if(MSVC)
   set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} /MT")
@@ -35,3 +38,5 @@ endif()
 if(BUILD_HSAILASM)
   add_subdirectory(HSAILAsm)
 endif()
+
+
