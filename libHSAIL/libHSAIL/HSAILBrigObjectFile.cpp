@@ -281,6 +281,8 @@ class BrigIOImpl {
     typedef typename Policy::Sym Sym;
     typedef typename Policy::Word ElfWord;
     typedef typename Policy::Half ElfHalf;
+    typedef typename Policy::Off  Off;
+
     Ehdr elfHeader;
     std::vector<Shdr> sectionHeaders;
     std::vector<char> sectionNameTable;
@@ -291,7 +293,7 @@ class BrigIOImpl {
 
 public:
     BrigIOImpl(int fmt_)
-        : fmt(fmt_)
+        : fmt(fmt_ & FILE_FORMAT_MASK)
     {
     }
 
@@ -333,9 +335,9 @@ public:
 
             if (desc->sectionId == BRIG_SECTION_INDEX_BLOB) {
                 const Shdr &h = sectionHeaders[i];
-                if (!readContainer(c,
-                       BrigIO::fragmentReadingAdapter(s, h.sh_size,
-                                                         h.sh_offset).get())) {
+                if (!HSAIL_ASM::readContainer(
+                    *BrigIO::fragmentReadingAdapter(s, h.sh_size,
+                                                       h.sh_offset), c)) {
                     return 1;
                 }
                 break;
@@ -452,10 +454,11 @@ private:
         return pos;
     }
 
-    int alignFilePos(WriteAdapter *s, unsigned &pos, unsigned align) {
-        const char *zeropad = "\0\0\0\0\0\0\0\0";
+    int alignFilePos(WriteAdapter *s, Off &pos, unsigned align) {
+        const char zeropad[] = "\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0";
         assert(align > 0 && (0 == (align&(align-1))));
-        int n = ((~pos+1) & (align-1));
+        unsigned n = static_cast<unsigned>((~pos+1) & (align-1));
+        assert(n < sizeof zeropad);
         if (n == 0) { return 0; }
         if (s && s->write(zeropad, n)) {
             return 1;
@@ -521,7 +524,7 @@ private:
     }
 
     int writeContents(WriteAdapter *s) {
-        unsigned filePos = sizeof(Ehdr);
+        Off filePos = sizeof(Ehdr);
         if (s && s->write((char*)&elfHeader, sizeof(Ehdr))) {
             return 1;
         }
@@ -530,11 +533,12 @@ private:
         }
         for(unsigned secIndex = 1; secIndex < sectionHeaders.size(); ++secIndex) {
             Shdr &shdr = sectionHeaders[secIndex];
-            if (alignFilePos(s, filePos, shdr.sh_addralign)) {
+            if (alignFilePos(s, filePos, static_cast<unsigned>(shdr.sh_addralign))) {
                 return 1;
             }
             shdr.sh_offset = filePos;
-            if (s && s->write(sectionData[secIndex].begin, shdr.sh_size)) {
+            if (s && s->write(sectionData[secIndex].begin, 
+                              static_cast<unsigned>(shdr.sh_size))) {
                 return 1;
             }
             filePos += shdr.sh_size;
@@ -990,11 +994,24 @@ int BrigIO::save(BrigContainer &src,
                  int           fmt,
                  WriteAdapter& dst)
 {
-    if (fmt == FILE_FORMAT_BRIG) {
+    switch (fmt & FILE_FORMAT_MASK) {
+    case FILE_FORMAT_BRIG:
         return src.write(dst) ? 0 : 1;
-    } 
+    case FILE_FORMAT_BIF:
+        switch (fmt & ~FILE_FORMAT_MASK) {
+        case FILE_FORMAT_ELF32: {
     BrigIOImpl<Elf32Policy> impl(fmt);
     return impl.writeContainer(&dst, src);
+        }
+        case FILE_FORMAT_ELF64: {
+            BrigIOImpl<Elf64Policy> impl(fmt);
+            return impl.writeContainer(&dst, src);
+        }
+        default:;
+        }
+    default: assert(false && "unsupported format");
+    }
+    return 0;
 }
 
 // --------------------------------------------------------------------------------
