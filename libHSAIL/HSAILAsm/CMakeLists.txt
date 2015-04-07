@@ -24,10 +24,9 @@ find_library(CURSES_LIB curses)
 if(BUILD_LIBBRIGDWARF)
   target_link_libraries(HSAILasm ${LIBELF_LIBRARIES})
   target_link_libraries(HSAILasm ${LIBDWARF_LIBRARIES})
-
-  if(CURSES_LIB)
-     # FIXME: Find dependencies pulled in by LLVMSupport
-    target_link_libraries(HSAILasm ${CURSES_LIB})
-  endif()
 endif()
 
+if(CURSES_LIB)
+  # FIXME: Find dependencies pulled in by LLVMSupport
+  target_link_libraries(HSAILasm ${CURSES_LIB})
+endif()
