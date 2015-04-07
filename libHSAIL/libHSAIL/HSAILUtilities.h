@@ -137,6 +137,9 @@ bool isImageInst(unsigned opcode);  // checks opcode only
 inline bool isGcnInst(unsigned opcode) { return (opcode & (1<<15))!=0; }
 bool isCallInst(unsigned opcode);
 bool isBranchInst(unsigned opcode);
+bool isIntArithInstr(unsigned opcode);
+bool isIntShiftInstr(unsigned opcode);
+bool isBitArithmInst(unsigned opcode);
 
 // True for instructions which unconditionally change control flow
 // so that next instruction is only reachable via a jump

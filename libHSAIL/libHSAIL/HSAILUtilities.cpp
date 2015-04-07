@@ -364,6 +364,49 @@ bool isTermInst(unsigned opcode)
            opcode == BRIG_OPCODE_RET;
 }
 
+bool isIntArithInstr(unsigned opcode)
+{
+    switch(opcode)
+    {
+    case BRIG_OPCODE_ABS:
+    case BRIG_OPCODE_ADD:
+    case BRIG_OPCODE_BORROW:
+    case BRIG_OPCODE_CARRY:
+    case BRIG_OPCODE_DIV:
+    case BRIG_OPCODE_MAX:
+    case BRIG_OPCODE_MIN:
+    case BRIG_OPCODE_MUL:
+    case BRIG_OPCODE_MULHI:
+    case BRIG_OPCODE_NEG:
+    case BRIG_OPCODE_REM:
+    case BRIG_OPCODE_SUB:
+        return true;
+    default:
+        return false;
+    }
+}
+
+bool isIntShiftInstr(unsigned opcode)
+{
+    return opcode == BRIG_OPCODE_SHL ||
+           opcode == BRIG_OPCODE_SHR;
+}
+
+bool isBitArithmInst(unsigned opcode)
+{
+    switch(opcode)
+    {
+    case BRIG_OPCODE_AND:
+    case BRIG_OPCODE_OR:
+    case BRIG_OPCODE_XOR:
+    case BRIG_OPCODE_NOT:
+    case BRIG_OPCODE_POPCOUNT:
+        return true;
+    default:
+        return false;
+    }
+}
+
 //============================================================================
 // Operations with operands
 
