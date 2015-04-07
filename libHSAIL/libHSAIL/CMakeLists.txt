@@ -1,52 +1,54 @@
 find_package(Perl REQUIRED)
 
-set(libhsail_srcs
+set(libhsail_public_headers
   Brig.h
-  HSAILb128_t.h
-  HSAILBrigantine.cpp
-  HSAILBrigantine.h
-  HSAILBrigContainer.cpp
   HSAILBrigContainer.h
-  HSAILBrigInstr.hdl
-  HSAILBrigObjectFile.cpp
   HSAILBrigObjectFile.h
-  hsail_c.cpp
-  hsail_c.h
+  HSAILBrigantine.h
   HSAILConvertors.h
-  HSAILDisassembler.cpp
   HSAILDisassembler.h
-  HSAILDump.cpp
   HSAILDump.h
-  HSAILFloats.cpp
   HSAILFloats.h
   HSAILInstProps.h
   HSAILItemBase.h
-  HSAILItems.cpp
   HSAILItems.h
-  HSAILParser.cpp
   HSAILParser.h
-  HSAILScanner.cpp
-  HSAILScanner.h
-  HSAILScannerRules.cpp
-  HSAILScope.h
   HSAILSRef.h
+  HSAILScanner.h
+  HSAILScope.h
   HSAILTypeUtilities.h
-  HSAILUtilities.cpp
   HSAILUtilities.h
-  HSAILValidatorBase.cpp
-  HSAILValidatorBase.h
-  HSAILValidator.cpp
   HSAILValidator.h
+  HSAILValidatorBase.h
+  HSAILb128_t.h
+  hsail_c.h
+)
+
+set(libhsail_srcs
+  HSAILBrigContainer.cpp
+  HSAILBrigObjectFile.cpp
+  HSAILBrigantine.cpp
+  HSAILDisassembler.cpp
+  HSAILDump.cpp
+  HSAILFloats.cpp
+  HSAILItems.cpp
+  HSAILParser.cpp
+  HSAILScanner.cpp
+  HSAILScannerRules.cpp
+  HSAILScannerRules.re2c
+  HSAILUtilities.cpp
+  HSAILValidator.cpp
+  HSAILValidatorBase.cpp
+  hsail_c.cpp
 )
 
 set(generated_dir ${CMAKE_CURRENT_BINARY_DIR}/generated)
 
-set(generated_srcs
+set(generated_headers
   ${generated_dir}/HSAILBrigInstUtils_gen.hpp
   ${generated_dir}/HSAILBrigPropsName_gen.hpp
   ${generated_dir}/HSAILBrigValidation_gen.hpp
   ${generated_dir}/HSAILItems_gen.hpp
-  ${generated_dir}/HSAILScannerRules_gen.re2c
   ${generated_dir}/HSAILBrigPropsAcc_gen.hpp
   ${generated_dir}/HSAILBrigPropsVisitor_gen.hpp
   ${generated_dir}/HSAILInitBrig_gen.hpp
@@ -62,6 +64,11 @@ set(generated_srcs
   ${generated_dir}/HSAILItemImpls_gen.hpp
   ${generated_dir}/HSAILPropAccessors_gen.hpp
   ${generated_dir}/HSAILVisitItems_gen.hpp
+)
+
+set(generated_srcs
+  ${generated_headers}
+  ${generated_dir}/HSAILScannerRules_gen.re2c
 )
 
 include_directories(${CMAKE_CURRENT_SOURCE_DIR})
@@ -86,6 +93,11 @@ if(BUILD_LIBBRIGDWARF)
     SectionHeaderTable.h
   )
 
+  list(APPEND libhsail_public_headers
+    BrigDwarfGenerator.h
+    hsa_dwarf.h
+  )
+
   include_directories(${LIBELF_INCLUDE_DIRS})
   include_directories(${LIBDWARF_INCLUDE_DIRS})
 else()
@@ -93,9 +105,16 @@ else()
 endif()
 
 add_custom_target(libhsail-includes ALL DEPENDS ${generated_srcs})
-add_library(hsail ${libhsail_srcs} ${libbrigdwarf_srcs} ${generated_srcs})
+add_library(hsail ${libhsail_srcs} ${libhsail_public_headers} ${libbrigdwarf_srcs} ${generated_headers})
 add_dependencies(hsail libhsail-includes)
 
 if(UNIX)
   target_link_libraries(hsail dl)
 endif()
+
+install(TARGETS hsail
+  ARCHIVE DESTINATION lib
+  LIBRARY DESTINATION lib
+)
+
+install(FILES ${libhsail_public_headers} ${generated_headers} DESTINATION include/libHSAIL)

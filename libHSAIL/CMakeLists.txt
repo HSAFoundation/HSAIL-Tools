@@ -38,5 +38,3 @@ endif()
 if(BUILD_HSAILASM)
   add_subdirectory(HSAILAsm)
 endif()
-
-
