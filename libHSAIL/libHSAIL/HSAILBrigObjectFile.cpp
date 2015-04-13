@@ -1000,8 +1000,8 @@ int BrigIO::save(BrigContainer &src,
     case FILE_FORMAT_BIF:
         switch (fmt & ~FILE_FORMAT_MASK) {
         case FILE_FORMAT_ELF32: {
-    BrigIOImpl<Elf32Policy> impl(fmt);
-    return impl.writeContainer(&dst, src);
+            BrigIOImpl<Elf32Policy> impl(fmt);
+            return impl.writeContainer(&dst, src);
         }
         case FILE_FORMAT_ELF64: {
             BrigIOImpl<Elf64Policy> impl(fmt);
