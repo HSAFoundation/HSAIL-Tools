@@ -74,18 +74,11 @@ struct Api {
     {
     }
 
-    //Api(const void *data_bytes,
-    //    const void *code_bytes,
-    //    const void *operand_bytes,
-    //    const void * debug_bytes)
-    //: container(
-    //        data_bytes,
-    //        code_bytes,
-    //        operand_bytes,
-    //        debug_bytes)
-    //, errorText()
-    //{
-    //}
+    Api(const void *brig_module,
+        size_t size)
+    : container((BrigModule_t) brig_module/*, size*/)
+    {
+    }
 };
 
 static int assemble(brig_container_t handle, std::istream& is, const char *options, const char *sourceDir = 0, const char *sourceFileName = 0)
@@ -164,31 +157,15 @@ HSAIL_C_API brig_container_t brig_container_create_empty()
     return (brig_container_t)new Api();
 }
 
-HSAIL_C_API brig_container_t brig_container_create_view(
-    const void *data_bytes,
-    const void *code_bytes,
-    const void *operand_bytes,
-    const void* debug_bytes)
+HSAIL_C_API brig_container_t brig_container_create_view(const void *brig_module, size_t size)
 {
-    //return (brig_container_t)new Api(
-    //        data_bytes,
-    //        code_bytes,
-    //        operand_bytes,
-    //        debug_bytes);
-    return nullptr;
+    return (brig_container_t)new Api(brig_module, size);
 }
 
-HSAIL_C_API brig_container_t brig_container_create_copy(
-                            const char *data_bytes,
-                            const char *code_bytes,
-                            const char *operand_bytes,
-                            const char* debug_bytes)
+HSAIL_C_API brig_container_t brig_container_create_copy(const void *brig_module, size_t size)
 {
   Api *api = new Api;
-  api->container.strings().setData(data_bytes);
-  api->container.code().setData(code_bytes);
-  api->container.operands().setData(operand_bytes);
-  if (debug_bytes) { api->container.debugInfo().setData(debug_bytes); }
+  api->container.setData(brig_module, size);
   return (brig_container_t)api;
 }
 

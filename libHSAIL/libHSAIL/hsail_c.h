@@ -96,11 +96,7 @@ HSAIL_C_API brig_container_t brig_container_create_empty();
  *
  * @return - BRIG container handle.
  */
-HSAIL_C_API brig_container_t brig_container_create_view(
-                            const void *data_bytes,
-                            const void *code_bytes,
-                            const void *operand_bytes,
-                            const void *debug_bytes);
+HSAIL_C_API brig_container_t brig_container_create_view(const void *brig_module, size_t size);
 
 /**
  * Create an BRIG cointainer with a copy of the specified data which
@@ -118,11 +114,7 @@ HSAIL_C_API brig_container_t brig_container_create_view(
  * @return - BRIG container handle. *
  * @return - BRIG container handle.
  */
-HSAIL_C_API brig_container_t brig_container_create_copy(
-                            const char *data_bytes,
-                            const char *code_bytes,
-                            const char *operand_bytes,
-                            const char* debug_bytes);
+HSAIL_C_API brig_container_t brig_container_create_copy(const void* brig_module, size_t size);
 
 /**
  * Obtain the section count for a BRIG container.
