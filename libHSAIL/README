@@ -28,7 +28,6 @@ To avoid building HSAILAsm, specify -DBUILD_HSAILASM=0 option to CMake.
 
 3. BUILDING (Linux)
 
-
   mkdir -p build/lnx64
   cd build/lnx64
   cmake ../..
@@ -40,6 +39,9 @@ them on Ubuntu 14.04 system:
   sudo apt-get install cmake libdwarf-dev libelf-dev llvm-dev ncurses-dev re2c perl
 
 Building on Linux requires GCC 4.4+.
+
+On Linux, CMake normally finds all dependencies automatically. However, it is also
+possible to override (see, for example, scripts in bin/ subdirectory).
 
 
 4. BUILDING (Windows)
@@ -66,4 +68,4 @@ For Windows, it is possible to obtain dependencies from corresponding software s
   * as a part of Cygwin: http://www.cygwin.com/
 
 On Windows, cmake command line additionally might need to include the location
-of dependencies.  Refer to cmake_win.bat for an example how to specify them.
+of dependencies.  Refer to bin/cmake_win.bat for an example how to specify them.

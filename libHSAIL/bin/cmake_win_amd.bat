@@ -4,8 +4,10 @@ set LLVM_PATH=C:\ws\sc\drivers\opencl\compiler\llvm
 set LLVM_SUPPORT_LIB_DIR=%LLVM_PATH%\lib\Support
 set ELFTOOLCHAIN_PATH=C:\ws\sc\drivers\hsa\contrib\elftoolchain
 set LIBELF_PATH=%ELFTOOLCHAIN_PATH%\libelf
-set LIBDWARF_PATH=C:\ws\sc\drivers\sc\HSAIL\hsail-tools\libBRIGdwarf\libdwarf
+set LIBDWARF_PATH=C:\ws\sc\drivers\sc\HSAIL\hsail-tools\libdwarf
 set RE2C_EXECUTABLE=C:\ws\dk\win\re2c\re2c.exe
+
+cd ..
 
 md build\win32
 cd build\win32
