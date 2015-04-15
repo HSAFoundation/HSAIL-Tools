@@ -71,13 +71,19 @@ public:
         write(&t, sizeof(t), numBytes());
     }
 
+    void push_zeroes(size_t count) {
+        m_buffer.resize(m_buffer.size() + count);
+    }
+
     template<typename T>
     void write(T t, size_t pos) {
         write(&t, sizeof(t), pos);
     }
+
     void push_back(const void* p, unsigned n) {
         write(p, n, numBytes());
     }
+
     void write(const void* p, unsigned n, size_t pos) {
         if (numBytes() < pos + n) {
             m_buffer.resize(pos + n);

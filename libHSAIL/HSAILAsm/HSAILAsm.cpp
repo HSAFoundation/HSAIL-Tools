@@ -162,7 +162,7 @@ static string getOutputFileName(const char* ext) {
         return OutputFilename;
 
     // not defined, generate using InputFileName
-        string fileName = InputFilename;
+    string fileName = InputFilename;
     string::size_type const pos = fileName.find_last_of('.');
 
     if (pos != string::npos && pos > 0 && 
