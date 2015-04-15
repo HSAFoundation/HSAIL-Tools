@@ -111,10 +111,10 @@ static cl::opt<std::string>
     OutputFilename("o", cl::desc("Output filename (if not specified, input file name with appropriate extension is used)"), cl::value_desc("filename"), cl::init(""));
 
 static cl::opt<bool>
-    BifFileFormat("bif", cl::init(false), cl::desc("Use BIF3.0 format for assembled files instead of default (legacy BRIG)"));
+    Bif32FileFormat("bif32", cl::init(false), cl::desc("generate assembled output in BIF3.0 format using elf32 container"));
 
 static cl::opt<bool>
-    Elf64FileFormat("elf64", cl::init(false), cl::desc("Use ELF64 container"));
+    Bif64FileFormat("bif64", cl::init(false), cl::desc("generate assembled output in BIF3.0 format using elf64 container"));
 
 static cl::opt<bool>
     DisableOperandOptimizer("disable-operand-optimizer", cl::Hidden, cl::desc("Disable Operand Optimizer"));
@@ -157,18 +157,21 @@ static cl::opt<bool>
 
 // ============================================================================
 
-static string getOutputFileName() {
-    if (OutputFilename.size() > 0) {
+static string getOutputFileName(const char* ext) {
+    if (!OutputFilename.empty())
         return OutputFilename;
-    } else { // not defined, generate using InputFileName
+
+    // not defined, generate using InputFileName
         string fileName = InputFilename;
-        string::size_type pos = fileName.find_last_of('.');
-        string new_ext = (Action == AC_Assemble)? ".brig" : ".hsail";
-        if (pos != string::npos && pos > 0 && fileName.substr(pos) != new_ext) {
-            fileName = fileName.substr(0, pos);
-        }
-        return fileName + new_ext;
-    }
+    string::size_type const pos = fileName.find_last_of('.');
+
+    if (pos != string::npos && pos > 0 && 
+        fileName.rfind(ext, pos) == string::npos) {
+        fileName.replace(pos, string::npos, ext);
+    } else
+        fileName.append(ext);
+
+    return fileName;
 }
 
 static int ValidateContainer(BrigContainer &c, std::istream *is) {
@@ -273,23 +276,17 @@ static int AssembleInput() {
 
     DEBUG(HSAIL_ASM::dump(c, std::cout));
 
-    /*if (!DisableOperandOptimizer) {
-        c.optimizeOperands();
-    }*/
-    int format = (BifFileFormat ? FILE_FORMAT_BIF : FILE_FORMAT_BRIG)
-               | (Elf64FileFormat ? FILE_FORMAT_ELF64 : FILE_FORMAT_ELF32);
-    return BrigIO::save(c, format, BrigIO::fileWritingAdapter(getOutputFileName().c_str()));
+    int const fmt = Bif64FileFormat ? FILE_FORMAT_BIF | FILE_FORMAT_ELF64 :
+                    Bif32FileFormat ? FILE_FORMAT_BIF | FILE_FORMAT_ELF32 :
+                    FILE_FORMAT_BRIG;
+    const std::string& out = getOutputFileName(fmt==FILE_FORMAT_BRIG ? ".brig" : ".bif");
+    return BrigIO::save(c, fmt, BrigIO::fileWritingAdapter(out.c_str()));
 }
 
 static int DisassembleInput() {
     BrigContainer c;
-#if 0
-    int format = BifFileFormat ? FILE_FORMAT_BIF : FILE_FORMAT_AUTO;
-#else
-    int const format = FILE_FORMAT_AUTO;
-#endif 
-
-    if (BrigIO::load(c, format, BrigIO::fileReadingAdapter(InputFilename.c_str()))) {
+    if (BrigIO::load(c, FILE_FORMAT_AUTO, 
+                     BrigIO::fileReadingAdapter(InputFilename.c_str()))) {
       return 1;
     }
 
@@ -305,7 +302,7 @@ static int DisassembleInput() {
 
     if ( DebugInfoFilename.size() > 0 )
         DumpDebugInfoToFile( c );
-    std::string ofn = getOutputFileName();
+    std::string ofn = getOutputFileName(".hsail");
     if (ofn == "-") {
         return disasm.run(std::cout);
     } else {
