@@ -449,7 +449,7 @@ void BrigContainer::setContents(std::vector<char>& buf) {
     m_brigModuleHeader = hdr;
 }
 
-void BrigContainer::setData(void *data, size_t size)
+void BrigContainer::setData(const void *data, size_t size)
 {
   clear();
   std::vector<char> tmpBuf((const char*)data, (const char*)data + size);
