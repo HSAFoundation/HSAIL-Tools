@@ -1,7 +1,6 @@
 include_directories(${PROJECT_SOURCE_DIR}/libHSAIL)
 include_directories(${PROJECT_BINARY_DIR}/libHSAIL/generated)
 
-include_directories(${LIBELF_INCLUDE_DIRS})
 include_directories(${LLVM_PATH}/include)
 
 if(UNIX)
@@ -22,6 +21,8 @@ find_library(CURSES_LIB curses)
 #include(LLVM-Config.cmake)
 
 if(BUILD_LIBBRIGDWARF)
+  include_directories(${LIBELF_INCLUDE_DIRS})
+
   target_link_libraries(HSAILasm ${LIBELF_LIBRARIES})
   target_link_libraries(HSAILasm ${LIBDWARF_LIBRARIES})
 endif()

@@ -4,13 +4,32 @@ project(HSAIL-Tools)
 
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake_modules")
 
-option(BUILD_LIBBRIGDWARF "Build libbrigdwarf" ON)
-option(BUILD_HSAILASM "Build HSAILAsm" ON)
+include(CMakeDependentOption)
 
-find_package(LibElf REQUIRED)
-find_package(LibDwarf REQUIRED)
+
+find_package(LibElf)
+
+if(LIBELF_FOUND)
+  find_package(LibDwarf)
+endif()
+
 find_package(RE2C REQUIRED)
 find_package(LLVM REQUIRED)
+
+option(BUILD_HSAILASM "Build HSAILAsm" ON)
+
+
+# Only try to build libbrigdwarf if we have both libelf and libdwarf.
+
+# TODO: The checks for libdwarf and libelf need to be refined. There
+# are several versions of each, and not all of them work here.
+# e.g. This does not build with the versions in macports.
+cmake_dependent_option(BUILD_LIBBRIGDWARF "Build libbrigdwarf" ON
+  "LIBELF_FOUND;LIBDWARF_FOUND" OFF)
+
+message(STATUS "Building HSAILAsm: ${BUILD_HSAILASM}")
+message(STATUS "Building libbrigdwarf: ${BUILD_LIBBRIGDWARF}")
+
 
 #find_library(LLVM_SUPPORT_LIB LLVMSupport)
 if (LIBDWARF_USE_INIT_C)
@@ -31,6 +50,7 @@ endif()
 
 add_subdirectory(libHSAIL)
 
+# FIXME: We should check for a usable version of libelf / libdwarf.
 if(BUILD_LIBBRIGDWARF)
   add_definitions(-DWITH_LIBBRIGDWARF=1)
 endif()
