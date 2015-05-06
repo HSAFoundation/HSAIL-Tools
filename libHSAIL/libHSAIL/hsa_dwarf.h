@@ -50,6 +50,7 @@
 #define DW_AT_HSA_brig_offset       0x3004 /* Used for ISA DWARF only */
 
 #define DW_LANG_HSA_Assembly      0x9000
+#define DW_LANG_BRIG              0x9001
 
 enum {
   __R_HSA_NONE = 0,
