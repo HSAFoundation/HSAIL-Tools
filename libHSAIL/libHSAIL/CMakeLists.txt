@@ -1,5 +1,9 @@
 find_package(Perl REQUIRED)
 
+if(UNIX)
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fpic")
+endif()
+
 set(libhsail_public_headers
   Brig.h
   HSAILBrigContainer.h
