@@ -539,6 +539,8 @@ public:
 
     int addSection(std::unique_ptr<BrigSectionImpl>&&);
 
+    int brigSectionIdByName(SRef name);
+
     // Append a default-initialized item (i.e. an instruction, operand, directive or debug info) to
     // a corresponding section of this container, and return the appropriate item proxy.
     template<typename Item> Item append() {

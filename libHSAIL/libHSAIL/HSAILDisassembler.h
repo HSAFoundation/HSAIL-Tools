@@ -75,8 +75,6 @@ private:
     mutable unsigned      mProfile;
     unsigned              m_options;
 
-    static const int BRIG_OPERANDS_NUM = 5;
-
     Disassembler(const Disassembler&); // non-copyable
     const Disassembler &operator=(const Disassembler &);  // not assignable
 
@@ -190,7 +188,7 @@ private:
 
     void printCallArgs(Inst i) const;
     void printSbrArgs(Inst i) const;
-    void printInstArgs(Inst i, int firstArg = 0, int lastArg = BRIG_OPERANDS_NUM) const;
+    void printInstArgs(Inst i, int firstArg = 0, int lastArg = MAX_OPERANDS_NUM) const;
     template<class T> void print_width(T inst) const;
     void print_v(Inst i) const;
 

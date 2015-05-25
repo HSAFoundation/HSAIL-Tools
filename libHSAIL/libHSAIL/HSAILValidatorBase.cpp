@@ -238,7 +238,8 @@ const char* PropValidator::val2str(unsigned prop, unsigned val)
     case PROP_S1:
     case PROP_S2:
     case PROP_S3:
-    case PROP_S4:              res = operand2str(val); break;
+    case PROP_S4:
+    case PROP_S5:              res = operand2str(val); break;
 
     case PROP_TYPESIZE:  // A special case
     case PROP_STYPESIZE: // A special case
@@ -254,7 +255,7 @@ const char* PropValidator::val2str(unsigned prop, unsigned val)
 
 unsigned PropValidator::attr2type(Inst inst, unsigned idx, unsigned attr)
 {
-    assert(idx < 5);
+    assert(idx < MAX_OPERANDS_NUM);
 
     switch(attr)
     {
@@ -270,6 +271,7 @@ unsigned PropValidator::attr2type(Inst inst, unsigned idx, unsigned attr)
     case OPERAND_ATTR_U64:      return BRIG_TYPE_U64;
     case OPERAND_ATTR_S32:      return BRIG_TYPE_S32;
     case OPERAND_ATTR_S64:      return BRIG_TYPE_S64;
+    case OPERAND_ATTR_F32:      return BRIG_TYPE_F32;
     case OPERAND_ATTR_SAMP:     return BRIG_TYPE_SAMP;
     case OPERAND_ATTR_SIG32:    return BRIG_TYPE_SIG32;
     case OPERAND_ATTR_SIG64:    return BRIG_TYPE_SIG64;
@@ -324,6 +326,7 @@ string PropValidator::prop2str(unsigned prop)
     case PROP_S2:              return "operand 2";
     case PROP_S3:              return "operand 3";
     case PROP_S4:              return "operand 4";
+    case PROP_S5:              return "operand 5";
 
     case PROP_TYPESIZE:  // A special case
     case PROP_STYPESIZE: // A special case
@@ -351,6 +354,7 @@ const char* PropValidator::prop2key(unsigned prop)
     case PROP_S2:          return "operand 2";
     case PROP_S3:          return "operand 3";
     case PROP_S4:          return "operand 4";
+    case PROP_S5:          return "operand 5";
 
     case PROP_TYPESIZE:  // A special case
     case PROP_STYPESIZE: // A special case
@@ -385,7 +389,7 @@ void PropValidator::propError(Inst inst, unsigned prop, string value, unsigned* 
     unsigned operandIdx = getOperandIdx(prop);
     string expected = (length == 1)? ", expected: " : ", expected one of: ";
 
-    if (operandIdx <= 4) // operand property
+    if (operandIdx < MAX_OPERANDS_NUM) // operand property
     {
         if (!inst.operand(operandIdx))
         {
@@ -452,7 +456,7 @@ bool PropValidator::validateStypesize(Inst inst, unsigned prop, unsigned attr, u
 bool PropValidator::validateOperandAttr(Inst inst, unsigned operandIdx, unsigned attr, bool isDst, bool isAssert)
 {
     assert(inst);
-    assert(operandIdx <= 4);
+    assert(operandIdx < MAX_OPERANDS_NUM);
     assert(ATTR_MINID < attr && attr < ATTR_MAXID);
     assert(inst.operand(operandIdx));
 
@@ -468,6 +472,7 @@ bool PropValidator::validateOperandAttr(Inst inst, unsigned operandIdx, unsigned
     case OPERAND_ATTR_U64:
     case OPERAND_ATTR_S32:
     case OPERAND_ATTR_S64:
+    case OPERAND_ATTR_F32:
     case OPERAND_ATTR_SAMP:
     case OPERAND_ATTR_SIG32:
     case OPERAND_ATTR_SIG64:
@@ -490,7 +495,7 @@ bool PropValidator::validateOperandAttr(Inst inst, unsigned operandIdx, unsigned
 bool PropValidator::checkAddrSeg(Inst inst, unsigned operandIdx, bool isAssert)
 {
     assert(inst);
-    assert(operandIdx <= 4);
+    assert(operandIdx < MAX_OPERANDS_NUM);
 
     OperandAddress opr = inst.operand(operandIdx);
     assert(opr);
@@ -535,7 +540,7 @@ bool PropValidator::checkAddrSeg(Inst inst, unsigned operandIdx, bool isAssert)
 bool PropValidator::checkAddrTSeg(Inst inst, unsigned operandIdx, bool isAssert)
 {
     assert(inst);
-    assert(operandIdx <= 4);
+    assert(operandIdx < MAX_OPERANDS_NUM);
 
     if (!checkAddrSeg(inst, operandIdx, isAssert)) return false;
 
@@ -589,7 +594,7 @@ bool PropValidator::isImmInRange(Operand opr, unsigned low, unsigned high)
 bool PropValidator::checkOperandKind(Inst inst, unsigned operandIdx, unsigned* vals, unsigned length, bool isAssert)
 {
     assert(inst);
-    assert(operandIdx <= 4);
+    assert(operandIdx < MAX_OPERANDS_NUM);
     assert(vals && length > 0);
 
     Operand opr = inst.operand(operandIdx);
@@ -640,7 +645,7 @@ bool PropValidator::validateOperand(Inst inst, unsigned prop, unsigned attr, uns
 
     bool isDst = (prop == PROP_D0 || prop == PROP_D1);
     unsigned oprIdx = getOperandIdx(prop);
-    assert(oprIdx <= 4);
+    assert(oprIdx < MAX_OPERANDS_NUM);
 
     if (!checkOperandKind(inst, oprIdx, vals, length, isAssert))
     {
@@ -759,13 +764,13 @@ static string getExpectedTypeName(unsigned type)
 
 string PropValidator::getErrHeader(unsigned oprIdx, const char* oprPref)
 {
-    assert(oprIdx <= 4);
+    assert(oprIdx < MAX_OPERANDS_NUM);
     return string(oprPref) + " " + static_cast<char>('0' + oprIdx);
 }
 
 void PropValidator::operandError(Inst inst, unsigned oprIdx, string msg1, string msg2 /*=""*/)
 {
-    assert(oprIdx <= 4);
+    assert(oprIdx < MAX_OPERANDS_NUM);
 
     string errHdr = getErrHeader(oprIdx, "Operand");
     validate(inst, oprIdx, false, errHdr + " " + msg1 + msg2);
@@ -774,7 +779,7 @@ void PropValidator::operandError(Inst inst, unsigned oprIdx, string msg1, string
 void PropValidator::operandSizeError(Inst inst, unsigned oprIdx, unsigned type, unsigned attr)
 {
     assert(inst);
-    assert(oprIdx <= 4);
+    assert(oprIdx < MAX_OPERANDS_NUM);
 
     string err = getOperandTypeName(attr);
     if (!err.empty()) // empty if operand has fixed type, otherwise "operation", "source", etc
@@ -829,7 +834,7 @@ void PropValidator::operandSizeError(Inst inst, unsigned oprIdx, unsigned type, 
 void PropValidator::immTypeError(Inst inst, unsigned oprIdx, unsigned actualType, unsigned expectedType, bool isB1Error)
 {
     assert(inst);
-    assert(oprIdx <= 4);
+    assert(oprIdx < MAX_OPERANDS_NUM);
 
     //F1.0
     //string brigType;
@@ -860,7 +865,7 @@ void PropValidator::immTypeError(Inst inst, unsigned oprIdx, unsigned actualType
 void PropValidator::wavesizeError(Inst inst, unsigned oprIdx, unsigned type, unsigned attr)
 {
     assert(inst);
-    assert(oprIdx <= 4);
+    assert(oprIdx < MAX_OPERANDS_NUM);
 
     Operand opr = inst.operand(oprIdx);
 
@@ -953,7 +958,7 @@ bool PropValidator::validateOperandWavesize(Inst inst, unsigned oprIdx, unsigned
 bool PropValidator::validateOperandType(Inst inst, unsigned oprIdx, bool isDst, unsigned attr, bool isAssert)
 {
     assert(inst);
-    assert(oprIdx <= 4);
+    assert(oprIdx < MAX_OPERANDS_NUM);
 
     Operand opr   = inst.operand(oprIdx);
     unsigned type = attr2type(inst, oprIdx, attr);

@@ -20,6 +20,7 @@ set(libhsail_public_headers
   HSAILSRef.h
   HSAILScanner.h
   HSAILScope.h
+  HSAILTool.h
   HSAILTypeUtilities.h
   HSAILUtilities.h
   HSAILValidator.h
@@ -40,6 +41,7 @@ set(libhsail_srcs
   HSAILScanner.cpp
   HSAILScannerRules.cpp
   HSAILScannerRules.re2c
+  HSAILTool.cpp
   HSAILUtilities.cpp
   HSAILValidator.cpp
   HSAILValidatorBase.cpp

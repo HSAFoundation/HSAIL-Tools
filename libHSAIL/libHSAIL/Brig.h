@@ -38,11 +38,18 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS WITH THE
 // SOFTWARE.
+
 //.ignore{
+
 #ifndef INCLUDED_BRIG_H
 #define INCLUDED_BRIG_H
 
 #include <stdint.h>
+
+enum BrigAuxDefs {
+  MAX_OPERANDS_NUM = 6
+};
+
 //}
 
 typedef uint32_t BrigVersion32_t;
@@ -462,7 +469,8 @@ enum BrigImageQuery {
     BRIG_IMAGE_QUERY_DEPTH = 2,
     BRIG_IMAGE_QUERY_ARRAY = 3,
     BRIG_IMAGE_QUERY_CHANNELORDER = 4,
-    BRIG_IMAGE_QUERY_CHANNELTYPE = 5
+    BRIG_IMAGE_QUERY_CHANNELTYPE = 5,
+    BRIG_IMAGE_QUERY_NUMMIPLEVELS = 6
 };
 
 enum BrigLinkage {
@@ -738,6 +746,12 @@ enum BrigOpcode {
     BRIG_OPCODE_GCNMIN = (1u << 15) | 28,
     BRIG_OPCODE_GCNDIVRELAXED = (1u << 15) | 29,    //.k=BASIC_OR_MOD
     BRIG_OPCODE_GCNDIVRELAXEDNARROW = (1u << 15) | 30,
+
+    BRIG_OPCODE_AMDRDIMAGELOD  = (1u << 15) | 31,    //.k=IMAGE //.mnemo=amd_rdimagelod  //.vecOpndIndex=0
+    BRIG_OPCODE_AMDRDIMAGEGRAD = (1u << 15) | 32,    //.k=IMAGE //.mnemo=amd_rdimagegrad //.vecOpndIndex=0
+    BRIG_OPCODE_AMDLDIMAGEMIP  = (1u << 15) | 33,    //.k=IMAGE //.mnemo=amd_ldimagemip //.vecOpndIndex=0
+    BRIG_OPCODE_AMDSTIMAGEMIP  = (1u << 15) | 34,    //.k=IMAGE //.mnemo=amd_stimagemip //.vecOpndIndex=0 //.numdst=0
+    BRIG_OPCODE_AMDQUERYIMAGE  = (1u << 15) | 35     //.k=QUERY_IMAGE //.mnemo=amd_queryimage
 };
 
 enum BrigPack { 

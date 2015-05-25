@@ -2560,11 +2560,14 @@ sub analyzePropAttrs
 
 sub analyzeAttrs
 {
+    # FIXME: generalize for arbitrary number of operands
+
     analyzePropAttrs('operand0', 'operand', sub { isOperandProp(shift(), 0); });
     analyzePropAttrs('operand1', 'operand', sub { isOperandProp(shift(), 1); });
     analyzePropAttrs('operand2', 'operand', sub { isOperandProp(shift(), 2); });
     analyzePropAttrs('operand3', 'operand', sub { isOperandProp(shift(), 3); });
     analyzePropAttrs('operand4', 'operand', sub { isOperandProp(shift(), 4); });
+    analyzePropAttrs('operand5', 'operand', sub { isOperandProp(shift(), 5); });
 
     analyzePropAttrs('width', 'width', sub { return shift() eq 'width'; });
     analyzePropAttrs('round', 'round', sub { return shift() eq 'round'; });

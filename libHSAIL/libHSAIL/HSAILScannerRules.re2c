@@ -163,6 +163,7 @@ ETokens Scanner::scanModifier(EScanContext ctx, Scanner::Token &t)
     "_array"/EOMOD        { brigId = BRIG_IMAGE_QUERY_ARRAY;        return EMImageQuery; }
     "_channelorder"/EOMOD { brigId = BRIG_IMAGE_QUERY_CHANNELORDER; return EMImageQuery; }
     "_channeltype"/EOMOD  { brigId = BRIG_IMAGE_QUERY_CHANNELTYPE;  return EMImageQuery; }
+    "_nummiplevels"/EOMOD { brigId = BRIG_IMAGE_QUERY_NUMMIPLEVELS; return EMImageQuery; }
     "_width"/EOMOD        { switch(ctx) {
                       case EInstModifierInstQueryContext: brigId = BRIG_IMAGE_QUERY_WIDTH; return EMImageQuery;
                       default:                            brigId = 0;                            return EMWidth;

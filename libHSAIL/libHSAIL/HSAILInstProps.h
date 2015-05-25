@@ -88,6 +88,7 @@ enum // Non-Brig properties
     PROP_S2,
     PROP_S3,
     PROP_S4,
+    PROP_S5,
 
     PROP_OPERAND, //F: should it be removed?
 
@@ -105,6 +106,7 @@ inline bool isOperandProp(unsigned propId)
     case PROP_S2:
     case PROP_S3:
     case PROP_S4:
+    case PROP_S5:
         return true;
     default:
         return false;
@@ -122,6 +124,7 @@ inline unsigned getOperandIdx(unsigned propId)
     case PROP_S2:   return 2;
     case PROP_S3:   return 3;
     case PROP_S4:   return 4;
+    case PROP_S5:   return 5;
     default:
         return (unsigned)-1;
     }
@@ -136,6 +139,7 @@ inline unsigned getSrcOperandId(unsigned idx)
     case 2: return PROP_S2;
     case 3: return PROP_S3;
     case 4: return PROP_S4;
+    case 5: return PROP_S5;
     default:
         return PROP_NONE;
     }
@@ -161,6 +165,7 @@ enum
     OPERAND_ATTR_U64,
     OPERAND_ATTR_S32,
     OPERAND_ATTR_S64,
+    OPERAND_ATTR_F32,
     OPERAND_ATTR_SAMP,
     OPERAND_ATTR_SIG32,
     OPERAND_ATTR_SIG64,

@@ -66,4 +66,8 @@ enum {
 #define EM_HSAIL 0xAF5A
 #endif
 
+#define NT_AMDGPU_HSA_PRODUCER            4
+#define NT_AMDGPU_HSA_PRODUCER_OPTIONS    5
+#define NT_AMDGPU_HSA_HLDEBUG_DEBUG     101
+
 #endif // #ifndef __HSA_DWARF_H_INCLUDED__

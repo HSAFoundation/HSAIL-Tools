@@ -100,6 +100,17 @@ SRef brigSectionNameById(int id)
   }
 }
 
+int BrigContainer::brigSectionIdByName(SRef name)
+{
+  for(unsigned i=0; i < m_sections.size(); ++i) {
+    BrigSectionImpl& s = sectionById(i);
+    std::string sname = s.name();
+    if (name == s.name())
+      return i;
+  }
+  return -1;
+}
+
 
 BrigSectionImpl::BrigSectionImpl(SRef name, class BrigContainer *container)
     : m_container(container)

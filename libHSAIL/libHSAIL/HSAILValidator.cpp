@@ -120,7 +120,7 @@ void PropValidator::validate(Inst inst, int operandIdx, bool cond, SRef msg)
     if (!cond)
     {
         int code = BrigFormatError::ERRCODE_INST;
-        if (0 <= operandIdx && operandIdx <= 4 && inst.operand(operandIdx))
+        if (0 <= operandIdx && operandIdx < MAX_OPERANDS_NUM && inst.operand(operandIdx))
         {
             Operand opr = inst.operand(operandIdx);
             throw BrigFormatError(BRIG_SECTION_INDEX_OPERAND, opr.brigOffset(), msg, code);
@@ -158,6 +158,7 @@ static unsigned getOperandAttr(InstValidator& prop, Inst inst, unsigned operandI
     case 2: return prop.getOperand2Attr(inst);
     case 3: return prop.getOperand3Attr(inst);
     case 4: return prop.getOperand4Attr(inst);
+    case 5: return prop.getOperand5Attr(inst);
     default:
         assert(false);
         return OPERAND_ATTR_INVALID;
@@ -166,7 +167,7 @@ static unsigned getOperandAttr(InstValidator& prop, Inst inst, unsigned operandI
 
 unsigned getOperandType(Inst inst, unsigned operandIdx, unsigned machineModel, unsigned profile)
 {
-    assert(operandIdx < 5);
+    assert(operandIdx < MAX_OPERANDS_NUM);
     assert(machineModel == BRIG_MACHINE_SMALL || machineModel == BRIG_MACHINE_LARGE);
     assert(profile == BRIG_PROFILE_BASE  || profile == BRIG_PROFILE_FULL);
 
@@ -188,7 +189,7 @@ unsigned getOperandType(Inst inst, unsigned operandIdx, unsigned machineModel, u
 // Validate values of instruction fields which affect possible operand types
 static const char* validateOperandDeps(Inst inst, unsigned operandIdx, unsigned machineModel, unsigned profile)
 {
-    assert(operandIdx < 5);
+    assert(operandIdx < MAX_OPERANDS_NUM);
     assert(machineModel == BRIG_MACHINE_SMALL || machineModel == BRIG_MACHINE_LARGE);
 
     InstValidator prop(machineModel, profile);
@@ -230,7 +231,7 @@ static const char* validateOperandDeps(Inst inst, unsigned operandIdx, unsigned 
 
 const char* preValidateInst(Inst inst, unsigned machineModel, unsigned profile)
 {
-    for (unsigned idx = 0; idx < 5; ++idx)
+    for (unsigned idx = 0; idx < MAX_OPERANDS_NUM; ++idx)
     {
         const char* err = validateOperandDeps(inst, idx, machineModel, profile);
         if (err) return err;
@@ -1622,7 +1623,7 @@ private:
         {
             if (Inst inst = code)
             {
-                validate(inst, getOperandsNum(inst) <= 5, "Instruction cannot have more than 5 operands");
+                validate(inst, getOperandsNum(inst) <= MAX_OPERANDS_NUM, "Instruction cannot have more than 6 operands"); //F generalize err msg
 
                 instValidator.validateInst(inst);
 

@@ -41,6 +41,9 @@
 #ifndef __BRIG_DWARF_GENERATOR_H__
 #define __BRIG_DWARF_GENERATOR_H__
 
+#include <string>
+#include <ostream>
+
 namespace HSAIL_ASM
 {
 	class BrigContainer;
@@ -61,8 +64,11 @@ public:
 	virtual ~BrigDwarfGenerator() {}
 
 	static BrigDwarfGenerator * Create( const std::string & producer,
-		                                    const std::string & compilationDirectory,
-											const std::string & fileName );
+                                      const std::string & compilationDirectory,
+                                      const std::string & fileName,
+                                      bool includeSource = false, const std::string& producerOptions = "");
+
+        virtual void log(std::ostream* out) = 0;
 
 	// generate debug info for a BRIG container
 	//
@@ -74,7 +80,6 @@ public:
 
 protected:
 	explicit BrigDwarfGenerator() {}
-
 
 };
 

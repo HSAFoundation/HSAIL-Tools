@@ -136,7 +136,7 @@ bool hasImageExtProps(Inst inst)
         if (i.imageSegmentMemoryScope() != BRIG_MEMORY_SCOPE_NONE) return true;
     }
 
-    for (unsigned i = 0; i < 5; ++i)
+    for (unsigned i = 0; i < MAX_OPERANDS_NUM; ++i)
     {
         if (OperandAddress addr = inst.operand(i))
         {
@@ -335,6 +335,10 @@ bool isImageInst(unsigned opcode)
     case BRIG_OPCODE_RDIMAGE:
     case BRIG_OPCODE_LDIMAGE:
     case BRIG_OPCODE_STIMAGE:
+    case BRIG_OPCODE_AMDRDIMAGELOD:
+    case BRIG_OPCODE_AMDRDIMAGEGRAD:
+    case BRIG_OPCODE_AMDLDIMAGEMIP:
+    case BRIG_OPCODE_AMDSTIMAGEMIP:
     case BRIG_OPCODE_QUERYIMAGE:
     case BRIG_OPCODE_QUERYSAMPLER:
         return true;

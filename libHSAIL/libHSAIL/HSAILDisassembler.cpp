@@ -874,6 +874,10 @@ void Disassembler::print_v(Inst i) const
     case BRIG_OPCODE_RDIMAGE:
     case BRIG_OPCODE_LDIMAGE:
     case BRIG_OPCODE_STIMAGE:
+    case BRIG_OPCODE_AMDRDIMAGELOD:
+    case BRIG_OPCODE_AMDRDIMAGEGRAD:
+    case BRIG_OPCODE_AMDLDIMAGEMIP:
+    case BRIG_OPCODE_AMDSTIMAGEMIP:
     case BRIG_OPCODE_ACTIVELANEMASK:
         print_(v2str(i.operand(0)));
         break;
@@ -894,7 +898,7 @@ void Disassembler::print_width(T inst) const
     }
 }
 
-void Disassembler::printInstArgs(Inst i, int firstArg /*=0*/, int lastArg /*=BRIG_OPERANDS_NUM*/) const
+void Disassembler::printInstArgs(Inst i, int firstArg /*=0*/, int lastArg /*=MAX_OPERANDS_NUM*/) const
 {
     if (i.operands().size() > firstArg)
     {
@@ -979,7 +983,7 @@ void Disassembler::printSbrArgs(Inst i) const
 
 void Disassembler::printInstOperand(Inst inst, unsigned operandIdx) const
 {
-    assert(inst && operandIdx <= 4);
+    assert(inst && operandIdx < MAX_OPERANDS_NUM);
 
     Operand opr = inst.operand(operandIdx);
     assert(opr);
