@@ -66,7 +66,8 @@ public:
 	static BrigDwarfGenerator * Create( const std::string & producer,
                                       const std::string & compilationDirectory,
                                       const std::string & fileName,
-                                      bool includeSource = false, const std::string& producerOptions = "");
+                                      bool includeSource = false, const std::string& source = "",
+                                      const std::string& producerOptions = "");
 
         virtual void log(std::ostream* out) = 0;
 

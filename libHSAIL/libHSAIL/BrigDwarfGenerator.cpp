@@ -233,6 +233,7 @@ public:
                              const std::string & compilationDirectory,
                              const std::string & fileName,
                              bool includeSource,
+                             const std::string& source,
                              const std::string& producerOptions_ );
     virtual ~BrigDwarfGenerator_impl() {}
 
@@ -372,6 +373,7 @@ private:
     bool m_isDwarfLineSetAddressCalled;
 
     bool m_includeSource;
+    std::string m_source;
 
     std::string producerOptions;
 
@@ -383,17 +385,18 @@ BrigDwarfGenerator *
 BrigDwarfGenerator::Create( const std::string & producer,
                             const std::string & compilationDirectory,
                             const std::string & fileName,
-                            bool includeSource,
+                            bool includeSource, const std::string& source,
                             const std::string& producerOptions)
 {
     return new BrigDwarfGenerator_impl( producer, compilationDirectory,
-                                        fileName, includeSource, producerOptions );
+                                        fileName, includeSource, source, producerOptions );
 }
 
 BrigDwarfGenerator_impl::BrigDwarfGenerator_impl( const std::string & producer,
                                                   const std::string & compilationDirectory,
                                                   const std::string & fileName,
                                                   bool includeSource,
+                                                  const std::string& source,
                                                   const std::string& producerOptions_ ) :
     m_pDwarfDebug( 0 ),
     m_pCompileUnit( 0 ),
@@ -406,6 +409,7 @@ BrigDwarfGenerator_impl::BrigDwarfGenerator_impl( const std::string & producer,
     m_pElf( 0 ), m_pElfHeader( 0 ), m_elfFd( -1 ),
     m_isDwarfLineSetAddressCalled(false),
     m_includeSource(includeSource),
+    m_source(source),
     producerOptions(producerOptions_),
     out(&std::cout)
 {
@@ -1192,10 +1196,9 @@ void BrigDwarfGenerator_impl::createDwarfElfSections( HSAIL_ASM::BrigContainer &
         Elf_Data *d = elf_newdata(s);
         assert(d);
         std::string sn = ".source";
-        HSAIL_ASM::BrigSectionImpl& sec = c.sectionById(c.brigSectionIdByName("source"));
 
-        d->d_buf = sec.getData(0);
-        d->d_size = sec.secHeader()->byteCount;
+        d->d_buf = const_cast<char *>(m_source.c_str());
+        d->d_size = m_source.length();
         d->d_type =  ELF_T_BYTE;
         d->d_off = 0;
         d->d_align = 2;

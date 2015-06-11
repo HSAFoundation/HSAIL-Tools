@@ -567,11 +567,16 @@ void Parser::parseSource(bool saveSource)
     } while (peek().kind()!=EEndOfSource);
 
     if (saveSource) {
-        std::unique_ptr<BrigSectionImpl> sec(new BrigSectionRaw(SRef("source")));
-        SRef const t = m_scanner.getPlainText();
-        sec->insertData(sec->secHeader()->headerByteCount, t.begin, t.end);
-        m_bw.container().addSection(std::move(sec));
+        saveSourceToContainer();
     }
+}
+
+void Parser::saveSourceToContainer()
+{
+    std::unique_ptr<BrigSectionImpl> sec(new BrigSectionRaw(SRef("source")));
+    SRef const t = m_scanner.getPlainText();
+    sec->insertData(sec->secHeader()->headerByteCount, t.begin, t.end);
+    m_bw.container().addSection(std::move(sec));
 }
 
 void Parser::parseProgram()

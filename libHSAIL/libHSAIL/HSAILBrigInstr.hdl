@@ -2634,40 +2634,37 @@ Inst gcnb4xchg (Basic, gcn.misc, gcn_b4xchg)
 Inst gcnb32xchg(Basic, gcn.misc, gcn_b4xchg)
 
 // ============================================================================
-// MIPMAP extension
+// GCN MIPMAP Images
 
-Req amd.rdimagelod
+Req gcn.rdimagelod
 {
     rdimage.basic;
 
-    { geometry = 1d       ? d0 = vec.4; s3 = (reg, imm).ctype; s4 = (reg, imm).f32; }
-    { geometry = 2d, 1da  ? d0 = vec.4; s3 = vec.2.ctype     ; s4 = (reg, imm).f32; }
-    { geometry = 3d, 2da  ? d0 = vec.4; s3 = vec.3.ctype     ; s4 = (reg, imm).f32; }
-    { geometry = 2ddepth  ? d0 = reg;   s3 = vec.2.ctype     ; s4 = (reg, imm).f32; }
-    { geometry = 2dadepth ? d0 = reg;   s3 = vec.3.ctype     ; s4 = (reg, imm).f32; }
+    { geometry = 1d       ? d0 = vec.4; s3 = (reg, imm).ctype; s4 = (reg, imm).f32 }
+    { geometry = 2d, 1da  ? d0 = vec.4; s3 = vec.2.ctype     ; s4 = (reg, imm).f32 }
+    { geometry = 3d, 2da  ? d0 = vec.4; s3 = vec.3.ctype     ; s4 = (reg, imm).f32 }
+    { geometry = 2ddepth  ? d0 = reg;   s3 = vec.2.ctype     ; s4 = (reg, imm).f32 }
+    { geometry = 2dadepth ? d0 = reg;   s3 = vec.3.ctype     ; s4 = (reg, imm).f32 }
     ;
+
     s5 = null;
 }
-Inst amdrdimagelod(Image, image, amd.rdimagelod)
 
-Req amd.rdimagegrad
+Req gcn.rdimagegrad
 {
     rdimage.basic;
 
-    { geometry = 1d   ? d0 = vec.4; s3 = (reg, imm).ctype; s4 = (reg, imm).f32; s5 = (reg, imm).f32; }
-    { geometry = 1da  ? d0 = vec.4; s3 = vec.2.ctype     ; s4 = (reg, imm).f32; s5 = (reg, imm).f32; }
-
-    { geometry = 2d   ? d0 = vec.4; s3 = vec.2.ctype     ; s4 = vec.2.f32; s5 = vec.2.f32; }
-    { geometry = 2da  ? d0 = vec.4; s3 = vec.3.ctype     ; s4 = vec.2.f32; s5 = vec.2.f32; }
-    { geometry = 2ddepth  ? d0 = reg;   s3 = vec.2.ctype ; s4 = vec.2.f32; s5 = vec.2.f32; }
-    { geometry = 2dadepth ? d0 = reg;   s3 = vec.3.ctype ; s4 = vec.2.f32; s5 = vec.2.f32; }
-
-    { geometry = 3d   ? d0 = vec.4; s3 = vec.3.ctype     ; s4 = vec.3.f32; s5 = vec.3.f32; }
+    { geometry = 1d       ? d0 = vec.4; s3 = (reg, imm).ctype; s4 = (reg, imm).f32; s5 = (reg, imm).f32 }
+    { geometry = 1da      ? d0 = vec.4; s3 = vec.2.ctype;      s4 = (reg, imm).f32; s5 = (reg, imm).f32 }
+    { geometry = 2d       ? d0 = vec.4; s3 = vec.2.ctype;      s4 = vec.2.f32;      s5 = vec.2.f32      }
+    { geometry = 2da      ? d0 = vec.4; s3 = vec.3.ctype;      s4 = vec.2.f32;      s5 = vec.2.f32      }
+    { geometry = 2ddepth  ? d0 = reg;   s3 = vec.2.ctype;      s4 = vec.2.f32;      s5 = vec.2.f32      }
+    { geometry = 2dadepth ? d0 = reg;   s3 = vec.3.ctype;      s4 = vec.2.f32;      s5 = vec.2.f32      }
+    { geometry = 3d       ? d0 = vec.4; s3 = vec.3.ctype;      s4 = vec.3.f32;      s5 = vec.3.f32      }
     ;
 }
-Inst amdrdimagegrad(Image, image, amd.rdimagegrad)
 
-Req amd.ldimage
+Req gcn.ldimage
 {
     ld.image.base;
     s1 = reg.itype;
@@ -2675,9 +2672,8 @@ Req amd.ldimage
     s4 = null;
     s5 = null;
 }
-Inst amdldimagemip(Image, image, amd.ldimage)
 
-Req amd.stimage
+Req gcn.stimage
 {
     st.image.base;
     s1 = reg.itype;
@@ -2685,17 +2681,13 @@ Req amd.stimage
     s4 = null;
     s5 = null;
 }
-Inst amdstimagemip(Image, image, amd.stimage)
 
-Req amd.queryimage
+Req gcn.queryimage
 {
     type     = u32;
     itype    = roimg, rwimg, woimg;
-    geometry = any;
-    iprop    = any;
-
-    { iprop = nummiplevels                     ? geometry = 1d, 1da, 2d, 2da, 3d }
-    ;
+    geometry = 1d, 1da, 2d, 2da, 3d;
+    iprop    = nummiplevels;
 
     d0 = reg;
     s1 = reg.itype;
@@ -2704,8 +2696,12 @@ Req amd.queryimage
     s4 = null;
     s5 = null;
 }
-Inst amdqueryimage(Query.Image,  image, amd.queryimage)
 
+Inst amdrdimagelod (Image,       gcn.image, gcn.rdimagelod)
+Inst amdrdimagegrad(Image,       gcn.image, gcn.rdimagegrad)
+Inst amdldimagemip (Image,       gcn.image, gcn.ldimage)
+Inst amdstimagemip (Image,       gcn.image, gcn.stimage)
+Inst amdqueryimage (Query.Image, gcn.image, gcn.queryimage)
 
 // ============================================================================
 //F: add all checks currently implemented in validator

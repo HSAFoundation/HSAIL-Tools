@@ -118,10 +118,10 @@ unsigned Tool::findCodeModuleSymbolOffset(const char *symbol_name) const
 bool Tool::assembleFromStream(std::istream& is, const std::string& opts, const std::string& sourceDir, const std::string& sourceFileName)
 {
     if (!parseOptions(opts)) { return false; }
+    Scanner s(is, true);
+    Parser p(s, *m_container);
     try {
-        Scanner s(is, true);
-        Parser p(s, *m_container);
-        p.parseSource(IncludeSource);
+        p.parseSource();
     } catch (const SyntaxError& e) {
         e.print(out, is);
         out << std::endl;
@@ -144,17 +144,21 @@ bool Tool::assembleFromStream(std::istream& is, const std::string& opts, const s
         std::string srcDir = sourceDir, srcFileName = sourceFileName;
         if (srcDir.empty()) { srcDir = "<unknown source dir>"; }
         if (srcFileName.empty()) { srcFileName = "<unknown source file>"; }
+        std::string source(s.getPlainText());
         std::unique_ptr<BrigDebug::BrigDwarfGenerator> pBdig(
             BrigDebug::BrigDwarfGenerator::Create(ssVersion.str(),
                                                    srcDir,
                                                    srcFileName,
-                                                   IncludeSource, opts));
+                                                   IncludeSource, source, opts));
         pBdig->log(&out);
         if (!pBdig->generate(*m_container)) { return false; }
         if (!pBdig->storeInBrig(*m_container)) { return false; }
         if (!DebugInfoFilename.empty()) { dumpDebugInfoToFile(DebugInfoFilename); }
     }
 #endif
+    if (IncludeSource) {
+      p.saveSourceToContainer();
+    }
     return true;
 }
 

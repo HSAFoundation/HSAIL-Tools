@@ -194,7 +194,7 @@ public:
         m_buffer.reserve(numBytes);
     }
 
-    SRef name() {
+    SRef name() const {
       return SRef((const char*)secHeader()->name, (const char*)secHeader()->name + secHeader()->nameLength);
     }
 
@@ -522,24 +522,32 @@ public:
     DataSection&               strings();
     CodeSection&               code();
     OperandSection&            operands();
-    BrigSectionRaw&            debugInfo();
 
     const DataSection&         strings()     const;
     const CodeSection&         code()        const;
     const OperandSection&      operands()    const;
-    const BrigSectionRaw&      debugInfo()   const;
+
+    template<typename Sec>
+    Sec& brigSectionById(int id) {
+      return static_cast<Sec&>(*m_sections[id]);
+    }
+
+    template<typename Sec>
+    const Sec& brigSectionById(int id) const {
+      return static_cast<const Sec&>(*m_sections[id]);
+    }
 
     BrigSectionImpl&           sectionById(int id) {
-        return *m_sections[id];
+        return brigSectionById<BrigSectionImpl>(id);
     }
 
     const BrigSectionImpl&     sectionById(int id) const {
-        return *m_sections[id];
+        return brigSectionById<BrigSectionImpl>(id);
     }
 
     int addSection(std::unique_ptr<BrigSectionImpl>&&);
 
-    int brigSectionIdByName(SRef name);
+    int brigSectionIdByName(SRef name) const;
 
     // Append a default-initialized item (i.e. an instruction, operand, directive or debug info) to
     // a corresponding section of this container, and return the appropriate item proxy.
@@ -600,43 +608,27 @@ bool readContainer(ReadAdapter& r, BrigContainer& c, bool writeable=false);
 
 // non-const
 inline DataSection& BrigContainer::strings()  {
-    return static_cast<DataSection&>(
-        sectionById(BRIG_SECTION_INDEX_DATA));
+    return brigSectionById<DataSection>(BRIG_SECTION_INDEX_DATA);
 }
 
 inline CodeSection& BrigContainer::code() {
-    return static_cast<CodeSection&>(
-        sectionById(BRIG_SECTION_INDEX_CODE));
+    return brigSectionById<CodeSection>(BRIG_SECTION_INDEX_CODE);
 }
 inline OperandSection& BrigContainer::operands() {
-    return static_cast<OperandSection&>(
-        sectionById(BRIG_SECTION_INDEX_OPERAND));
-}
-
-inline BrigSectionRaw& BrigContainer::debugInfo() {
-    return static_cast<BrigSectionRaw&>(
-        sectionById(BRIG_SECTION_INDEX_IMPLEMENTATION_DEFINED));
+    return brigSectionById<OperandSection>(BRIG_SECTION_INDEX_OPERAND);
 }
 
 // const
 inline const DataSection& BrigContainer::strings() const {
-    return static_cast<const DataSection&>(
-        sectionById(BRIG_SECTION_INDEX_DATA));
+    return brigSectionById<DataSection>(BRIG_SECTION_INDEX_DATA);
 }
 
 inline const CodeSection& BrigContainer::code() const {
-    return static_cast<const CodeSection&>(
-        sectionById(BRIG_SECTION_INDEX_CODE));
+    return brigSectionById<CodeSection>(BRIG_SECTION_INDEX_CODE);
 }
 
 inline const OperandSection& BrigContainer::operands() const {
-    return static_cast<const OperandSection&>(
-        sectionById(BRIG_SECTION_INDEX_OPERAND));
-}
-
-inline const BrigSectionRaw& BrigContainer::debugInfo() const {
-    return static_cast<const BrigSectionRaw&>(
-        sectionById(BRIG_SECTION_INDEX_IMPLEMENTATION_DEFINED));
+    return brigSectionById<OperandSection>(BRIG_SECTION_INDEX_OPERAND);
 }
 
 } // namespace HSAIL_ASM

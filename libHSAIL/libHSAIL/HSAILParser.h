@@ -61,6 +61,7 @@ public:
     Parser(Scanner& scanner, BrigContainer& container);
 
     void parseSource(bool saveSource=false);
+    void saveSourceToContainer();
 
 private:
     enum ImmKind {
