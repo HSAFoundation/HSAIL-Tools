@@ -93,6 +93,18 @@ void Tool::clearOutput() { out.str(""); }
 
 BrigModule_t Tool::brigModule() { return m_container->getBrigModule(); }
 
+bool Tool::getModuleInfo(BrigMachineModel8_t* machine_model, BrigProfile8_t* profile, BrigRound8_t* default_round_mode)
+{
+  HSAIL_ASM::Code start = m_container->code().begin();
+  assert(start.kind() == BRIG_KIND_DIRECTIVE_MODULE);
+
+  HSAIL_ASM::DirectiveModule mod = start;
+  *machine_model = mod.machineModel().enumValue();
+  *profile = mod.profile().enumValue();
+  *default_round_mode = mod.defaultFloatRound().enumValue();
+  return true;
+}
+
 unsigned Tool::numSections() const { return m_container->getNumSections(); }
 
 const char *Tool::sectionBytesById(int section_id) const { return m_container->sectionById(section_id).data().begin; }

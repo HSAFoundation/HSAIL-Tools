@@ -46,6 +46,7 @@
 #include <istream>
 #include <sstream>
 #include <memory>
+#include "Brig.h"
 
 struct BrigModuleHeader;
 typedef BrigModuleHeader* BrigModule_t;
@@ -100,6 +101,7 @@ public:
     std::string outputString() const;
     void clearOutput();
 
+    bool getModuleInfo(BrigMachineModel8_t* machine_model, BrigProfile8_t* profile, BrigRound8_t* default_round_mode);
     unsigned numSections() const;
     const char *sectionBytesById(int section_id) const;
     size_t sectionSizeById(int section_id) const;
