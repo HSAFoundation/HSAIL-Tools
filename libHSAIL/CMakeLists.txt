@@ -48,13 +48,13 @@ if(UNIX)
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -std=c++11 -pthread -D __STDC_LIMIT_MACROS -D __STDC_CONSTANT_MACROS  -D __STDC_FORMAT_MACROS -fno-rtti -fvisibility-inlines-hidden")
 endif()
 
-add_subdirectory(libHSAIL)
-
-# FIXME: We should check for a usable version of libelf / libdwarf.
 if(BUILD_LIBBRIGDWARF)
   add_definitions(-DWITH_LIBBRIGDWARF=1)
 endif()
 
+add_subdirectory(libHSAIL)
+
+# FIXME: We should check for a usable version of libelf / libdwarf.
 if(BUILD_HSAILASM)
   add_subdirectory(HSAILAsm)
 endif()
