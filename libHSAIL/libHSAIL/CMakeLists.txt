@@ -115,7 +115,7 @@ add_library(hsail ${libhsail_srcs} ${libhsail_public_headers} ${libbrigdwarf_src
 add_dependencies(hsail libhsail-includes)
 
 if(UNIX)
-  target_link_libraries(hsail dl)
+  target_link_libraries(hsail dl tinfo)
 endif()
 
 install(TARGETS hsail
