@@ -4,6 +4,12 @@ if(UNIX)
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fpic")
 endif()
 
+find_package(LibElf)
+
+if(LIBELF_FOUND)
+  find_package(LibDwarf)
+endif()
+
 set(libhsail_public_headers
   Brig.h
   HSAILBrigContainer.h
@@ -114,8 +120,13 @@ add_custom_target(libhsail-includes ALL DEPENDS ${generated_srcs})
 add_library(hsail ${libhsail_srcs} ${libhsail_public_headers} ${libbrigdwarf_srcs} ${generated_headers})
 add_dependencies(hsail libhsail-includes)
 
+target_include_directories(hsail PUBLIC ${CMAKE_CURRENT_SOURCE_DIR} ${generated_dir})
+
 if(UNIX)
   target_link_libraries(hsail dl tinfo)
+endif()
+if(BUILD_LIBBRIGDWARF)
+  target_link_libraries(hsail dwarf)
 endif()
 
 install(TARGETS hsail
