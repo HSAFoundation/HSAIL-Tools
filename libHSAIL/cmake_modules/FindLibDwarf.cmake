@@ -7,10 +7,12 @@
 #  LIBDWARF_DEFINITIONS - Compiler switches required for using libdwarf
 #
 
+if(LIBDWARF_FOUND)
+  return()
+endif(LIBDWARF_FOUND)
+
 # Locate libelf library at first
-if (NOT LIBELF_FOUND)
-   find_package (LibElf REQUIRED)
-endif (NOT LIBELF_FOUND)
+find_package (LibElf REQUIRED)
 
 if (LIBDWARF_LIBRARIES AND LIBDWARF_INCLUDE_DIRS)
   set (LibDwarf_FIND_QUIETLY TRUE)
@@ -98,17 +100,23 @@ if (LIBDWARF_LIBRARIES AND LIBDWARF_INCLUDE_DIRS)
   CHECK_LIBDWARF_INIT("dwarf_producer_init_c" "0, dwarfCallback, nullptr, nullptr, nullptr, nullptr" 1)
 endif()
 
-if(LIBDWARF_CONST_NAME)
-  message(STATUS "libdwarf uses const char* type")
-else()
-  message(STATUS "libdwarf uses char* type")
-endif()
-if(LIBDWARF_USE_INIT_C)
-  message(STATUS "libdwarf has dwarf_producer_init_c")
-else()
-  message(STATUS "libdwarf does not have dwarf_producer_init_c, using dwarf_producer_init")
-endif()
-
 mark_as_advanced(LIBDW_INCLUDE_DIR DWARF_INCLUDE_DIR)
 mark_as_advanced(LIBDWARF_INCLUDE_DIRS LIBDWARF_LIBRARIES)
 mark_as_advanced(LIBDWARF_CONST_NAME LIBDWARF_USE_INIT_C)
+
+if(LIBDWARF_FOUND)
+  if(LIBDWARF_CONST_NAME)
+    message(STATUS "libdwarf uses const char* type")
+  else()
+    message(STATUS "libdwarf uses char* type")
+  endif()
+  if(LIBDWARF_USE_INIT_C)
+    message(STATUS "libdwarf has dwarf_producer_init_c")
+  else()
+    message(STATUS "libdwarf does not have dwarf_producer_init_c, using dwarf_producer_init")
+  endif()
+
+  add_library(dwarf UNKNOWN IMPORTED)
+  set_property(TARGET dwarf PROPERTY IMPORTED_LOCATION ${LIBDWARF_LIBRARIES})
+  set_property(TARGET dwarf PROPERTY INTERFACE_INCLUDE_DIRECTORIES ${LIBDWARF_INCLUDE_DIRS})
+endif()
