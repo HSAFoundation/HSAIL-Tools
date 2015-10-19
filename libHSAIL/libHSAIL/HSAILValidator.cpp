@@ -46,6 +46,7 @@
 #include "HSAILScanner.h" // using SyntaxError utilities
 #include "HSAILItems.h"
 #include "HSAILUtilities.h"
+#include "HSAILDump.h"
 #include "Brig.h"
 
 #include <ctype.h>
@@ -902,7 +903,7 @@ public:
         else
         {
             validate(d, isProgLinkage(d) || isModuleLinkage(d), "Module scope variables and fbarriers must have program or module linkage");
-            
+
             if (isVar(d) && isArray(d) && getArraySize(d) == 0) // Formal arguments and scoped definitions are validated elsewhere
             {
                 validate(d, isDecl(d), "Module scope array without specified size may only be a declaration");
@@ -1513,6 +1514,12 @@ public:
         }
     }
 
+    void dumpError(ostream* os) const {
+        if (err.empty()) return;
+        HSAIL_ASM::dumpItem(*os, err.getOffset(),
+            &brig.sectionById(err.getSection()), static_cast<BrigSectionIndex>(err.getSection()));
+    }
+
     int getErrorCode() const { return err.empty()? 0 : err.getErrCode(); }
 
 private:
@@ -1591,7 +1598,7 @@ private:
         validate(v, minor         <= BRIG_VERSION_HSAIL_MINOR, "Unsupported minor HSAIL version");
 
         validate(v, v.defaultFloatRound() == BRIG_ROUND_FLOAT_DEFAULT ||
-                    v.defaultFloatRound() == BRIG_ROUND_FLOAT_NEAR_EVEN || 
+                    v.defaultFloatRound() == BRIG_ROUND_FLOAT_NEAR_EVEN ||
                     v.defaultFloatRound() == BRIG_ROUND_FLOAT_ZERO,
                     "Invalid default rounding value");
     }
@@ -2029,8 +2036,8 @@ private:
 
                 validateOperand(imm); // may not be validated yet
 
-                validate(imm, imm.type() == type, 
-                         string("Control directive has invalid type of immediate operand (") + 
+                validate(imm, imm.type() == type,
+                         string("Control directive has invalid type of immediate operand (") +
                          type2name(imm.type()) + "); expected " + type2name(type));
 
                 uint64_t val = (type == BRIG_TYPE_U32)? getImmAsU32(imm) : getImmAsU64(imm);
@@ -2173,7 +2180,7 @@ private:
         validate(list, list.elementCount() > 0, "Empty list of labels");
 
         // directive size must be large enough to hold all array elements
-        uint64_t available = list.brig()->size - offsetof(BrigStruct, labels); 
+        uint64_t available = list.brig()->size - offsetof(BrigStruct, labels);
         uint64_t size = sizeof(Offset) * (uint64_t)list.elementCount(); // u64 to avoid overflow
 
         validate(list, size <= available, "Invalid DirectiveLabelList size");
@@ -2266,7 +2273,7 @@ private:
         validate(addr, addr.offset() < memSize, "Address offset exceeds variable size");
 
         validate(addr, addr.offset() < addr.offset() + accessSize && // check that no overflow occurs
-                       addr.offset() + accessSize <= memSize, 
+                       addr.offset() + accessSize <= memSize,
                        "Address is outside of memory allocated for variable");
     }
 
@@ -2298,7 +2305,7 @@ private:
         // This is a low-level check to make sure that operand refers a DirectiveVariable
         if (addr.brig()->symbol) validate(addr, isDirectiveKind<DirectiveVariable>(addr.symbol()), "Invalid symbol reference");
 
-        if (addr.brig()->reg) 
+        if (addr.brig()->reg)
         {
             // This is a low-level check to make sure that operand refers an OperandRegister
             validate(addr, isOperandKind<OperandRegister>(addr.reg()), "Invalid register reference");
@@ -2314,7 +2321,7 @@ private:
                      "Malformed address: segment size does not match register size");
         }
 
-        if (addr.reg()) validate(addr, addrSize == getRegBits(addr.reg().regKind()), 
+        if (addr.reg()) validate(addr, addrSize == getRegBits(addr.reg().regKind()),
                                  "Malformed address: register size does not match segment size");
     }
 
@@ -2329,7 +2336,7 @@ private:
                       "Invalid type of OperandConstantOperandList");
 
         unsigned length = opr.elements().size();
-    
+
         if (type == BRIG_TYPE_NONE) // Aggregate
         {
             validate(opr, length != 0, "An aggregate constant must include at least one element");
@@ -2352,7 +2359,7 @@ private:
         {
             unsigned elementType = arrayType2elementType(type);
 
-            validate(opr, opr.elements().size() > 0, 
+            validate(opr, opr.elements().size() > 0,
                           isImageType(elementType)?
                           "An image array constant must include at least one element":
                           "A sampler array constant must include at least one element");
@@ -2651,12 +2658,12 @@ private:
 
         uint64_t dim = getArraySize(sym);
         unsigned expectedType = type2immType(sym.elementType(), sym.isArray());
-        
+
         validateInitializerType<OperandConstantBytes>(sym.init(), expectedType);
 
         OperandConstantBytes init = sym.init();
         assert(init);
-        
+
         validateOperand(init); // may not be validated yet
 
         SRef data = init.bytes();
@@ -2678,13 +2685,13 @@ private:
 
         validateOperand(init); // may not be validated yet
 
-        uint64_t dim      = getArraySize(sym);        
+        uint64_t dim      = getArraySize(sym);
         unsigned elemSize = getBrigTypeNumBytes(sym.elementType());
 
         assert(dim <= dim * elemSize); // Overflow is not possible (this is validated on previous steps)
 
         uint64_t aggregateSize = getAggregateNumBytes(init);
-    
+
         validate(init, aggregateSize != 0, "An aggregate constant cannot consist of only alignment request elements");
         validate(init, (aggregateSize % elemSize) == 0, "Invalid initializer size, must be a multiple of array element type size");
         validate(init, dim * elemSize == aggregateSize, "Initializer size does not match array size");
@@ -2695,7 +2702,7 @@ private:
         assert(opr);
 
         T init = opr;
-         
+
         if (!init || init.type() != expectedType)
         {
             ostringstream s;
@@ -3012,8 +3019,8 @@ private:
 
     template<class T> void validate_BrigRound(T item, unsigned val, const char* structName, const char* fieldName) const
     {
-        validate(item, val == BRIG_ROUND_NONE || 
-                       val == BRIG_ROUND_FLOAT_DEFAULT || 
+        validate(item, val == BRIG_ROUND_NONE ||
+                       val == BRIG_ROUND_FLOAT_DEFAULT ||
                        round2str(val) != NULL, "Invalid rounding value", val);
     }
 
@@ -3433,6 +3440,7 @@ Validator::~Validator()                { delete impl; }
 
 bool   Validator::validate(bool disasmOnError /*= false*/) const { return impl->validate(disasmOnError); }
 string Validator::getErrorMsg(istream *is)                 const { return impl->getErrorMsg(is); }
+void   Validator::dumpError(ostream* os)                   const { impl->dumpError(os); }
 int    Validator::getErrorCode()                           const { return impl->getErrorCode(); }
 
 // ============================================================================

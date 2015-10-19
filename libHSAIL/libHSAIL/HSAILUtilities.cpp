@@ -45,6 +45,7 @@
 
 #include <cassert>
 #include <sstream>
+#include <algorithm>
 
 using std::ostringstream;
 using HSAIL_PROPS::isTypeProp;

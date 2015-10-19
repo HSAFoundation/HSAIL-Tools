@@ -415,6 +415,8 @@ public:
 typedef BrigSection<Code,     BRIG_SECTION_INDEX_CODE>                   CodeSection;
 typedef BrigSection<Operand,  BRIG_SECTION_INDEX_OPERAND>                OperandSection;
 
+class DataSectionIterator;
+
 class DataSection : public BrigSectionImpl
 {
     enum {
@@ -460,7 +462,45 @@ public:
         m_stringSet.clear();
     }
 
+    DataSectionIterator begin() const;
+    DataSectionIterator end() const;
+
     const static size_t maxStringLen = UINT_MAX;
+};
+
+class DataSectionIterator : public std::iterator<std::input_iterator_tag, SRef> {
+private:
+    Offset m_offset;
+    const DataSection* m_section;
+
+public:
+    DataSectionIterator(const DataSection* section, Offset offset)
+        : m_offset(offset), m_section(section) {}
+
+    bool operator ==(const DataSectionIterator& other) const { return m_offset == other.m_offset; }
+    bool operator !=(const DataSectionIterator& other) const { return m_offset != other.m_offset; }
+    SRef operator *() const { return m_section->getString(m_offset); }
+    SRef operator ->() const { return m_section->getString(m_offset); }
+
+    DataSectionIterator& operator ++() {
+        const BrigData* s = m_section->getData<const BrigData>(m_offset);
+        m_offset += static_cast<Offset>(sizeof(s->byteCount) + HSAIL_ASM::align(s->byteCount, 4));
+        return *this;
+    }
+
+    DataSectionIterator operator ++(int) {
+        DataSectionIterator old = *this;
+        ++(*this);
+        return old;
+    }
+
+    Offset offset() const {
+        return m_offset;
+    }
+
+    const DataSection* section() const {
+        return m_section;
+    }
 };
 
 template<int id>

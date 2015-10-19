@@ -1207,7 +1207,7 @@ void BrigDwarfGenerator_impl::createDwarfElfSections( HSAIL_ASM::BrigContainer &
         Elf32_Shdr *h = elf32_getshdr(s);
         assert(h);
         h->sh_name = m_sectionHeaderTable.addHeaderName(sn.c_str());
-        h->sh_type = SHT_NOTE;
+        h->sh_type = SHT_PROGBITS;
         h->sh_flags  = 0;
         h->sh_addr   = 0;
         h->sh_offset = 0;

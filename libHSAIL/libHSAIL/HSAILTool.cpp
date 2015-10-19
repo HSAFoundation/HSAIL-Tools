@@ -53,6 +53,7 @@
 #include "HSAILParser.h"
 #include "HSAILDisassembler.h"
 #include "HSAILValidator.h"
+#include "HSAILDump.h"
 #ifdef WITH_LIBBRIGDWARF
 #include "BrigDwarfGenerator.h"
 #endif
@@ -257,6 +258,17 @@ bool Tool::validate()
     return true;
 }
 
+bool Tool::decodeToFile(const std::string& filename)
+{
+    std::ofstream ofs(filename);
+    if (!ofs.is_open() || ofs.bad()) {
+        out << "Error: Failed to dump BRIG to " << filename << std::endl;
+        return false;
+    }
+    dump(*m_container, ofs);
+    return true;
+}
+
 bool Tool::printToolVersion()
 {
     out << "HSAIL Assembler and Disassembler." << std::endl;
@@ -273,12 +285,13 @@ bool Tool::printToolHelp()
   out <<
     "HSAIL Assembler and Disassembler." << std::endl <<
     std::endl <<
-    "Usage: HSAILAsm [-assemble|-disassemble|-version|-help] [options] [input file]" << std::endl <<
+    "Usage: HSAILAsm [-assemble|-disassemble|-decode|-version|-help] [options] [input file]" << std::endl <<
     std::endl <<
     "Action to perform:" << std::endl <<
     "  -assemble          - Assemble a .hsail file (default)" << std::endl <<
     "  -disassemble       - Disassemble an .brig file" << std::endl <<
     "  -version           - Display version information" << std::endl <<
+    "  -decode            - Decode contents of .brig file in YAML format" << std::endl <<
     "  -help              - Display this help" << std::endl <<
     std::endl <<
     "Options:" << std::endl <<
@@ -381,6 +394,7 @@ bool Tool::parseOptions(const std::string& opts, bool execute)
         else if (execute && opt == "-assemble") { action = ASSEMBLE; }
         else if (execute && opt == "-disassemble") { action = DISASSEMBLE; }
         else if (execute && opt == "-validate") { action = VALIDATE; }
+        else if (execute && opt == "-decode") { action = DECODE; }
         else if (execute && opt == "-o") { if (!(iss >> OutputFilename)) { out << "Error: Expected output file name after -o" << std::endl; return false; } }
         else if (opt == "-bif32") { FileFormat = FILE_FORMAT_BIF | FILE_FORMAT_ELF32; }
         else if (opt == "-bif64") { FileFormat = FILE_FORMAT_BIF | FILE_FORMAT_ELF64; }
@@ -412,6 +426,8 @@ const char *Tool::outputExt() const
       return (FileFormat == FILE_FORMAT_BRIG) ? ".brig" : ".bif";
     case DISASSEMBLE:
       return ".hsail";
+    case DECODE:
+      return ".yaml";
     default:
       assert(false);
       return "<invalidext>";
@@ -472,6 +488,10 @@ bool Tool::execute(const std::string& opts)
               break;
             case VALIDATE:
               result = loadFromFile(InputFilename) && validate();
+              break;
+            case DECODE:
+              if (InputFilename.empty()) { out << "Error: No input file specified." << std::endl; result = false; break; }
+              result = loadFromFile(InputFilename) && decodeToFile(outputFilename());
               break;
             case NOACTION:
               out << "Error: No action specified (-help for help)." << std::endl;

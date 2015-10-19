@@ -148,8 +148,6 @@ typedef uint32_t BrigExceptions32_t;
 
 enum BrigKind {
 
-    //.nollvm
-    //
     //.wname={ s/^BRIG_KIND//; MACRO2Name($_) }
     //.mnemo=$wname{ $wname }
     //
@@ -497,7 +495,7 @@ enum BrigMachineModel {
     BRIG_MACHINE_UNDEF = 2 //.skip
 };
 
-enum BrigMemoryModifierMask { //.tddef=0
+enum BrigMemoryModifierMask {
     BRIG_MEMORY_CONST = 1
 };
 
@@ -1116,8 +1114,6 @@ enum BrigVariableModifierMask {
 
 enum BrigWidth { 
     
-    //.tddef=1
-    //
     //.print={ s/^BRIG_WIDTH_//; "_width($_)" }
 
     BRIG_WIDTH_NONE = 0,

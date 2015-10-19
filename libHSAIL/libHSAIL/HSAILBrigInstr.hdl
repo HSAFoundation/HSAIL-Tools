@@ -2337,7 +2337,7 @@ Inst gcndivrelaxednarrow(Basic, gcn.arithmetic, gcn_div_relaxed_narrow)
 
 Req gcn_fldexp
 {
-    type  = f(32, 64);
+    type  = f(16, 32, 64);
     pack  = none;
     round = none; // Implementation should always round to near.
     ftz   = any;
@@ -2352,7 +2352,7 @@ Req gcn_fldexp
 
 Req gcn_frexp_exp
 {
-    type  = f(32, 64);
+    type  = f(16, 32, 64);
     pack  = none;
     round = none; // No rounding implied.
     ftz   = any;
@@ -2367,7 +2367,7 @@ Req gcn_frexp_exp
 
 Req gcn_frexp_mant
 {
-    type  = f(32, 64);
+    type  = f(16, 32, 64);
     pack  = none;
     round = none; // No rounding implied.
     ftz   = any;
@@ -2558,7 +2558,7 @@ Req gcn_qsad
 
     d0 = reg;
     s1 = reg, imm;
-    s2 = reg, imm;
+    s2 = (reg, imm).b32;
     s3 = reg, imm;
     s4 = null;
     s5 = null;

@@ -330,6 +330,11 @@ public:
       assert(numBytes <= 8);
       return createImmed(SRef((const char*)&v, (const char*)&v + numBytes), type, srcInfo);
     }
+    OperandConstantBytes createImmed(f16_t    v, BrigType16_t type, const SourceInfo* srcInfo=NULL) {
+      int numBytes = getBrigTypeNumBytes(type);
+      assert(numBytes == 2);
+      return createImmed(SRef((const char*)&v, (const char*)&v + sizeof(f16_t)), type, srcInfo);
+    }
     OperandConstantBytes createImmed(f32_t    v, BrigType16_t type, const SourceInfo* srcInfo=NULL) {
       int numBytes = getBrigTypeNumBytes(type);
       assert(numBytes == 4);

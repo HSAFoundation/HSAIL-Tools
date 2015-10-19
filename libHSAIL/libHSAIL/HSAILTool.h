@@ -63,6 +63,7 @@ enum Action {
     ASSEMBLE,
     DISASSEMBLE,
     VALIDATE,
+    DECODE,
 };
 
 /*
@@ -120,6 +121,8 @@ public:
     bool saveToFile(const std::string& filename);
 
     bool validate();
+
+    bool decodeToFile(const std::string& filename);
 
     bool printToolVersion();
     bool printToolHelp();

@@ -46,10 +46,11 @@
 #include "HSAILBrigContainer.h"
 #include "HSAILItemBase.h"
 #include "HSAILItems.h"
-#include <istream>
+#include <iostream>
 #include <string>
 
 using std::istream;
+using std::ostream;
 
 namespace HSAIL_ASM {
 
@@ -73,6 +74,7 @@ public:
     bool validate(bool disasmOnError = false) const;
 
     std::string getErrorMsg(istream *is) const;
+    void dumpError(ostream* os) const;
     int getErrorCode() const;
 };
 

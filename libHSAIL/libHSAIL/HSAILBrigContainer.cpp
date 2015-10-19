@@ -243,6 +243,13 @@ Offset DataSection::addStringImpl(const SRef& newStr)
     return secEndOffset;
 }
 
+DataSectionIterator DataSection::begin() const {
+    return DataSectionIterator(this, secHeader()->headerByteCount);
+}
+
+DataSectionIterator DataSection::end() const {
+    return DataSectionIterator(this, size());
+}
 
 template <typename Item>
 class RefPatcher
@@ -449,7 +456,7 @@ bool BrigContainer::makeRO() {
 }
 
 void BrigContainer::setContents(std::vector<char>& buf) {
-    const BrigModuleHeader* const hdr = 
+    const BrigModuleHeader* const hdr =
         (const BrigModuleHeader*)&buf[0];
 
     SectionVector secs;
@@ -581,7 +588,7 @@ bool readContainer(ReadAdapter& r, BrigContainer& c, bool writeable) {
     } else {
       std::vector<uint64_t> sectionIndex;
       sectionIndex.resize(hdr.sectionCount);
-      
+
       if (r.pread((char*)&sectionIndex[0],
           sizeof sectionIndex[0] * hdr.sectionCount,
           hdr.sectionIndex)) {

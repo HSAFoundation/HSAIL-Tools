@@ -102,7 +102,7 @@ public:
 
 /// implement reference to a string table element from a brig item.
 class StrRef {
-    BrigSectionImpl * const m_refSection;
+    BrigSectionImpl * m_refSection;
     Offset            m_offset2Ref;
 
     StrRef(); // not default-constructible

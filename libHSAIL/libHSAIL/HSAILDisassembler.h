@@ -266,7 +266,31 @@ private:
     // Formatting
 
     template<typename T>
-    void printValue(T val) const { *stream << val; }
+    void printValue(T val) const {
+        typedef typename std::make_signed<T>::type S;
+        S aval = (S)val;
+        if (aval < 0) aval = -aval;
+        bool not_pow2 = (aval & (aval - 1)) != 0;
+        S hex_thresh = not_pow2 ? 256 : 8192;
+        if (aval <= hex_thresh) {
+            *stream << (S)val;
+            return;
+        }
+        if (not_pow2) {
+            std::stringstream d;
+            d << (S)val;
+            int czero = 0;
+            for (char c : d.str()) {
+                if (c == '0') {
+                    if (++czero == 3) {
+                        *stream << d.str();
+                        return;
+                    }
+                } else czero = 0;
+            }
+        }
+        *stream << std::hex << std::showbase << val << std::dec;
+    }
 
     void printValue(char arg) const { *stream << (int)arg; }
     void printValue(unsigned char arg) const { *stream << (int)arg; }

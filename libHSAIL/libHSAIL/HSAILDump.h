@@ -44,17 +44,14 @@
 
 #include <iosfwd>
 
-namespace HSAIL_ASM
-{
+#include "HSAILBrigContainer.h"
 
-class Code;
-class Operand;
-class BrigContainer;
-
-void dumpItem(std::ostream&, Code);
-void dumpItem(std::ostream&, Operand);
+namespace HSAIL_ASM {
 
 void dump(BrigContainer &c, std::ostream& out);
+void dumpItem(std::ostream& out, Code item);
+void dumpItem(std::ostream& out, Operand item);
+void dumpItem(std::ostream& out, Offset offset, BrigSectionImpl* section, BrigSectionIndex id);
 
 }
 
