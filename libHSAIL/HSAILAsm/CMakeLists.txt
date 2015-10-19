@@ -31,6 +31,9 @@ if(CURSES_LIB)
   # FIXME: Find dependencies pulled in by LLVMSupport
   target_link_libraries(HSAILasm ${CURSES_LIB})
 endif()
+if(UNIX)
+  target_link_libraries(HSAILasm tinfo)
+endif()
 
 install(TARGETS HSAILasm
   RUNTIME DESTINATION bin

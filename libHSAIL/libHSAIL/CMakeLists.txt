@@ -123,10 +123,11 @@ add_dependencies(hsail libhsail-includes)
 target_include_directories(hsail PUBLIC ${CMAKE_CURRENT_SOURCE_DIR} ${generated_dir})
 
 if(UNIX)
-  target_link_libraries(hsail dl tinfo)
+  target_link_libraries(hsail dl)
 endif()
 if(BUILD_LIBBRIGDWARF)
   target_link_libraries(hsail dwarf)
+  target_link_libraries(hsail elf)
 endif()
 
 install(TARGETS hsail
