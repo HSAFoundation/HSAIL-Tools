@@ -36,5 +36,5 @@ if(UNIX)
 endif()
 
 install(TARGETS HSAILasm
-  RUNTIME DESTINATION bin
+  RUNTIME DESTINATION bin COMPONENT libhsail
 )

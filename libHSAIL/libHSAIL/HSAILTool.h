@@ -44,6 +44,7 @@
 
 #include <string>
 #include <istream>
+#include <ostream>
 #include <sstream>
 #include <memory>
 #include "Brig.h"
@@ -113,10 +114,11 @@ public:
     bool assembleFromString(const std::string& text, const std::string& opts = "", const std::string& sourceDir = "", const std::string& sourceFileName = "");
     bool assembleFromFile(const std::string& filename, const std::string& opts = "");
 
+    bool disassembleToStream(std::ostream& os, const std::string& opts = "");
     bool disassembleToFile(const std::string& filename, const std::string& opts = "");
 
-    bool loadFromMem(const char* buf, size_t size);
-    bool loadFromFile(const std::string& filename);
+    bool loadFromMem(const char* buf, size_t size, bool writable = false);
+    bool loadFromFile(const std::string& filename, bool writable = false);
 
     bool saveToFile(const std::string& filename);
 
@@ -127,10 +129,8 @@ public:
     bool printToolVersion();
     bool printToolHelp();
 
-#ifdef WITH_LIBBRIGDWARF
     bool dumpDebugInfoToStream(std::ostream& out);
     bool dumpDebugInfoToFile(const std::string& filename);
-#endif // WITH_LIBBRIGDWARF
 
     bool parseOptions(const std::string& opts, bool execute = false);
 
@@ -153,10 +153,8 @@ private:
     bool IncludeSource, DisableValidator, DisableOperandOptimizer,
          EnableComments, DisasmInstOffset, DumpFormatError,
          RepeatForever;
-#ifdef WITH_LIBBRIGDWARF
     bool EnableDebugInfo;
     std::string DebugInfoFilename;
-#endif
 
     void initOptions();
     std::string outputFilename(const char *ext = 0) const;

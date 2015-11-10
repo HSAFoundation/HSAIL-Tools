@@ -43,6 +43,7 @@
 #include <iomanip>
 #include <iosfwd>
 #include <iterator>
+#include <set>
 #include <vector>
 
 #include "HSAILDisassembler.h"
@@ -114,19 +115,21 @@ public:
 //--------------------------------------------------------------------------------------------
 // ItemCollector
 
-bool itemOffsetLT(ItemBase first, ItemBase second) {
-    return first.brigOffset() < second.brigOffset();
-}
+struct ItemOffsetLess {
+    bool operator() (ItemBase first, ItemBase second) const {
+        return first.brigOffset() < second.brigOffset();
+    }
+};
 
 bool itemValid(ItemBase item) {
-    return (item.brigOffset() < item.section()->size()) && item;
+    return item && (item.brigOffset() < item.section()->size());
 }
 
 class ItemCollector {
 private:
-    std::vector<Code> m_code;
-    std::vector<Operand> m_operands;
-    std::vector<Offset> m_data;
+    std::set<Code, ItemOffsetLess> m_code;
+    std::set<Operand, ItemOffsetLess> m_operands;
+    std::set<Offset> m_data;
 
     // not copyable
     ItemCollector(const ItemCollector&);
@@ -138,7 +141,6 @@ public:
         if (itemValid(item)) {
             dispatchByItemKind(item, *this);
         }
-        postProcess();
     }
 
     template <typename Item>
@@ -167,13 +169,23 @@ public:
         }
     }
 
-    std::vector<Code> code() { return m_code; }
-    std::vector<Operand> operands() { return m_operands; }
-    std::vector<Offset> data() { return m_data; }
+    std::vector<Code> code() const {
+        std::vector<Code> vcode(m_code.begin(), m_code.end());
+        std::sort(vcode.begin(), vcode.end(), ItemOffsetLess());
+        return vcode;
+    }
 
-    const std::vector<Code>& code() const { return m_code; }
-    const std::vector<Operand>& operands() const  { return m_operands; }
-    const std::vector<Offset>& data() const { return m_data; }
+    std::vector<Operand> operands() const {
+        std::vector<Operand> voperands(m_operands.begin(), m_operands.end());
+        std::sort(voperands.begin(), voperands.end(), ItemOffsetLess());
+        return voperands;
+    }
+
+    std::vector<Offset> data() const {
+        std::vector<Offset> vdata(m_data.begin(), m_data.end());
+        std::sort(vdata.begin(), vdata.end());
+        return vdata;
+    }
 
 private:
     template <typename Item>
@@ -182,10 +194,16 @@ private:
             return BRIG_SECTION_INDEX_IMPLEMENTATION_DEFINED;
         }
         if (static_cast<BrigSectionIndex>(Item::SECTION) == BRIG_SECTION_INDEX_CODE) {
-            m_code.push_back(item);
+            if (m_code.count(item) == 0) {
+                m_code.insert(item);
+                dispatchByItemKind(item, *this);
+            }
             return BRIG_SECTION_INDEX_CODE;
         } else if (static_cast<BrigSectionIndex>(Item::SECTION) == BRIG_SECTION_INDEX_OPERAND) {
-            m_operands.push_back(item);
+            if (m_operands.count(item) == 0) {
+                m_operands.insert(item);
+                dispatchByItemKind(item, *this);
+            }
             return BRIG_SECTION_INDEX_OPERAND;
         }
         assert(false);
@@ -193,17 +211,8 @@ private:
     }
 
     BrigSectionIndex appendItem(Offset offset) {
-        m_data.push_back(offset);
+        m_data.insert(offset);
         return BRIG_SECTION_INDEX_DATA;
-    }
-
-    void postProcess() {
-        std::sort(m_code.begin(), m_code.end(), itemOffsetLT);
-        std::sort(m_operands.begin(), m_operands.end(), itemOffsetLT);
-        std::sort(m_data.begin(), m_data.end());
-        m_code.erase(std::unique(m_code.begin(), m_code.end()), m_code.end());
-        m_operands.erase(std::unique(m_operands.begin(), m_operands.end()), m_operands.end());
-        m_data.erase(std::unique(m_data.begin(), m_data.end()), m_data.end());
     }
 };
 

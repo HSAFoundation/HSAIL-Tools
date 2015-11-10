@@ -97,6 +97,8 @@ add_custom_command(
   COMMENT "Generating libHSAIL sources"
 )
 
+add_custom_target(libhsail-includes ALL DEPENDS ${generated_srcs})
+
 if(BUILD_LIBBRIGDWARF)
   set(libbrigdwarf_srcs
     BrigDwarfGenerator.cpp
@@ -116,8 +118,10 @@ else()
   set(libbrigdwarf_srcs)
 endif()
 
-add_custom_target(libhsail-includes ALL DEPENDS ${generated_srcs})
 add_library(hsail ${libhsail_srcs} ${libhsail_public_headers} ${libbrigdwarf_srcs} ${generated_headers})
+if(BUILD_LIBBRIGDWARF)
+  add_definitions(-DWITH_LIBBRIGDWARF=1)
+endif()
 add_dependencies(hsail libhsail-includes)
 
 target_include_directories(hsail PUBLIC ${CMAKE_CURRENT_SOURCE_DIR} ${generated_dir})
@@ -131,8 +135,8 @@ if(BUILD_LIBBRIGDWARF)
 endif()
 
 install(TARGETS hsail
-  ARCHIVE DESTINATION lib
-  LIBRARY DESTINATION lib
+  ARCHIVE DESTINATION lib COMPONENT libhsail
+  LIBRARY DESTINATION lib COMPONENT libhsail
 )
 
-install(FILES ${libhsail_public_headers} ${generated_headers} DESTINATION include/libHSAIL)
+install(FILES ${libhsail_public_headers} ${generated_headers} DESTINATION include/libHSAIL COMPONENT libhsail)

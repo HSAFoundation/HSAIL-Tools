@@ -2276,7 +2276,7 @@ Inst gcnmads(Basic, gcn.arithmetic, gcn_mads)
 
 Req gcn_min_max
 {
-    type = (s, u)32, f(32, 64);
+    type = (s, u)32, f(16, 32, 64);
     d0.s1.s2;
 }
 

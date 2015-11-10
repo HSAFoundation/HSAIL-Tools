@@ -966,14 +966,15 @@ std::unique_ptr<ReadAdapter> BrigIO::fragmentReadingAdapter(
 
 int BrigIO::load(BrigContainer &dst,
                  int           fmt,
-                 ReadAdapter&  src)
+                 ReadAdapter&  src,
+                 bool writable)
 {
     unsigned char ident[16];
     if (0 != src.pread((char*)ident, 16, 0)) {
         return 1;
     }
     if (memcmp("HSA BRIG", ident, 8)==0) {
-        return HSAIL_ASM::readContainer(src, dst) ? 0 : 1;
+        return HSAIL_ASM::readContainer(src, dst, writable) ? 0 : 1;
     }
     switch(ident[EI_CLASS]) {
     case Elf32Policy::ELFCLASS: {

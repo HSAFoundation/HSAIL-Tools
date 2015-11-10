@@ -194,7 +194,8 @@ struct BrigIO {
 
     static int load(BrigContainer&              dst,
                     int                         fmt,
-                    ReadAdapter&                src);
+                    ReadAdapter&                src,
+                    bool                        writable = false);
 
     // API taking ownership of the adapters, to  be used with the factory
     // methods above
@@ -208,9 +209,10 @@ struct BrigIO {
 
     static int load(BrigContainer&               dst,
                     int                          fmt,
-                    std::unique_ptr<ReadAdapter>   src)
+                    std::unique_ptr<ReadAdapter> src,
+                    bool                         writable = false)
     {
-        return !src.get() || load(dst, fmt, *src);
+        return !src.get() || load(dst, fmt, *src, writable);
     }
 
     static int validateBrigBlob(ReadAdapter&         src);

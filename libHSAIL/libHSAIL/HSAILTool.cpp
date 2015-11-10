@@ -200,8 +200,9 @@ bool Tool::assembleFromFile(const std::string& filename, const std::string& opts
     return result;
 }
 
-bool Tool::disassembleToFile(const std::string& filename, const std::string& opts)
+bool Tool::disassembleToStream(std::ostream& os, const std::string& opts)
 {
+    if (!parseOptions(opts)) { return false; }
     if (!DisableValidator) {
         Validator v(*m_container);
         if (!v.validate(DumpFormatError)) {
@@ -214,23 +215,33 @@ bool Tool::disassembleToFile(const std::string& filename, const std::string& opt
     std::stringstream ss;
     d.setOutputOptions(static_cast<unsigned>(FloatDisassemblyMode) | (DisasmInstOffset ? static_cast<unsigned>(Disassembler::PrintInstOffset) : 0u));
     d.log(out);
-    if (0 != d.run(filename.c_str())) { // Has error.
+    if (0 != d.run(os)) { // Has error.
         return false;
     }
     return true;
 }
 
-bool Tool::loadFromMem(const char* buf, size_t size)
+bool Tool::disassembleToFile(const std::string& filename, const std::string& opts)
 {
-    if (0 != BrigIO::load(*m_container, FileFormat, BrigIO::memoryReadingAdapter(buf, size, out))) {
+    std::ofstream ofs(filename);
+    if (!ofs.is_open() || ofs.bad()) {
+        out << "Error: Failed to dump BRIG to " << filename << std::endl;
+        return false;
+    }
+    return disassembleToStream(ofs, opts);
+}
+
+bool Tool::loadFromMem(const char* buf, size_t size, bool writable)
+{
+    if (0 != BrigIO::load(*m_container, FileFormat, BrigIO::memoryReadingAdapter(buf, size, out), writable)) {
         return false;
     }
     return true;
 }
 
-bool Tool::loadFromFile(const std::string& filename)
+bool Tool::loadFromFile(const std::string& filename, bool writable)
 {
-    if (0 != BrigIO::load(*m_container, FileFormat, BrigIO::fileReadingAdapter(filename.c_str(), out))) {
+    if (0 != BrigIO::load(*m_container, FileFormat, BrigIO::fileReadingAdapter(filename.c_str(), out), writable)) {
         return false;
     }
     return true;
@@ -309,9 +320,9 @@ bool Tool::printToolHelp()
     return true;
 }
 
-#ifdef WITH_LIBBRIGDWARF
 bool Tool::dumpDebugInfoToStream(std::ostream& out)
 {
+#ifdef WITH_LIBBRIGDWARF
     int index = m_container->brigSectionIdByName("hsa_debug");
     if (index < 0) {
       out << "Error: Failed to find debug info section to dump." << std::endl;
@@ -320,10 +331,15 @@ bool Tool::dumpDebugInfoToStream(std::ostream& out)
     SRef data = (static_cast<BrigSectionRaw&>(m_container->sectionById(index))).payload();
     out.write(data.begin, data.length());
     return !out.bad();
+#else // WITH_LIBBRIGDWARF
+    assert(!"Debug info is not enabled in libHSAIL");
+    return false;
+#endif // WITH_LIBBRIGDWARF
 }
 
 bool Tool::dumpDebugInfoToFile(const std::string& filename)
 {
+#ifdef WITH_LIBBRIGDWARF
     std::ofstream ofs(filename, std::ofstream::binary);
     if (!ofs.is_open() || ofs.bad()) {
         out << "Error: Failed to dump debug info to " << filename << std::endl;
@@ -332,8 +348,11 @@ bool Tool::dumpDebugInfoToFile(const std::string& filename)
     bool result = dumpDebugInfoToStream(ofs);
     ofs.close();
     return result;
-}
+#else // WITH_LIBBRIGDWARF
+    assert(!"Debug info is not enabled in libHSAIL");
+    return false;
 #endif // WITH_LIBBRIGDWARF
+}
 
 void Tool::initOptions()
 {
@@ -349,10 +368,8 @@ void Tool::initOptions()
     DumpFormatError = false;
     FloatDisassemblyMode = FloatDisassemblyModeRawBits;
     RepeatForever = false;
-#ifdef WITH_LIBBRIGDWARF
     EnableDebugInfo = false;
     DebugInfoFilename.clear();
-#endif
 }
 
 static inline std::string getEnv(const char *var)
