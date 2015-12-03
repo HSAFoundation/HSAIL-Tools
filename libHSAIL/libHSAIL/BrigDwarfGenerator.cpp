@@ -1134,9 +1134,7 @@ void BrigDwarfGenerator_impl::createDwarfElfSections( HSAIL_ASM::BrigContainer &
         ed->d_size = length;
         ed->d_type =  ELF_T_BYTE;
         ed->d_off = 0;
-        // Align debug sections to sizeof(Elf32_Sym). d_align is log2 of the
-        // alignment. log2(sizeof(Elf32_Sym)) == 2
-        ed->d_align = 2;
+        ed->d_align = 1;
         ed->d_version = EV_CURRENT;
 
         // process relocations, if any
@@ -1147,6 +1145,8 @@ void BrigDwarfGenerator_impl::createDwarfElfSections( HSAIL_ASM::BrigContainer &
         }
         if (sh->sh_type == SHT_REL)
         {
+            // Align debug sections to sizeof(Elf32_Sym)
+            ed->d_align = 2;
             unsigned char* relBytes = (unsigned char*)ed->d_buf;
             for(unsigned rrOffset = 0; rrOffset < length; rrOffset += sizeof(Elf32_Rel) )
             {
