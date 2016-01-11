@@ -51,8 +51,6 @@ namespace HSAIL_ASM
 
 using namespace std;
 
-typedef Optional<unsigned> OptionalU;
-
 struct ModuleStatementPrefix
 {
     OptionalU decl, linkage, indirect, alloc;
@@ -125,7 +123,7 @@ OptionalU tryParseWidthModifier(Scanner& scanner) {
     return res;
 }
 
-static unsigned parseAlign(Scanner& scanner) {
+unsigned parseAlign(Scanner& scanner) {
     scanner.eatToken(ELParen);
     unsigned res = num2align(scanner.readIntLiteral());
     if (res == BRIG_ALIGNMENT_LAST) {
@@ -148,8 +146,7 @@ OptionalU tryParseEquiv(Scanner& scanner) {
     return OptionalU();
 }
 
-Inst parseMnemoBasic(Scanner& scanner, Brigantine& bw, bool expectType) {
-    unsigned const opCode = scanner.eatToken(EInstruction);
+Inst parseMnemoBasic(unsigned opCode, Scanner& scanner, Brigantine& bw, bool expectType) {
 
     OptionalU type;
     if (expectType) type = scanner.eatToken(EMType);
@@ -161,18 +158,16 @@ Inst parseMnemoBasic(Scanner& scanner, Brigantine& bw, bool expectType) {
     return inst;
 }
 
-Inst parseMnemoBasic(Scanner& scanner, Brigantine& bw, int*) {
-    return parseMnemoBasic(scanner,bw,true);
+Inst parseMnemoBasic(unsigned opCode, Scanner& scanner, Brigantine& bw, int*) {
+    return parseMnemoBasic(opCode, scanner,bw,true);
 }
 
-Inst parseMnemoBasicNoType(Scanner& scanner, Brigantine& bw, int*) {
-    Inst res = parseMnemoBasic(scanner,bw,false);
-    if (isGcnInst(res.opcode())) res.type() = BRIG_TYPE_B32; // default type for GCN
+Inst parseMnemoBasicNoType(unsigned opCode, Scanner& scanner, Brigantine& bw, int*) {
+    Inst res = parseMnemoBasic(opCode, scanner,bw,false);
     return res;
 }
 
-Inst parseMnemoBasicOrMod(Scanner& scanner, Brigantine& bw, int*) {
-    unsigned  const opCode  = scanner.eatToken(EInstruction);
+Inst parseMnemoBasicOrMod(unsigned opCode, Scanner& scanner, Brigantine& bw, int*) {
     OptionalU const ftz     = scanner.tryEatToken(EMFTZ);
     OptionalU const round   = scanner.tryEatToken(EMRound);
     OptionalU const packing = scanner.tryEatToken(EMPacking);
@@ -187,7 +182,7 @@ Inst parseMnemoBasicOrMod(Scanner& scanner, Brigantine& bw, int*) {
         inst.type() = type;
 
         // NB: getDefRounding must be called after all other fields are initialized
-        inst.round() = round.isInitialized() ? round.value() : getDefRounding(inst, bw.getMachineModel(), bw.getProfile());
+        inst.round() = round.isInitialized() ? round.value() : scanner.extMgr().getDefRounding(inst, bw.getMachineModel(), bw.getProfile());
 
         return inst;
     } else {
@@ -197,8 +192,7 @@ Inst parseMnemoBasicOrMod(Scanner& scanner, Brigantine& bw, int*) {
     }
 }
 
-Inst parseMnemoSourceType(Scanner& scanner, Brigantine& bw, int* outVector/* out */) {
-    unsigned  const opCode  = scanner.eatToken(EInstruction);
+Inst parseMnemoSourceType(unsigned opCode, Scanner& scanner, Brigantine& bw, int* outVector/* out */) {
     OptionalU const vector = scanner.tryEatToken(EMVector);
     unsigned  const dtype  = scanner.eatToken(EMType);
     unsigned  const stype  = scanner.eatToken(EMType);
@@ -214,8 +208,7 @@ Inst parseMnemoSourceType(Scanner& scanner, Brigantine& bw, int* outVector/* out
     return inst;
 }
 
-Inst parseMnemoSeg(Scanner& scanner, Brigantine& bw, int*) {
-    unsigned  const  opCode = scanner.eatToken(EInstruction);
+Inst parseMnemoSeg(unsigned opCode, Scanner& scanner, Brigantine& bw, int*) {
     OptionalU const segment = scanner.tryEatToken(EMSegment);
     unsigned  const    type = scanner.eatToken(EMType);
     scanner.eatToken(EMNone);
@@ -227,23 +220,20 @@ Inst parseMnemoSeg(Scanner& scanner, Brigantine& bw, int*) {
     return inst;
 }
 
-Inst parseMnemoAddr(Scanner& scanner, Brigantine& bw, int*) {
-    unsigned  const  opCode = scanner.eatToken(EInstruction);
+Inst parseMnemoAddr(unsigned opCode, Scanner& scanner, Brigantine& bw, int*) {
     OptionalU const segment = scanner.tryEatToken(EMSegment);
     unsigned  const    type = scanner.eatToken(EMType);
     scanner.eatToken(EMNone);
     // parse done
 
     InstAddr inst = bw.addInst<InstAddr>(opCode);
-    inst.segment() = segment.isInitialized() ?
-        segment.value() :
-        isGcnInst(inst.opcode())? BRIG_SEGMENT_AMD_GCN : BRIG_SEGMENT_FLAT;
+    inst.segment() = segment.isInitialized() ? segment.value() : BRIG_SEGMENT_FLAT;
+
     inst.type() = type;
     return inst;
 }
 
-Inst parseMnemoMem(Scanner& scanner, Brigantine& bw, int* outVector/* out */) {
-    unsigned  const opCode     = scanner.eatToken(EInstruction);
+Inst parseMnemoMem(unsigned opCode, Scanner& scanner, Brigantine& bw, int* outVector/* out */) {
     OptionalU const vector     = scanner.tryEatToken(EMVector);
     OptionalU       segment    = scanner.tryEatToken(EMSegment);
 
@@ -271,7 +261,7 @@ Inst parseMnemoMem(Scanner& scanner, Brigantine& bw, int* outVector/* out */) {
     inst.type()       = type;
     inst.segment()    = segment.isInitialized() ?    BrigSegment(segment.value())    : BRIG_SEGMENT_FLAT;
     inst.equivClass() = equivClass.isInitialized() ? equivClass.value() : 0;
-    inst.width()      = width.isInitialized() ?      width.value()      : getDefWidth(inst, bw.getMachineModel(), bw.getProfile());
+    inst.width()      = width.isInitialized() ?      width.value()      : scanner.extMgr().getDefWidth(inst, bw.getMachineModel(), bw.getProfile());
     inst.align()      = align.isInitialized() ?      align.value()      : BRIG_ALIGNMENT_1;
     inst.modifier().isConst()  = isConst.isInitialized();
 
@@ -285,8 +275,7 @@ Inst parseMnemoMem(Scanner& scanner, Brigantine& bw, int* outVector/* out */) {
     return inst;
 }
 
-Inst parseMnemoBr(Scanner& scanner, Brigantine& bw, int*) {
-    unsigned  const opCode = scanner.eatToken(EInstruction);
+Inst parseMnemoBr(unsigned opCode, Scanner& scanner, Brigantine& bw, int*) {
     OptionalU const  width = tryParseWidthModifier(scanner);
     if (width.isInitialized()) {
         if (opCode==BRIG_OPCODE_WAVEBARRIER ||
@@ -296,9 +285,6 @@ Inst parseMnemoBr(Scanner& scanner, Brigantine& bw, int*) {
         }
     }
     OptionalU const type = scanner.tryEatToken(EMType);
-    if (type.isInitialized() && !instHasType(opCode)) {
-        scanner.syntaxError("instruction has no type");
-    }
 
     scanner.eatToken(EMNone);
     // parse done
@@ -310,14 +296,13 @@ Inst parseMnemoBr(Scanner& scanner, Brigantine& bw, int*) {
     if (width.isInitialized()) {
         inst.width() = BrigWidth(width.value());
     } else {
-        inst.width() = getDefWidth(inst, bw.getMachineModel(), bw.getProfile());
+        inst.width() = scanner.extMgr().getDefWidth(inst, bw.getMachineModel(), bw.getProfile());
     }
 
     return inst;
 }
 
-Inst parseMnemoCmp(Scanner& scanner, Brigantine& bw, int*) {
-    unsigned  const opCode  = scanner.eatToken(EInstruction);
+Inst parseMnemoCmp(unsigned opCode, Scanner& scanner, Brigantine& bw, int*) {
     unsigned  const compOp  = scanner.eatToken(EMCompare);
     OptionalU const ftz     = scanner.tryEatToken(EMFTZ);
     OptionalU const packing = scanner.tryEatToken(EMPacking);
@@ -334,8 +319,7 @@ Inst parseMnemoCmp(Scanner& scanner, Brigantine& bw, int*) {
     return inst;
 }
 
-Inst parseMnemoCvt(Scanner& scanner, Brigantine& bw, int*) {
-    unsigned  const opCode  = scanner.eatToken(EInstruction);
+Inst parseMnemoCvt(unsigned opCode, Scanner& scanner, Brigantine& bw, int*) {
     OptionalU const ftz     = scanner.tryEatToken(EMFTZ); // TBD
     OptionalU const round   = scanner.tryEatToken(EMRound); // TBD is this correct?
     unsigned  const dstType = scanner.eatToken(EMType, "destination type");
@@ -348,13 +332,12 @@ Inst parseMnemoCvt(Scanner& scanner, Brigantine& bw, int*) {
     inst.modifier().ftz()   = ftz.isInitialized();
 
     // NB: getDefRounding must be called after all other fields are initialized
-    inst.round() = round.isInitialized() ? round.value() : getDefRounding(inst, bw.getMachineModel(), bw.getProfile());
+    inst.round() = round.isInitialized() ? round.value() : scanner.extMgr().getDefRounding(inst, bw.getMachineModel(), bw.getProfile());
 
     return inst;
 }
 
-Inst parseMnemoAtomic(Scanner& scanner, Brigantine& bw, int*) {
-    unsigned  const opCode          = scanner.eatToken(EInstruction);
+Inst parseMnemoAtomic(unsigned opCode, Scanner& scanner, Brigantine& bw, int*) {
     unsigned  const atomicOperation = scanner.eatToken(EMAtomicOp);
     OptionalU const segment         = scanner.tryEatToken(EMSegment);
     unsigned  const memoryOrder     = scanner.eatToken(EMMemoryOrder);
@@ -373,8 +356,7 @@ Inst parseMnemoAtomic(Scanner& scanner, Brigantine& bw, int*) {
     return inst;
 }
 
-Inst parseMnemoMemFence(Scanner& scanner, Brigantine& bw, int*) {
-    unsigned  const opCode      = scanner.eatToken(EInstruction);
+Inst parseMnemoMemFence(unsigned opCode, Scanner& scanner, Brigantine& bw, int*) {
     unsigned  const memoryOrder = scanner.eatToken(EMMemoryOrder);
     unsigned  const memoryScope = scanner.eatToken(EMMemoryScope);
     scanner.eatToken(EMNone);
@@ -389,8 +371,7 @@ Inst parseMnemoMemFence(Scanner& scanner, Brigantine& bw, int*) {
     return inst;
 }
 
-Inst parseMnemoImage(Scanner& scanner, Brigantine& bw, int* outVector/* out */) {
-    unsigned  const opCode  = scanner.eatToken(EInstruction);
+Inst parseMnemoImage(unsigned opCode, Scanner& scanner, Brigantine& bw, int* outVector/* out */) {
     OptionalU const vector     = scanner.tryEatToken(EMVector);
     unsigned  const geom       = scanner.eatToken(EMGeom);
     OptionalU const equivClass = tryParseEquiv(scanner);
@@ -413,8 +394,7 @@ Inst parseMnemoImage(Scanner& scanner, Brigantine& bw, int* outVector/* out */) 
     return inst;
 }
 
-Inst parseMnemoQueryImage(Scanner& scanner, Brigantine& bw, int*) {
-    unsigned  const opCode          = scanner.eatToken(EInstruction);
+Inst parseMnemoQueryImage(unsigned opCode, Scanner& scanner, Brigantine& bw, int*) {
     unsigned  const geom            = scanner.eatToken(EMGeom);
     unsigned  const query           = scanner.eatToken(EMImageQuery);
     unsigned  const dstType         = scanner.eatToken(EMType);
@@ -429,8 +409,7 @@ Inst parseMnemoQueryImage(Scanner& scanner, Brigantine& bw, int*) {
     return inst;
 }
 
-Inst parseMnemoQuerySampler(Scanner& scanner, Brigantine& bw, int*) {
-    unsigned  const opCode          = scanner.eatToken(EInstruction);
+Inst parseMnemoQuerySampler(unsigned opCode, Scanner& scanner, Brigantine& bw, int*) {
     unsigned  const query           = scanner.eatToken(EMSamplerQuery);
     unsigned  const dstType         = scanner.eatToken(EMType);
     scanner.eatToken(EMNone);
@@ -441,8 +420,7 @@ Inst parseMnemoQuerySampler(Scanner& scanner, Brigantine& bw, int*) {
     return inst;
 }
 
-Inst parseMnemoLane(Scanner& scanner, Brigantine& bw, int* outVector/* out */) {
-    unsigned  const opCode  = scanner.eatToken(EInstruction);
+Inst parseMnemoLane(unsigned opCode, Scanner& scanner, Brigantine& bw, int* outVector/* out */) {
     OptionalU const vector = scanner.tryEatToken(EMVector);
     OptionalU const width  = tryParseWidthModifier(scanner);
     unsigned  const dtype  = scanner.eatToken(EMType);
@@ -452,7 +430,7 @@ Inst parseMnemoLane(Scanner& scanner, Brigantine& bw, int* outVector/* out */) {
 
     InstLane inst = bw.addInst<InstLane>(opCode);
     inst.sourceType() = stype.isInitialized() ? stype.value() : BRIG_TYPE_NONE;
-    inst.width() = width.isInitialized() ? width.value() : getDefWidth(inst, bw.getMachineModel(), bw.getProfile());
+    inst.width() = width.isInitialized() ? width.value() : scanner.extMgr().getDefWidth(inst, bw.getMachineModel(), bw.getProfile());
     inst.type() = dtype;
 
     if (outVector!=NULL) {
@@ -461,15 +439,13 @@ Inst parseMnemoLane(Scanner& scanner, Brigantine& bw, int* outVector/* out */) {
     return inst;
 }
 
-Inst parseMnemoNop(Scanner& scanner, Brigantine& bw, int*) {
-    scanner.eatToken(EInstruction);
+Inst parseMnemoNop(unsigned opCode, Scanner& scanner, Brigantine& bw, int*) {
     InstBasic inst = bw.addInst<InstBasic>(BRIG_OPCODE_NOP);
     inst.type() = BRIG_TYPE_NONE;
     return inst;
 }
 
-Inst parseMnemoQueue(Scanner& scanner, Brigantine& bw, int*) {
-    unsigned  const opCode      = scanner.eatToken(EInstruction);
+Inst parseMnemoQueue(unsigned opCode, Scanner& scanner, Brigantine& bw, int*) {
     OptionalU const segment     = scanner.tryEatToken(EMSegment);
     unsigned  const memoryOrder = scanner.eatToken(EMMemoryOrder);
     unsigned  const type        = scanner.eatToken(EMType);
@@ -483,8 +459,7 @@ Inst parseMnemoQueue(Scanner& scanner, Brigantine& bw, int*) {
     return inst;
 }
 
-Inst parseMnemoSignal(Scanner& scanner, Brigantine& bw, int*) {
-    unsigned const opCode          = scanner.eatToken(EInstruction);
+Inst parseMnemoSignal(unsigned opCode, Scanner& scanner, Brigantine& bw, int*) {
     unsigned const signalOperation = scanner.eatToken(EMAtomicOp);
     unsigned const memoryOrder     = scanner.eatToken(EMMemoryOrder);
     unsigned const type            = scanner.eatToken(EMType);
@@ -500,8 +475,7 @@ Inst parseMnemoSignal(Scanner& scanner, Brigantine& bw, int*) {
     return inst;
 }
 
-Inst parseMnemoSegCvt(Scanner& scanner, Brigantine& bw, int*) {
-    unsigned  const opCode   = scanner.eatToken(EInstruction);
+Inst parseMnemoSegCvt(unsigned opCode, Scanner& scanner, Brigantine& bw, int*) {
     OptionalU const segment  = scanner.tryEatToken(EMSegment);
     OptionalU const isNoNull = scanner.tryEatToken(EMNoNull);
     unsigned  const dtype    = scanner.eatToken(EMType);
@@ -517,23 +491,32 @@ Inst parseMnemoSegCvt(Scanner& scanner, Brigantine& bw, int*) {
     return inst;
 }
 
-typedef Inst (*OpcodeParser)(Scanner&, Brigantine &, int*);
-OpcodeParser getOpcodeParser(BrigOpcode16_t opcode); // generated
-int vecOpndIndex(BrigOpcode16_t arg); // generated;
+OpcodeParser getCoreOpcodeParser(BrigOpcode16_t opcode); // generated
+int getCoreVXIndex(BrigOpcode16_t arg); // generated;
 
-Inst parseMnemo(Scanner& scanner, Brigantine& bw, int* outVector) {
+Inst parseCoreInstMnemo(Scanner& scanner, Brigantine& bw, int* outVector) {
     Inst res;
-    OpcodeParser const parser = getOpcodeParser(scanner.peek().brigId());
+    unsigned opCode = scanner.eatToken(EInstruction);
+    OpcodeParser const parser = getCoreOpcodeParser(opCode);
+
     if (!parser) {
           scanner.syntaxError("unknown instruction");
     }
-    return parser(scanner,bw, outVector);
+    return parser(opCode, scanner,bw, outVector);
 }
 
-Inst parseMnemo(const char* str, Brigantine& bw) {
+Inst parseMnemo(const char* str, Brigantine& bw, const ExtManager& mgr) {
     std::istringstream instr(str);
-    Scanner scanner(instr);
-    return parseMnemo(scanner,bw, NULL);
+    Scanner scanner(instr, mgr);
+    
+    if (scanner.peek().kind() == EInstruction) {
+        return parseCoreInstMnemo(scanner, bw, NULL);
+    } else if (scanner.peek().kind() == EExtInstName) {
+        return scanner.extMgr().parseExtInstMnemo(scanner, bw, NULL);
+    } else {
+        scanner.syntaxError("unknown instruction");
+        return Inst();
+    }
 }
 
 // Parser
@@ -554,13 +537,16 @@ struct ParseGuard {
 Parser::Parser(Scanner& scanner, BrigContainer& container)
     : m_scanner(scanner)
     , m_bw(container)
-    , m_gcnEnabled(false)
 {
 }
 
 void Parser::parseSource(bool saveSource)
 {
     PDBG;
+
+    // Disable all extensions
+    // An extension will be enabled when an 'extension' directive is encountered in HSAIL
+    extMgr().disableAll();
 
     do {
         parseProgram();
@@ -583,8 +569,6 @@ void Parser::parseProgram()
 {
     PDBG;
     m_bw.startProgram();
-
-    m_gcnEnabled = false;
 
     while (peek().kind()!=EEndOfSource) {
         parseTopLevelStatement();
@@ -728,7 +712,11 @@ int Parser::parseBodyStatement()
     case EKWFbarrier:      parseFbarrier();break;
     case ELCurl:           numInsts += parseArgScope(); break;
     case EInstruction: {
-        Inst i = parseInst();
+        parseCoreInst();
+        ++numInsts;
+    } break;
+    case EExtInstName: {
+        parseExtInst();
         ++numInsts;
     } break;
     default:
@@ -794,7 +782,6 @@ Operand Parser::parseOpaqueObject() {
 void Parser::parseAndUnfoldOpaqueObject(ItemList& list) {
     assert(peek().kind() == EKWImage || peek().kind() == EKWSampler);
 
-    SourceInfo const srcInfo = sourceInfo(peek());
     unsigned const initType = eatToken(peek().kind() == EKWImage? EKWImage : EKWSampler);
 
     if (peek().kind() == ELBrace) {
@@ -1254,26 +1241,26 @@ static std::string parseStringLiteral(Scanner&);
 
 // Instruction parsing
 
-Inst Parser::parseInst()
+Inst Parser::parseCoreInst()
 {
     PDBG;
     Inst res;
     SourceInfo const srcInfo = sourceInfo(peek());
     int vx = -1;
-    res = parseMnemo(m_scanner, m_bw, &vx);
+    res = parseCoreInstMnemo(m_scanner, m_bw, &vx);
 
-    const char* errMsg = preValidateInst(res, m_bw.getMachineModel(), m_bw.getProfile());
+    const char* errMsg = extMgr().preValidateInst(res, m_bw.getMachineModel(), m_bw.getProfile());
     if (errMsg) syntaxError(errMsg);
 
     res.annotate(srcInfo);
 
     if (res.kind()!=BRIG_KIND_NONE) {
-        OperandParser const parser = getOperandParser(res.opcode());
+        OperandParser const parser = getCoreOperandParser(res.opcode());
         assert(parser);
         m_bw.setOperands(res, (this->*parser)(res));
         eatToken(ESemi);
 
-        int idx = vecOpndIndex(res.opcode());
+        int idx = getCoreVXIndex(res.opcode());
         if (idx >= 0) {
           checkVxIsValid(vx, res.operand(idx));
         }
@@ -1281,9 +1268,31 @@ Inst Parser::parseInst()
         eatToken(ESemi);
     }
 
-    if (!m_gcnEnabled && isGcnInst(res.opcode())) {
-        syntaxError("Gcn extension isn't enabled");
-    }
+    return res;
+}
+
+Inst Parser::parseExtInst()
+{
+    PDBG;
+    Inst res;
+    SourceInfo const srcInfo = sourceInfo(peek());
+    assert(peek().kind() == EExtInstName);
+    
+    int vx = -1;
+    res = extMgr().parseExtInstMnemo(m_scanner, m_bw, &vx);
+    assert(res);
+
+    const char* errMsg = extMgr().preValidateInst(res, m_bw.getMachineModel(), m_bw.getProfile());
+    if (errMsg) syntaxError(errMsg);
+
+    res.annotate(srcInfo);
+
+    m_bw.setOperands(res, parseOperands(res));
+    eatToken(ESemi);
+
+    int vi = extMgr().getVXIndex(res.opcode());
+    if (vi >= 0 && vx > 0) checkVxIsValid(vx, res.operand(vi));
+
     return res;
 }
 
@@ -1320,6 +1329,8 @@ ItemList Parser::parseOperands(Inst inst)
 {
     PDBG;
     ItemList list;
+
+    if (peek().kind()==EExtInstSuff) syntaxError("Syntax error");
 
     if (peek().kind()!=ESemi) {
         int i=0;
@@ -1424,7 +1435,7 @@ ItemList Parser::parseSbrOperands(Inst inst)
 
 Operand Parser::parseOperandGeneric(Inst inst, unsigned opndIdx)
 {
-    return parseOperandGeneric(getOperandType(inst, opndIdx, m_bw.getMachineModel(), m_bw.getProfile()));
+    return parseOperandGeneric(extMgr().getOperandType(inst, opndIdx, m_bw.getMachineModel(), m_bw.getProfile()));
 }
 
 //F1.0 Make this function really generic - parse all types of operands. Let clients (or validator) decide which operands are allowed
@@ -1440,7 +1451,7 @@ Operand Parser::parseOperandGeneric(unsigned requiredType)
         res = parseOperandInBraces(requiredType);
         break;
 
-    case ELParen: // see mov instruction
+    case ELParen:
         res = parseOperandVector(requiredType);
         break;
 
@@ -1508,7 +1519,10 @@ Operand Parser::parseOperandVector(unsigned requiredType)
 
     ItemList opnds;
     while (true) {
-        Operand o = parseOperandGeneric(requiredType);
+        Operand o;
+        if (peek().kind() != ELParen) { // avoid deep recursion which may cause stack overflow
+            o = parseOperandGeneric(requiredType);
+        }
         if (!isa<OperandRegister>(o) && !isa<OperandConstantBytes>(o) && !isa<OperandWavesize>(o)) {
             syntaxError("register, wavesize or immediate constant value expected");
         }
@@ -1699,7 +1713,6 @@ unsigned Parser::parseImmediate(ArbitraryData *data, unsigned requiredType, size
             assert(!isImageType(requiredType));
             assert(!isSamplerType(requiredType));
 
-            SourceInfo const srcInfo = sourceInfo(peek());
             unsigned const typeFromToken = eatToken(peek().kind() == EKWImage? EKWImage : EKWSampler);
             validateTypedImmConversion(requiredType, typeFromToken);
             assert(false);
@@ -1828,11 +1841,6 @@ Operand Parser::parseOperandInBraces(unsigned requiredType)
     return m_bw.createRef(name, reg, offset, requiredType == BRIG_TYPE_U32, &srcInfo);
 }
 
-
-
-// Stubs
-
-
 void Parser::parsePragma()
 {
     PDBG;
@@ -1842,7 +1850,6 @@ void Parser::parsePragma()
 
     //F1.0 Try merging with parseOperandGeneric
 
-    int i=0;
     do {
         Operand opr;
         switch (peek().kind()) 
@@ -1927,9 +1934,7 @@ void Parser::parseExtension()
     DirectiveExtension dir = m_bw.append<DirectiveExtension>(&srcInfo);
     dir.name() = name;
 
-    if (name=="amd:gcn") {
-        m_gcnEnabled = true;
-    }
+    extMgr().enable(name);
 }
 
 void Parser::parseLocation()

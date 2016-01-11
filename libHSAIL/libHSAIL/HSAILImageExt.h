@@ -38,47 +38,18 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS WITH THE
 // SOFTWARE.
-//===-- HSAILValidator.cpp - HSAIL Validator ----------------------===//
 
-#ifndef INCLUDED_HSAIL_VALIDATOR_H
-#define INCLUDED_HSAIL_VALIDATOR_H
+#ifndef INCLUDED_HSAIL_IMAGE_EXT_H
+#define INCLUDED_HSAIL_IMAGE_EXT_H
 
-#include "HSAILBrigContainer.h"
-#include "HSAILExtManager.h"
-#include "HSAILItemBase.h"
-#include "HSAILItems.h"
-#include <iostream>
-#include <string>
+#include "HSAILExtension.h"
 
-using std::istream;
-using std::ostream;
+namespace hsail { namespace image { 
 
-namespace HSAIL_ASM {
+using namespace HSAIL_ASM;
 
-//============================================================================
+const Extension* getExtension(); 
 
-class ValidatorImpl;
-
-class Validator
-{
-    ValidatorImpl *impl;
-
-    Validator(const Validator&); // non-copyable
-    const Validator &operator=(const Validator &); // not assignable
-
-    //==========================================================================
-    // Public Validator API
-public:
-    Validator(BrigContainer &c, const ExtManager& extMgr = registeredExtensions());
-    ~Validator();
-
-    bool validate(bool disasmOnError = false) const;
-
-    std::string getErrorMsg(istream *is) const;
-    void dumpError(ostream* os) const;
-    int getErrorCode() const;
-};
-
-} // namespace HSAIL_ASM
+}} 
 
 #endif

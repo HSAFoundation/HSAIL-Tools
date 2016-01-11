@@ -1,6 +1,8 @@
 include_directories(${PROJECT_SOURCE_DIR}/libHSAIL)
 include_directories(${PROJECT_BINARY_DIR}/libHSAIL/generated)
 
+include_directories(${PROJECT_SOURCE_DIR}/libHSAIL-AMD)
+
 include_directories(${LLVM_PATH}/include)
 
 if(UNIX)
@@ -10,7 +12,7 @@ else()
 endif()
 
 add_executable(HSAILasm HSAILAsm.cpp)
-target_link_libraries(HSAILasm hsail)
+target_link_libraries(HSAILasm hsail hsail-amd)
 add_dependencies(HSAILasm libhsail-includes)
 
 # FIXME: We also need to get the link dependencies of the libLLVMSupport

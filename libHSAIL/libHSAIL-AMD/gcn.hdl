@@ -1,0 +1,449 @@
+// University of Illinois/NCSA
+// Open Source License
+//
+// Copyright (c) 2013-2015, Advanced Micro Devices, Inc.
+// All rights reserved.
+//
+// Developed by:
+//
+//     HSA Team
+//
+//     Advanced Micro Devices, Inc
+//
+//     www.amd.com
+//
+// Permission is hereby granted, free of charge, to any person obtaining a copy of
+// this software and associated documentation files (the "Software"), to deal with
+// the Software without restriction, including without limitation the rights to
+// use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies
+// of the Software, and to permit persons to whom the Software is furnished to do
+// so, subject to the following conditions:
+//
+//     * Redistributions of source code must retain the above copyright notice,
+//       this list of conditions and the following disclaimers.
+//
+//     * Redistributions in binary form must reproduce the above copyright notice,
+//       this list of conditions and the following disclaimers in the
+//       documentation and/or other materials provided with the distribution.
+//
+//     * Neither the names of the LLVM Team, University of Illinois at
+//       Urbana-Champaign, nor the names of its contributors may be used to
+//       endorse or promote products derived from this Software without specific
+//       prior written permission.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
+// FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SHALL THE
+// CONTRIBUTORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS WITH THE
+// SOFTWARE.
+
+// ============================================================================
+// ============================================================================
+// DESCRIPTION OF GCN-SPECIFIC PROPERTIES
+// ============================================================================
+// ============================================================================
+
+BrigProp segment += amd.gcn;
+Alias gcn = amd.gcn;
+
+// ============================================================================
+// ============================================================================
+// DESCRIPTION OF GCN INSTRUCTIONS
+// ============================================================================
+// ============================================================================
+
+// ============================================================================
+// GCN MADU, MADS
+
+Req gcn_madu
+{
+    type = b32;
+
+    d0 = reg.u64;
+    s1 = (reg, imm).u32;
+    s2 = (reg, imm).u32;
+    s3 = (reg, imm).u64;
+    s4 = null;
+    s5 = null;
+}
+
+Req gcn_mads
+{
+    type = b32;
+
+    d0 = reg.s64;
+    s1 = (reg, imm).s32;
+    s2 = (reg, imm).s32;
+    s3 = (reg, imm).s64;
+    s4 = null;
+    s5 = null;
+}
+
+Inst amd_gcn_madu(Basic, arithmetic, gcn_madu)
+Inst amd_gcn_mads(Basic, arithmetic, gcn_mads)
+
+// ============================================================================
+// GCN MIN, MAX, MIN3, MED3, MAX3, BFM
+
+Req gcn_min_max
+{
+    type = (s, u)32, f;
+    d0.s1.s2;
+}
+
+Req gcn_min_max_med3
+{
+    type = (s, u, f)32;
+
+    d0 = reg;
+    s1 = reg, imm;
+    s2 = reg, imm;
+    s3 = reg, imm;
+    s4 = null;
+    s5 = null;
+}
+
+Req gcn_bfm
+{
+    type = b32;
+
+    d0 = reg;
+    s1 = reg, imm;
+    s2 = reg, imm;
+    s3 = null;
+    s4 = null;
+    s5 = null;
+}
+
+Inst amd_gcn_min (Basic, arithmetic, gcn_min_max)
+Inst amd_gcn_max (Basic, arithmetic, gcn_min_max)
+Inst amd_gcn_min3(Basic, arithmetic, gcn_min_max_med3)
+Inst amd_gcn_med3(Basic, arithmetic, gcn_min_max_med3)
+Inst amd_gcn_max3(Basic, arithmetic, gcn_min_max_med3)
+Inst amd_gcn_bfm (Basic, arithmetic, gcn_bfm)
+
+// ============================================================================
+// GCN DIVRELAXED, DIVRELAXEDNARROW
+
+Req gcn_div_relaxed
+{
+    type  = f32;
+    pack  = none;
+    round = none; // Implementation should always round to near.
+    ftz   = any;
+    d0.s1.s2;
+}
+
+Req gcn_div_relaxed_narrow
+{
+    type = f32;
+    d0.s1.s2;
+}
+
+Inst amd_gcn_divrelaxed      (Mod,   arithmetic, gcn_div_relaxed)
+Inst amd_gcn_divrelaxednarrow(Basic, arithmetic, gcn_div_relaxed_narrow)
+
+// ============================================================================
+// GCN FLDEXP, FREXP_EXP, FREXP_MANT, FREXP_PREOP
+
+Req gcn_fldexp
+{
+    type  = f;
+    pack  = none;
+    round = none; // Implementation should always round to near.
+    ftz   = any;
+
+    d0 = reg;
+    s1 = reg, imm;
+    s2 = (reg, imm).s32;
+    s3 = null;
+    s4 = null;
+    s5 = null;
+}
+
+Req gcn_frexp_exp
+{
+    type  = f;
+    pack  = none;
+    round = none; // No rounding implied.
+    ftz   = any;
+
+    d0 = reg.s32;
+    s1 = reg, imm;
+    s2 = null;
+    s3 = null;
+    s4 = null;
+    s5 = null;
+}
+
+Req gcn_frexp_mant
+{
+    type  = f;
+    pack  = none;
+    round = none; // No rounding implied.
+    ftz   = any;
+
+    d0 = reg;
+    s1 = reg, imm;
+    s2 = null;
+    s3 = null;
+    s4 = null;
+    s5 = null;
+}
+
+Req gcn_trig_preop
+{
+    type  = f64;
+    pack  = none;
+    round = none; // Always rounds to zero.
+    ftz   = any;
+
+    d0 = reg;
+    s1 = reg, imm;
+    s2 = (reg, imm).u32;
+    s3 = null;
+    s4 = null;
+    s5 = null;
+}
+
+Inst amd_gcn_fldexp    (Mod, arithmetic, gcn_fldexp)
+Inst amd_gcn_frexp_exp (Mod, arithmetic, gcn_frexp_exp)
+Inst amd_gcn_frexp_mant(Mod, arithmetic, gcn_frexp_mant)
+Inst amd_gcn_trig_preop(Mod, arithmetic, gcn_trig_preop)
+
+// ============================================================================
+// GCN RegionAlloc
+
+Req gcn_region_alloc
+{
+    type = b32;
+
+    s0 = imm.u32;
+    s1 = null;
+    s2 = null;
+    s3 = null;
+    s4 = null;
+    s5 = null;
+}
+
+Inst amd_gcn_regionalloc(Basic, memory, gcn_region_alloc)
+
+// ============================================================================
+// GCN LD
+
+Req gcn_ld
+{
+    type    = u, s, f, b128;
+    segment = gcn;
+    align   = any;
+    const   = none;
+    eqclass = any;
+    width   = any.1;
+
+    d0 = reg, vector;
+    s1 = addr.seg;
+    s2 = null;
+    s3 = null;
+    s4 = null;
+    s5 = null;
+}
+
+Inst amd_gcn_ld(Mem, memory, gcn_ld)
+
+// ============================================================================
+// GCN ST
+
+Req gcn_st
+{
+    type    = u, s, f, b128;
+    segment = gcn;
+    align   = any;
+    const   = none;
+    eqclass = any;
+    width   = none;
+
+    s0 = reg, vector, imm;
+    s1 = addr.seg;
+    s2 = null;
+    s3 = null;
+    s4 = null;
+    s5 = null;
+}
+
+Inst amd_gcn_st(Mem, memory, gcn_st)
+
+// ============================================================================
+// GCN ATOMIC
+
+Req gcn_atomic
+{
+    type    = (b, s, u)(32, 64);
+    atmop   = generic, atomic, cas, exch, ld;
+    segment = gcn;
+    memscp  = wv, wg, agt, sys;
+    eqclass = any;
+
+    typesize = atomic;
+
+    { atmop = cas                ? type = (b   )(32, 64); memord = any; s2 = reg, imm; s3 = reg, imm }
+    { atmop = and, or, xor, exch ? type = (b   )(32, 64); memord = any; s2 = reg, imm; s3 = null     }
+    { atmop = add, sub, min, max ? type = (s, u)(32, 64); memord = any; s2 = reg, imm; s3 = null     }
+    { atmop = wrapinc, wrapdec   ? type = (u   )(32, 64); memord = any; s2 = reg, imm; s3 = null     }
+    { atmop = ld                 ? type = (b   )(32, 64); memord = ld;  s2 = null;     s3 = null     }
+    ;
+
+    d0 = reg;
+    s1 = addr.seg;
+    s4 = null;
+    s5 = null;
+}
+
+Inst amd_gcn_atomic(Atomic, atomic.memory, gcn_atomic)
+
+// ============================================================================
+// GCN ATOMICNORET
+
+Req gcn_atomic_noret
+{
+    type    = (b, s, u)(32, 64);
+    atmop   = generic, atomic, st;
+    segment = gcn;
+    memscp  = wv, wg, agt, sys;
+    eqclass = any;
+
+    typesize = atomic;
+
+    { atmop = cas                ? type = (b   )(32, 64); memord = any; s2 = reg, imm }
+    { atmop = and, or, xor       ? type = (b   )(32, 64); memord = any; s2 = null     }
+    { atmop = add, sub, min, max ? type = (s, u)(32, 64); memord = any; s2 = null     }
+    { atmop = wrapinc, wrapdec   ? type = (u   )(32, 64); memord = any; s2 = null     }
+    { atmop = st                 ? type = (b   )(32, 64); memord = st;  s2 = null     }
+    ;
+
+    s0 = addr.seg;
+    s1 = reg, imm;
+    s3 = null;
+    s4 = null;
+    s5 = null;
+}
+
+Inst amd_gcn_atomicnoret(Atomic, atomic.memory, gcn_atomic_noret)
+
+// ============================================================================
+// GCN ATOMIC_APPEND, ATOMIC_CONSUME
+
+Req gcn_append_consume
+{
+    type    = u32;
+    segment = gcn;
+
+    d0 = reg;
+    s1 = addr.seg;
+    s2 = null;
+    s3 = null;
+    s4 = null;
+    s5 = null;
+}
+
+Inst amd_gcn_append (Addr, atomic.memory, gcn_append_consume)
+Inst amd_gcn_consume(Addr, atomic.memory, gcn_append_consume)
+
+// ============================================================================
+// GCN Media Operations
+
+Req gcn_msad
+{
+    type = b32;
+
+    d0 = reg;
+    s1 = reg, imm;
+    s2 = reg, imm;
+    s3 = reg, imm;
+    s4 = null;
+    s5 = null;
+}
+
+Req gcn_qsad
+{
+    type = b64;
+
+    d0 = reg;
+    s1 = reg, imm;
+    s2 = (reg, imm).b32;
+    s3 = reg, imm;
+    s4 = null;
+    s5 = null;
+}
+
+Req gcn_mqsad
+{
+    type = b64;
+
+    d0 = reg;
+    s1 = (reg, imm);
+    s2 = (reg, imm).b32;
+    s3 = reg;
+    s4 = null;
+    s5 = null;
+}
+
+Req gcn_mqsad4
+{
+    type = b32;
+
+    d0 = vec.4;
+    s1 = (reg, imm).b64;
+    s2 = (reg, imm);
+    s3 = vec.4;
+    s4 = null;
+    s5 = null;
+}
+
+Inst amd_gcn_msad  (Basic, misc, gcn_msad)
+Inst amd_gcn_sadw  (Basic, misc, gcn_msad)
+Inst amd_gcn_sadd  (Basic, misc, gcn_msad)
+                   
+Inst amd_gcn_qsad  (Basic, misc, gcn_qsad)
+
+Inst amd_gcn_mqsad (Basic, misc, gcn_mqsad)
+Inst amd_gcn_mqsad4(Basic, misc, gcn_mqsad4)
+
+// ============================================================================
+// GCN Sleep and Priority
+
+Req gcn_slp_prt
+{
+    type = u32;
+
+    s0 = reg, imm;
+    s1 = null;
+    s2 = null;
+    s3 = null;
+    s4 = null;
+    s5 = null;
+}
+
+Inst amd_gcn_sleep   (Basic, misc, gcn_slp_prt)
+Inst amd_gcn_priority(Basic, misc, gcn_slp_prt)
+
+// ============================================================================
+// GCN Block Exchange
+
+Req gcn_b4xchg
+{
+    type = b32;
+
+    d0 = reg;
+    s1 = reg;
+    s2 = imm;
+    s3 = null;
+    s4 = null;
+    s5 = null;
+}
+
+Inst amd_gcn_b4xchg (Basic, misc, gcn_b4xchg)
+Inst amd_gcn_b32xchg(Basic, misc, gcn_b4xchg)
+
+// ============================================================================

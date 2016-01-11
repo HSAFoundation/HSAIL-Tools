@@ -48,6 +48,8 @@
 #include <sstream>
 #include <memory>
 #include "Brig.h"
+#include "HSAILExtManager.h"
+#include "HSAILValidator.h"
 
 struct BrigModuleHeader;
 typedef BrigModuleHeader* BrigModule_t;
@@ -91,8 +93,9 @@ enum Action {
 class Tool
 {
 public:
-    explicit Tool(BrigContainer* c = 0);
-    explicit Tool(const void* brig_module, size_t size, bool copy = false);
+    explicit Tool(BrigContainer* c = 0, const ExtManager& extMgr = registeredExtensions());
+    explicit Tool(const ExtManager& extMgr);
+    explicit Tool(const void* brig_module, size_t size, bool copy = false, const ExtManager& extMgr = registeredExtensions());
     ~Tool();
 
     BrigContainer* container() { return m_container.get(); }
@@ -123,9 +126,10 @@ public:
     bool saveToFile(const std::string& filename);
 
     bool validate();
+    void dumpValidatorError(std::ostream& out);
 
     bool decodeToFile(const std::string& filename);
-
+    
     bool printToolVersion();
     bool printToolHelp();
 
@@ -153,6 +157,10 @@ private:
     bool IncludeSource, DisableValidator, DisableOperandOptimizer,
          EnableComments, DisasmInstOffset, DumpFormatError,
          RepeatForever;
+
+    const ExtManager& extMgr;
+    Validator vld;
+
     bool EnableDebugInfo;
     std::string DebugInfoFilename;
 

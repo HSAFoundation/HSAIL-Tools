@@ -57,9 +57,6 @@
 #include <sstream>
 #include <iostream>
 #include <cstdio>
-#include <map>
-
-using std::map;
 
 namespace HSAIL_ASM {
 
@@ -397,7 +394,6 @@ private:
         }
         if (preadVec(s, dst, static_cast<unsigned>(shdr.sh_size), shdr.sh_offset))
         {
-            const char* name = sectionName(index);
             return 1;
         }
         return 0;
@@ -1015,46 +1011,105 @@ int BrigIO::save(BrigContainer &src,
     return 0;
 }
 
+class BrigBlobValidatorImpl : public BrigBlobValidator
+{
+private:
+    ReadAdapter& fd;
+
+public:
+    explicit BrigBlobValidatorImpl(ReadAdapter& a): fd(a) {}
+
+protected:
+    virtual uint64_t size() const
+    { 
+        return (uint64_t)fd.getSize();
+    }
+
+    virtual bool read(char* dst, uint64_t numBytes, uint64_t offset) const 
+    { 
+        return fd.pread(dst, (size_t) numBytes, offset) == 0;
+    };
+};
+
+int BrigIO::validateBrigBlob(ReadAdapter& fd)
+{
+    BrigBlobValidatorImpl vld(fd);
+    if (vld.validate()) return 0;
+
+    fd.errs << vld.getErrorMsg() << std::endl; 
+    return 1; 
+}
+
 // --------------------------------------------------------------------------------
-// BRIG FORMAT VALIDATOR
+// BRIG BLOB VALIDATOR
 
-#define MODULE_SIZE_ALIGNMENT               (16)
-#define MODULE_SECTION_ALIGNMENT            (16)
-#define MODULE_SECTION_SIZE_ALIGNMENT        (4)
-#define MODULE_INDEX_ALIGNMENT               (8)
-#define MAX_PREDEFINED_SECTION_NAME_LENGTH  (16)
+class BrigBlobError
+{
+private:
+    string msg;
 
-#define VALIDATE(cond, msg) if (!(cond)) { fd.errs << msg << std::endl; return 1; }
+public:
+    BrigBlobError() {}
+    BrigBlobError(string s) : msg(s) { };
+    BrigBlobError(string s, unsigned val) 
+    { 
+        std::ostringstream os; 
+        os << s << val;
+        msg = os.str();
+    }
+    ~BrigBlobError() {}
 
-typedef map<uint64_t, uint64_t> ModuleMap;
+public:
+    string what() const { return msg; };
+};
 
-int BrigIO::validateBrigBlob(ReadAdapter&   fd)
+void BrigBlobValidator::validate(bool cond, const char* msg)               const { if (!cond) throw BrigBlobError(msg); }
+void BrigBlobValidator::validate(bool cond, const char* msg, unsigned val) const { if (!cond) throw BrigBlobError(msg, val); }
+
+bool BrigBlobValidator::validate() const
+{
+    try
+    {
+        validateBrig();
+    }
+    catch (BrigBlobError& e)
+    {
+        error = e.what();
+        return false;
+    }
+    return true;
+}
+
+void BrigBlobValidator::validateBrig() const
 {
     BrigModuleHeader moduleHdr;
     ModuleMap map;
 
-    uint64_t fileSize = (uint64_t)fd.getSize();
-    VALIDATE(fileSize != (uint64_t)-1, "Filed to read file size");
+    uint64_t fileSize = size();
+    validate(fileSize != (uint64_t)-1, "Filed to read file size");
 
-    VALIDATE(fileSize > sizeof(BrigModuleHeader), "File is too small for BRIG or ELF");
-    VALIDATE(fd.pread((char*)&moduleHdr, sizeof(BrigModuleHeader), 0) == 0, "Failed to read BrigModuleHeader");
+    validate(fileSize > sizeof(BrigModuleHeader), "File is too small for BRIG or ELF");
+    validate(read((char*)&moduleHdr, sizeof(BrigModuleHeader), 0), "Failed to read BrigModuleHeader");
 
     if (memcmp("HSA BRIG", moduleHdr.identification, sizeof(moduleHdr.identification)) != 0) {
-        VALIDATE(false, "Unsupported file format");
+        validate(false, "Unsupported file format");
     }
 
     uint64_t secIdxSize = moduleHdr.sectionCount * sizeof(uint64_t);
 
-    VALIDATE(moduleHdr.brigMajor == BRIG_VERSION_BRIG_MAJOR,        "Unsupported major BRIG version");
-    VALIDATE(moduleHdr.brigMinor <= BRIG_VERSION_BRIG_MINOR,        "Unsupported minor BRIG version");
-    VALIDATE(moduleHdr.byteCount == fileSize,                       "Invalid BrigModuleHeader.size: must be equal to BRIG size");
-    VALIDATE(moduleHdr.byteCount % MODULE_SIZE_ALIGNMENT == 0,      "Invalid BRIG module size: must be a multiple of " << MODULE_SIZE_ALIGNMENT);
-    VALIDATE(moduleHdr.reserved == 0,                               "Invalid BrigModuleHeader.reserved: must be zero");
-    VALIDATE(secIdxSize > moduleHdr.sectionCount,                   "Invalid BrigModuleHeader.sectionCount: too large value"); // overflow
-    VALIDATE(moduleHdr.sectionCount >= 3,                           "Invalid BrigModuleHeader.sectionCount: must be greater than or equal to 3");
-    VALIDATE(moduleHdr.sectionIndex % MODULE_INDEX_ALIGNMENT == 0,  "Invalid BrigModuleHeader.sectionIndex: must be a multiple of " << MODULE_INDEX_ALIGNMENT);
-    VALIDATE(moduleHdr.sectionIndex < fileSize,                     "Invalid BrigModuleHeader.sectionIndex: position of section index is outside of BRIG module");
-    VALIDATE(secIdxSize <= fileSize - moduleHdr.sectionIndex,       "Invalid BrigModuleHeader.sectionIndex: section index does not fit into BRIG module");
+    // NB: do not use addition to avoid overflow
+    // NB: compute "a-b" only after checking that "a>b"
+
+    validate(moduleHdr.brigMajor == BRIG_VERSION_BRIG_MAJOR,        "Unsupported major BRIG version");
+    validate(moduleHdr.brigMinor <= BRIG_VERSION_BRIG_MINOR,        "Unsupported minor BRIG version");
+    validate(moduleHdr.byteCount == fileSize,                       "Invalid BrigModuleHeader.size: must be equal to BRIG size");
+    validate(moduleHdr.byteCount % MODULE_SIZE_ALIGNMENT == 0,      "Invalid BRIG module size: must be a multiple of ", MODULE_SIZE_ALIGNMENT);
+    validate(moduleHdr.reserved == 0,                               "Invalid BrigModuleHeader.reserved: must be zero");
+    validate(secIdxSize > moduleHdr.sectionCount,                   "Invalid BrigModuleHeader.sectionCount: too large value"); // overflow
+    validate(moduleHdr.sectionCount >= 3,                           "Invalid BrigModuleHeader.sectionCount: must be greater than or equal to 3");
+    validate(moduleHdr.sectionIndex % MODULE_INDEX_ALIGNMENT == 0,  "Invalid BrigModuleHeader.sectionIndex: must be a multiple of ", MODULE_INDEX_ALIGNMENT);
+    validate(moduleHdr.sectionIndex < fileSize,                     "Invalid BrigModuleHeader.sectionIndex: position of section index is outside of BRIG module");
+    validate(secIdxSize <= fileSize - moduleHdr.sectionIndex,       "Invalid BrigModuleHeader.sectionIndex: section index does not fit into BRIG module");
 
     map[0]                      = sizeof(BrigModuleHeader);
     map[moduleHdr.sectionIndex] = secIdxSize;
@@ -1063,11 +1118,10 @@ int BrigIO::validateBrigBlob(ReadAdapter&   fd)
     uint64_t sectionOffset;
     for (unsigned idx = 0; idx < moduleHdr.sectionCount; ++idx)
     {
-        VALIDATE(fd.pread((char*)&sectionOffset, sizeof(uint64_t), moduleHdr.sectionIndex + idx * sizeof(uint64_t)) == 0, "Failed to read section index");
-        sectionSize = validateSection(fd, idx, sectionOffset, fileSize);
-        if (sectionSize == 1) return 1;
+        validate(read((char*)&sectionOffset, sizeof(uint64_t), moduleHdr.sectionIndex + idx * sizeof(uint64_t)), "Failed to read section index");
+        sectionSize = validateSection((BrigSectionIndex)idx, sectionOffset, fileSize);
         
-        VALIDATE(map.count(sectionOffset) == 0, "BRIG module elements must not overlap");
+        validate(map.count(sectionOffset) == 0, "BRIG module elements must not overlap");
         map[sectionOffset] = sectionSize;
     }
 
@@ -1083,44 +1137,46 @@ int BrigIO::validateBrigBlob(ReadAdapter&   fd)
 
         for (nextPos = pos; nextPos - pos < MODULE_SECTION_ALIGNMENT && nextPos < fileSize && map.count(nextPos) == 0; ++nextPos);
 
-        VALIDATE(nextPos == fileSize || map.count(nextPos) != 0, "BRIG module elements must follow each other without gaps and overlapping");
-        VALIDATE(nextPos != moduleHdr.sectionIndex || 
-                 nextPos - pos < MODULE_INDEX_ALIGNMENT,         "Gaps between BRIG module elements are only allowed to satisfy alignment requirements");
+        validate(nextPos == fileSize || map.count(nextPos) != 0, "BRIG module elements must follow each other without gaps and overlapping");
+        validate(nextPos != moduleHdr.sectionIndex || 
+                    nextPos - pos < MODULE_INDEX_ALIGNMENT,         "Gaps between BRIG module elements are only allowed to satisfy alignment requirements");
 
         actualSize += it->second + (nextPos - pos);
 
         for (; pos < nextPos; ++pos)
         {
             char pad;
-            VALIDATE(fd.pread(&pad, 1, pos) == 0, "Failed to read section alignment bytes");
-            VALIDATE(pad == 0,                    "Padding between BRIG module elements must be filled with zero");
+            validate(read(&pad, 1, pos), "Failed to read section alignment bytes");
+            validate(pad == 0,           "Padding between BRIG module elements must be filled with zero");
         }
     }
 
     // This is to make sure there are no nested elements
-    VALIDATE(actualSize == fileSize, "BRIG module elements must not overlap");
-
-    return 0;
+    validate(actualSize == fileSize, "BRIG module elements must not overlap");
 }
 
-uint64_t BrigIO::validateSection(ReadAdapter&    fd, 
-                                 unsigned        sectionIndex,
-                                 uint64_t        sectionOffset,
-                                 uint64_t        fileSize)
+uint64_t BrigBlobValidator::validateSection(BrigSectionIndex sectionIndex,
+                                            uint64_t sectionOffset,
+                                            uint64_t fileSize) const
 {
     BrigSectionHeader sectionHeader;
 
-    VALIDATE(sectionOffset % MODULE_SECTION_ALIGNMENT == 0,                                         "Invalid section offset: must be a multiple of " << MODULE_SECTION_ALIGNMENT);
-    VALIDATE(sectionOffset < fileSize,                                                              "Invalid section offset: section offset is outside of BRIG module");
-    VALIDATE(fileSize - sectionOffset > sizeof(BrigSectionHeader),                            "Invalid section offset: section header does not fit into BRIG module");
-    VALIDATE(fd.pread((char*)&sectionHeader, sizeof(BrigSectionHeader), sectionOffset) == 0,  "Failed to read section header");
-    VALIDATE(sectionHeader.byteCount % MODULE_SECTION_SIZE_ALIGNMENT == 0,                          "Invalid section size: must be a multiple of " << MODULE_SECTION_SIZE_ALIGNMENT);
-    VALIDATE(fileSize - sectionOffset >= sectionHeader.byteCount,                                   "Invalid section size: section does not fit into BRIG module");
+    // NB: do not use addition to avoid overflow
+    // NB: compute "a-b" only after checking that "a>b"
 
-    VALIDATE(sectionHeader.headerByteCount % MODULE_SECTION_SIZE_ALIGNMENT == 0,                    "Invalid section header size: must be a multiple of " << MODULE_SECTION_SIZE_ALIGNMENT);
-    VALIDATE(sectionHeader.headerByteCount <= sectionHeader.byteCount,                              "Invalid section header size: header size must not exceed section size");
+    validate(sectionOffset % MODULE_SECTION_ALIGNMENT == 0,                          "Invalid section offset: must be a multiple of ", MODULE_SECTION_ALIGNMENT);
+    validate(sectionOffset < fileSize,                                               "Invalid section offset: section offset is outside of BRIG module");
+    validate(fileSize - sectionOffset > sizeof(BrigSectionHeader),                   "Invalid section offset: section header does not fit into BRIG module");
+    validate(read((char*)&sectionHeader, sizeof(BrigSectionHeader), sectionOffset),  "Failed to read section header");
+    validate(sectionHeader.byteCount % MODULE_SECTION_SIZE_ALIGNMENT == 0,           "Invalid section size: must be a multiple of ", MODULE_SECTION_SIZE_ALIGNMENT);
+    validate(fileSize - sectionOffset >= sectionHeader.byteCount,                    "Invalid section size: section does not fit into BRIG module");
 
-    VALIDATE(sectionHeader.headerByteCount - sizeof(BrigSectionHeader) >= sectionHeader.nameLength - 1, "Invalid section name: name does not fit into section header");
+    validate(sectionHeader.headerByteCount % MODULE_SECTION_SIZE_ALIGNMENT == 0,     "Invalid section header size: must be a multiple of ", MODULE_SECTION_SIZE_ALIGNMENT);
+    validate(sectionHeader.headerByteCount <= sectionHeader.byteCount,               "Invalid section header size: header size must not exceed section size");
+
+    validate(sectionHeader.headerByteCount >= sizeof(BrigSectionHeader) - 1,         "Invalid section header size: must be greater than or equal to sizeof(BrigSectionHeader) - 1");
+    validate(sectionHeader.headerByteCount - (sizeof(BrigSectionHeader) - 1) >= sectionHeader.nameLength, 
+                                                                                     "Invalid section header: name does not fit into section header");
 
     const char* name = 0;
     switch (sectionIndex)
@@ -1128,14 +1184,15 @@ uint64_t BrigIO::validateSection(ReadAdapter&    fd,
     case BRIG_SECTION_INDEX_DATA:     name = "hsa_data";    break;
     case BRIG_SECTION_INDEX_CODE:     name = "hsa_code";    break;
     case BRIG_SECTION_INDEX_OPERAND:  name = "hsa_operand"; break;
+    default: name = ""; break;
     }
 
     if (name && strlen(name) > 0)
     {
         assert(strlen(name) < MAX_PREDEFINED_SECTION_NAME_LENGTH);
         char buf[MAX_PREDEFINED_SECTION_NAME_LENGTH];
-        VALIDATE(fd.pread((char*)&buf, strlen(name), sectionOffset + offsetof(BrigSectionHeader, name)) == 0, "Failed to read section name");
-        VALIDATE(sectionHeader.nameLength == strlen(name) && memcmp(name, buf, strlen(name)) == 0, "Invalid name of a standard section");
+        validate(read((char*)&buf, strlen(name), sectionOffset + offsetof(BrigSectionHeader, name)), "Failed to read section name");
+        validate(sectionHeader.nameLength == strlen(name) && memcmp(name, buf, strlen(name)) == 0, "Invalid name of a standard section");
     }
 
     //NB: validation of other section requirements are performed by HSAILValidator

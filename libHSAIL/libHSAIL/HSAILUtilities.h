@@ -66,17 +66,6 @@ class OperandCodeRef;
 struct SRef;
 
 //============================================================================
-// Operations with Brig properties
-
-void     setBrigProp(Inst inst, unsigned propId, unsigned val, bool ignoreErrors = false);
-unsigned getBrigProp(Inst inst, unsigned propId, bool ignoreErrors = false, unsigned defaultVal = 0);
-const char* validateProp(unsigned propId, unsigned val, unsigned* vals, unsigned length, unsigned model, unsigned profile);
-const char* validateProp(unsigned propId, unsigned val, unsigned model, unsigned profile, bool imageExt);
-const char* validateProp(Inst inst, unsigned propId, unsigned model, unsigned profile, bool imageExt);
-
-bool hasImageExtProps(Inst inst);     // checks opcode, type and operands
-
-//============================================================================
 // Operations with directives
 
 bool     isDirective(unsigned id);
@@ -106,44 +95,26 @@ unsigned getPacking(Inst inst);
 unsigned getEqClass(Inst inst);
 
 unsigned getOperandsNum(Inst inst);
-unsigned getDefWidth(Inst inst, unsigned machineModel, unsigned profile);
-unsigned getDefRounding(Inst inst, unsigned machineModel, unsigned profile);
-
-// This function returns type of the specified operand based on values of instruction fields,
-// machineModel (BRIG_MACHINE_SMALL or BRIG_MACHINE_LARGE) and profile (BRIG_PROFILE_BASE or BRIG_PROFILE_FULL).
-// The specified instruction must be properly formed with all fields containing valid values.
-// It is recommended to call 'preValidateInst' before using this function.
-// The returned value is BRIG_TYPE_NONE in the following cases:
-// - the specified operand is not supported and must be null;
-// - the specified operand is optional (e.g. list of call targets);
-// - the specified operand is supported, but has no type (e.g. list of call arguments);
-// The returned value is BRIG_TYPE_INVALID in the following cases:
-// - type cannot be determined because of malformed instruction.
-unsigned   getOperandType(Inst inst, unsigned operandIdx, unsigned machineModel, unsigned profile);
-
-// This function may be used to validate instruction before requesting type of operands.
-// It returns 0 for properly formed instructions and a string containing an error
-// message for malformed instructions.
-//
-// This function should be used to avoid cryptic error messages in case of malformed instructions.
-// For example, "masklane_b64 $d1, 1" has missing src type, as a result, 'getOperandType' will
-// return NONE for 2d operand which will result in 'unexpected operand' message
-//
-const char* preValidateInst(Inst inst, unsigned machineModel, unsigned profile);
 
 Inst appendInst(BrigContainer &container, unsigned instFormat);
 
-bool isImageInst(unsigned opcode);  // checks opcode only
-inline bool isGcnInst(unsigned opcode) { return (opcode & (1<<15))!=0; }
-bool isCallInst(unsigned opcode);
-bool isBranchInst(unsigned opcode);
-bool isIntArithInstr(unsigned opcode);
-bool isIntShiftInstr(unsigned opcode);
-bool isBitArithmInst(unsigned opcode);
+bool isCoreInst(Inst inst);
+bool isImageInst(Inst inst);
+bool isCoreOpcode(unsigned opcode);
+bool isImageOpcode(unsigned opcode);
+
+bool isImageInstFormat(unsigned fmt);
+bool isFtzFormat(unsigned fmt);
+
+bool isCallOpcode(unsigned opcode);
+bool isBranchOpcode(unsigned opcode);
+bool isIntArithOpcode(unsigned opcode);
+bool isIntShiftOpcode(unsigned opcode);
+bool isBitArithOpcode(unsigned opcode);
 
 // True for instructions which unconditionally change control flow
 // so that next instruction is only reachable via a jump
-bool isTermInst(unsigned opcode);
+bool isTerminalOpcode(unsigned opcode);
 
 //============================================================================
 // Operations with operands
@@ -165,6 +136,8 @@ uint32_t getImmAsU32(OperandConstantBytes opr, unsigned index = 0);
 uint64_t getImmAsU64(OperandConstantBytes opr);
 
 uint64_t getAggregateNumBytes(OperandConstantOperandList opr);
+
+const char* operandKind2str(unsigned kind);
 
 //============================================================================
 // Operations with types
@@ -216,7 +189,7 @@ unsigned   getPackedDstDim(unsigned type, unsigned packing);
 
 BrigAlignment getNaturalAlignment(unsigned type);
 BrigAlignment getMaxAlignment();
-bool                isValidAlignment(unsigned align, unsigned type);
+bool          isValidAlignment(unsigned align, unsigned type);
 
 //============================================================================
 // Misc operations

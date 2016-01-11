@@ -223,13 +223,14 @@ class BrigDumper {
 private:
     std::ostream& s;
     YamlStreambuf sbuf;
+    const ExtManager extMgr;
 
     // not copyable
     BrigDumper(const BrigDumper&);
     BrigDumper& operator=(const BrigDumper&);
 
 public:
-    explicit BrigDumper(std::ostream& s_): s(s_), sbuf(s) { }
+    explicit BrigDumper(std::ostream& s_, const ExtManager& em): s(s_), sbuf(s), extMgr(em) { }
 
     void dump(BrigContainer& c) {
         dumpPrologue(c);
@@ -443,7 +444,7 @@ private:
 
     template <typename EnumT, typename BuiltInT>
     void dumpValue(const EnumValRef<EnumT, BuiltInT>& eref) {
-        s << anyEnum2str(eref.enumValue());
+        s << extMgr.enum2str(eref.enumValue());
     }
 
     template <typename T, unsigned firstBit, unsigned width>
@@ -495,23 +496,23 @@ private:
     }
 };
 
-void dump(BrigContainer &c, std::ostream& out) {
-    BrigDumper dumper(out);
+void dump(BrigContainer &c, std::ostream& out, const ExtManager& extMgr) {
+    BrigDumper dumper(out, extMgr);
     dumper.dump(c);
 }
 
-void dumpItem(std::ostream& out, Code item) {
-    BrigDumper dumper(out);
+void dumpItem(std::ostream& out, Code item, const ExtManager& extMgr) {
+    BrigDumper dumper(out, extMgr);
     dumper.dump(item);
 }
 
-void dumpItem(std::ostream& out, Operand item) {
-    BrigDumper dumper(out);
+void dumpItem(std::ostream& out, Operand item, const ExtManager& extMgr) {
+    BrigDumper dumper(out, extMgr);
     dumper.dump(item);
 }
 
-void dumpItem(std::ostream& out, Offset offset, BrigSectionImpl* section, BrigSectionIndex id) {
-    BrigDumper dumper(out);
+void dumpItem(std::ostream& out, Offset offset, BrigSectionImpl* section, BrigSectionIndex id, const ExtManager& extMgr) {
+    BrigDumper dumper(out, extMgr);
     // ToDo: add support for dumping separate item from data section
     if (id == BRIG_SECTION_INDEX_CODE) {
         dumper.dump(Code(section, offset));

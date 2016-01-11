@@ -58,8 +58,6 @@ typedef ListRef<Operand> OperandListRef;
 
 #include "HSAILVisitItems_gen.hpp"
 
-#include "HSAILItemUtils_gen.hpp"
-
 // shortcut for "final" classes
 template<typename RetType, typename Visitor, typename Item>
 inline RetType dispatchByItemKind_gen(Item item, Visitor& vis) {

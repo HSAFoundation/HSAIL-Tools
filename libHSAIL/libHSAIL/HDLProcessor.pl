@@ -80,6 +80,14 @@ use strict;
 ####
 ####     BrigProp geom = geom_1d, geom_1db, geom_2d, geom_1da, geom_3d, geom_2da;
 ####
+#### Values of brig properties may be added using '+=' operator, for example:
+####
+####     BrigProp geom  = geom_1d;
+####     BrigProp geom += geom_1db, geom_2d;
+####     BrigProp geom += geom_1da, geom_3d, geom_2da;
+####
+#### This may be useful for HSAIL Extensions which define non-standard BRIG properties.
+####
 #### 1.3.2 BRIG BIT PROPERTIES
 ####
 #### One special case is Brig Bit properties. They do correspond to Brig fields but can
@@ -403,10 +411,18 @@ my $validateTestGen = 1; # generate validator for self-check
 ###############################################################################
 # Command Line Arguments
 
-die "Missing 'target' option" unless (@ARGV == 1);
+die "Usage: target=(testgen|validator) CommonDefinitions.hdl instDesc.hdl" unless (@ARGV == 3);
+
 die "Invalid 'target' value, expected 'validator' or 'testgen'" unless ($ARGV[0] eq "-target=testgen" || $ARGV[0] eq "-target=validator");
 my $genValidator = $ARGV[0] eq "-target=validator";
-my $className = $genValidator? "InstValidator" : "PropDescImpl";
+my $className = $genValidator? "InstValidator" : "InstSetImpl";
+
+my $lib = $ARGV[1];
+die "File '$lib' not found" unless -e($lib);
+
+my $idefs = $ARGV[2];
+die "File '$idefs' not found" unless -e($idefs);
+
 
 ###############################################################################
 ###############################################################################
@@ -473,6 +489,7 @@ my @input_tokens =
     [ 'TERM',    ';',          qr/;/                    ],
     [ 'CHK',     '?',          qr/\?/                   ],
     [ 'STAR',    '*',          qr/\*/                   ],
+    [ 'PLUS',    '+',          qr/\+/                   ],
     [ 'SLASH',   '/',          qr/\//                   ],
     [ 'LBR',     '{',          qr/{/                    ],
     [ 'RBR',     '}',          qr/}/                    ],
@@ -482,8 +499,8 @@ my @input_tokens =
     [ 'UNKNOWN', '',           qr/./                    ],
 );
 
-my $it = make_charstream(\*STDIN);
-my $lexer = make_lexer( $it, @input_tokens );
+my $it;
+my $lexer;
 
 sub make_charstream {
     my $fh = shift;
@@ -765,7 +782,10 @@ sub addPropVal
 sub markBrigProp
 {
     my $prop = shift;
-    $hdlPropType{getBaseProp($prop)} = 'brig';
+    if (!isBrigProp($prop))  ## NB: '+=' should keep properties unchanged 
+    {
+        $hdlPropType{getBaseProp($prop)} = 'brig';
+    }
 }
 
 sub markBrigBitProp
@@ -1427,13 +1447,21 @@ sub parsePropDef            # PropDef ::= { AliasName "=" } PropElement
     }
 }
 
-sub parseProp           # Prop ::= PropName "=" PropDef { "," PropDef } ";"
+                        # Prop ::= PropName "="  PropDef { "," PropDef } ";"
+sub parseProp           # Prop ::= PropName "+=" PropDef { "," PropDef } ";"
 {
     my $name = getToken('NAME');
 
-    setContext "parsing property '$name'";
-    !isBaseProp($name)  or lexError "Redefinition of property '$name'";
-    !isClone($name) or lexError "Redefinition of property clone '$name'";
+    if (trySkipToken('PLUS')) {
+        setContext "parsing extension of property '$name'";
+        isBaseProp($name) or lexError "Undefined property '$name'";
+        isBrigProp($name) or lexError "Cannot extend non-Brig property '$name'";
+        !isBrigBitProp($name) or lexError "Cannot extend BrigBit property '$name'";
+    } else {
+        setContext "parsing property '$name'";
+        !isBaseProp($name) or lexError "Redefinition of property '$name'";
+        !isClone($name) or lexError "Redefinition of property clone '$name'";
+    }
 
     $currentBaseProp = $name;
     $currentProp     = $name;
@@ -2027,7 +2055,7 @@ sub genSwitchHeader
     my ($type, $name, $args) = @_;
 
     print cpp(<<"EOT");
-        |$type ${className}::$name($args)
+        |$type ${className}::$name($args) const
         |{
         |    switch (inst.opcode())
         |    {
@@ -2209,7 +2237,7 @@ sub genReqDecl
 {
     my $name = shift;
 
-    print "    template<class T> bool " . getTargetReqName($name) . "(T inst);\n";
+    print "    template<class T> bool " . getTargetReqName($name) . "(T inst) const;\n";
 }
 
 sub genReq
@@ -2220,7 +2248,7 @@ sub genReq
     print '//', '=' x 80, "\n";
     dumpOrigReq($name, '//  ');
 
-    print "template<class T> bool InstValidator::", getTargetReqName($name), "(T inst)\n";
+    print "template<class T> bool InstValidator::", getTargetReqName($name), "(T inst) const\n";
     print "{\n";
 
     my %propVariants = ();        # list of properties used for variant selection
@@ -2573,6 +2601,30 @@ sub analyzeAttrs
     analyzePropAttrs('round', 'round', sub { return shift() eq 'round'; });
 }
 
+sub genOperandAttrDef()
+{
+    print cpp(<<"EOT");
+        |
+        |public:
+        |    unsigned getOperandAttr(Inst inst, unsigned operandIdx) const
+        |    {
+        |        switch(operandIdx)
+        |        {
+        |        case 0: return getOperand0Attr(inst);
+        |        case 1: return getOperand1Attr(inst);
+        |        case 2: return getOperand2Attr(inst);
+        |        case 3: return getOperand3Attr(inst);
+        |        case 4: return getOperand4Attr(inst);
+        |        case 5: return getOperand5Attr(inst);
+        |        default:
+        |            assert(false);
+        |            return OPERAND_ATTR_INVALID;
+        |        }
+        |    }
+        |
+EOT
+}
+
 sub genPropAttrDeclarations
 {
     for my $prop (sort keys %propAttrs)
@@ -2582,7 +2634,7 @@ sub genPropAttrDeclarations
         print cpp(<<"EOT");
             |
             |public:
-            |    unsigned $func(Inst inst);
+            |    unsigned $func(Inst inst) const;
             |
             |private:
 EOT
@@ -2593,10 +2645,12 @@ EOT
 
             if ($store && $store->{'cattr'})
             {
-                print "    template<class T> unsigned ", getTargetProp2Attr($prop, $req), "(T inst);\n";
+                print "    template<class T> unsigned ", getTargetProp2Attr($prop, $req), "(T inst) const;\n";
             }
         }
     }
+
+    genOperandAttrDef();
 }
 
 sub genHelperAttrDef
@@ -2615,7 +2669,7 @@ sub genHelperAttrDef
         die "Internal error" unless $code;
 
         print cpp(<<"EOT");
-            |template<class T> unsigned InstValidator::$reqFunc(T inst)
+            |template<class T> unsigned ${className}::$reqFunc(T inst) const
             |{
             |$code
             |    return $invalid;
@@ -2679,30 +2733,46 @@ sub genPropAttrDefinitions
 ###############################################################################
 # Main Parser
 
-setContext;
-while (my $val = getToken('NAME', 1))
+sub parseHDL
 {
-    if ($val eq 'BrigProp')        { parseBrigProp; }
-    elsif ($val eq 'BrigBitProp')  { parseBrigBitProp; }
-    elsif ($val eq 'OperandProp')  { parseOperandProp; }
-    elsif ($val eq 'ExtProp')      { parseExtProp; }
-    elsif ($val eq 'MetaProp')     { parseMetaProp; }
-    elsif ($val eq 'DependsOn')    { parseDependsOn; }
-    elsif ($val eq 'Affects')      { parseAffects; }
-    elsif ($val eq 'BrigPrefix')   { parsePrefix; }
-    elsif ($val eq 'ExtPropName')  { parseExtPropName; }
-    elsif ($val eq 'PropAccessor') { parsePropAccessor; }
-    elsif ($val eq 'Clone')        { parseClone; }
-    elsif ($val eq 'Alias')        { parseAlias; }
-    elsif ($val eq 'Attr')         { parseAttr; }
-    elsif ($val eq 'Req')          { parseReq;  }
-    elsif ($val eq 'Inst')         { parseInst; }
-    elsif ($val eq 'CustomCheck')  { parseCustomCheck; }
-    else {
-        lexError "Invalid identifier '$val', expected one of: BrigProp, Prop, Clone, Alias, Req, Inst";
-    }
+    my ($fname) = @_;
+
+    my $fd;
+    open($fd, '<', $fname);
+
+    $it = make_charstream($fd);
+    $lexer = make_lexer( $it, @input_tokens );
+
     setContext;
+    while (my $val = getToken('NAME', 1))
+    {
+        if ($val eq 'BrigProp')        { parseBrigProp; }
+        elsif ($val eq 'BrigBitProp')  { parseBrigBitProp; }
+        elsif ($val eq 'OperandProp')  { parseOperandProp; }
+        elsif ($val eq 'ExtProp')      { parseExtProp; }
+        elsif ($val eq 'MetaProp')     { parseMetaProp; }
+        elsif ($val eq 'DependsOn')    { parseDependsOn; }
+        elsif ($val eq 'Affects')      { parseAffects; }
+        elsif ($val eq 'BrigPrefix')   { parsePrefix; }
+        elsif ($val eq 'ExtPropName')  { parseExtPropName; }
+        elsif ($val eq 'PropAccessor') { parsePropAccessor; }
+        elsif ($val eq 'Clone')        { parseClone; }
+        elsif ($val eq 'Alias')        { parseAlias; }
+        elsif ($val eq 'Attr')         { parseAttr; }
+        elsif ($val eq 'Req')          { parseReq;  }
+        elsif ($val eq 'Inst')         { parseInst; }
+        elsif ($val eq 'CustomCheck')  { parseCustomCheck; }
+        else {
+            lexError "Invalid identifier '$val', expected one of: BrigProp, Prop, Clone, Alias, Req, Inst";
+        }
+        setContext;
+    }
+    
+    close $fd;
 }
+
+parseHDL($lib);
+parseHDL($idefs);
 
 ###############################################################################
 # Properties Analyzer (for TestGen only)
@@ -2776,15 +2846,16 @@ if ($ARGV[0] eq "-target=validator") {
 print $textLicense;
 print cpp(<<"EOT");
     |
-    |using HSAIL_ASM::Inst;
-    |
-    |namespace HSAIL_ASM {
-    |
     |class InstValidator : public PropValidator
     |{
+    |private:
+    |
+    |    // Autogenerated accessors for BRIG properties
+    |    #include "HSAILBrigPropsFastAcc_gen.hpp"
+    |
     |public:
     |    InstValidator(unsigned model, unsigned profile) : PropValidator(model, profile) {}
-    |    void validateInst(Inst inst);
+    |    void validateInst(Inst inst) const;
 EOT
 
 genPropAttrDeclarations();
@@ -2828,45 +2899,45 @@ EOT
 
 genPropAttrDefinitions();
 
-print cpp(<<"EOT");
-    |
-    |} // namespace HSAIL_ASM
-EOT
-
 ###############################################################################
 } elsif ($ARGV[0] eq "-target=testgen") {
 ###############################################################################
 # Main Generator - TestGen Declarations
 
 print cpp(<<"EOT");
-    |#ifdef PROPDESC
+    |using namespace HSAIL_ASM;
     |
-    |namespace HSAIL_ASM {
-    |
-    |class PropDescImpl : public PropValidator
+    |class InstSetImpl : public InstSet
     |{
-    |public:
-    |     PropDescImpl(unsigned model, unsigned profile) : PropValidator(model, profile) {}
+    |private: 
+    |
+    |    // Autogenerated accessors for BRIG properties
+    |    #include "HSAILBrigPropsFastAcc_gen.hpp"
     |
     |public:
-    |    static const unsigned* getPropVals(unsigned propId, unsigned& num); // should include XXX_VAL_INVALID for invalid values (non-brig only)
-    |    static bool isBrigProp(unsigned propId);
+    |     InstSetImpl(unsigned model, unsigned profile, const Extension* e) : InstSet(model, profile, e) {}
     |
     |public:
-    |    static       unsigned  getFormat(unsigned opcode);
-    |    static const unsigned* getOpcodes(unsigned& num);
-    |    static const unsigned* getProps(unsigned opcode, unsigned& prm, unsigned& sec);
-    |    static const unsigned* getPropVals(unsigned opcode, unsigned propId, unsigned& num);
+    |    virtual const unsigned* getPropVals(unsigned propId, unsigned& num) const; // should include XXX_VAL_INVALID for invalid values (non-brig only)
     |
     |public:
-    |    bool isValidProp(Inst inst, unsigned propId);
-    |    bool validatePrimaryProps(Inst inst);
-    |    bool isValidInst(Inst inst); // for debugging only
+    |    virtual       unsigned  getFormat(unsigned opcode) const;
+    |    virtual const unsigned* getOpcodes(unsigned& num) const;
+    |    virtual const unsigned* getProps(unsigned opcode, unsigned& prm, unsigned& sec) const;
+    |    virtual const unsigned* getPropVals(unsigned opcode, unsigned propId, unsigned& num) const;
+    |    virtual const InstCategory* getCategories(unsigned& num) const;
+    |
+    |public:
+    |    virtual bool isValidProp(Inst inst, unsigned propId) const;
+    |    virtual bool validatePrimaryProps(Inst inst) const;
+    |    virtual bool isValidInst(Inst inst) const; // for debugging only
     |
     |private:
     |    static unsigned OPCODES[];
+    |    static const InstCategory CATEGORIES[];
 EOT
 
+genPropAttrDeclarations();
 genCommonDeclarations();
 
 print "\nprivate:\n";
@@ -2890,14 +2961,14 @@ for my $inst (getRegisteredInst()) {
 
 print "\nprivate:\n";
 for my $inst (getRegisteredInst()) {
-    print '    template<class T> bool ', getTargetChkReqPropName($inst), "(T inst, unsigned propId);\n";
+    print '    template<class T> bool ', getTargetChkReqPropName($inst), "(T inst, unsigned propId) const;\n";
 }
 
 if ($validateTestGen)
 {
     print "\nprivate:\n";
     for my $inst (getRegisteredInst()) {
-        print '    template<class T> bool ', getTargetReqValidatorName($inst), "(T inst);\n";
+        print '    template<class T> bool ', getTargetReqValidatorName($inst), "(T inst) const;\n";
     }
 }
 
@@ -2907,34 +2978,35 @@ print cpp(<<"EOT");
 EOT
 
 genCommonDefinitions();
+genPropAttrDefinitions();
 
 #-------------------------------------------------------------------------------
 # isBrigProp
 
-setContext "generating isBrigProp";
-
-print cpp(<<"EOT");
-    |bool ${className}::isBrigProp(unsigned propId)
-    |{
-    |    switch(propId)
-    |    {
-EOT
-
-for my $prop (sort keys %hdlProp) {
-    print '    case ', getTargetPropName($prop), ': return ', (isBrigProp($prop)? 'true' : 'false'), ";\n";
-}
-
-for my $clone (sort keys %hdlClone) {
-    print '    case ', getTargetPropName($clone), ': return ', (isBrigProp($hdlClone{$clone})? 'true' : 'false'), ";\n";
-}
-
-print cpp(<<"EOT");
-    |    }
-    |    assert(false);
-    |    return false;
-    |}
-    |
-EOT
+### setContext "generating isBrigProp";
+### 
+### print cpp(<<"EOT");
+###     |bool ${className}::isBrigProp(unsigned propId)
+###     |{
+###     |    switch(propId)
+###     |    {
+### EOT
+### 
+### for my $prop (sort keys %hdlProp) {
+###     print '    case ', getTargetPropName($prop), ': return ', (isBrigProp($prop)? 'true' : 'false'), ";\n";
+### }
+### 
+### for my $clone (sort keys %hdlClone) {
+###     print '    case ', getTargetPropName($clone), ': return ', (isBrigProp($hdlClone{$clone})? 'true' : 'false'), ";\n";
+### }
+### 
+### print cpp(<<"EOT");
+###     |    }
+###     |    assert(false);
+###     |    return false;
+###     |}
+###     |
+### EOT
 
 #-------------------------------------------------------------------------------
 # getOpcodes
@@ -2955,7 +3027,7 @@ for my $name (@hdlInstList)
 print cpp(<<"EOT");
     |};
     |
-    |const unsigned* ${className}::getOpcodes(unsigned& num)
+    |const unsigned* ${className}::getOpcodes(unsigned& num) const
     |{
     |    num = sizeof(OPCODES) / sizeof(unsigned);
     |    return OPCODES;
@@ -2964,12 +3036,38 @@ print cpp(<<"EOT");
 EOT
 
 #-------------------------------------------------------------------------------
-# getFormat
+# getCategories
 
-setContext "generating getOpcodes";
+setContext "generating getCategories";
 
 print cpp(<<"EOT");
-    |unsigned ${className}::getFormat(unsigned opcode)
+    |const InstCategory ${className}::CATEGORIES[] =
+    |{
+EOT
+
+for my $name (sort keys %hdlInst)
+{
+    print "    {", getTargetCategoryName(getInstCategory($name)), ", ", getTargetInstName($name), "},\n";
+}
+
+print cpp(<<"EOT");
+    |};
+    |
+    |const InstCategory* ${className}::getCategories(unsigned& num) const
+    |{
+    |    num = sizeof(CATEGORIES) / sizeof(InstCategory);
+    |    return CATEGORIES;
+    |}
+    |
+EOT
+
+#-------------------------------------------------------------------------------
+# getFormat
+
+setContext "generating getFormat";
+
+print cpp(<<"EOT");
+    |unsigned ${className}::getFormat(unsigned opcode) const
     |{
     |    switch(opcode)
     |    {
@@ -3042,7 +3140,7 @@ sub printPropValsCode
 }
 
 print cpp(<<"EOT");
-    |const unsigned* ${className}::getPropVals(unsigned propId, unsigned& num) // should include XXX_VAL_INVALID for invalid values (non-brig only)
+    |const unsigned* ${className}::getPropVals(unsigned propId, unsigned& num) const // should include XXX_VAL_INVALID for invalid values (non-brig only)
     |{
     |    switch(propId)
     |    {
@@ -3085,7 +3183,7 @@ for my $inst (getRegisteredInst())
 }
 
 print cpp(<<"EOT");
-    |const unsigned* ${className}::getProps(unsigned opcode, unsigned& prm, unsigned& sec)
+    |const unsigned* ${className}::getProps(unsigned opcode, unsigned& prm, unsigned& sec) const
     |{
     |    switch(opcode)
     |    {
@@ -3129,7 +3227,7 @@ for my $inst (getRegisteredInst()) {
 }
 
 print cpp(<<"EOT");
-    |const unsigned* ${className}::getPropVals(unsigned opcode, unsigned propId, unsigned& num)
+    |const unsigned* ${className}::getPropVals(unsigned opcode, unsigned propId, unsigned& num) const
     |{
     |    switch(opcode)
     |    {
@@ -3312,7 +3410,7 @@ sub genIsValidProp
 
 for my $inst (getRegisteredInst())
 {
-    print "template<class T> bool ${className}::", getTargetChkReqPropName($inst), "(T inst, unsigned propId)\n";
+    print "template<class T> bool ${className}::", getTargetChkReqPropName($inst), "(T inst, unsigned propId) const\n";
     print "{\n";
     print "    switch(propId)\n";
     print "    {\n";
@@ -3354,7 +3452,7 @@ genSwitchFooter('isValidProp', sub { return 'assert(false); return false;' });
 
 print cpp(<<"EOT");
     |
-    |bool ${className}::validatePrimaryProps(Inst inst)
+    |bool ${className}::validatePrimaryProps(Inst inst) const
     |{
     |    unsigned prm;
     |    unsigned sec;
@@ -3393,7 +3491,7 @@ sub genIsValid
 if ($validateTestGen)
 {
     for my $inst (getRegisteredInst()) {
-        print "template<class T> bool ${className}::", getTargetReqValidatorName($inst), "(T inst)\n";
+        print "template<class T> bool ${className}::", getTargetReqValidatorName($inst), "(T inst) const\n";
         print "{\n";
 
         genIsValidInst($inst);
@@ -3412,37 +3510,6 @@ if ($validateTestGen)
 
     genSwitchFooter('isValidInst', sub { return 'assert(false); return false;' });
 }
-
-print cpp(<<"EOT");
-    |
-    |} // namespace HSAIL_ASM
-    |
-    |#endif // PROPDESC
-EOT
-
-#-------------------------------------------------------------------------------
-# Categories
-
-print cpp(<<"EOT");
-    |
-    |//================================================================================
-    |
-    |#ifdef CATEGORIES
-    |
-    |CategoryDesc baseCategories[] =
-    |{
-EOT
-
-for my $name (sort keys %hdlInst)
-{
-    print "    {", getTargetCategoryName(getInstCategory($name)), ", ", getTargetInstName($name), "},\n";
-}
-
-print cpp(<<"EOT");
-    |}; // baseCategories
-    |
-    |#endif // CATEGORIES
-EOT
 
 ###############################################################################
 } # -target=testgen

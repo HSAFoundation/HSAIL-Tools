@@ -38,47 +38,64 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS WITH THE
 // SOFTWARE.
-//===-- HSAILValidator.cpp - HSAIL Validator ----------------------===//
 
-#ifndef INCLUDED_HSAIL_VALIDATOR_H
-#define INCLUDED_HSAIL_VALIDATOR_H
+#include "HSAILAmdExt.h"
+#include "HSAILImageExt.h"
 
-#include "HSAILBrigContainer.h"
-#include "HSAILExtManager.h"
-#include "HSAILItemBase.h"
-#include "HSAILItems.h"
-#include <iostream>
-#include <string>
+namespace amd { namespace hsail { 
 
-using std::istream;
-using std::ostream;
+#define AMD_EXTENSIONS_NUM (2)
 
-namespace HSAIL_ASM {
+static const Extension* amdExtensions[AMD_EXTENSIONS_NUM + 1];
 
-//============================================================================
-
-class ValidatorImpl;
-
-class Validator
+const Extension** getExtensions()
 {
-    ValidatorImpl *impl;
+    const Extension** e = amdExtensions;
+    if (!*e)
+    {
+        *e++ = gcn::getExtension();
+        *e++ = mipmap::getExtension();
+        *e++ = 0;
 
-    Validator(const Validator&); // non-copyable
-    const Validator &operator=(const Validator &); // not assignable
+        assert(amdExtensions + AMD_EXTENSIONS_NUM + 1 == e);
+    }
+    return amdExtensions;
+}
 
-    //==========================================================================
-    // Public Validator API
+class AmdExtManager : public ExtManager 
+{
 public:
-    Validator(BrigContainer &c, const ExtManager& extMgr = registeredExtensions());
-    ~Validator();
-
-    bool validate(bool disasmOnError = false) const;
-
-    std::string getErrorMsg(istream *is) const;
-    void dumpError(ostream* os) const;
-    int getErrorCode() const;
+    AmdExtManager() 
+    {
+        registerExtension(gcn::getExtension());
+        registerExtension(mipmap::getExtension());
+    }
 };
 
-} // namespace HSAIL_ASM
+const ExtManager& extensions()
+{
+    static const AmdExtManager amdExtMgr;
+    return amdExtMgr;
+}
 
-#endif
+class AmdExtensionsRegistration
+{
+public:
+    AmdExtensionsRegistration() 
+    {
+        if (!registerExtension(gcn::getExtension())) { assert(false); }
+        if (!registerExtension(mipmap::getExtension())) { assert(false); }
+    }
+};
+
+// Automatic registration of AMD extensions
+// NB: does not work on Windows
+const AmdExtensionsRegistration amdExtRegistration;
+
+void registerExtensions()
+{
+    extensions();
+}
+
+}} // end of namespaces
+

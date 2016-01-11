@@ -44,6 +44,7 @@
 #define INCLUDED_HSAIL_DISASSEMBLER_H
 
 #include "HSAILBrigContainer.h"
+#include "HSAILExtManager.h"
 #include "HSAILItems.h"
 #include "HSAILUtilities.h"
 #include "HSAILFloats.h"
@@ -67,6 +68,7 @@ class Disassembler {
 private:
     BrigContainer&        brig;
     std::ostream*         err;
+    mutable ExtManager    extMgr;
 
     mutable std::ostream *stream;
     mutable int           indent;
@@ -88,8 +90,8 @@ public:
         PrintInstOffset = 4
     };
 
-    Disassembler(BrigContainer& c, EFloatDisassemblyMode fmode=FloatDisassemblyModeRawBits)
-        : brig(c), err(0), stream(0), indent(0), hasErr(false),
+    Disassembler(BrigContainer& c, const ExtManager& em = registeredExtensions(), EFloatDisassemblyMode fmode=FloatDisassemblyModeRawBits)
+        : brig(c), err(0), extMgr(em), stream(0), indent(0), hasErr(false),
           mModel(BRIG_MACHINE_LARGE), mProfile(BRIG_PROFILE_FULL),
           m_options(fmode)
     {}
@@ -113,7 +115,8 @@ public:
         return "";
       }
     }
-    static std::string getInstMnemonic(Inst inst, unsigned model, unsigned profile);
+
+    static std::string getInstMnemonic(Inst inst, unsigned model, unsigned profile, const ExtManager& mgr = registeredExtensions());
 
     void log(std::ostream &s);                 // Request errors logging into stream s
     bool hasError() const { return hasErr; }   // Return error flag
@@ -221,10 +224,14 @@ private:
     //-------------------------------------------------------------------------
     // BRIG properties
 
+    const char* propVal2mnemo(unsigned prop, unsigned val) const;
+    const char* propVal2mnemo(unsigned prop, unsigned val, unsigned dflt) const;
+    const char* propVal2mnemo(unsigned prop, unsigned val, unsigned df1, unsigned df2) const;
+
     const char* opcode2str(unsigned opcode) const;
     const char* type2str(unsigned t) const;
     const char* pack2str(unsigned t) const;
-    const char* seg2str(BrigSegment8_t  segment) const;
+    const char* seg2str(unsigned segment) const;
     const char* cmpOp2str(unsigned opcode) const;
     const char* atomicOperation2str(unsigned op) const;
     const char* imageGeometry2str(unsigned g) const;
@@ -266,30 +273,57 @@ private:
     // Formatting
 
     template<typename T>
-    void printValue(T val) const {
+    const string value2str(T val) const
+    {
         typedef typename std::make_signed<T>::type S;
         S aval = (S)val;
         if (aval < 0) aval = -aval;
         bool not_pow2 = (aval & (aval - 1)) != 0;
         S hex_thresh = not_pow2 ? 256 : 8192;
-        if (aval <= hex_thresh) {
-            *stream << (S)val;
-            return;
+        if (aval <= hex_thresh)
+        {
+            std::stringstream res;
+            res << (S)val;
+            return res.str();
         }
-        if (not_pow2) {
+        if (not_pow2)
+        {
             std::stringstream d;
             d << (S)val;
             int czero = 0;
-            for (char c : d.str()) {
-                if (c == '0') {
-                    if (++czero == 3) {
-                        *stream << d.str();
-                        return;
+            for (char c : d.str())
+            {
+                if (c == '0')
+                {
+                    if (++czero == 3)
+                    {
+                        return d.str();
                     }
-                } else czero = 0;
+                }
+                else
+                {
+                    czero = 0;
+                }
             }
         }
-        *stream << std::hex << std::showbase << val << std::dec;
+        std::stringstream res;
+        res << std::hex << std::showbase << val << std::dec;
+        return res.str();
+    }
+
+    template<typename T>
+    void printValue(T val) const
+    {
+        *stream << value2str(val);
+    }
+    
+    // Operands of control directives cannot start with '-'
+    template<typename T>
+    void printCtlDirValue(T val) const
+    {
+        const string res = value2str(val);
+        if (res.size() > 0 && res[0] != '-') *stream << res;
+        else *stream << std::hex << std::showbase << val << std::dec;
     }
 
     void printValue(char arg) const { *stream << (int)arg; }
@@ -371,7 +405,12 @@ private:
     std::string getImpl(T d) const {
         std::ostringstream os;
         stream = &os;
+        
+        // Preserve state of extensions (enabled/disabled)
+        ExtManager tmp = extMgr;
         if (d) printBrig(d);
+        extMgr = tmp;
+
         return os.str();
     }
     void printBrig(Directive d) const { printDirective(d, true); }

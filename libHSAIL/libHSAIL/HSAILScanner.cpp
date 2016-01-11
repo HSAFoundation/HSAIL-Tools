@@ -160,12 +160,13 @@ public:
     }
 };
 
-Scanner::Scanner(std::istream& is,bool disableComments)
+Scanner::Scanner(std::istream& is, const ExtManager& extMgr, bool disableComments)
     : StreamScannerBase(is)
     , m_peekToken(NULL)
     , m_lineNum(0)
     , m_lineStart(0)
     , m_disableComments(disableComments)
+    , m_extMgr(extMgr)
 {
 
     m_pool[0].m_scanner = this;
@@ -210,7 +211,9 @@ Scanner::CToken& Scanner::scan(EScanContext ctx)
     if (m_peekToken==NULL) {
         m_curToken = &scanNext(ctx);
     } else {
-        peek(ctx); // rescan if needed
+        if (m_peekToken->kind() != EEndOfSource) {
+            peek(ctx); // rescan if needed
+        }
         m_curToken  = m_peekToken;
         m_peekToken = NULL;
     }
@@ -248,6 +251,13 @@ Scanner::Token& Scanner::scanNext(EScanContext ctx)
         t.m_lineNum = m_lineNum;
         t.m_kind = scanDefault(/*in*/ctx, /*in/out*/t);
     }
+
+    // Whitespace is required between lexical tokens that can include alphabetic or numeric characters
+    const char* const pos = t.m_text.end;
+    if (!t.text().empty() && isAlphaNum(*(pos-1)) && (isAlpha(*pos) || strchr("&%$@\".", *pos) != 0)) {
+        throw LexError("missing white space", srcLoc(pos));
+    }
+
     return t;
 }
 
@@ -267,16 +277,21 @@ SrcLoc Scanner::srcLoc(const char* pos) const {
 uint64_t Scanner::readIntLiteral()
 {
     using namespace std;
-    uint64_t v;
-    switch(eatToken(EIntLiteral)) {
-    case ELitDecimal:
-        istringstreamalert(m_curToken->text()) >> dec >> v;        break;
-    case ELitOctal:
-        istringstreamalert(m_curToken->text().substr(1)) >> oct >> v; break;
-    case ELitHex:
-        istringstreamalert(m_curToken->text().substr(2)) >> hex >> v; break;
-    default:
-        assert(0);
+    uint64_t v = 0;
+
+    try {
+        switch(eatToken(EIntLiteral)) {
+        case ELitDecimal:
+            istringstreamalert(m_curToken->text()) >> dec >> v;        break;
+        case ELitOctal:
+            istringstreamalert(m_curToken->text().substr(1)) >> oct >> v; break;
+        case ELitHex:
+            istringstreamalert(m_curToken->text().substr(2)) >> hex >> v; break;
+        default:
+            assert(0);
+        }
+    } catch (const istringstream::failure&) {
+        syntaxError("invalid literal");
     }
     return v;
 }
@@ -284,31 +299,30 @@ uint64_t Scanner::readIntLiteral()
 f16_t Scanner::readF16Literal()
 {
     using namespace std;
-    switch(eatToken(EF16Literal)) {
-    case ELitDecimal:
-        {
-            float v;
-            istringstreamalert(m_curToken->text()) >> v;
-            return f16_t(f32_t(&v));
+
+    try {
+        switch(eatToken(EF16Literal)) {
+        case ELitDecimalWithSuffix:
+            {
+                float v;
+                istringstreamalert(m_curToken->text().rsubstr(1)) >> v;
+                return f16_t(f32_t(&v));
+            }
+        case ELitHex:
+            {
+                IEEE754Traits<f16_t>::RawBitsType v;
+                istringstreamalert(m_curToken->text().substr(2)) >> hex >> v;
+                return f16_t::fromRawBits(v);
+            }
+        case ELitC99:
+            {
+                return readC99<f16_t>(m_curToken->text());
+            }
+        default:
+            assert(0);
         }
-    case ELitDecimalWithSuffix:
-        {
-            float v;
-            istringstreamalert(m_curToken->text().rsubstr(1)) >> v;
-            return f16_t(f32_t(&v));
-        }
-    case ELitHex:
-        {
-            IEEE754Traits<f16_t>::RawBitsType v;
-            istringstreamalert(m_curToken->text().substr(2)) >> hex >> v;
-            return f16_t::fromRawBits(v);
-        }
-    case ELitC99:
-        {
-            return readC99<f16_t>(m_curToken->text());
-        }
-    default:
-        assert(0);
+    } catch (const istringstream::failure&) {
+        syntaxError("invalid literal");
     }
     return f16_t();
 }
@@ -316,31 +330,30 @@ f16_t Scanner::readF16Literal()
 f32_t Scanner::readF32Literal()
 {
     using namespace std;
-    switch(eatToken(EF32Literal)) {
-    case ELitDecimal:
-        {
-            float v;
-            istringstreamalert(m_curToken->text()) >> v;
-            return f32_t(&v);
+
+    try {
+        switch(eatToken(EF32Literal)) {
+        case ELitDecimalWithSuffix:
+            {
+                float v;
+                istringstreamalert(m_curToken->text().rsubstr(1)) >> v;
+                return f32_t(&v);
+            }
+        case ELitHex:
+            {
+                IEEE754Traits<f32_t>::RawBitsType v;
+                istringstreamalert(m_curToken->text().substr(2)) >> hex >> v;
+                return f32_t::fromRawBits(v);
+            }
+        case ELitC99:
+            {
+                return readC99<f32_t>(m_curToken->text());
+            }
+        default:
+            assert(0);
         }
-    case ELitDecimalWithSuffix:
-        {
-            float v;
-            istringstreamalert(m_curToken->text().rsubstr(1)) >> v;
-            return f32_t(&v);
-        }
-    case ELitHex:
-        {
-            IEEE754Traits<f32_t>::RawBitsType v;
-            istringstreamalert(m_curToken->text().substr(2)) >> hex >> v;
-            return f32_t::fromRawBits(v);
-        }
-    case ELitC99:
-        {
-            return readC99<f32_t>(m_curToken->text());
-        }
-    default:
-        assert(0);
+    } catch (const istringstream::failure&) {
+        syntaxError("invalid literal");
     }
     return f32_t();
 }
@@ -348,31 +361,36 @@ f32_t Scanner::readF32Literal()
 f64_t Scanner::readF64Literal()
 {
     using namespace std;
-    switch(eatToken(EF64Literal)) {
-    case ELitDecimal:
-        {
-            double v;
-            istringstreamalert(m_curToken->text()) >> v;
-            return f64_t(&v);
+
+    try {
+        switch(eatToken(EF64Literal)) {
+        case ELitDecimal:
+            {
+                double v;
+                istringstreamalert(m_curToken->text()) >> v;
+                return f64_t(&v);
+            }
+        case ELitDecimalWithSuffix:
+            {
+                double v;
+                istringstreamalert(m_curToken->text().rsubstr(1)) >> v;
+                return f64_t(&v);
+            }
+        case ELitHex:
+            {
+                IEEE754Traits<f64_t>::RawBitsType v;
+                istringstreamalert(m_curToken->text().substr(2)) >> hex >> v;
+                return f64_t::fromRawBits(v);
+            }
+        case ELitC99:
+            {
+                return readC99<f64_t>(m_curToken->text());
+            }
+        default:
+            assert(0);
         }
-    case ELitDecimalWithSuffix:
-        {
-            double v;
-            istringstreamalert(m_curToken->text().rsubstr(1)) >> v;
-            return f64_t(&v);
-        }
-    case ELitHex:
-        {
-            IEEE754Traits<f64_t>::RawBitsType v;
-            istringstreamalert(m_curToken->text().substr(2)) >> hex >> v;
-            return f64_t::fromRawBits(v);
-        }
-    case ELitC99:
-        {
-            return readC99<f64_t>(m_curToken->text());
-        }
-    default:
-        assert(0);
+    } catch (const istringstream::failure&) {
+        syntaxError("invalid literal");
     }
     return f64_t();
 }
@@ -541,8 +559,12 @@ void Scanner::throwTokenExpected(ETokens token, const char* message, const SrcLo
     syntaxError(std::string(message) + " expected", loc);
 }
 
+static const char* ALPHA    = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
+static const char* ALPHANUM = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
 
-
+bool Scanner::isAlpha(char ch)    { return strchr(ALPHA,    ch) != 0; }
+bool Scanner::isAlphaNum(char ch) { return strchr(ALPHANUM, ch) != 0; }
 
 } // end namespace
 
+   

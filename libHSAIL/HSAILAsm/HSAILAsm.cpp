@@ -57,6 +57,9 @@
 #include "llvm/Support/Signals.h"
 
 #include "HSAILTool.h"
+#include "HSAILExtManager.h"
+#include "HSAILImageExt.h"
+#include "HSAILAmdExt.h"
 
 #ifdef WITH_LIBBRIGDWARF
 #include "BrigDwarfGenerator.h"
@@ -73,6 +76,7 @@ int main(int argc, char **argv) {
     sys::PrintStackTraceOnErrorSignal();
     PrettyStackTraceProgram X(argc, argv);
 
+    amd::hsail::registerExtensions();
     Tool tool;
 
     DEBUG(tool.SetEnableComments(true));

@@ -1,0 +1,444 @@
+// University of Illinois/NCSA
+// Open Source License
+//
+// Copyright (c) 2013-2015, Advanced Micro Devices, Inc.
+// All rights reserved.
+//
+// Developed by:
+//
+//     HSA Team
+//
+//     Advanced Micro Devices, Inc
+//
+//     www.amd.com
+//
+// Permission is hereby granted, free of charge, to any person obtaining a copy of
+// this software and associated documentation files (the "Software"), to deal with
+// the Software without restriction, including without limitation the rights to
+// use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies
+// of the Software, and to permit persons to whom the Software is furnished to do
+// so, subject to the following conditions:
+//
+//     * Redistributions of source code must retain the above copyright notice,
+//       this list of conditions and the following disclaimers.
+//
+//     * Redistributions in binary form must reproduce the above copyright notice,
+//       this list of conditions and the following disclaimers in the
+//       documentation and/or other materials provided with the distribution.
+//
+//     * Neither the names of the LLVM Team, University of Illinois at
+//       Urbana-Champaign, nor the names of its contributors may be used to
+//       endorse or promote products derived from this Software without specific
+//       prior written permission.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
+// FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SHALL THE
+// CONTRIBUTORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS WITH THE
+// SOFTWARE.
+
+// ============================================================================
+// ============================================================================
+// DEFINITION OF BRIG PROPERTIES
+// ============================================================================
+// ============================================================================
+
+// ============================================================================
+// Instruction/operand type
+
+BrigProp type =
+
+    none,
+
+    b  = b(1, 8, 16, 32, 64, 128),
+    s  = s(8, 16, 32, 64),
+    u  = u(8, 16, 32, 64),
+    f  = f(16, 32, 64),
+
+    sx.32  = s(8x4, 16x2),
+    sx.64  = s(8x8, 16x4, 32x2),
+    sx.128 = s(8x16, 16x8, 32x4, 64x2),
+
+    ux.32  = u(8x4, 16x2),
+    ux.64  = u(8x8, 16x4, 32x2),
+    ux.128 = u(8x16, 16x8, 32x4, 64x2),
+
+    fx.32  = f(16x2),
+    fx.64  = f(16x4, 32x2),
+    fx.128 = f(16x8, 32x4, 64x2),
+
+    roimg, rwimg, woimg, samp, sig32, sig64;
+
+Alias sx = sx.(32, 64, 128);
+Alias ux = ux.(32, 64, 128);
+Alias fx = fx.(32, 64, 128);
+
+Alias x    = (s, u, f)x;
+Alias x.32 = (s, u, f)x.32;
+Alias x.64 = (s, u, f)x.64;
+
+Alias s8x  = s(8x4, 8x8, 8x16);
+Alias s16x = s(16x2, 16x4, 16x8);
+Alias s32x = s(32x2, 32x4);
+Alias s64x = s(64x2);
+
+Alias u8x  = u(8x4, 8x8, 8x16);
+Alias u16x = u(16x2, 16x4, 16x8);
+Alias u32x = u(32x2, 32x4);
+Alias u64x = u(64x2);
+
+Alias f16x = f(16x2, 16x4, 16x8);
+Alias f32x = f(32x2, 32x4);
+Alias f64x = f(64x2);
+
+Alias opaque = roimg, rwimg, woimg, samp, sig32, sig64;
+Alias img    = roimg, rwimg, woimg, samp;
+Alias sig    = sig32, sig64;
+
+Clone stype;   ExtPropName sourceType;  // src type
+Clone itype;   ExtPropName imageType;   // image type
+Clone ctype;   ExtPropName coordType;   // coord type
+Clone sigtype; ExtPropName signalType;  // signal type
+
+// ============================================================================
+// Segment
+
+BrigProp segment =
+    none,
+    flat,
+    global,
+    group,
+    private,
+    kernarg,
+    readonly,
+    spill,
+    arg;
+
+Alias any      = global, group, private, spill, arg, flat, kernarg, readonly;
+Alias writable = global, group, private, spill, arg, flat;
+Alias std      = global, group, private, spill, arg;
+
+// ============================================================================
+// Special type checks
+
+MetaProp typesize =
+    atomic, // type size must be 32 for small model and 32/64 for large model
+    model,  // type size must be 32 or 64 depending on machine model
+    signal, // type size must be sig32 or sig64 depending on machine model
+    seg;    // type must be b32/b64 depending on _instruction_ segment
+
+Affects type, segment;
+
+MetaProp stypesize = model, seg;
+
+Affects stype;
+
+// ============================================================================
+// CMP Operators
+
+BrigProp compare =
+    eq,   ne,   lt,   le,   gt,   ge,
+    equ,  neu,  ltu,  leu,  gtu,  geu,
+    seq,  sne,  slt,  sle,  sgt,  sge,
+    sequ, sneu, sltu, sleu, sgeu, sgtu,
+
+    num,  snum,
+    nan,  snan;
+
+// ============================================================================
+// Packing
+
+BrigProp pack =
+    none,
+    p, s,
+    pp, ps, sp, ss,
+    ppsat, pssat, spsat, sssat,
+    ssat, psat;
+
+Alias bin       = pp, ps, sp, ss, ppsat, pssat, spsat, sssat;
+Alias bin.nosat = pp, ps, sp, ss;
+
+PropAccessor packEx;
+
+// ============================================================================
+// Rounding
+
+BrigProp round =
+    none,
+    float   = (float_default, float_near_even, float_zero, float_plus_infinity, float_minus_infinity).default,
+    int     = (integer_near_even, integer_zero, integer_plus_infinity, integer_minus_infinity,
+               integer_near_even_sat, integer_zero_sat, integer_plus_infinity_sat, integer_minus_infinity_sat,
+               integer_signaling_near_even, integer_signaling_zero, integer_signaling_plus_infinity, integer_signaling_minus_infinity,
+               integer_signaling_near_even_sat, integer_signaling_zero_sat, integer_signaling_plus_infinity_sat, integer_signaling_minus_infinity_sat).zero;
+
+Attr default, zero; // Default values
+
+PropAccessor roundEx;
+CustomCheck;
+
+// ============================================================================
+// FTZ Modifier
+
+BrigBitProp ftz;
+
+PropAccessor ftzEx;
+CustomCheck;
+
+// ============================================================================
+// Const Modifier
+
+BrigBitProp const;
+
+ExtPropName isConst;
+
+// ============================================================================
+// NoNull Modifier
+
+BrigBitProp nonull;
+
+ExtPropName isNoNull;
+
+// ============================================================================
+// Align Modifier
+
+BrigProp align =
+    none,
+    1,
+    2,
+    4,
+    8,
+    16,
+    32,
+    64,
+    128,
+    256;
+
+Alias any  = * / none;
+
+BrigPrefix ALIGNMENT;
+
+// ============================================================================
+// Equivalence Class
+
+ExtProp eqclass = 0, any;
+
+ExtPropName equivClass;
+
+// ============================================================================
+// Memory Order
+
+BrigProp memord =
+    none,
+    acq = sc_acquire,
+    rel = sc_release,
+    ar  = sc_acquire_release,
+    rlx = relaxed;
+
+Alias any  = * / none;
+Alias wait = * / (none, ar, rel);
+Alias ld   = * / (none, ar, rel);
+Alias st   = * / (none, ar, acq);
+
+BrigPrefix  MEMORY_ORDER;
+ExtPropName memoryOrder;
+
+// ============================================================================
+// Memory Scope
+
+BrigProp memscp =
+    none,
+    wv  = wavefront,
+    wg  = workgroup,
+    agt = agent,
+    sys = system,
+    wi  = workitem;
+
+Alias std = wv, wg, agt, sys;
+
+BrigPrefix  MEMORY_SCOPE;
+ExtPropName memoryScope;
+
+Clone memscpglobal; ExtPropName globalSegmentMemoryScope;
+
+Clone memscpgroup; ExtPropName groupSegmentMemoryScope;
+
+Clone memscpimage; ExtPropName imageSegmentMemoryScope;
+
+// ============================================================================
+// Atomic Operations
+
+BrigProp atmop =
+    generic     = (add, sub,
+                   and, or, xor),
+    atomic      = (wrapinc, wrapdec,
+                   max, min),
+    special     = (cas, exch, ld, st),
+    wait        = (wait_eq, wait_ne, wait_lt, wait_gte),
+    waittimeout = (waittimeout_eq, waittimeout_ne, waittimeout_lt, waittimeout_gte);
+
+BrigPrefix   ATOMIC;
+ExtPropName  atomicOperation;
+
+Clone sigop; ExtPropName signalOperation;
+
+// ============================================================================
+// Image Geometry
+
+BrigProp geometry =
+    1d,  2d,  3d,
+    1db, 1da, 2da,
+    2ddepth, 2dadepth;
+
+Alias any = *;
+
+// ============================================================================
+// Image Query
+
+BrigProp iprop = width, height, depth, array, channeltype, channelorder;
+
+Alias any = *;
+
+BrigPrefix IMAGE_QUERY;
+ExtPropName imageQuery;
+
+// ============================================================================
+// Sampler Query
+
+BrigProp sprop = addressing, coord, filter;
+
+Alias any = *;
+
+BrigPrefix SAMPLER_QUERY;
+ExtPropName samplerQuery;
+
+// ============================================================================
+// Width
+
+BrigProp width =
+    none,
+    (1,
+     2,
+     4,
+     8,
+     16,
+     32,
+     64,
+     128,
+     256,
+     512,
+     1024,
+     2048,
+     4096,
+     8192,
+     16384,
+     32768,
+     65536,
+     131072,
+     262144,
+     524288,
+     1048576,
+     2097152,
+     4194304,
+     8388608,
+     16777216,
+     33554432,
+     67108864,
+     134217728,
+     268435456,
+     536870912,
+     1073741824,
+     2147483648,
+     wavesize,
+     all).(1, wavesize, all); // suffix is the default value
+
+Alias any.1    = *.1;
+Alias any.all  = *.all;
+Alias any.ws   = *.wavesize;
+Alias wavesize = wavesize.wavesize;
+Alias all      = all.all;
+
+Attr all, wavesize, 1; // Default values
+
+// ============================================================================
+// Operands
+
+OperandProp operand =
+    null,
+    jumptab, calltab, signature, // NB: no type
+    arglist,                     // NB: no type
+    lab,
+    func, ifunc, //F1.0 remove ifunc & OPERAND_VAL_IFUNC
+    kernel,
+    fbarrier.u32,
+    addr.(seg,              // 1) address size must match _instruction_ segment size;
+                            // 2) if inst.segment=flat, address must be flat
+                            // 3) addresses in arg and spill segments must include a symbol
+                            // 4) if address includes a symbol, symbol.segment must be the same as instr.segment
+
+          tseg),            // 1+2+3+4
+                            // 5) opaque symbols used in address must match instruction type
+
+    (imm0T2, imm0T3).u32,
+    (reg, vec.2, vec.3, vec.4, imm, cnst).(b1, b8, b16, b32, b64, b128, 
+                                               u8, u16, u32, u64, 
+                                               s8, s16, s32, s64, 
+                                                   f16, f32, f64, 
+                                           p2u, dtype, stype, ctype),
+    reg.(samp, sig32, sig64, itype);
+
+Alias reg    = reg.dtype;
+Alias vec.2  = vec.2.dtype;
+Alias vec.3  = vec.3.dtype;
+Alias vec.4  = vec.4.dtype;
+Alias imm    = imm.dtype;
+Alias cnst   = cnst.dtype;
+
+Alias vector = vec.(2, 3, 4);
+
+Clone  d0, d1, s0, s1, s2, s3, s4, s5;
+
+Attr dtype, stype, ctype, itype, p2u, seg, tseg,
+     b1, b8, b16, b32, b64, b128, 
+         u8, u16, u32, u64, 
+         s8, s16, s32, s64, 
+             f16, f32, f64, 
+     samp, sig32, sig64;
+
+DependsOn type, stype, ctype, itype;
+
+// ============================================================================
+// Operands templates (frequently used cases)
+
+Req d0.s1
+{
+    d0 = reg;
+    s1 = reg, imm;
+    s2 = null;
+    s3 = null;
+    s4 = null;
+    s5 = null;
+}
+
+Req d0.s1.s2
+{
+    d0 = reg;
+    s1 = reg, imm;
+    s2 = reg, imm;
+    s3 = null;
+    s4 = null;
+    s5 = null;
+}
+
+Req  d0.s1.s2.s3
+{
+    d0 = reg;
+    s1 = reg, imm;
+    s2 = reg, imm;
+    s3 = reg, imm;
+    s4 = null;
+    s5 = null;
+}
+
+// ============================================================================

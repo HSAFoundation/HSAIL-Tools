@@ -42,6 +42,7 @@
 
 #include "HSAILDisassembler.h"
 #include "HSAILUtilities.h"
+#include "HSAILInstProps.h"
 #include "HSAILb128_t.h"
 
 #include <fstream>
@@ -91,6 +92,7 @@ namespace HSAIL_ASM
 
 using std::string;
 using std::ostringstream;
+using namespace HSAIL_PROPS;
 
 template <typename Float>
 inline void printFloatValueImpl(std::ostream& stream, int mode, Float val) {
@@ -123,6 +125,10 @@ int Disassembler::run(std::ostream &s) const
 {
     stream = &s;
 
+    // Disable all extensions
+    // An extension will be enabled when an 'extension' directive is encountered in Brig
+    extMgr.disableAll();
+
     for (Code d = brig.code().begin(); d != brig.code().end(); d = next(d))
     {
         printDirectiveFmt(d);
@@ -148,9 +154,10 @@ string Disassembler::get(Directive d, unsigned model, unsigned profile)  { mMode
 string Disassembler::get(Inst i,      unsigned model, unsigned profile)  { mModel = model; mProfile = profile; return getImpl(i); }
 string Disassembler::get(Operand i,   unsigned model, unsigned profile)  { mModel = model; mProfile = profile; return getImpl(i); }
 
-string Disassembler::getInstMnemonic(Inst inst, unsigned model, unsigned profile)
+string Disassembler::getInstMnemonic(Inst inst, unsigned model, unsigned profile, const ExtManager& mgr)
 {
-    Disassembler disasm(*inst.container());
+    Disassembler disasm(*inst.container(), mgr);
+
     string res = disasm.get(inst, model, profile);
     string::size_type pos = res.find_first_of("\t");
     if (pos != string::npos) res = res.substr(0, pos);
@@ -237,6 +244,12 @@ void Disassembler::printDirective(DirectiveControl d) const
     {
         printq(i != 0, ", ");
         Operand opr = d.operands()[i];
+        if (OperandConstantBytes c = opr)
+        {
+            // Note that operands of control directives cannot start with '-'
+            if (c.type() == BRIG_TYPE_U32) { printCtlDirValue(getImmAsU32(c)); continue; }
+            if (c.type() == BRIG_TYPE_U64) { printCtlDirValue(getImmAsU64(c)); continue; }
+        }
         printOperand(opr);
     }
 
@@ -258,6 +271,8 @@ void Disassembler::printDirective(DirectiveExtension d) const
     print("extension ");
     printStringLiteral(d.name());
     print(';');
+
+    extMgr.enable(d.name().str());
 }
 
 void Disassembler::printDirective(DirectivePragma d) const
@@ -640,6 +655,23 @@ void Disassembler::printInst(Inst i) const
 {
     assert(i);
 
+    if (!isCoreInst(i))
+    {
+        // Request an extension to disassemble opcode mnemonic.
+        // This is required only for highely irregular mnemonics.
+        // In most cases extensions should simply provide mappings of
+        // non-standard Brig values to strings and rely on default 
+        // disassembly engine.
+        const string mnemo = extMgr.getExtInstMnemo(i);
+        if (mnemo.length() > 0) 
+        {
+            print(mnemo);
+            printInstArgs(i);
+            print(';');
+            return;
+        }
+    }
+
     switch(i.kind())
     {
     case BRIG_KIND_INST_BASIC:         printInst(InstBasic(i));        break;
@@ -668,7 +700,7 @@ void Disassembler::printInst(Inst i) const
 void Disassembler::printInst(InstBasic i) const
 {
     print(opcode2str(i.opcode()));
-    if (instHasType(i.opcode())) print_(type2str(i.type()));
+    print_(type2str(i.type()));
     printInstArgs(i);
 }
 
@@ -676,7 +708,7 @@ template <typename Inst>
 void Disassembler::print_rounding(Inst i) const
 {
     unsigned rounding = i.round();
-    unsigned defaultRounding = getDefRounding(i, mModel, mProfile);
+    unsigned defaultRounding = extMgr.getDefRounding(i, mModel, mProfile);
     if (rounding != defaultRounding) print_(round2str(rounding));
 }
 
@@ -687,7 +719,7 @@ void Disassembler::printInst(InstMod i) const
     print(modifiers2str(i.modifier()));
     print_rounding(i);
     print_(pack2str(i.pack()));
-    if (instHasType(i.opcode())) print_(type2str(i.type()));
+    print_(type2str(i.type()));
 
     printInstArgs(i);
 }
@@ -695,7 +727,7 @@ void Disassembler::printInst(InstMod i) const
 void Disassembler::printInst(InstAddr i) const
 {
     print(opcode2str(i.opcode()));
-    if (!isGcnInst(i.opcode())) print_(seg2str(i.segment()));
+    print_(seg2str(i.segment()));
     print_(type2str(i.type()));
     printInstArgs(i);
 }
@@ -704,9 +736,9 @@ void Disassembler::printInst(InstBr i) const
 {
     print(opcode2str(i.opcode()));
     print_width(i);
-    if (instHasType(i.opcode())) print_(type2str(i.type()));
+    print_(type2str(i.type()));
 
-    if (isCallInst(i.opcode())) printCallArgs(i);
+    if (isCallOpcode(i.opcode())) printCallArgs(i);
     else if (i.opcode() == BRIG_OPCODE_SBR) printSbrArgs(i);
     else printInstArgs(i);
 }
@@ -821,7 +853,7 @@ void Disassembler::printInst(InstMemFence i) const
     print(opcode2str(i.opcode()));
     print_(memoryOrder2str(i.memoryOrder()));
     print_(memoryScope2str(i.globalSegmentMemoryScope()));
-    if (instHasType(i.opcode())) print_(type2str(i.type()));
+    print_(type2str(i.type()));
     printInstArgs(i);
 }
 
@@ -862,37 +894,18 @@ void Disassembler::printNop() const
     // Nothing to print
 }
 
-void Disassembler::print_v(Inst i) const
+void Disassembler::print_v(Inst inst) const
 {
-    switch (i.opcode())
-    {
-    case BRIG_OPCODE_LD:
-    case BRIG_OPCODE_GCNLD:
-    case BRIG_OPCODE_ST:
-    case BRIG_OPCODE_GCNST:
-    case BRIG_OPCODE_EXPAND:
-    case BRIG_OPCODE_RDIMAGE:
-    case BRIG_OPCODE_LDIMAGE:
-    case BRIG_OPCODE_STIMAGE:
-    case BRIG_OPCODE_AMDRDIMAGELOD:
-    case BRIG_OPCODE_AMDRDIMAGEGRAD:
-    case BRIG_OPCODE_AMDLDIMAGEMIP:
-    case BRIG_OPCODE_AMDSTIMAGEMIP:
-    case BRIG_OPCODE_ACTIVELANEMASK:
-        print_(v2str(i.operand(0)));
-        break;
-    case BRIG_OPCODE_COMBINE:
-        print_(v2str(i.operand(1)));
-        break;
-    default:
-        break;
-    }
+    assert(inst);
+
+    int vx = extMgr.getVXIndex(inst.opcode());
+    if (vx >= 0) print_(v2str(inst.operand(vx)));
 }
 
 template<class T>
 void Disassembler::print_width(T inst) const
 {
-    if (getDefWidth(inst, mModel, mProfile) != inst.width())
+    if (extMgr.getDefWidth(inst, mModel, mProfile) != inst.width())
     {
         print_(width2str(inst.width()));
     }
@@ -920,7 +933,7 @@ void Disassembler::printInstArgs(Inst i, int firstArg /*=0*/, int lastArg /*=MAX
 
 void Disassembler::printCallArgs(Inst i) const
 {
-    assert(isCallInst(i.opcode()));
+    assert(isCallOpcode(i.opcode()));
     assert(i.operand(1));
 
     printSeparator();
@@ -1125,7 +1138,60 @@ SRef Disassembler::getSymbolName(Directive d) const
 }
 
 // ============================================================================
-// BRIG PROPERTIES
+// DISASSEMBLING BRIG PROPERTIES OF INSTRUCTIONS
+// ============================================================================
+
+const char* Disassembler::propVal2mnemo(unsigned prop, unsigned val) const
+{
+    assert(PROP_MINID < prop && prop < PROP_MAXID);
+
+    const char *result = extMgr.propVal2mnemo(prop, val);
+    return (result != NULL)? result : invalid(prop2str(prop), val);
+}
+
+const char* Disassembler::propVal2mnemo(unsigned prop, unsigned val, unsigned df) const
+{
+    return (val == df)? "" : propVal2mnemo(prop, val);
+}
+
+const char* Disassembler::propVal2mnemo(unsigned prop, unsigned val, unsigned df1, unsigned df2) const
+{
+    return (val == df2)? "" : propVal2mnemo(prop, val, df1);
+}
+
+const char* Disassembler::seg2str(unsigned val)             const { return propVal2mnemo(PROP_SEGMENT,         val); }
+const char* Disassembler::type2str(unsigned val)            const { return propVal2mnemo(PROP_TYPE,            val, BRIG_TYPE_NONE); }
+const char* Disassembler::pack2str(unsigned val)            const { return propVal2mnemo(PROP_PACK,            val); }
+const char* Disassembler::cmpOp2str(unsigned val)           const { return propVal2mnemo(PROP_COMPARE,         val); }
+const char* Disassembler::imageGeometry2str(unsigned val)   const { return propVal2mnemo(PROP_GEOMETRY,        val); }
+const char* Disassembler::samplerQuery2str(unsigned val)    const { return propVal2mnemo(PROP_SAMPLERQUERY,    val); }
+const char* Disassembler::imageQuery2str(unsigned val)      const { return propVal2mnemo(PROP_IMAGEQUERY,      val); }
+const char* Disassembler::memoryOrder2str(unsigned val)     const { return propVal2mnemo(PROP_MEMORYORDER,     val); }
+const char* Disassembler::memoryScope2str(unsigned val)     const { return propVal2mnemo(PROP_MEMORYSCOPE,     val); }
+const char* Disassembler::atomicOperation2str(unsigned val) const { return propVal2mnemo(PROP_ATOMICOPERATION, val); }
+const char* Disassembler::opcode2str(unsigned val)          const { return propVal2mnemo(PROP_OPCODE,          val); }
+const char* Disassembler::round2str(unsigned val)           const { return propVal2mnemo(PROP_ROUND,           val, BRIG_ROUND_NONE, BRIG_ROUND_FLOAT_DEFAULT); }
+const char* Disassembler::width2str(unsigned val)           const { return propVal2mnemo(PROP_WIDTH,           val); }
+
+const char* Disassembler::const2str(bool isConst)           const { return isConst?   "const"  : ""; }
+const char* Disassembler::nonull2str(bool isNoNull)         const { return isNoNull ? "nonull" : ""; }
+
+string Disassembler::equiv2str(unsigned val) const
+{
+    ostringstream s;
+    if (val != 0) s << "equiv(" << val << ')';
+    return s.str();
+}
+
+string Disassembler::modifiers2str(AluModifier mod) const
+{
+    ostringstream s;
+    if (mod.ftz()) s << "_ftz";
+    return s.str();
+}
+
+// ============================================================================
+// DISASSEMBLING OTHER BRIG PROPERTIES
 // ============================================================================
 
 const char* Disassembler::machineModel2str(unsigned model) const
@@ -1134,7 +1200,7 @@ const char* Disassembler::machineModel2str(unsigned model) const
     {
     case BRIG_MACHINE_LARGE: return "$large";
     case BRIG_MACHINE_SMALL: return "$small";
-    default:               return invalid("MachineModel", model);
+    default:                 return invalid("Machine model", model);
     }
 }
 
@@ -1144,7 +1210,7 @@ const char* Disassembler::profile2str(unsigned profile) const
     {
     case BRIG_PROFILE_FULL: return "$full";
     case BRIG_PROFILE_BASE: return "$base";
-    default:                      return invalid("Profile", profile);
+    default:                return invalid("Profile", profile);
     }
 }
 
@@ -1155,152 +1221,41 @@ const char* Disassembler::defaultRound2str(unsigned round) const
     case BRIG_ROUND_FLOAT_DEFAULT:   return "$default";
     case BRIG_ROUND_FLOAT_NEAR_EVEN: return "$near";
     case BRIG_ROUND_FLOAT_ZERO:      return "$zero";
-    default:                               return invalid("DefaultFloatRound", round);
+    default:                         return invalid("Default float rounding", round);
     }
-}
-
-const char* Disassembler::seg2str(BrigSegment8_t segment) const
-{
-    const char *result = HSAIL_ASM::segment2str(segment);
-    if (result != NULL) return result;
-    else return invalid("Segment", segment);
-}
-
-const char* Disassembler::type2str(unsigned t) const
-{
-    assert(!isArrayType(t));
-
-    const char *result = HSAIL_ASM::type2str(t);
-    if (result != NULL)
-    {
-        return strcmp(result, "none") == 0? "" : result;
-    }
-    else
-    {
-        return invalid("Type", t);
-    }
-}
-
-const char* Disassembler::pack2str(unsigned t) const
-{
-    const char *result = HSAIL_ASM::pack2str(t);
-    if (result != NULL) return result;
-    else return invalid("Packing", t);
-}
-
-const char* Disassembler::const2str(bool isConst) const
-{
-    return isConst? "const" : "";
-}
-
-const char* Disassembler::nonull2str(bool isNoNull) const
-{
-    return isNoNull ? "nonull" : "";
-}
-
-const char* Disassembler::cmpOp2str(unsigned opcode) const
-{
-    const char* result=HSAIL_ASM::compareOperation2str(opcode);
-    if (result != NULL) return result;
-    else return invalid("CompareOperation", opcode);
-}
-
-const char* Disassembler::imageGeometry2str(unsigned g) const
-{
-    const char* result=HSAIL_ASM::imageGeometry2str(g);
-    if (result != NULL) return result;
-    else return invalid("ImageGeom", g);
 }
 
 const char* Disassembler::samplerCoordNormalization2str(unsigned val) const
 {
     const char* result=HSAIL_ASM::samplerCoordNormalization2str(val);
     if (result != NULL) return result;
-    else return invalid("SamplerCoord", val);
+    else return invalid("Sampler coord", val);
 }
 const char* Disassembler::samplerFilter2str(unsigned val) const
 {
     const char* result=HSAIL_ASM::samplerFilter2str(val);
     if (result != NULL) return result;
-    else return invalid("SamplerFilter", val);
+    else return invalid("Sampler filter", val);
 }
 const char* Disassembler::samplerAddressing2str(unsigned val) const
 {
     const char* result=HSAIL_ASM::samplerAddressing2str(val);
     if (result != NULL) return result;
-    else return invalid("SamplerAddressing", val);
-}
-
-const char* Disassembler::samplerQuery2str(unsigned g) const
-{
-    const char* result=HSAIL_ASM::samplerQuery2str(g);
-    if (result != NULL) return result;
-    else return invalid("SamplerQuery", g);
-}
-
-const char* Disassembler::imageQuery2str(unsigned g) const
-{
-    const char* result=HSAIL_ASM::imageQuery2str(g);
-    if (result != NULL) return result;
-    else return invalid("ImageQuery", g);
-}
-
-const char* Disassembler::memoryOrder2str(unsigned memOrder) const
-{
-    const char* result=HSAIL_ASM::memoryOrder2str(memOrder);
-    if (result != NULL) return result;
-    else return invalid("MemoryOrder", memOrder);
-}
-
-const char* Disassembler::memoryScope2str(unsigned flags) const
-{
-    const char* result=HSAIL_ASM::memoryScope2str(flags);
-    if (result != NULL) return result;
-    else return "";
-}
-
-const char* Disassembler::atomicOperation2str(unsigned op) const
-{
-    const char* result=HSAIL_ASM::atomicOperation2str(op);
-    if (result != NULL) return result;
-    else return invalid("AtomicOperation", op);
-}
-
-const char* Disassembler::opcode2str(unsigned opcode) const
-{
-    const char *result = HSAIL_ASM::opcode2str(opcode);
-    if (result != NULL) return result;
-    else return invalid("Opcode", opcode);
-}
-
-const char* Disassembler::round2str(unsigned val) const
-{
-    const char *result = HSAIL_ASM::round2str(val);
-    if (result != NULL) return result;
-    else if (val == BRIG_ROUND_NONE) return "";
-    else if (val == BRIG_ROUND_FLOAT_DEFAULT) return "";
-    else return invalid("Rounding", val);
-}
-
-string Disassembler::modifiers2str(AluModifier mod) const
-{
-    ostringstream s;
-    if (mod.ftz()) s << "_ftz";
-    return s.str().c_str();
+    else return invalid("Sampler addressing", val);
 }
 
 string Disassembler::registerKind2str(unsigned val) const
 {
     const char *result = HSAIL_ASM::registerKind2str(val);
     if (result != NULL) return result;
-    else return invalid("RegisterKind", val);
+    else return invalid("Register kind", val);
 }
 
 string Disassembler::controlDirective2str(unsigned val) const
 {
     const char *result = HSAIL_ASM::controlDirective2str(val);
     if (result != NULL) return result;
-    else return invalid("ControlDirective", val);
+    else return invalid("Control directive", val);
 }
 
 const char* Disassembler::v2str(Operand opr) const
@@ -1327,21 +1282,14 @@ const char* Disassembler::imageChannelType2str(BrigImageChannelType8_t fmt) cons
 {
     const char *result = HSAIL_ASM::imageChannelType2str(fmt);
     if (result != NULL) return result;
-    else return invalid("ImageChannelType", fmt);
+    else return invalid("Image channel type", fmt);
 }
 
 const char* Disassembler::imageChannelOrder2str(BrigImageChannelOrder8_t order) const
 {
     const char *result = HSAIL_ASM::imageChannelOrder2str(order);
     if (result != NULL) return result;
-    else return invalid("ImageChannelOrder", order);
-}
-
-string Disassembler::equiv2str(unsigned val) const
-{
-    ostringstream s;
-    if (val != 0) s << "equiv(" << val << ')';
-    return s.str();
+    else return invalid("Image channel order", order);
 }
 
 string Disassembler::decl2str_(bool isDecl) const
@@ -1400,7 +1348,7 @@ string Disassembler::align2str(unsigned val) const
         }
         return "";
     }
-    return invalid("align", val);
+    return invalid("Align", val);
 }
 
 string Disassembler::align2str_(unsigned val, unsigned type) const
@@ -1415,14 +1363,7 @@ string Disassembler::align2str_(unsigned val, unsigned type) const
         }
         return "";
     }
-    return invalid("align", val);
-}
-
-const char* Disassembler::width2str(unsigned val) const
-{
-    const char *result = HSAIL_ASM::width2str(val);
-    if (result != NULL) return result;
-    return invalid("width", val);
+    return invalid("Align", val);
 }
 
 void Disassembler::printStringLiteral(SRef s) const
@@ -1450,7 +1391,6 @@ void Disassembler::printStringLiteral(SRef s) const
             else
             {
                 *stream << "\\x" << PrintHex(c);
-                //print(format("\\x%02X", c));
             }
             break;
         }

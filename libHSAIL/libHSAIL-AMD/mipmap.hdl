@@ -1,0 +1,159 @@
+// University of Illinois/NCSA
+// Open Source License
+//
+// Copyright (c) 2013-2015, Advanced Micro Devices, Inc.
+// All rights reserved.
+//
+// Developed by:
+//
+//     HSA Team
+//
+//     Advanced Micro Devices, Inc
+//
+//     www.amd.com
+//
+// Permission is hereby granted, free of charge, to any person obtaining a copy of
+// this software and associated documentation files (the "Software"), to deal with
+// the Software without restriction, including without limitation the rights to
+// use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies
+// of the Software, and to permit persons to whom the Software is furnished to do
+// so, subject to the following conditions:
+//
+//     * Redistributions of source code must retain the above copyright notice,
+//       this list of conditions and the following disclaimers.
+//
+//     * Redistributions in binary form must reproduce the above copyright notice,
+//       this list of conditions and the following disclaimers in the
+//       documentation and/or other materials provided with the distribution.
+//
+//     * Neither the names of the LLVM Team, University of Illinois at
+//       Urbana-Champaign, nor the names of its contributors may be used to
+//       endorse or promote products derived from this Software without specific
+//       prior written permission.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
+// FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SHALL THE
+// CONTRIBUTORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS WITH THE
+// SOFTWARE.
+
+// ============================================================================
+// ============================================================================
+// DESCRIPTION OF MIPMAP-SPECIFIC PROPERTIES
+// ============================================================================
+// ============================================================================
+
+BrigProp iprop += amd.mipmap.nummiplevels;
+
+// ============================================================================
+// ============================================================================
+// DESCRIPTION OF MIPMAP INSTRUCTIONS
+// ============================================================================
+// ============================================================================
+
+Req rdimage.basic
+{
+    type     = (s, u, f)32;
+    itype    = roimg;
+    ctype    = (s, f)32;
+    geometry = 1d, 2d, 3d, 1da, 2da, 2ddepth, 2dadepth;
+    eqclass  = any;
+
+    s1 = reg.itype;
+    s2 = reg.samp;
+}
+
+Req mipmap.rdimagelod
+{
+    rdimage.basic;
+
+    { geometry = 1d       ? d0 = vec.4; s3 = (reg, imm).ctype; s4 = (reg, imm).f32 }
+    { geometry = 2d, 1da  ? d0 = vec.4; s3 = vec.2.ctype     ; s4 = (reg, imm).f32 }
+    { geometry = 3d, 2da  ? d0 = vec.4; s3 = vec.3.ctype     ; s4 = (reg, imm).f32 }
+    { geometry = 2ddepth  ? d0 = reg;   s3 = vec.2.ctype     ; s4 = (reg, imm).f32 }
+    { geometry = 2dadepth ? d0 = reg;   s3 = vec.3.ctype     ; s4 = (reg, imm).f32 }
+    ;
+
+    s5 = null;
+}
+
+Req mipmap.rdimagegrad
+{
+    rdimage.basic;
+
+    { geometry = 1d       ? d0 = vec.4; s3 = (reg, imm).ctype; s4 = (reg, imm).f32; s5 = (reg, imm).f32 }
+    { geometry = 1da      ? d0 = vec.4; s3 = vec.2.ctype;      s4 = (reg, imm).f32; s5 = (reg, imm).f32 }
+    { geometry = 2d       ? d0 = vec.4; s3 = vec.2.ctype;      s4 = vec.2.f32;      s5 = vec.2.f32      }
+    { geometry = 2da      ? d0 = vec.4; s3 = vec.3.ctype;      s4 = vec.2.f32;      s5 = vec.2.f32      }
+    { geometry = 2ddepth  ? d0 = reg;   s3 = vec.2.ctype;      s4 = vec.2.f32;      s5 = vec.2.f32      }
+    { geometry = 2dadepth ? d0 = reg;   s3 = vec.3.ctype;      s4 = vec.2.f32;      s5 = vec.2.f32      }
+    { geometry = 3d       ? d0 = vec.4; s3 = vec.3.ctype;      s4 = vec.3.f32;      s5 = vec.3.f32      }
+    ;
+}
+
+Req mipmap.ldimage
+{
+    type     = (s, u, f)32;
+    ctype    = u32;
+    itype    = roimg, rwimg;
+    geometry = any;
+    eqclass  = any;
+
+    { geometry = 1d, 1db  ? d0 = vec.4; s2 = (reg, imm).ctype }
+    { geometry = 2d, 1da  ? d0 = vec.4; s2 = vec.2.ctype      }
+    { geometry = 3d, 2da  ? d0 = vec.4; s2 = vec.3.ctype      }
+    { geometry = 2ddepth  ? d0 = reg;   s2 = vec.2.ctype      }
+    { geometry = 2dadepth ? d0 = reg;   s2 = vec.3.ctype      }
+    ;
+
+    s1 = reg.itype;
+    s3 = reg.u32;
+    s4 = null;
+    s5 = null;
+}
+
+Req mipmap.stimage
+{
+    type     = (s, u, f)32;
+    ctype    = u32;
+    itype    = woimg, rwimg;
+    geometry = any;
+    eqclass  = any;
+
+    { geometry = 1d, 1db  ? s0 = vec.4; s2 = (reg, imm).ctype }
+    { geometry = 2d, 1da  ? s0 = vec.4; s2 = vec.2.ctype      }
+    { geometry = 3d, 2da  ? s0 = vec.4; s2 = vec.3.ctype      }
+    { geometry = 2ddepth  ? s0 = reg;   s2 = vec.2.ctype      }
+    { geometry = 2dadepth ? s0 = reg;   s2 = vec.3.ctype      }
+    ;
+
+    s1 = reg.itype;
+    s3 = reg.u32;
+    s4 = null;
+    s5 = null;
+}
+
+Req mipmap.queryimage
+{
+    type     = u32;
+    itype    = roimg, rwimg, woimg;
+    geometry = 1d, 1da, 2d, 2da, 3d;
+    iprop    = amd.mipmap.nummiplevels;
+
+    d0 = reg;
+    s1 = reg.itype;
+    s2 = null;
+    s3 = null;
+    s4 = null;
+    s5 = null;
+}
+
+Inst amd_mipmap_rdimagelod (Image,       image, mipmap.rdimagelod)
+Inst amd_mipmap_rdimagegrad(Image,       image, mipmap.rdimagegrad)
+Inst amd_mipmap_ldimagemip (Image,       image, mipmap.ldimage)
+Inst amd_mipmap_stimagemip (Image,       image, mipmap.stimage)
+Inst amd_mipmap_queryimage (Query.Image, image, mipmap.queryimage)
+
+// ============================================================================

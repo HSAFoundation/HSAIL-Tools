@@ -76,51 +76,119 @@ private:
 public:
     PropValidator(unsigned model, unsigned profile) : mModel(model), mProfile(profile) {}
 
-    unsigned getMachineSize()  { return isLargeModel()? 64 : 32; }
-    bool isLargeModel()        { return mModel   == BRIG_MACHINE_LARGE; }
-    bool isFullProfile()       { return mProfile == BRIG_PROFILE_FULL; }
+    unsigned getMachineSize() const { return isLargeModel()? 64 : 32; }
+    bool isLargeModel()       const { return mModel   == BRIG_MACHINE_LARGE; }
+    bool isFullProfile()      const { return mProfile == BRIG_PROFILE_FULL; }
 
     //==========================================================================
     // Interface with HDL-generated code
 protected:
-    void validate(Inst inst, int idx, bool cond, SRef msg);
-    void validate(Inst inst, bool cond, SRef msg) { validate(inst, -1, cond, msg); }
+    virtual void validate(Inst inst, int idx, bool cond, SRef msg) const ;
+    virtual void validate(Inst inst, bool cond, SRef msg) const { validate(inst, -1, cond, msg); }
 
-    void invalidVariant(Inst inst, unsigned prop);
-    void invalidVariant(Inst inst, unsigned prop1, unsigned prop2);
-    void invalidVariant(Inst inst, unsigned prop1, unsigned prop2, unsigned prop3);
-    void brigPropError(Inst inst, unsigned prop, unsigned value, unsigned* vals, unsigned length);
-    void invalidFormat(Inst inst, const char* msg);
+    virtual void invalidVariant(Inst inst, unsigned prop) const;
+    virtual void invalidVariant(Inst inst, unsigned prop1, unsigned prop2) const;
+    virtual void invalidVariant(Inst inst, unsigned prop1, unsigned prop2, unsigned prop3) const;
+    virtual void brigPropError(Inst inst, unsigned prop, unsigned value, unsigned* vals, unsigned length) const;
+    virtual void invalidFormat(Inst inst, const char* msg) const;
 
-    bool validateOperand(Inst inst, unsigned prop, unsigned attr, unsigned* vals, unsigned length, bool isAssert = true);
-    bool validateTypeSz(Inst inst, unsigned propVal, unsigned type, const char* typeName, bool isAssert = true);
-    bool validateTypesize(Inst inst, unsigned prop, unsigned attr, unsigned* vals, unsigned length, bool isAssert = true);
-    bool validateStypesize(Inst inst, unsigned prop, unsigned attr, unsigned* vals, unsigned length, bool isAssert = true);
-    bool validateEqclass(Inst inst, unsigned prop, unsigned attr, unsigned* vals, unsigned length, bool isAssert = true);
-    bool validateSpecialProp(Inst inst, unsigned prop, unsigned val, unsigned* vals, unsigned length, bool isAssert = true);
-    bool validateFtz(Inst inst, unsigned prop, unsigned val, unsigned* vals, unsigned length, bool isAssert = true);
-    bool validateRound(Inst inst, unsigned prop, unsigned val, unsigned* vals, unsigned length, bool isAssert = true);
+    virtual bool validateOperand(Inst inst, unsigned prop, unsigned attr, unsigned* vals, unsigned length, bool isAssert = true) const;
+    virtual bool validateTypeSz(Inst inst, unsigned propVal, unsigned type, const char* typeName, bool isAssert = true) const;
+    virtual bool validateTypesize(Inst inst, unsigned prop, unsigned attr, unsigned* vals, unsigned length, bool isAssert = true) const;
+    virtual bool validateStypesize(Inst inst, unsigned prop, unsigned attr, unsigned* vals, unsigned length, bool isAssert = true) const;
+    virtual bool validateEqclass(Inst inst, unsigned prop, unsigned attr, unsigned* vals, unsigned length, bool isAssert = true) const;
+    virtual bool validateSpecialProp(Inst inst, unsigned prop, unsigned val, unsigned* vals, unsigned length, bool isAssert = true) const;
+    virtual bool validateFtz(Inst inst, unsigned prop, unsigned val, unsigned* vals, unsigned length, bool isAssert = true) const;
+    virtual bool validateRound(Inst inst, unsigned prop, unsigned val, unsigned* vals, unsigned length, bool isAssert = true) const;
 
     //==========================================================================
 public:
-    static unsigned    attr2type(Inst inst, unsigned idx, unsigned attr);
-    static string      prop2str(unsigned prop);
-    static const char* prop2key(unsigned prop);
-    static const char* val2str(unsigned prop, unsigned val);
-    static const char* operand2str(unsigned val);
-    static const char* operandKind2str(unsigned kind);
+    virtual const char* type2name(unsigned val)             const { return propVal2mnemo(PROP_TYPE,            val); };
+    virtual const char* pack2str(unsigned val)              const { return propVal2mnemo(PROP_PACK,            val); };
+    virtual const char* width2str(unsigned val)             const { return propVal2mnemo(PROP_WIDTH,           val); };
+    virtual const char* memoryOrder2str(unsigned val)       const { return propVal2mnemo(PROP_MEMORYORDER,     val); };
+    virtual const char* memoryScope2str(unsigned val)       const { return propVal2mnemo(PROP_MEMORYSCOPE,     val); };
+    virtual const char* round2str(unsigned val)             const { return propVal2mnemo(PROP_ROUND,           val); };
+    virtual const char* segment2str(unsigned val)           const { return propVal2mnemo(PROP_SEGMENT,         val); };
+    virtual const char* align2str(unsigned val)             const { return propVal2mnemo(PROP_ALIGN,           val); };
+    virtual const char* compareOperation2str(unsigned val)  const { return propVal2mnemo(PROP_COMPARE,         val); };
+    virtual const char* atomicOperation2str(unsigned val)   const { return propVal2mnemo(PROP_ATOMICOPERATION, val); };
+    virtual const char* imageGeometry2str(unsigned val)     const { return propVal2mnemo(PROP_GEOMETRY,        val); };
+    virtual const char* imageQuery2str(unsigned val)        const { return propVal2mnemo(PROP_IMAGEQUERY,      val); };
+    virtual const char* samplerQuery2str(unsigned val)      const { return propVal2mnemo(PROP_SAMPLERQUERY,    val); };
+    virtual const char* opcode2str(unsigned val)            const { return propVal2mnemo(PROP_OPCODE,          val); };
+
+    virtual const char* propVal2str(unsigned prop, unsigned val) const 
+    { 
+        const char* s = HSAIL_ASM::stdPropVal2str(prop, val);
+        return s? s : propValExt2mnemo(prop, val);
+    }
+
+    virtual const char* propVal2mnemo(unsigned prop, unsigned val) const 
+    { 
+        const char* s = HSAIL_ASM::stdPropVal2mnemo(prop, val);
+        return s? s : propValExt2mnemo(prop, val);
+    }
 
     //==========================================================================
-    // Autogenerated accessors for BRIG properties (used by HDL-generated code)
+    // Methods typically overloaded by extensions
 public:
+    virtual const char* propValExt2mnemo(unsigned prop, unsigned val) const { return 0; };
+    virtual unsigned    getSegAddrSize(unsigned seg, bool isL)        const { return HSAIL_ASM::getSegAddrSize(seg, isL); }
+    virtual bool        isAddressableSeg(unsigned seg)                const { return HSAIL_ASM::isAddressableSeg(seg); }
 
-#include "HSAILBrigPropsFastAcc_gen.hpp"
+    //==========================================================================
+public:
+    virtual const char* operand2str(unsigned valId)           const { return HSAIL_ASM::operand2str(valId); }
+    virtual const char* operandKind2str(unsigned kind)        const { return HSAIL_ASM::operandKind2str(kind); }
+    virtual unsigned    attr2type(Inst inst, unsigned attr)   const { return HSAIL_ASM::attr2type(inst, attr); }
+    virtual string      prop2str(unsigned prop)               const { return HSAIL_ASM::prop2str(prop); }
+    virtual const char* prop2key(unsigned prop)               const { return HSAIL_ASM::prop2key(prop); }
+
+    //==========================================================================
+public:
+    virtual unsigned  getBrigTypeNumBits(unsigned type)       const { return HSAIL_ASM::getBrigTypeNumBits(type); }
+    virtual bool      eqTypes(unsigned type1, unsigned type2) const { return getBrigTypeNumBits(type1) == getBrigTypeNumBits(type2); }
+
+    //==========================================================================
+public:
+    virtual unsigned getRoundAttr(Inst inst)                        const { assert(false); return ROUND_ATTR_INVALID; }
+    virtual unsigned getWidthAttr(Inst inst)                        const { assert(false); return WIDTH_ATTR_INVALID; }
+    virtual unsigned getOperandAttr(Inst inst, unsigned operandIdx) const { assert(false); return OPERAND_ATTR_INVALID; }
+
+    virtual unsigned operandAttr2Type(Inst inst, unsigned attr) const;
+    virtual unsigned attr2DefWidth(Inst inst, unsigned attr) const;
+    virtual unsigned attr2DefRounding(Inst inst, unsigned attr) const;
+    virtual const char* validateOperandDeps(Inst inst, unsigned attr) const;
+
+    virtual unsigned getDefRounding(Inst inst) const { assert(inst); return attr2DefRounding(inst, getRoundAttr(inst)); }
+    virtual unsigned getDefWidth(Inst inst)    const { assert(inst); return attr2DefWidth   (inst, getWidthAttr(inst)); }
+
+    virtual const char* preValidateInst(Inst inst) const
+    {
+        assert(inst);
+
+        for (unsigned idx = 0; idx < MAX_OPERANDS_NUM; ++idx)
+        {
+            const char* err = validateOperandDeps(inst, getOperandAttr(inst, idx));
+            if (err) return err;
+        }
+        return 0;
+    }
+
+    virtual unsigned getOperandType(Inst inst, unsigned operandIdx) const
+    {
+        assert(inst);
+        assert(operandIdx < MAX_OPERANDS_NUM);
+
+        return operandAttr2Type(inst, getOperandAttr(inst, operandIdx));
+    }
 
     //==========================================================================
     // Special accessors for BRIG properties with default values (used by HDL-generated code)
 public:
 
-    template<class T> unsigned getPackEx(T inst)
+    template<class T> unsigned getPackEx(T inst) const
     {
         if      (InstCmp   i = inst) return i.pack();
         else if (InstMod   i = inst) return i.pack();
@@ -128,15 +196,15 @@ public:
         assert(false);               return BRIG_PACK_NONE;
     }
 
-    template<class T> unsigned getRoundEx(T inst)
+    template<class T> unsigned getRoundEx(T inst) const
     {
         if      (InstCvt   i = inst) return i.round();
         else if (InstMod   i = inst) return i.round();
-        else if (InstBasic i = inst) return getDefRounding(i, mModel, mProfile);
+        else if (InstBasic i = inst) return getDefRounding(i);
         assert(false);               return BRIG_ROUND_NONE;
     }
 
-    template<class T> unsigned getFtzEx(T inst)
+    template<class T> unsigned getFtzEx(T inst) const
     {
         if      (InstCmp   i = inst) return i.modifier().ftz();
         else if (InstCvt   i = inst) return i.modifier().ftz();
@@ -146,39 +214,39 @@ public:
     }
 
     //==========================================================================
-private:
-    bool validateOperandAttr(Inst inst, unsigned idx, unsigned attr, bool isDst, bool isAssert);
-    bool checkOperandKind(Inst inst, unsigned idx, unsigned* vals, unsigned length, bool isAssert);
-    bool checkAddrSeg(Inst inst, unsigned operandIdx, bool isAssert);
-    bool checkAddrTSeg(Inst inst, unsigned operandIdx, bool isAssert);
+protected:
+    virtual bool validateOperandAttr(Inst inst, unsigned idx, unsigned attr, bool isDst, bool isAssert) const;
+    virtual bool checkOperandKind(Inst inst, unsigned idx, unsigned* vals, unsigned length, bool isAssert) const;
+    virtual bool checkAddrSeg(Inst inst, unsigned operandIdx, bool isAssert) const;
+    virtual bool checkAddrTSeg(Inst inst, unsigned operandIdx, bool isAssert) const;
 
+protected:
     static bool isVector(Operand opr, unsigned size);
     static bool isArgList(Operand opr);
     static bool isCallTab(Operand opr);
     static bool isJumpTab(Operand opr);
     static bool isImm(Operand opr);
     static bool isImmInRange(Operand opr, unsigned low, unsigned high);
-    static bool eqTypes(unsigned type1, unsigned type2) { return getBrigTypeNumBits(type1) == getBrigTypeNumBits(type2); }
-    void propError(Inst inst, unsigned prop, string value, unsigned* vals, unsigned length);
+    
+    //==========================================================================
+protected:
+    virtual bool validateDstVector(Inst inst, OperandOperandList vector, unsigned oprIdx, bool isAssert) const;
+    virtual bool validateOperandType(Inst inst, unsigned oprIdx, bool isDst, unsigned attr, bool isAssert) const;
+    virtual bool validateOperandReg(Inst inst, OperandRegister opr, unsigned oprIdx, unsigned type, unsigned attr, bool isAssert) const;
+    virtual bool validateOperandImmed(Inst inst, OperandConstantBytes opr, unsigned oprIdx, unsigned type, unsigned attr, bool isAssert) const;
+    virtual bool validateOperandWavesize(Inst inst, unsigned oprIdx, unsigned type, unsigned attr, bool isAssert) const;
+    virtual bool validateOperandVector(Inst inst, OperandOperandList opr, unsigned oprIdx, unsigned type, unsigned attr, bool isAssert) const;
+    virtual bool validateInstTypeSize(Inst inst, unsigned type, const char* typeName, bool isAssert) const;
+    virtual bool validateAtomicTypeSize(Inst inst, bool isAssert) const;
 
     //==========================================================================
-private:
-    bool validateDstVector(Inst inst, OperandOperandList vector, unsigned oprIdx, bool isAssert);
-    bool validateOperandType(Inst inst, unsigned oprIdx, bool isDst, unsigned attr, bool isAssert);
-    bool validateOperandReg(Inst inst, OperandRegister opr, unsigned oprIdx, unsigned type, unsigned attr, bool isAssert);
-    bool validateOperandImmed(Inst inst, OperandConstantBytes opr, unsigned oprIdx, unsigned type, unsigned attr, bool isAssert);
-    bool validateOperandWavesize(Inst inst, unsigned oprIdx, unsigned type, unsigned attr, bool isAssert);
-    bool validateOperandVector(Inst inst, OperandOperandList opr, unsigned oprIdx, unsigned type, unsigned attr, bool isAssert);
-    bool validateInstTypeSize(Inst inst, unsigned type, const char* typeName, bool isAssert);
-    bool validateAtomicTypeSize(Inst inst, bool isAssert);
-
-    //==========================================================================
-private:
-    string getErrHeader(unsigned oprIdx, const char* oprPref);
-    void operandError(Inst inst, unsigned oprIdx, string msg1, string msg2 = "");
-    void wavesizeError(Inst inst, unsigned oprIdx, unsigned type, unsigned attr);
-    void operandSizeError(Inst inst, unsigned oprIdx, unsigned type, unsigned attr);
-    void immTypeError(Inst inst, unsigned oprIdx, unsigned type, unsigned expectedType, bool isB1Error);
+protected:
+    virtual string getErrHeader(unsigned oprIdx, const char* oprPref) const;
+    virtual void operandError(Inst inst, unsigned oprIdx, string msg1, string msg2 = "") const;
+    virtual void wavesizeError(Inst inst, unsigned oprIdx, unsigned type, unsigned attr) const;
+    virtual void operandSizeError(Inst inst, unsigned oprIdx, unsigned type, unsigned attr) const;
+    virtual void immTypeError(Inst inst, unsigned oprIdx, unsigned type, unsigned expectedType, bool isB1Error) const;
+    virtual void propError(Inst inst, unsigned prop, const char* value, unsigned* vals, unsigned length) const;
 
 }; // class PropValidator
 

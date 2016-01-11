@@ -51,9 +51,13 @@
 namespace HSAIL_ASM
 {
 
-Inst parseMnemo(const char* str, Brigantine& bw);
+typedef Inst (*OpcodeParser)(unsigned, Scanner&, Brigantine &, int*);
+
+Inst parseMnemo(const char* str, Brigantine& bw, const ExtManager& mgr = registeredExtensions());
 
 struct ModuleStatementPrefix;
+
+typedef Optional<unsigned> OptionalU;
 
 class Parser
 {
@@ -73,36 +77,36 @@ private:
 private:
     Scanner&    m_scanner;
     Brigantine  m_bw;
-    bool        m_gcnEnabled;
     std::string m_srcFileName;
 
     Parser& operator=(const Parser&);
 
+public:
+    Scanner& scanner() { return m_scanner; }
+    Brigantine& brigantine() { return m_bw; }
+    ExtManager& extMgr() { return m_scanner.extMgr(); }
+
+public:
     Scanner::CToken& scan()  { return m_scanner.scan(); }
     Scanner::CToken& peek()  { return m_scanner.peek(); }
     Scanner::CToken& token() { return m_scanner.token(); }
-
+    
     unsigned           eatToken(ETokens token, const char* message = 0) { return m_scanner.eatToken(token, message); }
     Optional<unsigned> tryEatToken(ETokens token)                       { return m_scanner.tryEatToken(token); }
 
     void syntaxError(const std::string& message, const SourceInfo* srcInfo=NULL);
     void syntaxError(const std::string& message, Scanner::CToken& token);
 
-    //void    scan();
-    //void    expect(ETokens token, const char* message = 0);
-    //void    throwTokenExpected(ETokens token, const char* message);
-    //SourceInfo tokenSourceInfo() const;
-
+private:
     void parseProgram();
     void parseModule();
     void parseTopLevelStatement();
     Optional<uint16_t> tryParseFBar();
-    //void parseSigArgs(Scanner& s,DirectiveSignatureArguments types, DirectiveSignatureArguments::ArgKind argKind);
-    //void parseSignature();
     int  parseCodeBlock(); // returns the number of instructions inside
     int  parseBodyStatement(); // returns the number of instructions inside
     void parseLabel();
-    Inst parseInst();
+    Inst parseCoreInst();
+    Inst parseExtInst();
 
     Operand    parseOpaqueObject();
     void       parseAndUnfoldOpaqueObject(ItemList& list);
@@ -125,7 +129,7 @@ private:
     void parseControl();
 
     typedef ItemList (Parser::*OperandParser)(Inst);
-    static OperandParser getOperandParser(BrigOpcode16_t opcode);
+    static OperandParser getCoreOperandParser(BrigOpcode16_t opcode);
 
     Inst parseInstLdSt();
     Inst parseInstLane();
@@ -137,6 +141,8 @@ private:
     void skipInst();
 
     void checkVxIsValid(int Vx, Operand o);
+
+public: // Operands
 
     ItemList parseOperands(Inst inst);
     ItemList parseCallOperands(Inst inst);
@@ -165,6 +171,8 @@ private:
 
     void parseAddress(SRef& reg, int64_t& offset);
 
+private:
+
     void parseSLComment();
     void parseMLComment();
 };
@@ -187,6 +195,34 @@ inline void Parser::syntaxError(const std::string& message, Scanner::CToken& tok
     SourceInfo const srcInfo = sourceInfo(token);
     syntaxError(message, &srcInfo);
 }
+
+BrigWidth toBrigWidth(uint32_t v);
+OptionalU tryParseWidthModifier(Scanner& scanner);
+unsigned parseAlign(Scanner& scanner);
+OptionalU tryParseEquiv(Scanner& scanner);
+
+Inst parseMnemoBasic(unsigned opCode, Scanner& scanner, Brigantine& bw, bool expectType);
+Inst parseMnemoBasic(unsigned opCode, Scanner& scanner, Brigantine& bw, int*);
+Inst parseMnemoBasicNoType(unsigned opCode, Scanner& scanner, Brigantine& bw, int*);
+Inst parseMnemoBasicOrMod(unsigned opCode, Scanner& scanner, Brigantine& bw, int*);
+Inst parseMnemoSourceType(unsigned opCode, Scanner& scanner, Brigantine& bw, int* outVector/* out */);
+Inst parseMnemoSeg(unsigned opCode, Scanner& scanner, Brigantine& bw, int*);
+Inst parseMnemoAddr(unsigned opCode, Scanner& scanner, Brigantine& bw, int*);
+Inst parseMnemoMem(unsigned opCode, Scanner& scanner, Brigantine& bw, int* outVector/* out */);
+Inst parseMnemoBr(unsigned opCode, Scanner& scanner, Brigantine& bw, int*);
+Inst parseMnemoCmp(unsigned opCode, Scanner& scanner, Brigantine& bw, int*);
+Inst parseMnemoCvt(unsigned opCode, Scanner& scanner, Brigantine& bw, int*);
+Inst parseMnemoAtomic(unsigned opCode, Scanner& scanner, Brigantine& bw, int*);
+Inst parseMnemoMemFence(unsigned opCode, Scanner& scanner, Brigantine& bw, int*);
+Inst parseMnemoImage(unsigned opCode, Scanner& scanner, Brigantine& bw, int* outVector/* out */);
+Inst parseMnemoQueryImage(unsigned opCode, Scanner& scanner, Brigantine& bw, int*);
+Inst parseMnemoQuerySampler(unsigned opCode, Scanner& scanner, Brigantine& bw, int*);
+Inst parseMnemoLane(unsigned opCode, Scanner& scanner, Brigantine& bw, int* outVector/* out */);
+Inst parseMnemoNop(unsigned opCode, Scanner& scanner, Brigantine& bw, int*);
+Inst parseMnemoQueue(unsigned opCode, Scanner& scanner, Brigantine& bw, int*);
+Inst parseMnemoSignal(unsigned opCode, Scanner& scanner, Brigantine& bw, int*);
+Inst parseMnemoSegCvt(unsigned opCode, Scanner& scanner, Brigantine& bw, int*);
+
 
 } // end namespace
 

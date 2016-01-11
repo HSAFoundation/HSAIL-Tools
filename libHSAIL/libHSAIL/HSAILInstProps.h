@@ -159,13 +159,22 @@ enum
     OPERAND_ATTR_STYPE,
     OPERAND_ATTR_ITYPE,
     OPERAND_ATTR_B1,
+    OPERAND_ATTR_B8,
+    OPERAND_ATTR_B16,
     OPERAND_ATTR_B32,
     OPERAND_ATTR_B64,
+    OPERAND_ATTR_B128,
+    OPERAND_ATTR_U8,
+    OPERAND_ATTR_U16,
     OPERAND_ATTR_U32,
     OPERAND_ATTR_U64,
+    OPERAND_ATTR_S8,
+    OPERAND_ATTR_S16,
     OPERAND_ATTR_S32,
     OPERAND_ATTR_S64,
+    OPERAND_ATTR_F16,
     OPERAND_ATTR_F32,
+    OPERAND_ATTR_F64,
     OPERAND_ATTR_SAMP,
     OPERAND_ATTR_SIG32,
     OPERAND_ATTR_SIG64,
@@ -243,6 +252,37 @@ enum
 
 //==============================================================================
 
+};
+
+namespace HSAIL_ASM
+{
+
+class Inst;
+
+//============================================================================
+// Operations with Brig properties
+
+void     setBrigProp(Inst inst, unsigned propId, unsigned val, bool ignoreErrors = false);
+unsigned getBrigProp(Inst inst, unsigned propId, bool ignoreErrors = false, unsigned defaultVal = 0);
+
+const char* validateProp(unsigned propId, unsigned val, unsigned* vals, unsigned length, unsigned model, unsigned profile);
+const char* validateProp(unsigned propId, unsigned val, unsigned model, unsigned profile, bool imageExt);
+const char* validateProp(Inst inst, unsigned propId, unsigned model, unsigned profile, bool imageExt);
+
+bool hasImageExtProps(Inst inst);     // checks opcode, type and operands
+
+const char* prop2str(unsigned prop);
+const char* stdPropVal2mnemo(unsigned prop, unsigned val);
+const char* stdPropVal2str(unsigned prop, unsigned val);
+
+const char* operand2str(unsigned valId);
+const char* prop2key(unsigned prop);
+
+unsigned attr2type(Inst inst, unsigned attr);
+
+bool isBrigEnumProp(unsigned propId);
+
+//==============================================================================
 };
 
 #endif // INCLUDED_HSAIL_INST_PROPS_H

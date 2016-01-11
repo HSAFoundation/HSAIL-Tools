@@ -64,16 +64,28 @@
 namespace HSAIL_ASM
 {
 
-Tool::Tool(BrigContainer* c)
+Tool::Tool(BrigContainer* c, const ExtManager& extMgr_)
   : m_container(c ? c : new BrigContainer()),
-    owned(c == 0)
+    owned(c == 0),
+    extMgr(extMgr_),
+    vld(*m_container, extMgr)
 {
     initOptions();
 }
 
-Tool::Tool(const void* brig_module, size_t size, bool copy)
+Tool::Tool(const ExtManager& extMgr_)
+  : m_container(new BrigContainer()),
+    owned(true),
+    extMgr(extMgr_),
+    vld(*m_container, extMgr)
+{
+}
+
+Tool::Tool(const void* brig_module, size_t size, bool copy, const ExtManager& extMgr_)
   : m_container(copy ? new BrigContainer() : new BrigContainer((BrigModule_t) brig_module)),
-    owned(copy)
+    owned(copy),
+    extMgr(extMgr_),
+    vld(*m_container, extMgr)
 {
     initOptions();
     if (copy) {
@@ -131,7 +143,7 @@ unsigned Tool::findCodeModuleSymbolOffset(const char *symbol_name) const
 bool Tool::assembleFromStream(std::istream& is, const std::string& opts, const std::string& sourceDir, const std::string& sourceFileName)
 {
     if (!parseOptions(opts)) { return false; }
-    Scanner s(is, true);
+    Scanner s(is, extMgr, true);
     Parser p(s, *m_container);
     try {
         p.parseSource();
@@ -141,9 +153,8 @@ bool Tool::assembleFromStream(std::istream& is, const std::string& opts, const s
         return false;
     }
     if (!DisableValidator) {
-        Validator v(*m_container);
-        if (!v.validate(DumpFormatError)) {
-            out << v.getErrorMsg(&is) << std::endl;
+        if (!vld.validate(DumpFormatError)) {
+            out << vld.getErrorMsg(&is) << std::endl;
             return false;
         }
     }
@@ -204,13 +215,12 @@ bool Tool::disassembleToStream(std::ostream& os, const std::string& opts)
 {
     if (!parseOptions(opts)) { return false; }
     if (!DisableValidator) {
-        Validator v(*m_container);
-        if (!v.validate(DumpFormatError)) {
-            out << v.getErrorMsg(0) << std::endl;
+        if (!vld.validate(DumpFormatError)) {
+            out << vld.getErrorMsg(0) << std::endl;
             return false;
         }
     }
-    Disassembler d(*m_container);
+    Disassembler d(*m_container, extMgr);
     d.setOutputOptions(0);
     std::stringstream ss;
     d.setOutputOptions(static_cast<unsigned>(FloatDisassemblyMode) | (DisasmInstOffset ? static_cast<unsigned>(Disassembler::PrintInstOffset) : 0u));
@@ -261,12 +271,16 @@ bool Tool::saveToFile(const std::string& filename)
 
 bool Tool::validate()
 {
-    Validator v(*m_container);
-    if (!v.validate(true)) {
-        out << v.getErrorMsg(0) << std::endl;
+    if (!vld.validate(true)) {
+        out << vld.getErrorMsg(0) << std::endl;
         return false;
     }
     return true;
+}
+
+void Tool::dumpValidatorError(std::ostream& out)
+{
+    vld.dumpError(&out);
 }
 
 bool Tool::decodeToFile(const std::string& filename)
@@ -276,7 +290,7 @@ bool Tool::decodeToFile(const std::string& filename)
         out << "Error: Failed to dump BRIG to " << filename << std::endl;
         return false;
     }
-    dump(*m_container, ofs);
+    dump(*m_container, ofs, extMgr);
     return true;
 }
 
@@ -418,8 +432,9 @@ bool Tool::parseOptions(const std::string& opts, bool execute)
         else if (opt == "-brig") { FileFormat = FILE_FORMAT_BRIG; }
         else if (opt == "-disable-operand-optimizer") { DisableOperandOptimizer = true; }
         else if (opt == "-enable-comments") { EnableComments = true; }
-        else if (opt == "-float-disassembly-mode") {
-        }
+        else if (opt == "-floatraw") { FloatDisassemblyMode = FloatDisassemblyModeRawBits; }
+        else if (opt == "-floatc99") { FloatDisassemblyMode = FloatDisassemblyModeC99; }
+        else if (opt == "-floatdec") { FloatDisassemblyMode = FloatDisassemblyModeDecimal; }
         else if (opt == "-disasm-inst-offset") { DisasmInstOffset = true; }
         else if (opt == "-dump-format-error") { DumpFormatError = true; }
         else if (execute && InputFilename.empty()) { InputFilename = opt; }

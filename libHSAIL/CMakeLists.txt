@@ -49,8 +49,14 @@ if(UNIX)
 endif()
 
 add_subdirectory(libHSAIL)
+add_subdirectory(libHSAIL-AMD)
 
 # FIXME: We should check for a usable version of libelf / libdwarf.
 if(BUILD_HSAILASM)
   add_subdirectory(HSAILAsm)
+endif()
+
+if(BUILD_HSAILTESTGEN)
+  add_subdirectory(libTestGen)
+  add_subdirectory(HSAILTestGen)
 endif()

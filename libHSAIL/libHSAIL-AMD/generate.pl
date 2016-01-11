@@ -91,7 +91,7 @@ sub MACRO2Name {
 }
 
 do {
-    open F,"<$indir/Brig.h" or die;
+    open F,"<$indir/Brig_amd.h" or die;
     local $/ = undef;
     $_ = <F>;
     close F;
@@ -154,6 +154,10 @@ while(pos($_) < length($_)) {
         my $val = $entity->{val};
         $val =~ s/([0-9]+)u\b/$1/g;
         my $was = "";
+        if ($val eq "BRIG_OPCODE_FIRST_USER_DEFINED") { $val = "32768"; }
+        if ($val eq "BRIG_SEGMENT_FIRST_USER_DEFINED") { $val = "128"; }
+        if ($val eq "BRIG_IMAGE_QUERY_FIRST_USER_DEFINED") { $val = "6"; }
+
         if ($val !~ /^[0-9]+$/ and $val !~ /^0x[0-9a-f]+$/i) {
           $val =~ s/(\b[a-z_][a-z_0-9]+\b)/gvalue(\"$1\")/ig;
         };
@@ -1299,77 +1303,9 @@ sub make {
     close STDOUT;
 }
 
+#generateBrigUtilities;
 
-make "HSAILInitBrig_gen.hpp", \&makeHSAILInitBrig;
-
-generateBrigUtilities;
-for my $u (keys %$utilities) {
-    make "HSAIL${\$u}_gen.hpp", \&makePrint, $utilities->{$u};
-}
-
-make "HSAILItems_gen.hpp", \&makeWrappers;
-make "HSAILItemImpls_gen.hpp", \&makePrint, $wrapperImpls;
-make "HSAILVisitItems_gen.hpp", \&makeDispatchByItem;
-make ">>HSAILVisitItems_gen.hpp", \&makeEnumFlds;
-make "HSAILBrigStaticChecks_gen.hpp", \&makeStaticChecks;
-make "HSAILBrigValidation_gen.hpp", \&makeBrigValidator;
-make "HSAILBrigProps_gen.hpp", \&makeBrigProps;
-make "HSAILBrigPropsAcc_gen.hpp", \&makeBrigPropsAcc;
-make "HSAILBrigPropsFastAcc_gen.hpp", \&makeBrigPropsFastAcc;
-make "HSAILBrigPropsVisitor_gen.hpp", \&makeBrigPropsVisitor;
-make "HSAILBrigPropsName_gen.hpp", \&makeBrigPropsName;
-make "HSAILBrigEnum2str_gen.hpp", \&makeBrigEnum2str;
-make "HSAILBrigInstUtils_gen.hpp", \&makeBrigInstUtils;
-
-#if ($genextra) {
-    make "HSAILEnums.td", \&makeLLVMEnums;
-    make "HSAILOperandPrinters.inc", \&makeLLVMPrinters;
-#}
-
-for my $s (values %scanner) {
-    my $text;
-    for my $tt (sort keys %$s) {
-        my $v = $s->{$tt};
-        if (ref $v) {
-            $v = "switch(ctx) {\n" .
-                 join("", map { "\tcase $_: $v->{$_}\n" } sort keys %$v) .
-                 "\tdefault: return EEmpty; }";
-
-        }
-        $text .= sprintf "    %-20s  { %-40s }\n", $tt, $v;
-    }
-    $s = $text;
-}
-
-make "HSAILScannerRules_gen.re2c", \&makePreprocess, "$indir/HSAILScannerRules.re2c";
-
-sub runTool {
-    my ($tool,$args,$out) = @_;
-    $outFileList{$out} = "$out.tmp";
-    my $cl = "$tool $args >$out.tmp";
-    print STDERR "$cl\n";
-    system($cl)==0 or die "running $tool failed";
-}
-
-runTool("$^X -I \"@INC[0]\" $indir/HDLProcessor.pl -target=validator $indir/HSAILDefs.hdl $indir/HSAILCore.hdl", "", "$outdir/HSAILInstValidation_core_gen.hpp")
-    unless $nohdl;
-runTool("$^X -I \"@INC[0]\" $indir/HDLProcessor.pl -target=validator $indir/HSAILDefs.hdl $indir/HSAILImage.hdl", "", "$outdir/HSAILInstValidation_image_gen.hpp")
-    unless $nohdl;
-runTool($re2c_path, "-i --no-generation-date $outdir/HSAILScannerRules_gen.re2c.tmp", "$outdir/HSAILScannerRules_gen_re2c.hpp")
-    unless $nore2c;
-
-for my $s (values %$structs) {
-    if ($s->{children}) { $s->{children} = [ sort keys %{$s->{children}} ] }
-}
-
-make "HSAILPropAccessors_gen.hpp", \&makePropAccessors;
-
-if ($genextra) {
-    make "gvalues_dump.pl", \&makePrint, Data::Dumper->Dump([$gvalues], ["gvalues"]);
-    make "enums_dump.pl", \&makePrint, Data::Dumper->Dump([$enums], ["enums"]);
-    make "structs_dump.pl", \&makePrint, Data::Dumper->Dump([$structs], ["structs"]);
-    make "typedefs_dump.pl", \&makePrint, Data::Dumper->Dump([$typedefs],["typedefs"]);
-}
+make "HSAILEnumsAmd.td", \&makeLLVMEnums;
 
 $/ = undef;
 for my $fn (keys %outFileList) {

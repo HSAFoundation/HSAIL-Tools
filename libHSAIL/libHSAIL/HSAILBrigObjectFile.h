@@ -50,8 +50,11 @@
 
 #include <iosfwd>
 #include <memory> // unique_ptr
+#include <map>
 
 #include "HSAILBrigContainer.h"
+
+using std::map;
 
 namespace HSAIL_ASM {
 
@@ -216,11 +219,6 @@ struct BrigIO {
     }
 
     static int validateBrigBlob(ReadAdapter&         src);
-
-    static uint64_t validateSection(ReadAdapter&     fd, 
-                                    unsigned         sectionIndex,
-                                    uint64_t         sectionOffset,
-                                    uint64_t         fileSize);
 };
 
 // old style compatibility API
@@ -269,6 +267,39 @@ typedef BinaryStreamer<FILE_FORMAT_AUTO>                    AutoBinaryStreamer;
 typedef Bif32Streamer BifStreamer;
 typedef Brig32Streamer BrigStreamer;
 
-}
+class BrigBlobValidator
+{
+private:
+    typedef map<uint64_t, uint64_t> ModuleMap;
+    mutable string error;
+    enum
+    {
+        MODULE_SIZE_ALIGNMENT               = 16,
+        MODULE_SECTION_ALIGNMENT            = 16,
+        MODULE_SECTION_SIZE_ALIGNMENT       =  4,
+        MODULE_INDEX_ALIGNMENT              =  8,
+        MAX_PREDEFINED_SECTION_NAME_LENGTH  = 16,
+    };
+
+public:
+    bool validate() const;
+    string getErrorMsg() const { return error; }
+
+private:
+    void validateBrig() const;
+
+    uint64_t validateSection(BrigSectionIndex sectionIndex,
+                             uint64_t sectionOffset,
+                             uint64_t fileSize) const;
+
+    void validate(bool cond, const char* msg) const;
+    void validate(bool cond, const char* msg, unsigned val) const;
+
+protected:
+    virtual uint64_t size() const = 0;
+    virtual bool read(char* dst, uint64_t numBytes, uint64_t offset) const = 0;
+};
+
+} // namespace
 
 #endif

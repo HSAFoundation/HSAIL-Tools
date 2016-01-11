@@ -45,13 +45,14 @@
 #include <iosfwd>
 
 #include "HSAILBrigContainer.h"
+#include "HSAILExtManager.h"
 
 namespace HSAIL_ASM {
 
-void dump(BrigContainer &c, std::ostream& out);
-void dumpItem(std::ostream& out, Code item);
-void dumpItem(std::ostream& out, Operand item);
-void dumpItem(std::ostream& out, Offset offset, BrigSectionImpl* section, BrigSectionIndex id);
+void dump(BrigContainer &c, std::ostream& out, const ExtManager& extMgr = registeredExtensions());
+void dumpItem(std::ostream& out, Code item, const ExtManager& extMgr = registeredExtensions());
+void dumpItem(std::ostream& out, Operand item, const ExtManager& extMgr = registeredExtensions());
+void dumpItem(std::ostream& out, Offset offset, BrigSectionImpl* section, BrigSectionIndex id, const ExtManager& extMgr = registeredExtensions());
 
 }
 

@@ -406,8 +406,7 @@ public:
     /// and make this reference point to it.
     /// @{
     ListRef& operator=(const ItemList& list) {
-      BrigSectionImpl* itemSection = &m_refSection->container()->sectionById(Item::SECTION);
-      assert(list.section() == 0 || list.section() == itemSection);
+      assert(list.section() == 0 || list.section() == &m_refSection->container()->sectionById(Item::SECTION));
       deref() = m_refSection->container()->strings().addStringImpl(list.data());
       return *this;
     }

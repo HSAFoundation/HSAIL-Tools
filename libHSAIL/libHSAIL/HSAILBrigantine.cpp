@@ -231,7 +231,6 @@ bool Brigantine::endBody()
     m_func.nextModuleEntry() = m_container.code().end();
 
     m_funcScope.reset();
-    DirectiveExecutable fx = m_func;
     m_func = Directive();
     return true;
 }
@@ -462,6 +461,12 @@ OperandRegister Brigantine::createOperandReg(const SRef& name,const SourceInfo* 
     std::istrstream is(name.substr(2).begin, name.substr(2).length());
     int num;
     is >> num;
+
+    // max name length is 7 ("$s65535")
+    if (num < 0 || num > 65535 || name.length() > 7) {
+        brigWriteError("Invalid register number", srcInfo);
+    }
+
     operand.regNum() = num;
     return operand;
 }

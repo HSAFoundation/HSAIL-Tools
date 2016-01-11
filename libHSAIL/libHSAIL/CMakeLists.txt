@@ -33,6 +33,13 @@ set(libhsail_public_headers
   HSAILValidatorBase.h
   HSAILb128_t.h
   hsail_c.h
+  HSAILExtension.h
+  HSAILGenericExtension.h
+  HSAILExtManager.h
+  HSAILImageExt.h
+  HSAILCore.hdl
+  HSAILImage.hdl
+  HSAILDefs.hdl
 )
 
 set(libhsail_srcs
@@ -52,6 +59,11 @@ set(libhsail_srcs
   HSAILValidator.cpp
   HSAILValidatorBase.cpp
   hsail_c.cpp
+  HSAILExtManager.cpp
+  HSAILInstProps.cpp
+  HSAILImageExt.cpp
+  generate.pl
+  HDLProcessor.pl
 )
 
 set(generated_dir ${CMAKE_CURRENT_BINARY_DIR}/generated)
@@ -64,17 +76,18 @@ set(generated_headers
   ${generated_dir}/HSAILBrigPropsAcc_gen.hpp
   ${generated_dir}/HSAILBrigPropsVisitor_gen.hpp
   ${generated_dir}/HSAILInitBrig_gen.hpp
-  ${generated_dir}/HSAILItemUtils_gen.hpp
   ${generated_dir}/HSAILScannerRules_gen_re2c.hpp
   ${generated_dir}/HSAILBrigPropsFastAcc_gen.hpp
   ${generated_dir}/HSAILBrigStaticChecks_gen.hpp
-  ${generated_dir}/HSAILInstValidation_gen.hpp
+  ${generated_dir}/HSAILInstValidation_core_gen.hpp
+  ${generated_dir}/HSAILInstValidation_image_gen.hpp
   ${generated_dir}/HSAILParserUtilities_gen.hpp
   ${generated_dir}/HSAILTemplateUtilities_gen.hpp
   ${generated_dir}/HSAILBrigProps_gen.hpp
   ${generated_dir}/HSAILBrigUtilities_gen.hpp
   ${generated_dir}/HSAILItemImpls_gen.hpp
   ${generated_dir}/HSAILPropAccessors_gen.hpp
+  ${generated_dir}/HSAILBrigEnum2str_gen.hpp
   ${generated_dir}/HSAILVisitItems_gen.hpp
 )
 
@@ -83,7 +96,9 @@ set(generated_srcs
   ${generated_dir}/HSAILScannerRules_gen.re2c
 )
 
-include_directories(${CMAKE_CURRENT_SOURCE_DIR})
+set(libHSAIL-PATH ${CMAKE_CURRENT_SOURCE_DIR})
+
+include_directories(${libHSAIL-PATH})
 include_directories(${generated_dir})
 
 add_custom_command(
@@ -96,8 +111,6 @@ add_custom_command(
   DEPENDS Brig.h
   COMMENT "Generating libHSAIL sources"
 )
-
-add_custom_target(libhsail-includes ALL DEPENDS ${generated_srcs})
 
 if(BUILD_LIBBRIGDWARF)
   set(libbrigdwarf_srcs
@@ -118,10 +131,8 @@ else()
   set(libbrigdwarf_srcs)
 endif()
 
+add_custom_target(libhsail-includes ALL DEPENDS ${generated_srcs})
 add_library(hsail ${libhsail_srcs} ${libhsail_public_headers} ${libbrigdwarf_srcs} ${generated_headers})
-if(BUILD_LIBBRIGDWARF)
-  add_definitions(-DWITH_LIBBRIGDWARF=1)
-endif()
 add_dependencies(hsail libhsail-includes)
 
 target_include_directories(hsail PUBLIC ${CMAKE_CURRENT_SOURCE_DIR} ${generated_dir})

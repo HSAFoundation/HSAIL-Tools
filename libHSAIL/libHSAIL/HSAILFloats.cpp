@@ -189,6 +189,14 @@ static inline int digitValueBitLen(int c)
     return 1;
 }
 
+class istringstreamalert : public std::istrstream {
+public:
+    istringstreamalert(const char* s, unsigned cnt)
+        : std::istrstream(s,cnt) {
+        exceptions(std::ios::failbit | std::ios::badbit);
+    }
+};
+
 // this routine assumes valid input sequence (checked by re2c rules)
 template <typename Float>
 Float readC99(const SRef& s)
@@ -256,7 +264,7 @@ Float readC99(const SRef& s)
             while (tolower(*p)!='p') ++p; // skip the rest of digits until 'p'
 
             ++p;
-            std::istrstream(p,end-p) >> std::dec >> exp;  // read decimal exponent
+            istringstreamalert(p,(unsigned)(end-p)) >> std::dec >> exp;  // read decimal exponent
             exp += expShift - 1;
 
             if (bitCount > maxBits) {

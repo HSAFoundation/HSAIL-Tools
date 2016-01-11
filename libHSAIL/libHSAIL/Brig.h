@@ -468,7 +468,8 @@ enum BrigImageQuery {
     BRIG_IMAGE_QUERY_ARRAY = 3,
     BRIG_IMAGE_QUERY_CHANNELORDER = 4,
     BRIG_IMAGE_QUERY_CHANNELTYPE = 5,
-    BRIG_IMAGE_QUERY_NUMMIPLEVELS = 6
+
+    BRIG_IMAGE_QUERY_FIRST_USER_DEFINED = 6 //.skip
 };
 
 enum BrigLinkage {
@@ -540,41 +541,26 @@ enum BrigOpcode {
     //.pscode=$k{ MACRO2Name("_".$k) }
     //.opcodeparser=$pscode{ return $pscode && "parseMnemo$pscode" }
     //.opcodeparser_incfile=ParserUtilities
-    //.opcodeparser_switch //.opcodeparser_proto="OpcodeParser getOpcodeParser(BrigOpcode16_t arg)" //.opcodeparser_default="return parseMnemoBasic"
+    //.opcodeparser_switch //.opcodeparser_proto="OpcodeParser getCoreOpcodeParser(BrigOpcode16_t arg)" //.opcodeparser_default="return parseMnemoBasic"
     //
     //.psopnd={undef}
     //.opndparser=$psopnd{ return $psopnd && "&Parser::parse$psopnd" }
     //.opndparser_incfile=ParserUtilities
-    //.opndparser_switch //.opndparser_proto="Parser::OperandParser Parser::getOperandParser(BrigOpcode16_t arg)" //.opndparser_default="return &Parser::parseOperands"
+    //.opndparser_switch //.opndparser_proto="Parser::OperandParser Parser::getCoreOperandParser(BrigOpcode16_t arg)" //.opndparser_default="return &Parser::parseOperands"
     //
-    //.mnemo={ s/^BRIG_OPCODE_//; s/GCN([^_])/GCN_$1/; lc }
+    //.mnemo={ s/^BRIG_OPCODE_//; lc }
     //.mnemo_scanner=Instructions //.mnemo_token=EInstruction
     //.mnemo_context=EDefaultContext
     //
-    //.has_memory_order={undef}
-    //.semsupport=$has_memory_order{ return $has_memory_order && "true" }
-    //
-    //.hasType=$k{ return ($k and $k eq "BASIC_NO_TYPE") ? "false" : undef; }
-    //.hasType_switch //.hasType_proto="bool instHasType(BrigOpcode16_t arg)" //.hasType_default="return true"
-    //
-    //.opcodevis=$pscode{ s/^BRIG_OPCODE_//; sprintf("%-47s(","vis.visitOpcode_".$_) . ($pscode =~m/^(BasicOrMod|Nop)$/? "inst" : "HSAIL_ASM::Inst". ($pscode=~m/BasicNoType/? "Basic":$pscode) ."(inst)").")" }
-    //.opcodevis_switch //.opcodevis_proto="template <typename RetType, typename Visitor> RetType visitOpcode_gen(HSAIL_ASM::Inst inst, Visitor& vis)"
-    //.opcodevis_arg="inst.opcode()" //.opcodevis_default="return RetType()"
-    //.opcodevis_incfile=ItemUtils
-    //
-    //.ftz=$k{ return ($k eq "BASIC_OR_MOD" or $k eq "CMP" or $k eq "CVT") ? "true" : undef }
-    //.ftz_incfile=ItemUtils //.ftz_switch //.ftz_proto="inline bool instSupportsFtz(BrigOpcode16_t arg)" //.ftz_default="return false"
-    //
     //.vecOpndIndex={undef}
-    //.vecOpndIndex_switch  //.vecOpndIndex_proto="int vecOpndIndex(BrigOpcode16_t arg)" //.vecOpndIndex_default="return -1"
-    //.vecOpndIndex_incfile=ParserUtilities
+    //.vecOpndIndex_switch  //.vecOpndIndex_proto="int getCoreVXIndex(BrigOpcode16_t arg)" //.vecOpndIndex_default="return -1"
     //
     //.numdst={undef}
-    //.numdst_switch //.numdst_proto="int instNumDstOperands(BrigOpcode16_t arg)" //.numdst_default="return 1"
+    //.numdst_switch //.numdst_proto="int getCoreDstOperandsNum(BrigOpcode16_t arg)" //.numdst_default="return 1"
     //
     //.print=$mnemo{ $mnemo }
 
-    BRIG_OPCODE_NOP = 0,                    //.k=NOP            //.hasType=false
+    BRIG_OPCODE_NOP = 0,                    //.k=NOP
     BRIG_OPCODE_ABS = 1,                    //.k=BASIC_OR_MOD
     BRIG_OPCODE_ADD = 2,                    //.k=BASIC_OR_MOD
     BRIG_OPCODE_BORROW = 3,
@@ -645,36 +631,36 @@ enum BrigOpcode {
     BRIG_OPCODE_STOF = 68,                  //.k=SEG_CVT
     BRIG_OPCODE_CMP = 69,                   //.k=CMP
     BRIG_OPCODE_CVT = 70,                   //.k=CVT
-    BRIG_OPCODE_LD = 71,                    //.k=MEM            //.has_memory_order //.vecOpndIndex=0
-    BRIG_OPCODE_ST = 72,                    //.k=MEM            //.has_memory_order //.vecOpndIndex=0 //.numdst=0
+    BRIG_OPCODE_LD = 71,                    //.k=MEM            //.vecOpndIndex=0
+    BRIG_OPCODE_ST = 72,                    //.k=MEM            //.vecOpndIndex=0 //.numdst=0
     BRIG_OPCODE_ATOMIC = 73,                //.k=ATOMIC
     BRIG_OPCODE_ATOMICNORET = 74,           //.k=ATOMIC         //.numdst=0
     BRIG_OPCODE_SIGNAL = 75,                //.k=SIGNAL
     BRIG_OPCODE_SIGNALNORET = 76,           //.k=SIGNAL         //.numdst=0
     BRIG_OPCODE_MEMFENCE = 77,              //.k=MEM_FENCE      //.numdst=0
-    BRIG_OPCODE_RDIMAGE = 78,               //.k=IMAGE          //.vecOpndIndex=0
-    BRIG_OPCODE_LDIMAGE = 79,               //.k=IMAGE          //.vecOpndIndex=0
-    BRIG_OPCODE_STIMAGE = 80,               //.k=IMAGE          //.vecOpndIndex=0 //.numdst=0
-    BRIG_OPCODE_IMAGEFENCE = 81,            //.k=BASIC_NO_TYPE
-    BRIG_OPCODE_QUERYIMAGE = 82,            //.k=QUERY_IMAGE
-    BRIG_OPCODE_QUERYSAMPLER = 83,          //.k=QUERY_SAMPLER
+    BRIG_OPCODE_RDIMAGE = 78,               //.skip                             // NB: handled by IMAGE extension
+    BRIG_OPCODE_LDIMAGE = 79,               //.skip                             // NB: handled by IMAGE extension
+    BRIG_OPCODE_STIMAGE = 80,               //.skip                             // NB: handled by IMAGE extension
+    BRIG_OPCODE_IMAGEFENCE = 81,            //.skip                             // NB: handled by IMAGE extension
+    BRIG_OPCODE_QUERYIMAGE = 82,            //.skip                             // NB: handled by IMAGE extension
+    BRIG_OPCODE_QUERYSAMPLER = 83,          //.skip                             // NB: handled by IMAGE extension
     BRIG_OPCODE_CBR = 84,                   //.k=BR             //.numdst=0
-    BRIG_OPCODE_BR = 85,                    //.k=BR             //.numdst=0     //.hasType=false
+    BRIG_OPCODE_BR = 85,                    //.k=BR             //.numdst=0
     BRIG_OPCODE_SBR = 86,                   //.k=BR             //.numdst=0     //.psopnd=SbrOperands
-    BRIG_OPCODE_BARRIER = 87,               //.k=BR             //.numdst=0     //.hasType=false
-    BRIG_OPCODE_WAVEBARRIER = 88,           //.k=BR             //.numdst=0     //.hasType=false
-    BRIG_OPCODE_ARRIVEFBAR = 89,            //.k=BR             //.numdst=0     //.hasType=false
-    BRIG_OPCODE_INITFBAR = 90,              //.k=BASIC_NO_TYPE  //.numdst=0     //.hasType=false
-    BRIG_OPCODE_JOINFBAR = 91,              //.k=BR             //.numdst=0     //.hasType=false
-    BRIG_OPCODE_LEAVEFBAR = 92,             //.k=BR             //.numdst=0     //.hasType=false
+    BRIG_OPCODE_BARRIER = 87,               //.k=BR             //.numdst=0
+    BRIG_OPCODE_WAVEBARRIER = 88,           //.k=BR             //.numdst=0
+    BRIG_OPCODE_ARRIVEFBAR = 89,            //.k=BR             //.numdst=0
+    BRIG_OPCODE_INITFBAR = 90,              //.k=BASIC_NO_TYPE  //.numdst=0
+    BRIG_OPCODE_JOINFBAR = 91,              //.k=BR             //.numdst=0
+    BRIG_OPCODE_LEAVEFBAR = 92,             //.k=BR             //.numdst=0
     BRIG_OPCODE_RELEASEFBAR = 93,           //.k=BASIC_NO_TYPE  //.numdst=0
-    BRIG_OPCODE_WAITFBAR = 94,              //.k=BR             //.numdst=0     //.hasType=false
+    BRIG_OPCODE_WAITFBAR = 94,              //.k=BR             //.numdst=0
     BRIG_OPCODE_LDF = 95,
     BRIG_OPCODE_ACTIVELANECOUNT = 96,       //.k=LANE
     BRIG_OPCODE_ACTIVELANEID = 97,          //.k=LANE
     BRIG_OPCODE_ACTIVELANEMASK = 98,        //.k=LANE           //.vecOpndIndex=0
     BRIG_OPCODE_ACTIVELANEPERMUTE = 99,     //.k=LANE
-    BRIG_OPCODE_CALL = 100,                 //.k=BR             //.psopnd=CallOperands //.numdst=0 //.hasType=false
+    BRIG_OPCODE_CALL = 100,                 //.k=BR             //.psopnd=CallOperands //.numdst=0
     BRIG_OPCODE_SCALL = 101,                //.k=BR             //.psopnd=CallOperands //.numdst=0
     BRIG_OPCODE_ICALL = 102,                //.k=BR             //.psopnd=CallOperands //.numdst=0
     BRIG_OPCODE_RET = 103,                  //.k=BASIC_NO_TYPE
@@ -712,44 +698,6 @@ enum BrigOpcode {
     BRIG_OPCODE_NULLPTR = 135,              //.k=SEG
     BRIG_OPCODE_WAVEID = 136,
     BRIG_OPCODE_FIRST_USER_DEFINED = 32768, //.skip
-
-    BRIG_OPCODE_GCNMADU = (1u << 15) | 0,           //.k=BASIC_NO_TYPE
-    BRIG_OPCODE_GCNMADS = (1u << 15) | 1,           //.k=BASIC_NO_TYPE
-    BRIG_OPCODE_GCNMAX3 = (1u << 15) | 2,
-    BRIG_OPCODE_GCNMIN3 = (1u << 15) | 3,
-    BRIG_OPCODE_GCNMED3 = (1u << 15) | 4,
-    BRIG_OPCODE_GCNFLDEXP = (1u << 15) | 5,         //.k=BASIC_OR_MOD
-    BRIG_OPCODE_GCNFREXP_EXP = (1u << 15) | 6,      //.k=BASIC_OR_MOD
-    BRIG_OPCODE_GCNFREXP_MANT = (1u << 15) | 7,     //.k=BASIC_OR_MOD
-    BRIG_OPCODE_GCNTRIG_PREOP = (1u << 15) | 8,     //.k=BASIC_OR_MOD
-    BRIG_OPCODE_GCNBFM = (1u << 15) | 9,
-    BRIG_OPCODE_GCNLD = (1u << 15) | 10,            //.k=MEM            //.has_memory_order //.vecOpndIndex=0
-    BRIG_OPCODE_GCNST = (1u << 15) | 11,            //.k=MEM            //.has_memory_order //.vecOpndIndex=0
-    BRIG_OPCODE_GCNATOMIC = (1u << 15) | 12,        //.k=ATOMIC
-    BRIG_OPCODE_GCNATOMICNORET = (1u << 15) | 13,   //.k=ATOMIC         //.mnemo=gcn_atomicNoRet
-    BRIG_OPCODE_GCNSLEEP = (1u << 15) | 14,
-    BRIG_OPCODE_GCNPRIORITY = (1u << 15) | 15,
-    BRIG_OPCODE_GCNREGIONALLOC = (1u << 15) | 16,   //.k=BASIC_NO_TYPE //.mnemo=gcn_region_alloc
-    BRIG_OPCODE_GCNMSAD = (1u << 15) | 17,
-    BRIG_OPCODE_GCNQSAD = (1u << 15) | 18,
-    BRIG_OPCODE_GCNMQSAD = (1u << 15) | 19,
-    BRIG_OPCODE_GCNMQSAD4 = (1u << 15) | 20,        //.k=BASIC_NO_TYPE
-    BRIG_OPCODE_GCNSADW = (1u << 15) | 21,
-    BRIG_OPCODE_GCNSADD = (1u << 15) | 22,
-    BRIG_OPCODE_GCNCONSUME = (1u << 15) | 23,       //.k=ADDR           //.mnemo=gcn_atomic_consume
-    BRIG_OPCODE_GCNAPPEND = (1u << 15) | 24,        //.k=ADDR           //.mnemo=gcn_atomic_append
-    BRIG_OPCODE_GCNB4XCHG = (1u << 15) | 25,        //.mnemo=gcn_b4xchg
-    BRIG_OPCODE_GCNB32XCHG = (1u << 15) | 26,       //.mnemo=gcn_b32xchg
-    BRIG_OPCODE_GCNMAX = (1u << 15) | 27,
-    BRIG_OPCODE_GCNMIN = (1u << 15) | 28,
-    BRIG_OPCODE_GCNDIVRELAXED = (1u << 15) | 29,    //.k=BASIC_OR_MOD
-    BRIG_OPCODE_GCNDIVRELAXEDNARROW = (1u << 15) | 30,
-
-    BRIG_OPCODE_AMDRDIMAGELOD  = (1u << 15) | 31,    //.k=IMAGE //.mnemo=amd_rdimagelod  //.vecOpndIndex=0
-    BRIG_OPCODE_AMDRDIMAGEGRAD = (1u << 15) | 32,    //.k=IMAGE //.mnemo=amd_rdimagegrad //.vecOpndIndex=0
-    BRIG_OPCODE_AMDLDIMAGEMIP  = (1u << 15) | 33,    //.k=IMAGE //.mnemo=amd_ldimagemip //.vecOpndIndex=0
-    BRIG_OPCODE_AMDSTIMAGEMIP  = (1u << 15) | 34,    //.k=IMAGE //.mnemo=amd_stimagemip //.vecOpndIndex=0 //.numdst=0
-    BRIG_OPCODE_AMDQUERYIMAGE  = (1u << 15) | 35     //.k=QUERY_IMAGE //.mnemo=amd_queryimage
 };
 
 enum BrigPack { 
@@ -937,9 +885,7 @@ enum BrigSegment {
     BRIG_SEGMENT_SPILL = 7,
     BRIG_SEGMENT_ARG = 8,
 
-    BRIG_SEGMENT_FIRST_USER_DEFINED = 128, //.skip
-
-    BRIG_SEGMENT_AMD_GCN = 9, //.mnemo="region"
+    BRIG_SEGMENT_FIRST_USER_DEFINED = 128 //.skip
 };
 
 enum BrigPackedTypeBits {

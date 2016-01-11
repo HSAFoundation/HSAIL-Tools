@@ -65,6 +65,7 @@ struct Guard {
 #include "HSAILUtilities.h"
 #include "HSAILSRef.h"
 #include "HSAILFloats.h"
+#include "HSAILExtManager.h"
 
 #include <memory>
 #include <vector>
@@ -83,8 +84,10 @@ void printError(std::ostream& os, std::istream& is, const SrcLoc& errLoc, const 
 
 class SyntaxError
 {
+protected:
     std::string m_errorMessage;
     SrcLoc      m_srcLoc;
+
 public:
     SyntaxError() {
         m_srcLoc.line = 0;
@@ -106,6 +109,12 @@ public:
     void print(std::ostream& os, std::istream& is) const {
         printError(os,is,m_srcLoc,m_errorMessage.c_str());
     }
+};
+
+class LexError : public SyntaxError
+{
+public:
+    LexError(const std::string& errorMessage,const SrcLoc& srcLoc) : SyntaxError(errorMessage, srcLoc) {}
 };
 
 class StreamScannerBase
@@ -261,6 +270,9 @@ enum ETokens
     EInstLdStImage,
     EInstQueryImage,
 
+    EExtInstName,
+    EExtInstSuff,
+
     EInstSkip, // TBD remove
 
     EInstruction,
@@ -302,7 +314,7 @@ enum EScanContext {
 class Scanner : public StreamScannerBase
 {
 public:
-    explicit Scanner(std::istream& is, bool disableComments=true);
+    explicit Scanner(std::istream& is, const ExtManager& extMgr = registeredExtensions(), bool disableComments = true);
 
     class Token {
         friend class Scanner;
@@ -359,6 +371,9 @@ public:
                 throwTokenExpected(token, message, t.srcLoc());
             }
             return t.brigId();
+        } catch (const LexError& e) {
+            syntaxError(e.what(), e.where());
+            return EEmpty;
         } catch (const SyntaxError& e) {
             throwTokenExpected(token, message, e.where());
             return EEmpty;
@@ -378,7 +393,12 @@ public:
     f16_t    readF16Literal();
     f32_t    readF32Literal();
     f64_t    readF64Literal();
-    bool         continueMLComment();
+    bool     continueMLComment();
+
+    ExtManager& extMgr() { return m_extMgr; }
+
+    static bool isAlpha(char ch);
+    static bool isAlphaNum(char ch);
 
 private:
     Scanner& operator=(const Scanner&);
@@ -390,6 +410,8 @@ private:
     int                        m_lineNum;
     std::streamoff             m_lineStart;
     bool                       m_disableComments;
+
+    ExtManager m_extMgr;
 
     class istringstreamalert;
     class Variant;

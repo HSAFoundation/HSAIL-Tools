@@ -336,13 +336,11 @@ public:
       return createImmed(SRef((const char*)&v, (const char*)&v + sizeof(f16_t)), type, srcInfo);
     }
     OperandConstantBytes createImmed(f32_t    v, BrigType16_t type, const SourceInfo* srcInfo=NULL) {
-      int numBytes = getBrigTypeNumBytes(type);
-      assert(numBytes == 4);
+      assert(getBrigTypeNumBytes(type) == 4);
       return createImmed(SRef((const char*)&v, (const char*)&v + sizeof(f32_t)), type, srcInfo);
     }
     OperandConstantBytes createImmed(f64_t    v, BrigType16_t type, const SourceInfo* srcInfo=NULL) {
-      int numBytes = getBrigTypeNumBytes(type);
-      assert(numBytes == 8);
+      assert(getBrigTypeNumBytes(type) == 8);
       return createImmed(SRef((const char*)&v, (const char*)&v + sizeof(f64_t)), type, srcInfo);
     }
 
