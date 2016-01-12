@@ -52,12 +52,15 @@
 #define AMD_MIPMAP_EXTENSION_NAME           "amd:mipmap"
 #define AMD_MIPMAP_EXTENSION_OPCODE_PREFIX  "amd_mipmap"
 
+#define AMD_DG_EXTENSION_NAME               "amd:dg"
+#define AMD_DG_EXTENSION_OPCODE_PREFIX      "amd_dg"
+
 #define AMD_GCN_SEGMENT_NAME                "region"
 #define AMD_MIPMAP_QUERY                    "nummiplevels"
 
 //}
 
-enum BrigOpcodeAmdGcn { 
+enum BrigOpcodeAmdGcn {
     BRIG_OPCODE_AMD_GCN_MADU             = BRIG_OPCODE_FIRST_USER_DEFINED,
     BRIG_OPCODE_AMD_GCN_MADS,
     BRIG_OPCODE_AMD_GCN_MAX3,
@@ -93,7 +96,7 @@ enum BrigOpcodeAmdGcn {
     BRIG_OPCODE_AMD_GCN_FIRST_UNUSED
 };
 
-enum BrigOpcodeAmdMipmap { 
+enum BrigOpcodeAmdMipmap {
     BRIG_OPCODE_AMD_MIPMAP_RDIMAGELOD    = BRIG_OPCODE_AMD_GCN_FIRST_UNUSED,
     BRIG_OPCODE_AMD_MIPMAP_RDIMAGEGRAD,
     BRIG_OPCODE_AMD_MIPMAP_LDIMAGEMIP,
@@ -101,6 +104,13 @@ enum BrigOpcodeAmdMipmap {
     BRIG_OPCODE_AMD_MIPMAP_QUERYIMAGE,
 
     BRIG_OPCODE_AMD_MIPMAP_FIRST_UNUSED
+};
+
+enum BrigOpcodeAmdDg {
+    BRIG_OPCODE_AMD_DG_GROUPSTATICSIZE   = BRIG_OPCODE_AMD_MIPMAP_FIRST_UNUSED,
+    BRIG_OPCODE_AMD_DG_GROUPTOTALSIZE,
+
+    BRIG_OPCODE_AMD_DG_FIRST_UNUSED
 };
 
 enum BrigSegmentAmdGcn {
