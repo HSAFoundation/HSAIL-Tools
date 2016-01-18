@@ -46,13 +46,14 @@
 #include "HSAILExtension.h"
 #include "HSAILExtManager.h"
 
-namespace amd { 
+namespace amd {
 namespace hsail {
 
 using namespace HSAIL_ASM;
 
 namespace gcn    { const Extension* getExtension(); }
 namespace mipmap { const Extension* getExtension(); }
+namespace dg     { const Extension* getExtension(); }
 
 const Extension** getExtensions();
 

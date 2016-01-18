@@ -19,8 +19,15 @@
       <FileType>Document</FileType>
       <Command>$(DK_ROOT)\perl\5.12.2\bin\perl.exe $(ProjectDir)/../libHSAIL/HDLProcessor.pl -target=validator $(ProjectDir)/../libHSAIL/HSAILDefs.hdl $(ProjectDir)/mipmap.hdl > $(ProjectDir)/generated/InstValidation_mipmap_gen.hpp</Command>
       <Outputs>$(ProjectDir)/generated/InstValidation_mipmap_gen.hpp</Outputs>
-      <AdditionalInputs>$(ProjectDir)gcn.hdl;$(DK_ROOT)\perl\5.12.2\bin\perl.exe</AdditionalInputs>
+      <AdditionalInputs>$(ProjectDir)mipmap.hdl;$(DK_ROOT)\perl\5.12.2\bin\perl.exe</AdditionalInputs>
       <Message>Generating from mipmap.hdl</Message>
+    </CustomBuild>
+    <CustomBuild Include="dg.hdl">
+      <FileType>Document</FileType>
+      <Command>$(DK_ROOT)\perl\5.12.2\bin\perl.exe $(ProjectDir)/../libHSAIL/HDLProcessor.pl -target=validator $(ProjectDir)/../libHSAIL/HSAILDefs.hdl $(ProjectDir)/dg.hdl > $(ProjectDir)/generated/InstValidation_dg_gen.hpp</Command>
+      <Outputs>$(ProjectDir)/generated/InstValidation_dg_gen.hpp</Outputs>
+      <AdditionalInputs>$(ProjectDir)dg.hdl;$(DK_ROOT)\perl\5.12.2\bin\perl.exe</AdditionalInputs>
+      <Message>Generating from dg.hdl</Message>
     </CustomBuild>
   </ItemGroup>
 </Project>

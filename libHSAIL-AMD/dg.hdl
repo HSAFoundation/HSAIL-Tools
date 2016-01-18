@@ -39,66 +39,28 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS WITH THE
 // SOFTWARE.
 
-#include "HSAILAmdExt.h"
-#include "HSAILImageExt.h"
+// ============================================================================
+// ============================================================================
+// DESCRIPTION OF DYNAMIC GROUP INSTRUCTIONS
+// ============================================================================
+// ============================================================================
 
-namespace amd { namespace hsail {
+// ============================================================================
+// DG static and total size
 
-#define AMD_EXTENSIONS_NUM (3)
-
-static const Extension* amdExtensions[AMD_EXTENSIONS_NUM + 1];
-
-const Extension** getExtensions()
+Req dg_group
 {
-    const Extension** e = amdExtensions;
-    if (!*e)
-    {
-        *e++ = gcn::getExtension();
-        *e++ = mipmap::getExtension();
-        *e++ = dg::getExtension();
-        *e++ = 0;
+    type = u32;
 
-        assert(amdExtensions + AMD_EXTENSIONS_NUM + 1 == e);
-    }
-    return amdExtensions;
+    d0 = reg;
+    s1 = null;
+    s2 = null;
+    s3 = null;
+    s4 = null;
+    s5 = null;
 }
 
-class AmdExtManager : public ExtManager
-{
-public:
-    AmdExtManager()
-    {
-        registerExtension(gcn::getExtension());
-        registerExtension(mipmap::getExtension());
-        registerExtension(dg::getExtension());
-    }
-};
+Inst amd_dg_groupstaticsize (Basic, misc, dg_group)
+Inst amd_dg_grouptotalsize  (Basic, misc, dg_group)
 
-const ExtManager& extensions()
-{
-    static const AmdExtManager amdExtMgr;
-    return amdExtMgr;
-}
-
-class AmdExtensionsRegistration
-{
-public:
-    AmdExtensionsRegistration()
-    {
-        if (!registerExtension(gcn::getExtension())) { assert(false); }
-        if (!registerExtension(mipmap::getExtension())) { assert(false); }
-        if (!registerExtension(dg::getExtension())) { assert(false); }
-    }
-};
-
-// Automatic registration of AMD extensions
-// NB: does not work on Windows
-const AmdExtensionsRegistration amdExtRegistration;
-
-void registerExtensions()
-{
-    extensions();
-}
-
-}} // end of namespaces
-
+// ============================================================================
