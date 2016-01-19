@@ -1,5 +1,9 @@
 cmake_minimum_required(VERSION 2.6)
 
+if(UNIX)
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fpic")
+endif()
+
 project(HSAIL-Tools)
 
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake_modules")
