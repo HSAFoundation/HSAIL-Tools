@@ -5,6 +5,8 @@ include_directories(${PROJECT_SOURCE_DIR}/libHSAIL-AMD)
 
 include_directories(${LLVM_PATH}/include)
 
+include_directories(${LLVM_INCLUDE_DIR})
+
 if(UNIX)
   include_directories(${LLVM_PATH}/linux/include)
 else()
