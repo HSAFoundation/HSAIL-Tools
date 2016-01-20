@@ -55,7 +55,7 @@ BrigProp iprop += amd.mipmap.nummiplevels;
 
 Req rdimage.basic
 {
-    type     = (s, u, f)32;
+    type     = (s, u, f)32, f16;
     itype    = roimg;
     ctype    = (s, f)32;
     geometry = 1d, 2d, 3d, 1da, 2da, 2ddepth, 2dadepth;
@@ -95,7 +95,7 @@ Req mipmap.rdimagegrad
 
 Req mipmap.ldimage
 {
-    type     = (s, u, f)32;
+    type     = (s, u, f)32, f16;
     ctype    = u32;
     itype    = roimg, rwimg;
     geometry = any;
@@ -116,7 +116,7 @@ Req mipmap.ldimage
 
 Req mipmap.stimage
 {
-    type     = (s, u, f)32;
+    type     = (s, u, f)32, f16;
     ctype    = u32;
     itype    = woimg, rwimg;
     geometry = any;

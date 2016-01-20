@@ -50,7 +50,7 @@
 
 Req rdimage
 {
-    type     = (s, u, f)32;
+    type     = (s, u, f)32, f16;
     itype    = roimg;
     ctype    = (s, f)32;
     geometry = 1d, 2d, 3d, 1da, 2da, 2ddepth, 2dadepth;
@@ -76,7 +76,7 @@ Inst rdimage(Image, image, rdimage)
 
 Req ld.st.image
 {
-    type     = (s, u, f)32;
+    type     = (s, u, f)32, f16;
     ctype    = u32;
     geometry = any;
     eqclass  = any;
