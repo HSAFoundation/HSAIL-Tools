@@ -75,6 +75,7 @@ private:
     //==========================================================================
 public:
     PropValidator(unsigned model, unsigned profile) : mModel(model), mProfile(profile) {}
+    virtual ~PropValidator() {}
 
     unsigned getMachineSize() const { return isLargeModel()? 64 : 32; }
     bool isLargeModel()       const { return mModel   == BRIG_MACHINE_LARGE; }
