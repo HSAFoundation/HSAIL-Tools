@@ -39,8 +39,8 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS WITH THE
 // SOFTWARE.
 
-#ifndef __BRIG_C_API_H__
-#define __BRIG_C_API_H__
+#ifndef BRIG_C_API_H__
+#define BRIG_C_API_H__
 
 #ifdef LIBHSAIL_DLL
 #define HSAIL_C_API __declspec(dllimport)
@@ -253,4 +253,4 @@ HSAIL_C_API void        brig_container_destroy(brig_container_t handle);
 }
 #endif
 
-#endif // __BRIG_C_API_H__
+#endif // BRIG_C_API_H__

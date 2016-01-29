@@ -38,8 +38,8 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS WITH THE
 // SOFTWARE.
-#ifndef __SECTION_HEADER_H__
-#define __SECTION_HEADER_H__
+#ifndef SECTION_HEADER_H__
+#define SECTION_HEADER_H__
 
 #include <vector>
 
@@ -80,4 +80,4 @@ private:
 
 } // end namespace BrigDebug
 
-#endif // #ifndef __SECTION_HEADER_H__
+#endif // #ifndef SECTION_HEADER_H__

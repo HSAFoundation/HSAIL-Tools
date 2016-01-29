@@ -1155,17 +1155,17 @@ void BrigDwarfGenerator_impl::createDwarfElfSections( HSAIL_ASM::BrigContainer &
 
                 if(relSym == m_codeSymbol)
                 {
-                    rr->r_info = ELF32_R_INFO(relSym, __R_HSA_DWARF_TO_BRIG_CODE32);
+                    rr->r_info = ELF32_R_INFO(relSym, RR_HSA_DWARF_TO_BRIG_CODE32);
                 }
                 else if(relSym == m_directivesSymbol)
                 {
-                    rr->r_info = ELF32_R_INFO(relSym, __R_HSA_DWARF_TO_BRIG_DIRECTIVES32);
+                    rr->r_info = ELF32_R_INFO(relSym, RR_HSA_DWARF_TO_BRIG_DIRECTIVES32);
                 }
 #if defined(AMD_LIBELF)
                 else
                 {
                     /* libDWARF must set default type of relocations */
-                    assert(__R_HSA_DWARF_32 == ELF32_R_TYPE(rr->r_info));
+                    assert(RR_HSA_DWARF_32 == ELF32_R_TYPE(rr->r_info));
                 }
 #endif // defined(AMD_LIBELF)
             }
