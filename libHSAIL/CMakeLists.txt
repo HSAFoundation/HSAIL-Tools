@@ -129,6 +129,9 @@ endif()
 
 add_custom_target(libhsail-includes ALL DEPENDS ${generated_srcs})
 add_library(hsail ${libhsail_srcs} ${libhsail_public_headers} ${libbrigdwarf_srcs} ${generated_headers})
+if(BUILD_LIBBRIGDWARF)
+  add_definitions(-DWITH_LIBBRIGDWARF=1)
+endif()
 add_dependencies(hsail libhsail-includes)
 
 target_include_directories(hsail PUBLIC ${CMAKE_CURRENT_SOURCE_DIR} ${generated_dir})
