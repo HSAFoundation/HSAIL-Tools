@@ -2261,6 +2261,7 @@ private:
 
         validate(opr, data.length() > 0, "OperandConstantBytes must include at least one value");
         validate(opr, (data.length() % typeSize) == 0, "Invalid OperandConstantBytes: data size must be a multiple of type size");
+        validate(opr, isArrayType(opr.type()) || (data.length() == typeSize), "Invalid OperandConstantBytes: literal size does not match type size");
     }
 
     void validateOperandConstantImage(OperandConstantImage opr)
