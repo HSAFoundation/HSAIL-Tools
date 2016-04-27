@@ -562,6 +562,8 @@ void Parser::saveSourceToContainer()
     std::unique_ptr<BrigSectionImpl> sec(new BrigSectionRaw(SRef("source")));
     SRef const t = m_scanner.getPlainText();
     sec->insertData(sec->secHeader()->headerByteCount, t.begin, t.end);
+    // Pad with spaces to multiple of 4.
+    sec->insertData(sec->size(), (4 - (sec->size() & 3)) & 3, ' ');
     m_bw.container().addSection(std::move(sec));
 }
 
