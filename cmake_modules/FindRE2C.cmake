@@ -16,11 +16,7 @@ if(RE2C_EXECUTABLE)
 		ERROR_VARIABLE RE2C_version_error
 		OUTPUT_STRIP_TRAILING_WHITESPACE)
 
-	if(RE2C_version_result EQUAL 0)
-		message(SEND_ERROR "Command \"${RE2C_EXECUTABLE} --vernum\" failed with output:\n${RE2C_version_error}")
-	else()
-		set(RE2C_VERSION ${RE2C_version_output})
-	endif()
+	set(RE2C_VERSION ${RE2C_version_output})
 
 	macro(RE2C_TARGET Re2cInput Re2cOutput Args)
 		set(RE2C_EXECUTABLE_opts ${Args})
