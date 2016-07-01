@@ -1,0 +1,49 @@
+before_script:
+  - uname -a
+  - cat /etc/*release
+  - dpkg --add-architecture i386
+  - apt-get -yy update
+  - dpkg --print-architecture
+  - dpkg --print-foreign-architectures
+  - apt-get install -yy cmake openssh-client re2c perl
+  - cmake --version
+
+lnx64-debug:
+  script:
+    - apt-get install -yy libelf-dev libdwarf-dev llvm-dev ncurses-dev re2c perl
+    - mkdir -p build/lnx64-debug
+    - cd build/lnx64-debug
+    - cmake -DCMAKE_BUILD_TYPE=Debug -DCMAKE_C_FLAGS=-m64 -DCMAKE_CXX_FLAGS=-m64 -DCMAKE_SHARED_LINKER_FLAGS=-m64 ../..
+    - make -j 4
+    - make test
+    - cd ../..
+
+lnx64-release:
+  script:
+    - apt-get install -yy libelf-dev libdwarf-dev llvm-dev ncurses-dev re2c perl
+    - mkdir -p build/lnx64-release
+    - cd build/lnx64-release
+    - cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_C_FLAGS=-m64 -DCMAKE_CXX_FLAGS=-m64 -DCMAKE_SHARED_LINKER_FLAGS=-m64 ../..
+    - make -j 4
+    - make test
+    - cd ../..
+
+lnx32-debug:
+  script:
+    - apt-get install -yy libelf-dev:i386 libdwarf-dev:i386 llvm-dev:i386 ncurses-dev:i386 gcc-multilib g++-multilib
+    - mkdir -p build/lnx32-debug
+    - cd build/lnx32-debug
+    - cmake -DCMAKE_BUILD_TYPE=Debug -DCMAKE_C_FLAGS=-m32 -DCMAKE_CXX_FLAGS=-m32 -DCMAKE_SHARED_LINKER_FLAGS=-m32 ../..
+    - make -j 4
+    - make test
+    - cd ../..
+
+lnx32-release:
+  script:
+    - apt-get install -yy libelf-dev:i386 libdwarf-dev:i386 llvm-dev:i386 ncurses-dev:i386 gcc-multilib g++-multilib
+    - mkdir -p build/lnx32-release
+    - cd build/lnx32-release
+    - cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_C_FLAGS=-m32 -DCMAKE_CXX_FLAGS=-m32 -DCMAKE_SHARED_LINKER_FLAGS=-m32 ../..
+    - make -j 4
+    - make test
+    - cd ../..
