@@ -36,7 +36,7 @@ if(CURSES_LIB)
   target_link_libraries(HSAILasm ${CURSES_LIB})
 endif()
 if(UNIX)
-  target_link_libraries(HSAILasm tinfo)
+  target_link_libraries(HSAILasm tinfo pthread)
 endif()
 
 install(TARGETS HSAILasm

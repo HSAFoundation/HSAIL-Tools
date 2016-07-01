@@ -35,8 +35,8 @@ find_library (LIBELF_LIBRARIES
   NAMES
     elf
   PATHS
-    /usr/lib
-    /usr/local/lib
+    /usr/lib/${CMAKE_LIBRARY_ARCHITECTURE}
+    /usr/local/lib/${CMAKE_LIBRARY_ARCHITECTURE}
     /opt/local/lib
     /sw/lib
     ENV LIBRARY_PATH
