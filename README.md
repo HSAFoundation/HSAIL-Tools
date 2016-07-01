@@ -1,7 +1,7 @@
 HSAIL-Tools
 ===========
 
-[![build status](https://gitlab.com/hsafoundation-spb/HSAIL-Tools/badges/master/build.svg)](https://gitlab.com/HSAFoundation/HSAIL-Tools/commits/master)
+[![build status](https://gitlab.com/hsafoundation-spb/HSAIL-Tools/badges/master/build.svg)](https://gitlab.com/hsafoundation-spb/HSAIL-Tools/commits/master)
 
 
 ### OVERVIEW
