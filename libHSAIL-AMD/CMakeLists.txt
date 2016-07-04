@@ -3,9 +3,6 @@ find_package(Perl REQUIRED)
 set(libhsail_amd_public_headers
     Brig_amd.h
     HSAILAmdExt.h
-    gcn.hdl
-    mipmap.hdl
-    dg.hdl
 )
 
 set(libhsail_amd_srcs
@@ -13,6 +10,9 @@ set(libhsail_amd_srcs
     mipmap.cpp
     HSAILAmdExt.cpp
     dg.cpp
+    gcn.hdl
+    mipmap.hdl
+    dg.hdl
 )
 
 set(generated_dir ${CMAKE_CURRENT_BINARY_DIR}/generated)

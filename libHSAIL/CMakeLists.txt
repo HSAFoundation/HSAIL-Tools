@@ -33,9 +33,6 @@ set(libhsail_public_headers
   HSAILGenericExtension.h
   HSAILExtManager.h
   HSAILImageExt.h
-  HSAILCore.hdl
-  HSAILImage.hdl
-  HSAILDefs.hdl
 )
 
 set(libhsail_srcs
@@ -60,6 +57,9 @@ set(libhsail_srcs
   HSAILImageExt.cpp
   generate.pl
   HDLProcessor.pl
+  HSAILCore.hdl
+  HSAILImage.hdl
+  HSAILDefs.hdl
 )
 
 set(generated_dir ${CMAKE_CURRENT_BINARY_DIR}/generated)
