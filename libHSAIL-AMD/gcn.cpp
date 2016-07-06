@@ -247,10 +247,7 @@ Inst parseMnemoGcnMem(unsigned opCode, Scanner& scanner, Brigantine& bw, int* vx
 Inst parseMnemoGcnAtomic(unsigned opCode, Scanner& scanner, Brigantine& bw, int*)
 {
     unsigned  const atomicOperation = scanner.eatToken(EMAtomicOp);
-    string    const segment         = scanner.scan().text();
-
-    if (segment != AMD_GCN_SEGMENT_SUFF) scanner.syntaxError("missing or invalid segment name");
-
+    OptionalU const segment         = scanner.tryEatToken(EMSegment);
     unsigned  const memoryOrder     = scanner.eatToken(EMMemoryOrder);
     unsigned  const memoryScope     = scanner.eatToken(EMMemoryScope);
     OptionalU const equivClass      = tryParseEquiv(scanner);
@@ -261,7 +258,7 @@ Inst parseMnemoGcnAtomic(unsigned opCode, Scanner& scanner, Brigantine& bw, int*
     InstAtomic res = bw.addInst<InstAtomic>(opCode,type);
 
     res.atomicOperation() = atomicOperation;
-    res.segment()         = BRIG_SEGMENT_AMD_GCN;
+    res.segment()         = BrigSegment(segment.isInitialized() ? segment.value() : BRIG_SEGMENT_AMD_GCN);
     res.equivClass()      = equivClass.isInitialized() ? equivClass.value() : 0;
     res.memoryOrder()     = memoryOrder;
     res.memoryScope()     = memoryScope;

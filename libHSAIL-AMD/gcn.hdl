@@ -279,23 +279,20 @@ Inst amd_gcn_st(Mem, memory, gcn_st)
 
 Req gcn_atomic
 {
-    type    = (b, s, u)(32, 64);
-    atmop   = generic, atomic, cas, exch, ld;
-    segment = gcn;
-    memscp  = wv, wg, agt, sys;
+    type    = f(32, 64);
+    { type = f32 ? atmop = add, min, max }
+    { type = f64 ? atmop = min, max };
+    segment = group;
+    memord = any;
+    memscp  = wv, wg;
     eqclass = any;
 
     typesize = atomic;
 
-    { atmop = cas                ? type = (b   )(32, 64); memord = any; s2 = reg, imm; s3 = reg, imm }
-    { atmop = and, or, xor, exch ? type = (b   )(32, 64); memord = any; s2 = reg, imm; s3 = null     }
-    { atmop = add, sub, min, max ? type = (s, u)(32, 64); memord = any; s2 = reg, imm; s3 = null     }
-    { atmop = wrapinc, wrapdec   ? type = (u   )(32, 64); memord = any; s2 = reg, imm; s3 = null     }
-    { atmop = ld                 ? type = (b   )(32, 64); memord = ld;  s2 = null;     s3 = null     }
-    ;
-
     d0 = reg;
     s1 = addr.seg;
+    s2 = reg, imm;
+    s3 = null;
     s4 = null;
     s5 = null;
 }
@@ -307,23 +304,19 @@ Inst amd_gcn_atomic(Atomic, atomic.memory, gcn_atomic)
 
 Req gcn_atomic_noret
 {
-    type    = (b, s, u)(32, 64);
-    atmop   = generic, atomic, st;
-    segment = gcn;
-    memscp  = wv, wg, agt, sys;
+    type    = f(32, 64);
+    { type = f32 ? atmop = add, min, max }
+    { type = f64 ? atmop = min, max };
+    segment = group;
+    memord = any;
+    memscp  = wv, wg;
     eqclass = any;
 
     typesize = atomic;
 
-    { atmop = cas                ? type = (b   )(32, 64); memord = any; s2 = reg, imm }
-    { atmop = and, or, xor       ? type = (b   )(32, 64); memord = any; s2 = null     }
-    { atmop = add, sub, min, max ? type = (s, u)(32, 64); memord = any; s2 = null     }
-    { atmop = wrapinc, wrapdec   ? type = (u   )(32, 64); memord = any; s2 = null     }
-    { atmop = st                 ? type = (b   )(32, 64); memord = st;  s2 = null     }
-    ;
-
     s0 = addr.seg;
     s1 = reg, imm;
+    s2 = null;
     s3 = null;
     s4 = null;
     s5 = null;
