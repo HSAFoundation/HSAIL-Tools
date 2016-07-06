@@ -1,0 +1,23 @@
+#!/bin/bash
+
+if [ $# -ne 3 ]; then
+  echo "Usage: $0 HSAILASM NAME DIR"
+  echo "Error: expected 3 arguments."
+  exit 1
+fi
+
+HSAILASM=$1
+NAME=$2
+DIR=$3
+
+echo "Assembling"
+$HSAILASM -assemble $DIR/$NAME.hsail -o ${NAME}_1.brig
+
+echo "Disassembling"
+$HSAILASM -disassemble ${NAME}_1.brig -o ${NAME}_2.hsail
+
+echo "Comparing with disassembly"
+diff -u $DIR/$NAME.hsail ${NAME}_2.hsail
+
+echo "Decoding"
+$HSAILASM -decode ${NAME}_1.brig -o ${NAME}_3.yml
