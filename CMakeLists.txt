@@ -1,5 +1,7 @@
 cmake_minimum_required(VERSION 2.6)
 
+project(HSAIL-Tools)
+
 if(MSVC)
   set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} /MT")
   set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} /MTd")
@@ -13,8 +15,6 @@ if(UNIX)
   add_definitions(-D__STDC_CONSTANT_MACROS)
   add_definitions(-D__STDC_FORMAT_MACROS)
 endif()
-
-project(HSAIL-Tools)
 
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake_modules")
 
