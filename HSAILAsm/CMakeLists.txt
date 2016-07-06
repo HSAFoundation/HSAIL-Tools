@@ -44,7 +44,7 @@ install(TARGETS HSAILasm
 )
 
 set(HSAILASM $<TARGET_FILE:HSAILasm>)
-set(test "${PROJECT_SOURCE_DIR}/tests/hsail_tests_p.hsail")
+set(test "${PROJECT_SOURCE_DIR}/tests/simple.hsail")
 
 add_test(NAME HSAILAsm-help
          COMMAND ${HSAILASM} -help

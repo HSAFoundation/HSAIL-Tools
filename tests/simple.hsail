@@ -1,0 +1,6 @@
+module &module:1:0:$full:$large:$default;
+
+kernel &Test()
+{
+	ret;
+};
