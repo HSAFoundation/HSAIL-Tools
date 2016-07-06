@@ -39,7 +39,9 @@ add_custom_command(
     COMMAND ${PERL_EXECUTABLE} ${libHSAIL-PATH}/HDLProcessor.pl -target=validator ${libHSAIL-PATH}/HSAILDefs.hdl ${CMAKE_CURRENT_SOURCE_DIR}/gcn.hdl    > ${generated_dir}/InstValidation_gcn_gen.hpp
     COMMAND ${PERL_EXECUTABLE} ${libHSAIL-PATH}/HDLProcessor.pl -target=validator ${libHSAIL-PATH}/HSAILDefs.hdl ${CMAKE_CURRENT_SOURCE_DIR}/mipmap.hdl > ${generated_dir}/InstValidation_mipmap_gen.hpp
     COMMAND ${PERL_EXECUTABLE} ${libHSAIL-PATH}/HDLProcessor.pl -target=validator ${libHSAIL-PATH}/HSAILDefs.hdl ${CMAKE_CURRENT_SOURCE_DIR}/dg.hdl     > ${generated_dir}/InstValidation_dg_gen.hpp
-    DEPENDS ${libHSAIL-PATH}/Brig.h
+    DEPENDS
+      ${libHSAIL-PATH}/Brig.h
+      gcn.hdl mipmap.hdl dg.hdl
     COMMENT "Generating GCN and MIPMAP validators"
 )
 

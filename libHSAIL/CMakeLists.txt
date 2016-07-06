@@ -104,7 +104,11 @@ add_custom_command(
                              -re2c ${RE2C_EXECUTABLE}
                              ${CMAKE_CURRENT_SOURCE_DIR}
                              ${generated_dir}
-  DEPENDS Brig.h
+  DEPENDS
+    Brig.h
+    HSAILCore.hdl
+    HSAILImage.hdl
+    HSAILDefs.hdl
   COMMENT "Generating libHSAIL sources"
 )
 
