@@ -57,8 +57,8 @@ add_subdirectory(libHSAIL-AMD)
 # FIXME: We should check for a usable version of libelf / libdwarf.
 if(BUILD_HSAILASM)
   add_subdirectory(HSAILAsm)
-  add_subdirectory(tests/instruction)
-  add_subdirectory(tests/syntax)
+  add_subdirectory(tests/1.0/instruction)
+  add_subdirectory(tests/1.0/syntax)
 endif()
 
 if(BUILD_HSAILTESTGEN)

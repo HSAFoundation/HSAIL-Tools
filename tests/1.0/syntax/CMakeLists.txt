@@ -6,7 +6,7 @@ else()
 endif()
 
 macro(syntax_test name)
-  add_test(NAME syntax/${name}
+  add_test(NAME 1.0/syntax/${name}
            COMMAND ${RUNTEST} ${HSAILASM} ${name} ${CMAKE_CURRENT_SOURCE_DIR}
            WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR})
 endmacro()

@@ -2,8 +2,6 @@
 
 set -e
 
-suffix=1_0
-
 mkdir -p tmp
 
 generate() {
@@ -21,16 +19,15 @@ generate() {
 generate_all() {
   local name=$1
   local iset=$2
-  local suffix=$3
 
   for profile in full base; do
     for model in large small; do
-      generate ${name}-${profile}-${model}-${suffix} $iset $profile $model
+      generate ${name}-${profile}-${model} $iset $profile $model
     done
   done
 }
 
-generate_all CORE CORE $suffix
-generate_all IMAGE IMAGE $suffix
-generate_all amd_gcn amd:gcn $suffix
-generate_all amd_mipmap amd:mipmap $suffix
+generate_all CORE CORE
+generate_all IMAGE IMAGE
+generate_all amd_gcn amd:gcn
+generate_all amd_mipmap amd:mipmap
