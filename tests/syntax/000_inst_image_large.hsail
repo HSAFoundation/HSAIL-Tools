@@ -1,0 +1,245 @@
+module &moduleName:1:0:$full:$large:$default;
+extension "IMAGE";
+global_u32 &x;
+group_u32 &g;
+decl prog alloc(agent) align(64) const global_roimg &n0;
+prog alloc(agent) align(64) const global_roimg &n0 = roimg(geometry = 3d, width = 5, height = 4, depth = 6, channel_type = unorm_int_101010, channel_order = rgbx);
+alloc(agent) global_roimg &roimage_1d = roimg(geometry = 1d, width = 18374966859414961920, channel_type = unorm_int_101010, channel_order = rgbx);
+alloc(agent) global_roimg &roimage_2d = roimg(geometry = 2d, width = 2, height = 1, channel_type = unorm_int_101010, channel_order = rgbx);
+alloc(agent) global_roimg &roimage_3d = roimg(geometry = 3d, width = 3, height = 2, depth = 1, channel_type = unorm_int_101010, channel_order = rgbx);
+alloc(agent) global_roimg &roimage_3d1 = roimg(geometry = 3d, width = 3, height = 2, depth = 6, channel_type = unorm_int_101010, channel_order = rgbx);
+alloc(agent) global_roimg &roimage_1da = roimg(geometry = 1da, width = 4, array = 4, channel_type = unorm_int_101010, channel_order = rgbx);
+alloc(agent) global_roimg &roimage_2da = roimg(geometry = 2da, width = 5, height = 4, array = 4, channel_type = unorm_int_101010, channel_order = rgbx);
+alloc(agent) global_roimg &roimage_1db = roimg(geometry = 1db, width = 5, channel_type = unorm_int_101010, channel_order = rgbx);
+alloc(agent) global_roimg &roimage_1db_0 = roimg(geometry = 1db, width = 5, channel_type = unorm_int_101010, channel_order = abgr);
+alloc(agent) global_roimg &roimage_2dd_1 = roimg(geometry = 2ddepth, width = 5, height = 4, channel_type = unorm_int_101010, channel_order = depth);
+alloc(agent) global_roimg &roimage_2dd_2 = roimg(geometry = 2ddepth, width = 5, height = 4, channel_type = unorm_int_101010, channel_order = depth_stencil);
+alloc(agent) global_roimg &roimage_2dad_1 = roimg(geometry = 2dadepth, width = 5, height = 4, array = 4, channel_type = unorm_int_101010, channel_order = depth);
+alloc(agent) global_roimg &roimage_2dad_2 = roimg(geometry = 2dadepth, width = 5, height = 4, array = 4, channel_type = unorm_int_101010, channel_order = depth_stencil);
+alloc(agent) global_roimg &roimage = roimg(geometry = 3d, width = 5, height = 4, depth = 6, channel_type = unorm_int_101010, channel_order = rgbx);
+alloc(agent) global_woimg &woimage = woimg(geometry = 3d, width = 5, height = 4, depth = 6, channel_type = unorm_int_101010, channel_order = rgbx);
+alloc(agent) global_rwimg &rwimage = rwimg(geometry = 3d, width = 5, height = 4, depth = 6, channel_type = unorm_int_101010, channel_order = rgbx);
+alloc(agent) global_samp &samp = samp(coord = normalized, filter = nearest, addressing = clamp_to_edge);
+readonly_roimg &roimageRO = roimg(geometry = 3d, width = 5, height = 4, depth = 6, channel_type = unorm_int_101010, channel_order = rgbx);
+readonly_woimg &roimageWO = woimg(geometry = 3d, width = 5, height = 4, depth = 6, channel_type = unorm_int_101010, channel_order = rgbx);
+readonly_rwimg &rwimageRO = rwimg(geometry = 3d, width = 5, height = 4, depth = 6, channel_type = unorm_int_101010, channel_order = rgbx);
+readonly_samp &sampRO = samp(coord = normalized, filter = nearest, addressing = clamp_to_edge);
+
+function &fn800()(arg_rwimg %x)
+{
+	{
+		arg_rwimg %x;
+		call	&fn800 () (%x);
+	}
+};
+
+function &fn801()(arg_roimg %x)
+{
+	{
+		arg_roimg %x;
+		call	&fn801 () (%x);
+	}
+};
+
+function &fn802()(arg_woimg %x)
+{
+	{
+		arg_woimg %x;
+		call	&fn802 () (%x);
+	}
+};
+
+function &fn803()(arg_samp %x)
+{
+	{
+		arg_samp %x;
+		call	&fn803 () (%x);
+	}
+};
+
+kernel &TestKernelOpaque(
+	kernarg_rwimg %x1,
+	kernarg_samp %x2)
+{
+	alloc(agent) global_roimg %roimage_1d = roimg(geometry = 1d, width = 5, channel_type = unorm_int_101010, channel_order = rgbx);
+	alloc(agent) global_roimg %roimage_2d = roimg(geometry = 2d, width = 2, height = 1, channel_type = unorm_int_101010, channel_order = rgbx);
+	alloc(agent) global_roimg %roimage_3d = roimg(geometry = 3d, width = 3, height = 2, depth = 1, channel_type = unorm_int_101010, channel_order = rgbx);
+	alloc(agent) global_roimg %roimage_3d1 = roimg(geometry = 3d, width = 3, height = 2, depth = 6, channel_type = unorm_int_101010, channel_order = rgbx);
+	alloc(agent) global_roimg %roimage_1da = roimg(geometry = 1da, width = 4, array = 4, channel_type = unorm_int_101010, channel_order = rgbx);
+	alloc(agent) global_roimg %roimage_2da = roimg(geometry = 2da, width = 5, height = 4, array = 4, channel_type = unorm_int_101010, channel_order = rgbx);
+	alloc(agent) global_roimg %roimage_1db = roimg(geometry = 1db, width = 5, channel_type = unorm_int_101010, channel_order = rgbx);
+	readonly_roimg %roimageRO = roimg(geometry = 3d, width = 5, height = 4, depth = 6, channel_type = unorm_int_101010, channel_order = rgbx);
+	readonly_woimg %roimageWO = woimg(geometry = 3d, width = 5, height = 4, depth = 6, channel_type = unorm_int_101010, channel_order = rgbx);
+	readonly_rwimg %rwimageRO = rwimg(geometry = 3d, width = 5, height = 4, depth = 6, channel_type = unorm_int_101010, channel_order = rgbx);
+	readonly_samp %sampRO = samp(coord = normalized, filter = nearest, addressing = clamp_to_edge);
+	alloc(agent) global_rwimg %rwimgArray01[2] = rwimg[](
+		rwimg(geometry = 1d, width = 5, channel_type = unorm_int_101010, channel_order = rgbx), 
+		rwimg(geometry = 2ddepth, width = 5, height = 4, channel_type = unorm_int_101010, channel_order = depth)
+	);
+	lda_kernarg_u64	$d1, [%x1];
+	ld_kernarg_rwimg	$d2, [$d1];
+	ld_kernarg_rwimg	$d2, [%x1];
+};
+
+function &TestFuncOpaque()(
+	arg_rwimg %x1,
+	arg_samp %x2)
+{
+	lda_group_u32	$s1, [&g];
+	ld_arg_rwimg	$d2, [%x1][$s1];
+	ld_arg_samp	$d2, [%x2][$s2];
+};
+
+function &tt()(
+	arg_woimg %x11,
+	arg_rwimg %x12,
+	arg_samp %x13)
+{
+};
+
+function &Testinst()(arg_u32 %arg)
+{
+	global_rwimg %rwimage_loc;
+	readonly_roimg %roimage_loc;
+	global_woimg %woimage_loc;
+	global_samp %sampler_loc;
+	ld_global_rwimg	$d1, [%rwimage_loc];
+	ld_readonly_roimg	$d2, [%roimage_loc];
+	ld_global_woimg	$d2, [%woimage_loc];
+	ld_global_samp	$d3, [%sampler_loc];
+	//---------------------------------------
+	// opaque refs
+	lda_global_u64	$d1, [&roimage];
+	lda_global_u64	$d1, [&samp];
+	lda_readonly_u64	$d1, [&roimageRO];
+	lda_readonly_u64	$d1, [&sampRO];
+	ld_global_roimg	$d1, [&roimage];
+	ld_global_woimg	$d1, [&woimage];
+	ld_global_rwimg	$d1, [&rwimage];
+	ld_global_samp	$d1, [&samp];
+	ld_global_roimg	$d1, [$d0];
+	ld_global_woimg	$d1, [$d0];
+	ld_global_rwimg	$d1, [$d0];
+	ld_global_samp	$d1, [$d0];
+	{
+		arg_woimg %x11;
+		arg_rwimg %x12;
+		arg_samp %x13;
+		st_arg_woimg	$d1, [%x11];
+		st_arg_rwimg	$d1, [%x12];
+		st_arg_samp	$d1, [%x13];
+		call	&tt () (%x11, %x12, %x13);
+	}
+	mov_samp	$d1, $d8;
+	mov_roimg	$d1, $d8;
+	mov_woimg	$d1, $d8;
+	mov_rwimg	$d1, $d8;
+	//---------------------------------------
+	rdimage_v4_1d_s32_roimg_f32	($s0, $s1, $s5, $s3), $d1, $d3, $s6;
+	rdimage_v4_1d_s32_roimg_s32	($s0, $s1, $s5, $s3), $d1, $d3, -123;
+	rdimage_v4_1d_s32_roimg_s32	($s0, $s1, $s5, $s3), $d1, $d3, WAVESIZE;
+	rdimage_v4_1da_u32_roimg_s32	($s0, $s1, $s2, $s3), $d1, $d3, ($s6, WAVESIZE);
+	rdimage_v4_2d_s32_roimg_s32	($s0, $s1, $s3, $s4), $d2, $d3, ($s6, $s9);
+	rdimage_v4_2da_f32_roimg_f32	($s0, $s1, $s3, $s4), $d1, $d3, ($s6, $s9, $s12);
+	rdimage_v4_3d_s32_roimg_f32	($s0, $s1, $s3, $s4), $d2, $d3, ($s6, $s9, $s2);
+	rdimage_v4_1da_u32_roimg_s32	($s0, $s1, $s2, $s3), $d1, $d3, (123, WAVESIZE);
+	rdimage_v4_2d_s32_roimg_s32	($s0, $s1, $s3, $s4), $d2, $d3, ($s6, 0xfffffceb);
+	rdimage_v4_2da_f32_roimg_f32	($s0, $s1, $s3, $s4), $d1, $d3, (0F3f800000, $s9, 0F40000000);
+	rdimage_v4_3d_s32_roimg_f32	($s0, $s1, $s3, $s4), $d2, $d3, ($s6, 0F40400000, $s2);
+	rdimage_v4_3d_s32_roimg_f32	($s0, $s1, $s3, $s4), $d2, $d3, ($s6, $s9, $s2);
+	rdimage_v4_3d_equiv(1)_s32_roimg_f32	($s0, $s1, $s3, $s4), $d2, $d3, ($s6, $s9, $s2);
+	rdimage_v4_3d_equiv(255)_s32_roimg_f32	($s0, $s1, $s3, $s4), $d2, $d3, ($s6, $s9, $s2);
+	rdimage_2ddepth_s32_roimg_f32	$s0, $d2, $d3, ($s6, $s9);
+	rdimage_2dadepth_s32_roimg_f32	$s0, $d2, $d3, ($s6, $s9, $s10);
+	//---------------------------------------
+	ldimage_v4_1d_u32_roimg_u32	($s1, $s2, $s3, $s4), $d2, $s4;
+	ldimage_v4_1db_u32_roimg_u32	($s1, $s2, $s3, $s4), $d2, 123;
+	ldimage_v4_1db_u32_roimg_u32	($s1, $s2, $s3, $s4), $d2, WAVESIZE;
+	ldimage_v4_2d_s32_rwimg_u32	($s1, $s2, $s3, $s4), $d1, ($s4, WAVESIZE);
+	ldimage_v4_1da_s32_rwimg_u32	($s1, $s2, $s3, $s4), $d1, ($s4, $s5);
+	ldimage_v4_3d_f32_rwimg_u32	($s1, $s2, $s3, $s4), $d1, ($s4, $s5, $s6);
+	ldimage_v4_2da_f32_roimg_u32	($s1, $s2, $s3, $s4), $d2, ($s4, $s1, $s2);
+	ldimage_v4_2d_s32_rwimg_u32	($s1, $s2, $s3, $s4), $d1, (123, $s5);
+	ldimage_v4_1da_s32_rwimg_u32	($s1, $s2, $s3, $s4), $d1, ($s4, 0x1c8);
+	ldimage_v4_3d_f32_rwimg_u32	($s1, $s2, $s3, $s4), $d1, (0, $s5, WAVESIZE);
+	ldimage_v4_2da_f32_roimg_u32	($s1, $s2, $s3, $s4), $d2, ($s4, $s1, 1);
+	ldimage_v4_2da_f32_roimg_u32	($s1, $s2, $s3, $s4), $d2, ($s4, $s1, $s2);
+	ldimage_v4_2da_equiv(1)_f32_roimg_u32	($s1, $s2, $s3, $s4), $d2, ($s4, $s1, $s2);
+	ldimage_v4_2da_equiv(255)_f32_roimg_u32	($s1, $s2, $s3, $s4), $d2, ($s4, $s1, $s2);
+	ldimage_2ddepth_f32_rwimg_u32	$s1, $d1, ($s4, $s5);
+	ldimage_2dadepth_f32_rwimg_u32	$s1, $d1, ($s4, $s5, $s6);
+	//---------------------------------------
+	stimage_v4_1d_f32_rwimg_u32	($s1, $s2, $s3, $s4), $d1, $s4;
+	stimage_v4_1db_f32_woimg_u32	($s1, $s2, $s3, $s4), $d1, 0;
+	stimage_v4_1db_f32_woimg_u32	($s1, $s2, $s3, $s4), $d1, WAVESIZE;
+	stimage_v4_2d_u32_rwimg_u32	($s1, $s2, $s3, $s4), $d1, (WAVESIZE, $s5);
+	stimage_v4_1da_u32_woimg_u32	($s1, $s2, $s3, $s4), $d1, ($s4, $s5);
+	stimage_v4_3d_f32_rwimg_u32	($s1, $s2, $s3, $s4), $d1, ($s4, $s5, $s6);
+	stimage_v4_2da_s32_woimg_u32	($s1, $s2, $s3, $s4), $d1, ($s4, WAVESIZE, $s6);
+	stimage_v4_2d_u32_rwimg_u32	($s1, $s2, $s3, $s4), $d1, (0x2fd, $s5);
+	stimage_v4_1da_u32_woimg_u32	($s1, $s2, $s3, $s4), $d1, ($s4, 0xfffffd86);
+	stimage_v4_3d_f32_rwimg_u32	($s1, $s2, $s3, $s4), $d1, ($s4, 0, $s6);
+	stimage_v4_2da_s32_woimg_u32	($s1, $s2, $s3, $s4), $d1, (0xffffe220, $s5, $s6);
+	stimage_v4_2da_s32_rwimg_u32	($s1, $s2, $s3, $s4), $d1, ($s4, $s5, $s6);
+	stimage_v4_2da_equiv(1)_s32_woimg_u32	($s1, $s2, $s3, $s4), $d1, ($s4, $s5, $s6);
+	stimage_v4_2da_equiv(255)_s32_rwimg_u32	($s1, $s2, $s3, $s4), $d1, ($s4, $s5, $s6);
+	stimage_2ddepth_f32_rwimg_u32	$s1, $d1, ($s4, $s5);
+	stimage_2dadepth_f32_woimg_u32	$s1, $d1, ($s4, $s5, $s6);
+	//---------------------------------------
+	queryimage_1d_width_u32_rwimg	$s1, $d1;
+	queryimage_2d_height_u32_rwimg	$s0, $d1;
+	queryimage_3d_depth_u32_rwimg	$s0, $d1;
+	queryimage_1da_array_u32_roimg	$s1, $d2;
+	queryimage_2da_channelorder_u32_roimg	$s0, $d2;
+	queryimage_1db_channeltype_u32_roimg	$s0, $d2;
+	queryimage_2ddepth_channeltype_u32_woimg	$s0, $d3;
+	querysampler_addressing_u32	$s0, $d4;
+	querysampler_coord_u32	$s0, $d4;
+	querysampler_filter_u32	$s0, $d4;
+	//---------------------------------------
+	imagefence;
+};
+// Test memory access in arg segment
+
+function &TestArgSegOpaque()(
+	arg_samp %samp,
+	arg_rwimg %img[4])
+{
+	ld_arg_samp	$d1, [%samp];
+	ld_arg_rwimg	$d1, [%img];
+	ld_arg_rwimg	$d1, [%img][1];
+	ld_arg_rwimg	$d1, [%img][24];
+};
+// Test 'st' with 'q' vectors 
+
+function &f101()()
+{
+	ld_v2_rwimg	($d0, $d1), [0];
+	ld_v3_rwimg	($d0, $d1, $d2), [0];
+	ld_v4_rwimg	($d0, $d1, $d2, $d3), [0];
+	ld_v2_samp	($d0, $d1), [0];
+	ld_v3_samp	($d0, $d1, $d2), [0];
+	ld_v4_samp	($d0, $d1, $d2, $d3), [0];
+};
+// Test 'st' with opaque vectors
+
+function &f102(arg_rwimg %x[10])()
+{
+	st_v2_arg_rwimg	($d0, $d1), [%x];
+	st_v3_arg_rwimg	($d0, $d1, $d2), [%x];
+	st_v4_arg_rwimg	($d0, $d1, $d2, $d3), [%x];
+	st_v2_arg_rwimg	($d0, $d0), [%x];
+	st_v3_arg_rwimg	($d0, $d0, $d2), [%x];
+	st_v4_arg_rwimg	($d0, $d0, $d2, $d3), [%x];
+};
+// Test 'st' with opaque vectors
+
+function &f103(arg_samp %x[10])()
+{
+	st_v2_arg_samp	($d0, $d1), [%x];
+	st_v3_arg_samp	($d0, $d1, $d2), [%x];
+	st_v4_arg_samp	($d0, $d1, $d2, $d3), [%x];
+	st_v2_arg_samp	($d0, $d0), [%x];
+	st_v3_arg_samp	($d0, $d0, $d2), [%x];
+	st_v4_arg_samp	($d0, $d0, $d2, $d3), [%x];
+};

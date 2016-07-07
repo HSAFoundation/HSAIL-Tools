@@ -1,0 +1,6 @@
+module &moduleName:1:0:$full:$large:$default;
+
+function &TestFunc()()
+{
+	requiredworkgroupsize 0x10000003, 0x20000003, 0x30000003;
+};

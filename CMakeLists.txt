@@ -58,6 +58,7 @@ add_subdirectory(libHSAIL-AMD)
 if(BUILD_HSAILASM)
   add_subdirectory(HSAILAsm)
   add_subdirectory(tests/instruction)
+  add_subdirectory(tests/syntax)
 endif()
 
 if(BUILD_HSAILTESTGEN)

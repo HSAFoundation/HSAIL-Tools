@@ -1,0 +1,284 @@
+module &moduleName:1:0:$full:$large:$default;
+extension "IMAGE";
+global_b8 &aggregate_00[16] = {
+	u8(255), 
+	f16(0Hbc00), 
+	s32(1), 
+	f64(0Dbff0000000000000), 
+	s8(0)
+};
+global_b16 &aggregate_01[8] = {
+	u8(255), 
+	f16(0Hbc00), 
+	s32(1), 
+	f64(0Dbff0000000000000), 
+	s8(0)
+};
+global_b32 &aggregate_03[4] = {
+	u8(255), 
+	f16(0Hbc00), 
+	s32(1), 
+	f64(0Dbff0000000000000), 
+	s8(0)
+};
+global_b64 &aggregate_04[2] = {
+	u8(255), 
+	f16(0Hbc00), 
+	s32(1), 
+	f64(0Dbff0000000000000), 
+	s8(0)
+};
+global_b128 &aggregate_05[1] = {
+	u8(255), 
+	f16(0Hbc00), 
+	s32(1), 
+	f64(0Dbff0000000000000), 
+	s8(0)
+};
+global_b8 &aggregate_10[16] = {
+	f16(0Hbc00), 
+	s16x2(-1,1), 
+	f32x2(0Fbf800000,0F3f800000), 
+	s16(-1)
+};
+global_b16 &aggregate_11[8] = {
+	f16(0Hbc00), 
+	s16x2(-1,1), 
+	f32x2(0Fbf800000,0F3f800000), 
+	s16(-1)
+};
+global_b32 &aggregate_13[4] = {
+	f16(0Hbc00), 
+	s16x2(-1,1), 
+	f32x2(0Fbf800000,0F3f800000), 
+	s16(-1)
+};
+global_b64 &aggregate_14[2] = {
+	f16(0Hbc00), 
+	s16x2(-1,1), 
+	f32x2(0Fbf800000,0F3f800000), 
+	s16(-1)
+};
+global_b128 &aggregate_15[1] = {
+	f16(0Hbc00), 
+	s16x2(-1,1), 
+	f32x2(0Fbf800000,0F3f800000), 
+	s16(-1)
+};
+global_b128 &aggregate_20[1] = {
+	f16(0Hbc00), 
+	s32(1), 
+	f64(0Dbff0000000000000), 
+	s8(0), 
+	align(16)
+};
+global_b128 &aggregate_21[1] = {
+	s32(1), 
+	f64(0Dbff0000000000000), 
+	s8(0), 
+	align(16)
+};
+global_b128 &aggregate_22[1] = {
+	s32(1), 
+	f64(0Dbff0000000000000), 
+	align(16)
+};
+global_b128 &aggregate_23[1] = {
+	f64(0Dbff0000000000000), 
+	align(16)
+};
+global_b128 &aggregate_24[1] = {
+	s8(0), 
+	align(16)
+};
+global_b128 &aggregate_25[1] = {
+	align(16), 
+	s8(0), 
+	align(16)
+};
+global_b128 &aggregate_30[1] = {
+	f16(0Hbc00), 
+	s32(1), 
+	f64(0Dbff0000000000000), 
+	s8(0), 
+	align(8)
+};
+global_b128 &aggregate_31[1] = {
+	s32(1), 
+	f64(0Dbff0000000000000), 
+	s8(0), 
+	align(8)
+};
+global_b128 &aggregate_32[1] = {
+	s32(1), 
+	f64(0Dbff0000000000000), 
+	align(8)
+};
+global_b128 &aggregate_33[1] = {
+	f64(0Dbff0000000000000), 
+	s8(0), 
+	align(8)
+};
+global_b128 &aggregate_34[1] = {
+	s8(0), 
+	f64(0Dbff0000000000000), 
+	align(8)
+};
+global_b128 &aggregate_40[1] = {
+	align(8), 
+	s8(0), 
+	f64(0Dbff0000000000000), 
+	align(8)
+};
+global_b128 &aggregate_41[1] = {
+	s8(0), 
+	align(8), 
+	f64(0Dbff0000000000000)
+};
+global_b128 &aggregate_42[1] = {
+	s8(0), 
+	align(4), 
+	align(8), 
+	f32(0Fbf800000), 
+	align(8)
+};
+global_b128 &aggregate_43[1] = {
+	s8(0), 
+	align(2), 
+	align(4), 
+	align(8), 
+	f16(0Hbc00), 
+	align(4), 
+	align(8), 
+	align(4)
+};
+global_b128 &aggregate_44[1] = {
+	s8(0), 
+	align(2), 
+	align(4), 
+	align(8), 
+	s8(-1), 
+	align(2), 
+	align(2), 
+	align(8), 
+	align(8)
+};
+global_b128 &aggregate_45[1] = {
+	s8(0), 
+	align(4), 
+	align(8), 
+	s32(-1), 
+	s8(0), 
+	align(4)
+};
+global_b128 &aggregate_46[1] = {
+	s8(0), 
+	align(8), 
+	s8(-1), 
+	align(8)
+};
+global_b8 &aggregate_011[4] = {
+	s8(0), 
+	u16(1), 
+	s8(2)
+};
+global_b8 &aggregate_012[5] = {
+	s8(0), 
+	u16(1), 
+	f16(0H4000)
+};
+global_b8 &aggregate_013[13] = {
+	s8(0), 
+	u16[](1, 2, 3, 4, 9), 
+	f16(0H4000)
+};
+global_b8 &aggregate_021[12] = {
+	u8(31), 
+	u8(28), 
+	u8(31), 
+	u8(30), 
+	u8(31), 
+	u8(30), 
+	u8(31), 
+	u8(31), 
+	u8(30), 
+	u8(31), 
+	u8(30), 
+	u8(31)
+};
+global_b8 &aggregate_022[8] = {
+	u8(0), 
+	u8(0), 
+	u8(0), 
+	u8(0), 
+	u8(0), 
+	u8(0), 
+	u8(0), 
+	u8(0)
+};
+global_b64 &aggregate_023[4] = {
+	sig64(0), 
+	sig64(0), 
+	u8[](0, 1, 2, 3, 4), 
+	align(8), 
+	sig64(0)
+};
+alloc(agent) global_b8 &aggregare_131[16] = {
+	u32(4), 
+	align(8), 
+	rwimg(geometry = 2d, width = 5, height = 4, channel_type = unorm_short_555, channel_order = rgb)
+};
+alloc(agent) global_b8 &aggregare_132[16] = {
+	u32(4), 
+	align(8), 
+	samp(coord = unnormalized, filter = nearest, addressing = clamp_to_border)
+};
+alloc(agent) global_b8 &aggregate_133[32] = {
+	f32(0F3f800000), 
+	u16(1), 
+	align(8), 
+	sig64(0), 
+	s8(0), 
+	align(8), 
+	samp(coord = unnormalized, filter = nearest, addressing = clamp_to_border)
+};
+global_b8 &aggregare_134[16] = {
+	u32(4), 
+	align(8), 
+	sig64(0)
+};
+alloc(agent) global_b8 &aggregate_241[48] = {
+	f32(0F3f800000), 
+	u16(1), 
+	align(8), 
+	sig64[](sig64(0), sig64(0), sig64(0)), 
+	s8(0), 
+	align(8), 
+	samp(coord = unnormalized, filter = nearest, addressing = clamp_to_border)
+};
+alloc(agent) global_b8 &aggregare_242[32] = {
+	u32(4), 
+	align(8), 
+	rwimg(geometry = 2d, width = 5, height = 4, channel_type = unorm_short_555, channel_order = rgb), 
+	rwimg(geometry = 1d, width = 5, channel_type = unorm_int_101010, channel_order = rgbx), 
+	rwimg(geometry = 2ddepth, width = 5, height = 4, channel_type = unorm_int_101010, channel_order = depth)
+};
+alloc(agent) global_b8 &aggregare_243[32] = {
+	u32(4), 
+	align(8), 
+	samp(coord = unnormalized, filter = nearest, addressing = clamp_to_border), 
+	samp(coord = normalized, filter = linear, addressing = clamp_to_border), 
+	samp(coord = unnormalized, filter = nearest, addressing = clamp_to_edge)
+};
+alloc(agent) global_b8 &aggregare_244[64] = {
+	u32(4), 
+	align(8), 
+	rwimg(geometry = 2d, width = 5, height = 4, channel_type = unorm_short_555, channel_order = rgb), 
+	rwimg(geometry = 1d, width = 5, channel_type = unorm_int_101010, channel_order = rgbx), 
+	rwimg(geometry = 2ddepth, width = 5, height = 4, channel_type = unorm_int_101010, channel_order = depth), 
+	u32(4), 
+	align(8), 
+	samp(coord = unnormalized, filter = nearest, addressing = clamp_to_border), 
+	samp(coord = normalized, filter = linear, addressing = clamp_to_border), 
+	samp(coord = unnormalized, filter = nearest, addressing = clamp_to_edge)
+};

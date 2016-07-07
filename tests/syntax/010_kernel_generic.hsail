@@ -1,0 +1,27 @@
+module &moduleName:1:0:$full:$large:$default;
+
+decl prog kernel &Kernel_00();
+
+decl kernel &Kernel_02(
+	align(256) kernarg_u8 %in_arg0,
+	kernarg_s16x2 %in_arg1,
+	kernarg_f64 %in_arg2);
+
+kernel &Kernel_01(kernarg_u8x8 %in_arg0)
+{
+	ret;
+};
+
+kernel &Kernel_02(
+	align(256) kernarg_u8 %in_arg0,
+	kernarg_s16x2 %in_arg1,
+	kernarg_f64 %in_arg2)
+{
+	ret;
+};
+
+decl prog kernel &Kernel_04();
+
+prog kernel &Kernel_04()
+{
+};

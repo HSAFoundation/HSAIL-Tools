@@ -1,0 +1,16 @@
+module &moduleName:1:0:$full:$large:$default;
+
+function &TestFunc100()(arg_s8 %in_arg0[1])
+{
+	ret;
+};
+
+function &TestFunc104()(arg_u8 %in_arg0[10])
+{
+	ret;
+};
+
+function &TestFunc112(align(256) arg_b8 %in_arg0[20])()
+{
+	ret;
+};

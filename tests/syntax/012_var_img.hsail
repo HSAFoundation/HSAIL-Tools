@@ -1,0 +1,71 @@
+module &moduleName:1:0:$full:$large:$default;
+extension "IMAGE";
+// All values specified in image initializers are optional 
+alloc(agent) global_roimg &ro_img000 = roimg(geometry = 3d, width = 5, height = 4, depth = 6, channel_type = unorm_int_101010, channel_order = rgbx);
+align(16) readonly_roimg &ro_img001 = roimg(geometry = 3d, width = 5, height = 4, depth = 6, channel_type = unorm_int_101010, channel_order = rgbx);
+align(256) readonly_roimg &ro_img002 = roimg(geometry = 3d, width = 5, height = 4, depth = 6, channel_type = unorm_int_101010, channel_order = rgbx);
+alloc(agent) global_roimg &ro_img1 = roimg(geometry = 1d, width = 5, channel_type = unorm_int_101010, channel_order = rgbx);
+alloc(agent) global_roimg &ro_img2 = roimg(geometry = 2d, width = 5, height = 4, channel_type = unorm_int_101010, channel_order = rgbx);
+readonly_roimg &ro_img3 = roimg(geometry = 3d, width = 5, height = 4, depth = 6, channel_type = unorm_int_101010, channel_order = rgbx);
+readonly_roimg &ro_img4 = roimg(geometry = 1da, width = 5, array = 4, channel_type = unorm_int_101010, channel_order = rgbx);
+readonly_roimg &ro_img5 = roimg(geometry = 2da, width = 5, height = 4, array = 4, channel_type = unorm_int_101010, channel_order = rgbx);
+readonly_roimg &ro_img6 = roimg(geometry = 1db, width = 5, channel_type = unorm_int_101010, channel_order = rgbx);
+alloc(agent) global_rwimg &rw_img0 = rwimg(geometry = 3d, width = 5, height = 4, depth = 6, channel_type = float, channel_order = rgbx);
+alloc(agent) global_rwimg &rw_img1 = rwimg(geometry = 3d, width = 5, height = 4, depth = 6, channel_type = half_float, channel_order = rgbx);
+alloc(agent) global_rwimg &rw_img2 = rwimg(geometry = 3d, width = 5, height = 4, depth = 6, channel_type = signed_int16, channel_order = rgbx);
+alloc(agent) global_rwimg &rw_img3 = rwimg(geometry = 3d, width = 5, height = 4, depth = 6, channel_type = signed_int32, channel_order = rgbx);
+alloc(agent) global_rwimg &rw_img4 = rwimg(geometry = 3d, width = 5, height = 4, depth = 6, channel_type = signed_int8, channel_order = rgbx);
+alloc(agent) global_rwimg &rw_img5 = rwimg(geometry = 3d, width = 5, height = 4, depth = 6, channel_type = snorm_int16, channel_order = rgbx);
+readonly_rwimg &rw_img6 = rwimg(geometry = 3d, width = 5, height = 4, depth = 6, channel_type = snorm_int8, channel_order = rgbx);
+readonly_rwimg &rw_img7 = rwimg(geometry = 3d, width = 5, height = 4, depth = 6, channel_type = unorm_int24, channel_order = rgbx);
+readonly_rwimg &rw_img8 = rwimg(geometry = 3d, width = 5, height = 4, depth = 6, channel_type = unorm_int16, channel_order = rgbx);
+readonly_rwimg &rw_img9 = rwimg(geometry = 3d, width = 5, height = 4, depth = 6, channel_type = unorm_int8, channel_order = rgbx);
+readonly_rwimg &rw_img10 = rwimg(geometry = 3d, width = 5, height = 4, depth = 6, channel_type = unorm_int_101010, channel_order = rgbx);
+readonly_rwimg &rw_img11 = rwimg(geometry = 3d, width = 5, height = 4, depth = 6, channel_type = unorm_short_555, channel_order = rgbx);
+readonly_rwimg &rw_img12 = rwimg(geometry = 3d, width = 5, height = 4, depth = 6, channel_type = unorm_short_565, channel_order = rgbx);
+readonly_rwimg &rw_img13 = rwimg(geometry = 3d, width = 5, height = 4, depth = 6, channel_type = unsigned_int16, channel_order = rgbx);
+readonly_rwimg &rw_img14 = rwimg(geometry = 3d, width = 5, height = 4, depth = 6, channel_type = unsigned_int32, channel_order = rgbx);
+readonly_rwimg &rw_img15 = rwimg(geometry = 3d, width = 5, height = 4, depth = 6, channel_type = unsigned_int8, channel_order = rgbx);
+readonly_rwimg &rw_img1151 = rwimg(geometry = 3d, width = 5, height = 4, depth = 6, channel_type = unorm_int_101010, channel_order = r);
+alloc(agent) global_rwimg &rw_img110 = rwimg(geometry = 3d, width = 5, height = 4, depth = 6, channel_type = unorm_int_101010, channel_order = a);
+readonly_rwimg &rw_img1222 = rwimg(geometry = 3d, width = 5, height = 4, depth = 6, channel_type = unorm_int_101010, channel_order = rx);
+readonly_rwimg &rw_img1173 = rwimg(geometry = 3d, width = 5, height = 4, depth = 6, channel_type = unorm_int_101010, channel_order = rg);
+readonly_rwimg &rw_img1214 = rwimg(geometry = 3d, width = 5, height = 4, depth = 6, channel_type = unorm_int_101010, channel_order = rgx);
+readonly_rwimg &rw_img1165 = rwimg(geometry = 3d, width = 5, height = 4, depth = 6, channel_type = unorm_int_101010, channel_order = ra);
+readonly_rwimg &rw_img1186 = rwimg(geometry = 3d, width = 5, height = 4, depth = 6, channel_type = unorm_int_101010, channel_order = rgb);
+readonly_rwimg &rw_img1197 = rwimg(geometry = 3d, width = 5, height = 4, depth = 6, channel_type = unorm_int_101010, channel_order = srgb);
+readonly_rwimg &rw_img1208 = rwimg(geometry = 3d, width = 5, height = 4, depth = 6, channel_type = unorm_int_101010, channel_order = srgbx);
+readonly_rwimg &rw_img1219 = rwimg(geometry = 3d, width = 5, height = 4, depth = 6, channel_type = unorm_int_101010, channel_order = rgbx);
+readonly_rwimg &rw_img1220 = rwimg(geometry = 3d, width = 5, height = 4, depth = 6, channel_type = unorm_int_101010, channel_order = rgba);
+alloc(agent) global_rwimg &rw_img111a = rwimg(geometry = 3d, width = 5, height = 4, depth = 6, channel_type = unorm_int_101010, channel_order = argb);
+alloc(agent) global_rwimg &rw_img112s = rwimg(geometry = 3d, width = 5, height = 4, depth = 6, channel_type = unorm_int_101010, channel_order = bgra);
+alloc(agent) global_rwimg &rw_img111d = rwimg(geometry = 3d, width = 5, height = 4, depth = 6, channel_type = unorm_int_101010, channel_order = srgba);
+alloc(agent) global_rwimg &rw_img112f = rwimg(geometry = 3d, width = 5, height = 4, depth = 6, channel_type = unorm_int_101010, channel_order = sbgra);
+alloc(agent) global_rwimg &rw_img113g = rwimg(geometry = 3d, width = 5, height = 4, depth = 6, channel_type = unorm_int_101010, channel_order = intensity);
+alloc(agent) global_rwimg &rw_img114h = rwimg(geometry = 3d, width = 5, height = 4, depth = 6, channel_type = unorm_int_101010, channel_order = luminance);
+alloc(agent) global_rwimg &rw_img115h = rwimg(geometry = 3d, width = 5, height = 4, depth = 6, channel_type = unorm_int_101010, channel_order = abgr);
+alloc(agent) global_rwimg &rw_img116h = rwimg(geometry = 2ddepth, width = 5, height = 4, channel_type = unorm_int_101010, channel_order = depth);
+alloc(agent) global_rwimg &rw_img117h = rwimg(geometry = 2dadepth, width = 5, height = 4, array = 6, channel_type = unorm_int_101010, channel_order = depth_stencil);
+decl prog global_roimg &ArrayOfroimgs[10];
+decl prog global_rwimg &ArrayOfrwimgs[10];
+decl prog global_samp &ArrayOfsamp[10];
+readonly_roimg &ro_img_arr1[1] = roimg[](roimg(geometry = 3d, width = 5, height = 4, depth = 6, channel_type = unorm_int_101010, channel_order = r));
+readonly_roimg &ro_img_arr2[1] = roimg[](roimg(geometry = 3d, width = 5, height = 4, depth = 6, channel_type = unorm_int_101010, channel_order = r));
+alloc(agent) global_rwimg &rwimgArray01[2] = rwimg[](
+	rwimg(geometry = 1d, width = 5, channel_type = unorm_int_101010, channel_order = rgbx), 
+	rwimg(geometry = 2ddepth, width = 5, height = 4, channel_type = unorm_int_101010, channel_order = depth)
+);
+alloc(agent) global_roimg &rwimgArray02[2] = roimg[](
+	roimg(geometry = 1d, width = 5, channel_type = unorm_int_101010, channel_order = rgbx), 
+	roimg(geometry = 3d, width = 5, height = 4, depth = 6, channel_type = unorm_int_101010, channel_order = bgra)
+);
+alloc(agent) global_woimg &rwimgArray03[2] = woimg[](
+	woimg(geometry = 1d, width = 5, channel_type = unorm_int_101010, channel_order = rgbx), 
+	woimg(geometry = 2dadepth, width = 5, height = 4, array = 6, channel_type = unorm_int_101010, channel_order = depth_stencil)
+);
+
+kernel &TestKernel(
+	kernarg_rwimg %x,
+	kernarg_roimg %y[3])
+{
+};

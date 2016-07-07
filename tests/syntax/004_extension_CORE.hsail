@@ -1,0 +1,8 @@
+module &moduleName:1:0:$full:$large:$default;
+extension "CORE";
+extension "CORE";
+
+function &TestFunc()()
+{
+	ret;
+};

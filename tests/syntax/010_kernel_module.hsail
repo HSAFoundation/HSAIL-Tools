@@ -1,0 +1,22 @@
+// Module-scope kernels must be defined
+//
+module &moduleName:1:0:$full:$large:$default;
+//
+
+decl kernel &k1();
+
+kernel &k2()
+{
+};
+//
+
+function &TestCalls()()
+{
+};
+//
+
+kernel &k1()
+{
+};
+//
+//

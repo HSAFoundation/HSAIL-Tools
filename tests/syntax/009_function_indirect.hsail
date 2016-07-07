@@ -1,0 +1,171 @@
+module &moduleName:1:0:$full:$large:$default;
+
+function &TestFunc12a(arg_b32 %out_arg0)(
+	arg_s32 %in_arg0,
+	arg_u32 %in_arg1)
+{
+	ret;
+};
+
+decl function &TestFunc12b(arg_b32 %out_arg0)(
+	arg_s32 %in_arg0,
+	arg_u32 %in_arg1);
+signature &TestFuncSign12(arg_b32)(
+	arg_s32,
+	arg_u32);
+signature &TestFuncSign02()(
+	arg_s32,
+	arg_u32);
+signature &TestFuncSign10(arg_b32)();
+signature &TestFuncSign00()();
+indirect function &foo1()()
+{
+};
+decl prog indirect function &foo2()();
+
+function &TestCalls()(arg_u32 %in_arg0)
+{
+	{
+		arg_b32 %oarg0;
+		arg_s32 %iarg0;
+		arg_u32 %iarg1;
+		st_arg_s32	0, [%iarg0];
+		st_arg_u32	0, [%iarg1];
+		scall_width(2147483648)_u64	WAVESIZE (%oarg0) (%iarg0, %iarg1) [&TestFunc12a];
+	}
+	{
+		arg_b32 %oarg0;
+		arg_s32 %iarg0;
+		arg_u32 %iarg1;
+		st_arg_s32	0, [%iarg0];
+		st_arg_u32	0, [%iarg1];
+		scall_u32	$s1 (%oarg0) (%iarg0, %iarg1) [&TestFunc12a];
+	}
+	{
+		arg_b32 %oarg0;
+		arg_s32 %iarg0;
+		arg_u32 %iarg1;
+		st_arg_s32	0, [%iarg0];
+		st_arg_u32	0, [%iarg1];
+		scall_u64	$d1 (%oarg0) (%iarg0, %iarg1) [&TestFunc12a, &TestFunc12b];
+	}
+	{
+		arg_b32 %oarg0;
+		arg_s32 %iarg0;
+		arg_u32 %iarg1;
+		st_arg_s32	0, [%iarg0];
+		st_arg_u32	0, [%iarg1];
+		scall_u64	$d1 (%oarg0) (%iarg0, %iarg1) [&TestFunc12a, &TestFunc12b];
+	}
+	{
+		arg_b32 %oarg0;
+		arg_s32 %iarg0;
+		arg_u32 %iarg1;
+		st_arg_s32	0, [%iarg0];
+		st_arg_u32	0, [%iarg1];
+		scall_u64	1 (%oarg0) (%iarg0, %iarg1) [&TestFunc12a, &TestFunc12b];
+	}
+	{
+		arg_b32 %oarg0;
+		arg_s32 %iarg0;
+		arg_u32 %iarg1;
+		st_arg_s32	0, [%iarg0];
+		st_arg_u32	0, [%iarg1];
+		icall_u64	$d1 (%oarg0) (%iarg0, %iarg1) &TestFuncSign12;
+	}
+	{
+		arg_b32 %oarg0;
+		arg_s32 %iarg0;
+		arg_u32 %iarg1;
+		st_arg_s32	0, [%iarg0];
+		st_arg_u32	0, [%iarg1];
+		icall_u64	$d1 (%oarg0) (%iarg0, %iarg1) &TestFuncSign12;
+	}
+	{
+		arg_s32 %iarg0;
+		arg_u32 %iarg1;
+		st_arg_s32	0, [%iarg0];
+		st_arg_u32	0, [%iarg1];
+		icall_width(2)_u64	$d1 () (%iarg0, %iarg1) &TestFuncSign02;
+	}
+	{
+		arg_s32 %iarg0;
+		arg_u32 %iarg1;
+		st_arg_s32	0, [%iarg0];
+		st_arg_u32	0, [%iarg1];
+		icall_width(WAVESIZE)_u64	$d1 () (%iarg0, %iarg1) &TestFuncSign02;
+	}
+	{
+		arg_b32 %oarg0;
+		icall_width(all)_u64	$d1 (%oarg0) () &TestFuncSign10;
+	}
+	{
+		icall_width(all)_u64	$d1 () () &TestFuncSign00;
+	}
+	ret;
+};
+
+function &TestFunc12b(arg_b32 %out_arg0)(
+	arg_s32 %in_arg0,
+	arg_u32 %in_arg1)
+{
+	ret;
+};
+//==================================================================
+signature &TestSignatureNoRet()();
+
+function &TestCallsNoRet()(
+	arg_b64 %addr0,
+	arg_b64 %addr1,
+	arg_b64 %addr2)
+{
+	ld_arg_u64	$d1, [%addr0];
+	{
+		icall_width(all)_u64	$d1 () () &TestSignatureNoRet;
+	}
+};
+//==================================================================
+// Call Targets may be defined, not declared. It is ok
+
+decl function &TestFuncX()(arg_s32 %in_arg0);
+
+decl prog function &TestFuncUndef()(arg_s32 %in_arg0);
+// defined elsewhere
+
+function &TestCallUndefTarget()(arg_u32 %in_arg0)
+{
+	{
+		arg_s32 %arg0;
+		st_arg_s32	0, [%arg0];
+		scall_u32	$s1 () (%arg0) [&TestFuncX, &TestFuncUndef];
+	}
+};
+
+function &TestFuncX()(arg_s32 %in_arg0)
+{
+	ret;
+};
+signature &bar_or_foo_t(arg_u32 %r)(arg_f32 %a);
+decl indirect function &bar(arg_u32 %r)(arg_f32 %a);
+decl indirect function &foo(arg_u32 %r)(arg_f32 %a);
+global_u64 &i;
+
+kernel &example_icall(kernarg_u64 %res)
+{
+	ld_global_u64	$d1, [&i];
+	{
+		arg_f32 %a;
+		arg_u32 %r;
+		st_arg_f32	0F40000000, [%a];
+		icall_width(all)_u64	$d1 (%r) (%a) &bar_or_foo_t;
+		ld_arg_u32	$s1, [%r];
+		ld_kernarg_u64	$d1, [%res];
+		st_global_u32	$s1, [$d1];
+	}
+};
+indirect function &bar(arg_u32 %r)(arg_f32 %a)
+{
+};
+indirect function &foo(arg_u32 %r)(arg_f32 %a)
+{
+};

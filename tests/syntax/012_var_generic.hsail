@@ -1,0 +1,89 @@
+module &moduleName:1:0:$full:$large:$default;
+extension "IMAGE";
+global_u8 &t1 = 0;
+global_s8 &t2 = 0;
+global_u16 &t6 = 8;
+global_s16 &t7 = -16;
+global_f16 &t8 = 0H0000;
+global_s32 &b1 = 83;
+global_u32 &b2 = 1;
+global_f32 &b3 = 0F3f800000;
+global_s64 &b4 = 123;
+global_u64 &b5 = -123;
+global_f64 &b6 = 0D3ff0000000000000;
+global_f64 &c7 = 0Dbff0000000000000;
+global_f64 &c8 = 0D3ff0000000000000;
+global_f64 &c9 = 0D4024000000000000;
+global_f64 &c0 = 0D4028b0a3d70a3d71;
+global_f64 &c1 = 0D4028b0a3d70a3d71;
+global_u8x8 &d2 = u8x8(255,255,255,255,255,255,255,255);
+global_f16x4 &d3 = f16x4(0H0000,0H2e66,0H3266,0H34cd);
+
+function &TestFunc12(arg_s32x2 %out_arg0)(
+	arg_u32 %in_arg0,
+	arg_u32 %in_arg1)
+{
+	ret;
+};
+
+function &TestFunc()(arg_s32 %out_arg0[])
+{
+	ret;
+};
+global_u32 &global_var[3] = u32[](1, 2, 3);
+readonly_u32 &readonly_var[1] = u32[](1);
+const readonly_u32 &readonly_const[4] = u32[](1, 31, 28, 31);
+const global_u32 &global_const[3] = u32[](1, 2, 3);
+// not necessary flexible because array size may be omitted in decl 
+//
+decl prog const global_u32 &extern_global_const0[];
+//
+// definition  => migh have initializer
+//
+global_u32 &global_var1;
+global_u32 &global_var2 = 1;
+//
+// const definition  => must have initializer
+//
+const global_u32 &global_const_var = 1;
+//
+// declaration => cannot have initializer
+//
+decl prog const global_u32 &global_const_var2;
+decl prog global_u32 &global_const_var3;
+//
+//
+readonly_u32 &x21;
+readonly_u32 &x22[10];
+readonly_roimg &x23;
+readonly_samp &x24;
+//
+
+kernel &TestKernel(kernarg_samp %x)
+{
+	const global_u32 %globalConst0 = 1;
+	align(8) const global_u32 %globalConst1 = 1;
+	align(8) const global_u32 %globalConst2 = 1;
+	align(8) const global_u32 %globalConst3 = 1;
+	align(8) const global_u32 %globalConst4 = 1;
+	align(8) const global_u32 %globalConst5 = 1;
+	align(256) const global_u32 %globalConst9 = 1;
+	const readonly_u32 %readonlyConst = 1;
+	global_u32 %globalVar1 = 1;
+	readonly_u32 %readonlyVar1 = 1;
+	group_u32 %groupVar1;
+	private_u32 %privateVar1;
+	spill_u32 %spillVar1;
+
+@lab:
+	{
+		arg_s32x2 %oarg;
+		arg_u32 %iarg0;
+		arg_u32 %iarg1;
+		st_arg_u32	0, [%iarg0];
+		st_arg_u32	0, [%iarg1];
+		call	&TestFunc12 (%oarg) (%iarg0, %iarg1);
+		ld_arg_u64	$d0, [%oarg];
+	}
+	ret;
+};

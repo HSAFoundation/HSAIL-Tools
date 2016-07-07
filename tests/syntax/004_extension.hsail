@@ -1,0 +1,28 @@
+module &moduleName:1:0:$full:$large:$default;
+//
+// This directive is allowed before extension
+//
+loc 1 "SomeFileName";
+//
+extension "abc";
+//
+// This directive is allowed before extension
+//
+loc 2 "SomeOtherFileName";
+//
+extension "def";
+extension "";
+extension "";
+extension "\"";
+extension "";
+//*pragma"";*/""
+extension "";
+//extension"";
+extension "";
+extension "?";
+extension "\t\n\n";
+
+function &TestFunc()()
+{
+	ret;
+};

@@ -1,0 +1,29 @@
+module &moduleName:1:0:$full:$large:$default;
+extension "IMAGE";
+// All values specified in the initializer are required and cannot be omitted
+alloc(agent) global_samp &y1 = samp(coord = unnormalized, filter = nearest, addressing = clamp_to_edge);
+alloc(agent) align(256) global_samp &y2 = samp(coord = normalized, filter = linear, addressing = repeat);
+readonly_samp &y3 = samp(coord = normalized, filter = linear, addressing = mirrored_repeat);
+alloc(agent) global_samp &y5 = samp(coord = unnormalized, filter = nearest, addressing = clamp_to_border);
+alloc(agent) global_samp &arr1[1] = samp[](samp(coord = unnormalized, filter = nearest, addressing = clamp_to_edge));
+alloc(agent) global_samp &arr2[1] = samp[](samp(coord = unnormalized, filter = nearest, addressing = clamp_to_border));
+alloc(agent) global_samp &arr3[1] = samp[](samp(coord = unnormalized, filter = nearest, addressing = undefined));
+alloc(agent) global_samp &arr10[2] = samp[](
+	samp(coord = normalized, filter = linear, addressing = clamp_to_border), 
+	samp(coord = unnormalized, filter = nearest, addressing = clamp_to_edge)
+);
+alloc(agent) global_samp &arr11[2] = samp[](
+	samp(coord = normalized, filter = linear, addressing = clamp_to_border), 
+	samp(coord = unnormalized, filter = nearest, addressing = clamp_to_edge)
+);
+alloc(agent) global_samp &arr12[2] = samp[](
+	samp(coord = normalized, filter = linear, addressing = clamp_to_border), 
+	samp(coord = unnormalized, filter = nearest, addressing = clamp_to_edge)
+);
+
+kernel &TestKernel(
+	kernarg_samp %x,
+	kernarg_samp %y[3])
+{
+	ret;
+};

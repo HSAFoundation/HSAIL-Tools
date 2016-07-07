@@ -1,0 +1,54 @@
+module &moduleName:1:0:$full:$small:$near;
+signature &TestFuncSign12(arg_b32)(
+	arg_s32,
+	arg_u32);
+signature &TestFuncSign02()(
+	arg_s32,
+	arg_u32);
+signature &TestFuncSign10(arg_b32)();
+signature &TestFuncSign00()();
+indirect function &foo1()()
+{
+};
+decl prog indirect function &foo2()();
+
+function &TestCalls()(arg_u32 %in_arg0)
+{
+	{
+		arg_b32 %oarg0;
+		arg_s32 %iarg0;
+		arg_u32 %iarg1;
+		st_arg_s32	0, [%iarg0];
+		st_arg_u32	0, [%iarg1];
+		icall_u32	$s1 (%oarg0) (%iarg0, %iarg1) &TestFuncSign12;
+	}
+	{
+		arg_b32 %oarg0;
+		arg_s32 %iarg0;
+		arg_u32 %iarg1;
+		st_arg_s32	0, [%iarg0];
+		st_arg_u32	0, [%iarg1];
+		icall_u32	$s1 (%oarg0) (%iarg0, %iarg1) &TestFuncSign12;
+	}
+	{
+		arg_s32 %iarg0;
+		arg_u32 %iarg1;
+		st_arg_s32	0, [%iarg0];
+		st_arg_u32	0, [%iarg1];
+		icall_width(2)_u32	$s1 () (%iarg0, %iarg1) &TestFuncSign02;
+	}
+	{
+		arg_s32 %iarg0;
+		arg_u32 %iarg1;
+		st_arg_s32	0, [%iarg0];
+		st_arg_u32	0, [%iarg1];
+		icall_width(WAVESIZE)_u32	$s1 () (%iarg0, %iarg1) &TestFuncSign02;
+	}
+	{
+		arg_b32 %oarg0;
+		icall_width(all)_u32	$s1 (%oarg0) () &TestFuncSign10;
+	}
+	{
+		icall_width(all)_u32	$s1 () () &TestFuncSign00;
+	}
+};

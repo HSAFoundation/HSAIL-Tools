@@ -1,0 +1,36 @@
+module &moduleName:1:0:$full:$large:$default;
+
+function &TestFunc0()()
+{
+	enablebreakexceptions 0x700000e0;
+};
+
+function &TestFunc1()()
+{
+	enablebreakexceptions 0x70000001;
+};
+
+function &TestFunc2()()
+{
+	enablebreakexceptions 0x70000002;
+};
+
+function &TestFunc3()()
+{
+	enablebreakexceptions 0x70000004;
+};
+
+function &TestFunc4()()
+{
+	enablebreakexceptions 0x70000008;
+};
+
+function &TestFunc5()()
+{
+	enablebreakexceptions 0x70000010;
+};
+
+function &TestFunc6()()
+{
+	enablebreakexceptions 0x7000001f;
+};

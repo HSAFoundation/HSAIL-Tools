@@ -1,0 +1,54 @@
+module &moduleName:1:0:$full:$large:$default;
+
+function &TestFunc11()(
+	arg_u32 %in_arg0,
+	arg_u32 %in_arg1)
+{
+	ret;
+};
+
+function &TestFunc12(arg_u32 %out_arg0)(
+	arg_u32 %in_arg0,
+	arg_u32 %in_arg1)
+{
+	ret;
+};
+
+function &TestFunc()()
+{
+	private_u32 %x;
+	// live till the end of function
+	{
+		// Argument scope does not affect variables that are not arguments. If a non-argument
+		// variable is defined inside an argument scope, its lifetime extends to the end of the
+		// function.
+		arg_u32 %x;
+		// live till the end of function
+		arg_u32 %iarg0;
+		arg_u32 %iarg1;
+		st_arg_u32	0, [%iarg0];
+		st_arg_u32	0, [%iarg1];
+		call	&TestFunc12 (%x) (%iarg0, %iarg1);
+		ld_arg_u32	$s0, [%x];
+	}
+	st_private_u32	0, [%x];
+	// must be visible
+	{
+		arg_u32 %x;
+		// hides %x defined in outer scope
+		arg_u32 %y;
+		st_arg_u32	0, [%x];
+		call	&TestFunc11 () (%x, %y);
+	}
+	{
+		arg_u32 %y;
+		arg_u32 %z;
+		st_private_u32	0, [%x];
+		// %x is visible
+		st_arg_u32	0, [%y];
+		call	&TestFunc11 () (%y, %z);
+	}
+	st_private_u32	0, [%x];
+	// visible again
+	ret;
+};

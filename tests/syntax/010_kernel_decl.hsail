@@ -1,0 +1,19 @@
+module &moduleName:1:0:$full:$large:$default;
+// -----------------
+// A name can be both defined in a module and also declared in the
+// same module.
+// -----------------
+
+decl kernel &k1();
+
+kernel &k1()
+{
+};
+// -----------------
+
+kernel &k2()
+{
+};
+
+decl kernel &k2();
+// -----------------

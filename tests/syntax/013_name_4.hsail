@@ -1,0 +1,61 @@
+/////////////////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Identifiers
+module &m...:1:0:$full:$large:$default;
+extension "IMAGE";
+pragma &m...;
+prog global_b128 &x12345.;
+decl prog global_b8 &x......;
+global_b8 &x.12345.;
+decl global_b8 &x...;
+decl fbarrier &b...;
+pragma &x12345., &x......, &x.12345., &x..., &b...;
+
+kernel &T.est.(
+	kernarg_u64 %s.,
+	kernarg_u64 %s..,
+	kernarg_u64 %s...)
+{
+	pragma &T.est., %s., %s.., %s...;
+	initfbar	&b...;
+	ldf_u32	$s0, &b...;
+	lda_kernarg_u64	$d4, [%s.];
+	lda_kernarg_u64	$d4, [%s..];
+	lda_kernarg_u64	$d4, [%s...];
+	lda_global_u64	$d4, [&x12345.];
+	lda_global_u64	$d4, [&x......];
+	lda_global_u64	$d4, [&x.12345.];
+	lda_global_u64	$d4, [&x...];
+	//    lda_group_u32    $s4, [&x...];
+};
+
+kernel &T...()
+{
+	global_s32 %s......;
+	global_s32 %x...;
+	global_s32 %x.1.2.3.4.5.;
+	fbarrier %b...;
+	initfbar	%b...;
+	ldf_u32	$s0, %b...;
+	pragma %s......, %x..., %x.1.2.3.4.5., %b..., @l...;
+
+@l...:
+	sub_s32	$s1, $s2, $s3;
+	cbr_b1	0, @l...;
+	ret;
+};
+
+function &_...()()
+{
+};
+
+function &f...()(arg_u64 %s...)
+{
+	pragma &f...;
+	{
+		call	&_... () ();
+	}
+};
+global_b8 &x...;
+fbarrier &b...;

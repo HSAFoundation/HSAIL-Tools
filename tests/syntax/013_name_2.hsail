@@ -1,0 +1,6 @@
+// Names may have "_" as the second symbol
+//
+module &moduleName:1:0:$full:$large:$default;
+prog global_u32 &_[3] = u32[](1, 2, 3);
+global_u32 &_a[3] = u32[](1, 2, 3);
+global_u32 &_0[3] = u32[](1, 2, 3);

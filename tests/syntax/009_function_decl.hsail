@@ -1,0 +1,65 @@
+module &moduleName:1:0:$full:$large:$default;
+// -----------------
+// A name can be both defined in a module and also declared in the
+// same module.
+// -----------------
+
+decl function &f1()();
+
+function &tst1()()
+{
+	{
+		call	&f1 () ();
+	}
+};
+
+function &f1()()
+{
+};
+// -----------------
+
+function &f2()()
+{
+};
+
+function &tst2()()
+{
+	{
+		call	&f2 () ();
+	}
+};
+
+decl function &f2()();
+// -----------------
+
+decl prog function &f3()();
+
+function &tst3()()
+{
+	{
+		call	&f3 () ();
+	}
+};
+// -----------------
+
+prog function &f4()()
+{
+};
+
+function &tst4()()
+{
+	{
+		call	&f4 () ();
+	}
+};
+
+decl prog function &f4()();
+// -----------------
+// align 4 = natural alignment for u32
+
+decl function &TestFunc1()(arg_u32 %a);
+
+function &TestFunc1()(arg_u32 %a)
+{
+	ret;
+};

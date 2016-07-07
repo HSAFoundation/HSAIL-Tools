@@ -1,0 +1,18 @@
+module &moduleName:1:0:$full:$large:$default;
+//
+// alloc(agent) is only available for global segment variables, in both module and function scopes.
+// The definition of the variable may have an initializer
+//
+decl alloc(agent) global_s32 &k1;
+alloc(agent) global_s32 &k1;
+decl prog alloc(agent) global_s32 &k2;
+prog alloc(agent) global_s32 &k2 = 123;
+decl prog alloc(agent) const global_s32 &k3;
+prog alloc(agent) const global_s32 &k3 = 123;
+
+function &TestFunc12a()()
+{
+	alloc(agent) global_s64 %k30;
+	alloc(agent) global_s64 %k31 = 4;
+	alloc(agent) const global_s64 %k32 = 0x1c8;
+};

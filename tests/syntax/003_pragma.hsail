@@ -1,0 +1,268 @@
+module &moduleName:1:0:$full:$large:$default;
+extension "IMAGE";
+decl global_s32 &vd;
+decl fbarrier &fbd;
+global_s32 &v;
+fbarrier &fb;
+pragma &moduleName, &v, &fb, &vd, &fbd;
+pragma "", "123", "\n";
+pragma -1, 4, 0H57b0, 0F43e40000, 0D4088a80000000000, WAVESIZE;
+pragma s8(57), s16(0xe240), s32(0xbc614e), s64(0x499602d2);
+pragma u8(255), u16(-1), u32(-1), -1;
+pragma 0H57b0, 0F43e40000, 0D4088a80000000000;
+pragma s8(-1), -1;
+pragma u8(255), 1;
+pragma s16(-1), -1;
+pragma u16(-1), 1;
+pragma s32(-1), -1;
+pragma u32(-1), 1;
+pragma s64(-1), -1;
+pragma -1, 1;
+pragma 0H0000, 0Hbc00;
+pragma 0F00000000, 0Fbf800000;
+pragma 0D0000000000000000, 0Dbff0000000000000;
+pragma u8x4(255,255,255,255);
+pragma s8x4(-1,-1,-1,-1);
+pragma u16x2(-1,-1);
+pragma s16x2(-1,-1);
+pragma u8x8(255,0,0,0,0,0,0,0);
+pragma s8x8(-1,0,0,0,0,0,0,0);
+pragma u16x4(-1,0,0,0);
+pragma s16x4(-1,0,0,0);
+pragma u32x2(-1,0);
+pragma s32x2(-1,0);
+pragma u8x16(255,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0);
+pragma s8x16(-1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0);
+pragma u16x8(-1,0,0,0,0,0,0,0);
+pragma s16x8(-1,0,0,0,0,0,0,0);
+pragma u32x4(-1,0,0,0);
+pragma s32x4(-1,0,0,0);
+pragma u64x2(-1,0);
+pragma s64x2(-1,0);
+pragma roimg(geometry = 3d, width = 5, height = 4, depth = 6, channel_type = unorm_int_101010, channel_order = rgbx);
+pragma woimg(geometry = 3d, width = 5, height = 4, depth = 6, channel_type = unorm_int_101010, channel_order = rgbx);
+pragma rwimg(geometry = 3d, width = 5, height = 4, depth = 6, channel_type = unorm_int_101010, channel_order = rgbx);
+pragma samp(coord = normalized, filter = nearest, addressing = clamp_to_edge), sig64(0), sig64(0);
+pragma sig64(0);
+pragma s8[](-1, 16, 1, 2, -72, 0, -1, -1);
+pragma s8[](-1, -1, 0);
+pragma u8[](255, 255, 0);
+pragma s16[](-1, -1, 0);
+pragma u16[](-1, -1, 0);
+pragma s32[](-1, -1, 0);
+pragma u32[](-1, -1, 0);
+pragma s64[](-1, -1, 0);
+pragma u64[](-1, -1, 0);
+pragma f16[](0H0000, 0H3c00, 0H4000);
+pragma f32[](0F00000000, 0F3f800000, 0F40000000);
+pragma f64[](0D0000000000000000, 0D3ff0000000000000, 0D4000000000000000);
+pragma u8x4[](u8x4(255,255,255,255));
+pragma s8x4[](s8x4(-1,-1,-1,-1));
+pragma u16x2[](u16x2(-1,-1));
+pragma s16x2[](s16x2(-1,-1));
+pragma u8x8[](u8x8(255,0,0,0,0,0,0,0));
+pragma s8x8[](s8x8(-1,0,0,0,0,0,0,0));
+pragma u16x4[](u16x4(-1,0,0,0));
+pragma s16x4[](s16x4(-1,0,0,0));
+pragma u32x2[](u32x2(-1,0));
+pragma s32x2[](s32x2(-1,0));
+pragma u8x16[](u8x16(255,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0));
+pragma s8x16[](s8x16(-1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0));
+pragma u16x8[](u16x8(-1,0,0,0,0,0,0,0));
+pragma s16x8[](s16x8(-1,0,0,0,0,0,0,0));
+pragma u32x4[](u32x4(-1,0,0,0));
+pragma s32x4[](s32x4(-1,0,0,0));
+pragma u64x2[](u64x2(-1,0));
+pragma s64x2[](s64x2(-1,0));
+pragma roimg[](roimg(geometry = 3d, width = 5, height = 4, depth = 6, channel_type = unorm_int_101010, channel_order = rgbx));
+pragma woimg[](woimg(geometry = 3d, width = 5, height = 4, depth = 6, channel_type = unorm_int_101010, channel_order = rgbx));
+pragma rwimg[](rwimg(geometry = 3d, width = 5, height = 4, depth = 6, channel_type = unorm_int_101010, channel_order = rgbx));
+pragma samp[](samp(coord = normalized, filter = nearest, addressing = clamp_to_edge)), sig64(0), sig64(0);
+pragma sig64[](sig64(0), sig64(0), sig64(0));
+pragma {
+	u8(0), 
+	u8(0), 
+	u8(0), 
+	u8(0), 
+	u8(0), 
+	u8(0), 
+	u8(0), 
+	u8(0)
+};
+pragma {
+	s16(0), 
+	s16(0), 
+	s16(0), 
+	s16(0), 
+	s16(0), 
+	s16(0), 
+	s16(0), 
+	s16(0)
+};
+pragma {
+	u32(0), 
+	u32(0), 
+	u32(0), 
+	u32(0), 
+	u32(0), 
+	u32(0), 
+	u32(0), 
+	u32(0)
+};
+pragma {
+	s64(0), 
+	s64(0), 
+	s64(0), 
+	s64(0), 
+	s64(0), 
+	s64(0), 
+	s64(0), 
+	s64(0), 
+	s64[](0, 1, 2, 3)
+};
+pragma {
+	sig64(0), 
+	sig64(0), 
+	sig64(0), 
+	sig64[](sig64(0), sig64(0), sig64(0))
+};
+pragma {
+	u32(4), 
+	align(8), 
+	rwimg(geometry = 2d, width = 5, height = 4, channel_type = unorm_short_555, channel_order = rgb)
+};
+pragma {
+	u32(4), 
+	align(8), 
+	samp(coord = unnormalized, filter = nearest, addressing = clamp_to_border)
+};
+pragma {
+	u32(4), 
+	align(8), 
+	rwimg(geometry = 2d, width = 5, height = 4, channel_type = unorm_short_555, channel_order = rgb)
+};
+pragma {
+	f32(0F3f800000), 
+	u16(1), 
+	align(8), 
+	sig64(0), 
+	s8(0), 
+	align(8), 
+	samp(coord = unnormalized, filter = nearest, addressing = clamp_to_border)
+};
+pragma {
+	u32(4), 
+	align(8), 
+	sig64(0)
+};
+signature &sgn(arg_u32 %r)(arg_f32 %a);
+
+decl function &fn(arg_u32 %out_arg)(arg_u32 %in_arg);
+decl indirect function &fi()();
+
+decl kernel &k01(kernarg_u64 %arg);
+pragma "string", &k01, &fn, &sgn, &fi;
+
+kernel &k01(kernarg_u64 %arg)
+{
+	fbarrier %fb;
+
+@lab:
+	pragma "string", %arg, @lab, %fb, %arg, &k01, &fn, &sgn, $c0, $s50, $d10, $q1;
+	pragma &v, &fb, &vd, &fbd;
+};
+indirect function &fi()()
+{
+};
+
+function &fn(arg_u32 %out_arg)(arg_u32 %in_arg)
+{
+	fbarrier %fb;
+
+@lab:
+	pragma "string", %in_arg, %out_arg, @lab, %fb, &k01, &fn, &sgn, $c0, $s50, $d10, $q1;
+	pragma &v, &fb, &vd, &fbd;
+	ret;
+	pragma "unreachable code";
+	pragma "\t\n\n";
+};
+
+function &f1()(
+	arg_s32 %a,
+	arg_s32 %b)
+{
+};
+
+function &f11()(
+	arg_s32 %a,
+	arg_s32 %b,
+	arg_s32 %c)
+{
+};
+
+kernel &k3(kernarg_s32 %x)
+{
+	//-----------
+	global_s32 %v;
+	fbarrier %b;
+	//-----------
+	pragma %x, %v, %b;
+	pragma @lab1, @lab2, @lab3;
+	//-----------
+
+@lab1:
+	{
+		arg_s32 %a;
+		//-----------
+		// Name redefinition
+		//-----------
+		pragma %v;
+		arg_s32 %v;
+		pragma %v;
+		//-----------
+		pragma %x, %v, %b, %a;
+		pragma @lab1, @lab2, @lab3;
+		//-----------
+
+@lab3:
+		//-----------
+		call	&f1 () (%a, %v);
+		//-----------
+	}
+	//-----------
+
+@lab2:
+	pragma @lab1, @lab2, @lab3;
+	ret;
+};
+
+function &f3(arg_s32 %x)(arg_s32 %y)
+{
+	//-----------
+	fbarrier %b;
+	{
+		arg_s32 %a;
+		//-----------
+		// Name redefinition
+		//-----------
+		pragma %b;
+		arg_s32 %b;
+		pragma %b;
+		//-----------
+		// Name redefinition
+		//-----------
+		pragma %x;
+		arg_s32 %x;
+		pragma %x;
+		//-----------
+		pragma %a, %b, %x, %y, &f3;
+		//-----------
+		call	&f11 () (%a, %b, %x);
+		//-----------
+	}
+	ret;
+};
+global_s32 &vd;
+fbarrier &fbd;
+pragma "string", &k01, &fn, &sgn;
+pragma &v, &fb, &vd, &fbd;

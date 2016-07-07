@@ -1,0 +1,14 @@
+// Module-scope variables must be defined
+module &moduleName:1:0:$full:$large:$default;
+decl global_u32 &var1;
+decl fbarrier &fb1;
+fbarrier &fb2;
+global_u32 &var2;
+
+function &TestCalls()()
+{
+	lda_global_u64	$d1, [&var1];
+	ldf_u32	$s0, &fb1;
+};
+global_u32 &var1;
+fbarrier &fb1;

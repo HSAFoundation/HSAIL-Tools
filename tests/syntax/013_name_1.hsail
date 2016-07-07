@@ -1,0 +1,16 @@
+// Names may have "_" as the second symbol
+//
+module &moduleName:1:0:$full:$large:$default;
+
+decl prog function &_()();
+// this is a valid name!
+
+function &_a()()
+{
+};
+// this is a valid name!
+
+function &_0()()
+{
+};
+// this is a valid name!

@@ -1,0 +1,28 @@
+module &moduleName:1:0:$full:$large:$default;
+extension "IMAGE";
+
+kernel &Kernel_02()
+{
+	ret;
+};
+
+kernel &Kernel_01(kernarg_u8x8 %in_arg0)
+{
+	ret;
+};
+
+kernel &Kernel_03(
+	kernarg_samp %in_arg0,
+	kernarg_rwimg %in_arg1,
+	kernarg_roimg %in_arg2)
+{
+	ret;
+};
+
+kernel &Kernel_05(
+	kernarg_samp %in_arg0[3],
+	kernarg_rwimg %in_arg1[4],
+	kernarg_roimg %in_arg2[5])
+{
+	ret;
+};

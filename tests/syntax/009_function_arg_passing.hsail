@@ -1,0 +1,63 @@
+module &moduleName:1:0:$full:$large:$default;
+
+function &TestFunc1(arg_s64x2 %out_arg0)(
+	arg_u32 %in_arg0,
+	align(4) arg_s8 %in_arg1)
+{
+	ret;
+};
+
+function &TestFunc2(arg_s64x2 %out_arg0)(align(4) arg_s8 %in_arg[])
+{
+	ret;
+};
+
+function &TestFunc3()(align(8) arg_s8 %in_arg[2])
+{
+	ret;
+};
+// natural align = no align
+
+function &TestFunc4()(
+	arg_u32 %in_arg0,
+	arg_s16 %in_arg1)
+{
+	ret;
+};
+
+function &TestCalls()()
+{
+	{
+		arg_s64x2 %oarg;
+		arg_u32 %iarg0;
+		align(4) arg_s8 %iarg1;
+		st_arg_u32	0, [%iarg0];
+		st_arg_s8	0, [%iarg1];
+		call	&TestFunc1 (%oarg) (%iarg0, %iarg1);
+	}
+	{
+		arg_s64x2 %oarg;
+		align(4) arg_s8 %iarg[3];
+		st_arg_s8	0, [%iarg];
+		st_arg_s8	1, [%iarg][1];
+		st_arg_s8	2, [%iarg][2];
+		call	&TestFunc2 (%oarg) (%iarg);
+	}
+	{
+		align(8) arg_s8 %iarg[2];
+		st_arg_s8	0, [%iarg];
+		st_arg_s8	1, [%iarg][1];
+		call	&TestFunc3 () (%iarg);
+	}
+	{
+		arg_u32 %iarg0;
+		//
+		// natural align = no align
+		//
+		arg_s16 %iarg1;
+		st_arg_u32	0, [%iarg0];
+		st_arg_s16	0, [%iarg1];
+		call	&TestFunc4 () (%iarg0, %iarg1);
+	}
+	ret;
+};

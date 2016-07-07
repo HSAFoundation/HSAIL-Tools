@@ -1,0 +1,107 @@
+module &moduleName:1:0:$full:$large:$default;
+
+function &test1()()
+{
+	cbr_b1	$c0, @k1;
+	cbr_width(4)_b1	$c0, @k2;
+	cbr_width(WAVESIZE)_b1	$c0, @k3;
+	cbr_width(all)_b1	$c0, @k4;
+	add_s32	$s1, $s2, $s3;
+	br	@join;
+
+@k1:
+	sub_s32	$s1, $s2, $s3;
+
+@k2:
+	sub_s32	$s1, $s2, $s3;
+	cbr_b1	1, @k1;
+
+@k3:
+	sub_s32	$s1, $s2, $s3;
+	br	@k1;
+
+@k4:
+	sub_s32	$s1, $s2, $s3;
+
+@join:
+	ret;
+};
+
+function &test2()()
+{
+	{
+		cbr_b1	$c0, @k1;
+		cbr_width(4)_b1	$c0, @k2;
+		cbr_width(WAVESIZE)_b1	$c0, @k3;
+		cbr_width(all)_b1	$c0, @k4;
+		add_s32	$s1, $s2, $s3;
+		br	@join;
+
+@k1:
+		sub_s32	$s1, $s2, $s3;
+
+@k2:
+		sub_s32	$s1, $s2, $s3;
+		cbr_b1	WAVESIZE, @k1;
+
+@k3:
+		sub_s32	$s1, $s2, $s3;
+		br	@k1;
+
+@k4:
+		sub_s32	$s1, $s2, $s3;
+		cbr_b1	0, @k1;
+
+@join:
+		call	&test1 () ();
+	}
+};
+
+function &test3()()
+{
+	br	@label1;
+	cbr_b1	$c0, @label1;
+	cbr_width(2)_b1	$c0, @label2;
+	cbr_width(all)_b1	$c0, @label3;
+	sbr_u32	$s1 [@label1];
+	sbr_width(2)_u32	$s1 [@label1, @label2];
+	sbr_width(all)_u32	$s1 [@label1, @label2, @label3];
+	sub_s32	$s1, $s2, $s3;
+
+@label1:
+	sub_s32	$s1, $s2, $s3;
+
+@label2:
+	sub_s32	$s1, $s2, $s3;
+
+@label3:
+	sub_s32	$s1, $s2, $s3;
+	ret;
+};
+
+function &test4()()
+{
+	sub_s32	$s1, $s2, $s3;
+
+@label1:
+	sub_s32	$s1, $s2, $s3;
+
+@label2:
+	sub_s32	$s1, $s2, $s3;
+
+@label3:
+	sub_s32	$s1, $s2, $s3;
+	cbr_b1	$c0, @label1;
+	cbr_width(2)_b1	$c0, @label2;
+	cbr_width(all)_b1	$c0, @label3;
+	sbr_u32	$s1 [@label1];
+	sbr_width(2)_u32	$s1 [@label1, @label4];
+	sbr_width(2)_u32	-1 [@label1, @label4];
+	sbr_width(all)_u64	$d1 [@label1, @label2, @label3];
+	sbr_width(all)_u64	1 [@label1, @label2, @label3];
+	sbr_width(all)_u64	WAVESIZE [@label1, @label2, @label3];
+
+@label4:
+	sub_s32	$s1, $s2, $s3;
+	ret;
+};

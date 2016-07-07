@@ -1,0 +1,132 @@
+loc 20 "this is a file";
+pragma "123", 0x1f000000ffffffff;
+//----------------------------------------------------
+module &moduleName:1:0:$full:$large:$default;
+//----------------------------------------------------
+loc 4 "this is a file";
+pragma "123", 0x1f000000ffffffff;
+//----------------------------------------------------
+
+decl prog function &f()();
+
+kernel &k1()
+{
+	loc 4 "this is a file";
+	pragma "123", 0x1f000000ffffffff;
+	//----------------------------------------------------
+	// Control directives
+	//
+	enablebreakexceptions 0x70000001;
+	//----------------------------------------------------
+	loc 4 "this is a file";
+	pragma "123", 0x1f000000ffffffff;
+	//----------------------------------------------------
+	// Control directives
+	//
+	requirenopartialworkgroups;
+	//----------------------------------------------------
+	loc 4 "this is a file";
+	pragma "123", 0x1f000000ffffffff;
+	//----------------------------------------------------
+	// Definitions
+	global_s32 %v1;
+	fbarrier %b1;
+	//----------------------------------------------------
+	loc 4 "this is a file";
+	pragma %v1, %b1;
+	//----------------------------------------------------
+	// Definitions
+	global_s32 %v2;
+	fbarrier %b2;
+	//----------------------------------------------------
+	loc 4 "this is a file";
+	pragma "123", 0x1f000000ffffffff;
+	//----------------------------------------------------
+	// Statements (labels, instructions, arg blocks)
+
+@lab1:
+	add_s32	$s0, $s0, $s0;
+	//----------------------------------------------------
+	loc 4 "this is a file";
+	pragma "123", 0x1f000000ffffffff;
+	//----------------------------------------------------
+	// Statements (labels, instructions, arg blocks)
+	add_s32	$s0, $s0, $s0;
+	//----------------------------------------------------
+	loc 4 "this is a file";
+	pragma "123", 0x1f000000ffffffff;
+	//----------------------------------------------------
+	// Statements (labels, instructions, arg blocks)
+
+@lab2:
+	//----------------------------------------------------
+	loc 4 "this is a file";
+	pragma %v2, %b2;
+	//----------------------------------------------------
+	// Statements (labels, instructions, arg blocks)
+	{
+		call	&f () ();
+	}
+	//----------------------------------------------------
+	loc 4 "this is a file";
+	pragma "123", 0x1f000000ffffffff;
+};
+//----------------------------------------------------
+
+kernel &k2()
+{
+	pragma "123", 0x1f000000ffffffff;
+	loc 4 "this is a file";
+	//----------------------------------------------------
+	// Control directives
+	//
+	enablebreakexceptions 0x70000001;
+	//----------------------------------------------------
+	pragma "123", 0x1f000000ffffffff;
+	loc 4 "this is a file";
+	//----------------------------------------------------
+	// Control directives
+	//
+	requirenopartialworkgroups;
+	//----------------------------------------------------
+	pragma "123", 0x1f000000ffffffff;
+	loc 4 "this is a file";
+	//----------------------------------------------------
+	// Definitions
+	global_s32 %v1;
+	fbarrier %b1;
+	//----------------------------------------------------
+	pragma %v1, %b1;
+	loc 4 "this is a file";
+	//----------------------------------------------------
+	// Definitions
+	global_s32 %v2;
+	fbarrier %b2;
+	//----------------------------------------------------
+	pragma "123", 0x1f000000ffffffff;
+	loc 4 "this is a file";
+	//----------------------------------------------------
+	// Statements (labels, instructions, arg blocks)
+	{
+		call	&f () ();
+	}
+	//----------------------------------------------------
+	pragma "123", 0x1f000000ffffffff;
+	loc 4 "this is a file";
+	//----------------------------------------------------
+	// Statements (labels, instructions, arg blocks)
+	add_s32	$s0, $s0, $s0;
+	//----------------------------------------------------
+	pragma %v2, %b2;
+	loc 4 "this is a file";
+	//----------------------------------------------------
+	// Statements (labels, instructions, arg blocks)
+
+@lab2:
+	//----------------------------------------------------
+	pragma "123", 0x1f000000ffffffff;
+	loc 4 "this is a file";
+};
+//----------------------------------------------------
+pragma "123", 0x1f000000ffffffff;
+loc 4 "this is a file";

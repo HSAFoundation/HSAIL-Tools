@@ -1,0 +1,383 @@
+/////////////////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Conversions
+module &moduleName:1:0:$full:$large:$default;
+extension "IMAGE";
+//------------------------------------------------------------
+// i -> bit
+global_b8 &ib01 = 255;
+global_b8 &ib02 = 1;
+global_b8 &ib03 = 255;
+global_b16 &ib04 = -1;
+global_b16 &ib05 = 1;
+global_b16 &ib06 = -1;
+//------------------------------------------------------------
+// i -> int
+global_s32 &ii01 = -1;
+global_u32 &ii02 = 1;
+global_s64 &ii03 = -1;
+global_u64 &ii04 = 1;
+global_s16 &ii07 = -1;
+global_u16 &ii08 = 1;
+global_s8 &ii09 = -1;
+global_u8 &ii00 = 1;
+global_s32 &ii11 = 1;
+global_u32 &ii12 = -1;
+global_s64 &ii13 = 1;
+global_u64 &ii14 = -1;
+global_s16 &ii17 = 1;
+global_u16 &ii18 = -1;
+global_s8 &ii19 = 1;
+global_u8 &ii10 = 255;
+//------------------------------------------------------------
+// f -> bit
+global_b16 &fb01 = 0;
+global_b32 &fb02 = 0;
+global_b64 &fb03 = 0;
+global_b16 &fb11 = 0x6001;
+global_b32 &fb12 = 0x44002000;
+global_b64 &fb13 = 0x4080040000000000;
+//------------------------------------------------------------
+// f -> f
+global_f16 &ff01 = 0H0000;
+global_f32 &ff02 = 0F00000000;
+global_f64 &ff03 = 0D0000000000000000;
+global_f16 &ff11 = 0H6001;
+global_f32 &ff12 = 0F44002000;
+global_f64 &ff13 = 0D4080040000000000;
+//------------------------------------------------------------
+// i typed -> bit
+global_b8 &itb01 = 255;
+global_b8 &itb02 = 255;
+global_b16 &itb03 = -1;
+global_b16 &itb04 = -1;
+global_b32 &itb05 = -1;
+global_b32 &itb06 = -1;
+global_b64 &itb07 = -1;
+global_b64 &itb08 = -1;
+global_b8 &itb11 = 0;
+global_b8 &itb12 = 0;
+global_b16 &itb13 = 0;
+global_b16 &itb14 = 0;
+global_b32 &itb15 = 0;
+global_b32 &itb16 = 0;
+global_b64 &itb17 = 0;
+global_b64 &itb18 = 0;
+global_b8 &itb21 = 15;
+global_b8 &itb22 = 15;
+global_b16 &itb23 = 15;
+global_b16 &itb24 = 15;
+global_b32 &itb25 = 15;
+global_b32 &itb26 = 15;
+global_b64 &itb27 = 15;
+global_b64 &itb28 = 15;
+//------------------------------------------------------------
+// i typed -> i
+global_s8 &iti01 = -1;
+global_u8 &iti02 = 255;
+global_s16 &iti03 = -1;
+global_u16 &iti04 = -1;
+global_s32 &iti05 = -1;
+global_u32 &iti06 = -1;
+global_s64 &iti07 = -1;
+global_u64 &iti08 = -1;
+global_s8 &iti11 = 15;
+global_u8 &iti12 = 15;
+global_s16 &iti13 = 15;
+global_u16 &iti14 = 15;
+global_s32 &iti15 = 15;
+global_u32 &iti16 = 15;
+global_s64 &iti17 = 15;
+global_u64 &iti18 = 15;
+//------------------------------------------------------------
+// f typed -> bit
+global_b16 &ftb01 = 0;
+global_b32 &ftb02 = 0;
+global_b64 &ftb03 = 0;
+global_b16 &ftb11 = 0x3e00;
+global_b32 &ftb12 = 0x3fc00000;
+global_b64 &ftb13 = 0x3ff8000000000000;
+//------------------------------------------------------------
+// f typed -> f
+global_f16 &ftf01 = 0H0000;
+global_f32 &ftf02 = 0F00000000;
+global_f64 &ftf03 = 0D0000000000000000;
+global_f16 &ftf11 = 0H3e00;
+global_f32 &ftf12 = 0F3fc00000;
+global_f64 &ftf13 = 0D3ff8000000000000;
+//------------------------------------------------------------
+// packed -> bit
+global_b32 &pb03 = -1;
+global_b32 &pb04 = -1;
+global_b32 &pb05 = -1;
+global_b32 &pb06 = -1;
+global_b64 &pb07 = 0xff00000000000000;
+global_b64 &pb08 = 0xff00000000000000;
+global_b64 &pb09 = 0xffff000000000000;
+global_b64 &pb10 = 0xffff000000000000;
+global_b64 &pb11 = 0xffffffff00000000;
+global_b64 &pb12 = 0xffffffff00000000;
+global_b128 &pb13 = u8x16(255,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0);
+global_b128 &pb14 = u8x16(255,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0);
+global_b128 &pb15 = u8x16(255,255,0,0,0,0,0,0,0,0,0,0,0,0,0,0);
+global_b128 &pb16 = u8x16(255,255,0,0,0,0,0,0,0,0,0,0,0,0,0,0);
+global_b128 &pb17 = u8x16(255,255,255,255,0,0,0,0,0,0,0,0,0,0,0,0);
+global_b128 &pb18 = u8x16(255,255,255,255,0,0,0,0,0,0,0,0,0,0,0,0);
+global_b128 &pb19 = u8x16(255,255,255,255,255,255,255,255,0,0,0,0,0,0,0,0);
+global_b128 &pb20 = u8x16(255,255,255,255,255,255,255,255,0,0,0,0,0,0,0,0);
+//------------------------------------------------------------
+// packed -> packed
+global_u8x4 &pp03 = u8x4(255,255,255,255);
+global_s8x4 &pp04 = s8x4(-1,-1,-1,-1);
+global_u16x2 &pp05 = u16x2(-1,-1);
+global_s16x2 &pp06 = s16x2(-1,-1);
+global_u8x8 &pp07 = u8x8(255,0,0,0,0,0,0,0);
+global_s8x8 &pp08 = s8x8(-1,0,0,0,0,0,0,0);
+global_u16x4 &pp09 = u16x4(-1,0,0,0);
+global_s16x4 &pp10 = s16x4(-1,0,0,0);
+global_u32x2 &pp11 = u32x2(-1,0);
+global_s32x2 &pp12 = s32x2(-1,0);
+global_u8x16 &pp13 = u8x16(255,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0);
+global_s8x16 &pp14 = s8x16(-1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0);
+global_u16x8 &pp15 = u16x8(-1,0,0,0,0,0,0,0);
+global_s16x8 &pp16 = s16x8(-1,0,0,0,0,0,0,0);
+global_u32x4 &pp17 = u32x4(-1,0,0,0);
+global_s32x4 &pp18 = s32x4(-1,0,0,0);
+global_u64x2 &pp19 = u64x2(-1,0);
+global_s64x2 &pp20 = s64x2(-1,0);
+global_f16x2 &pp21 = f16x2(0H3c00,0H0000);
+global_f16x4 &pp22 = f16x4(0H3c00,0H0000,0H0000,0H0000);
+global_f16x8 &pp23 = f16x8(0H3c00,0H0000,0H0000,0H0000,0H0000,0H0000,0H0000,0H0000);
+global_f32x2 &pp24 = f32x2(0F3f800000,0F00000000);
+global_f32x4 &pp25 = f32x4(0F3f800000,0F00000000,0F3f800000,0F00000000);
+global_f64x2 &pp26 = f64x2(0D3ff0000000000000,0D0000000000000000);
+//------------------------------------------------------------
+// opaque -> opaque
+alloc(agent) global_woimg &op_op_0 = woimg(geometry = 3d, width = 5, height = 4, depth = 6, channel_type = unorm_int_101010, channel_order = rgbx);
+alloc(agent) global_roimg &op_op_1 = roimg(geometry = 3d, width = 5, height = 4, depth = 6, channel_type = unorm_int_101010, channel_order = rgbx);
+alloc(agent) global_rwimg &op_op_2 = rwimg(geometry = 3d, width = 5, height = 4, depth = 6, channel_type = unorm_int_101010, channel_order = rgbx);
+alloc(agent) global_samp &op_op_3 = samp(coord = normalized, filter = nearest, addressing = clamp_to_edge);
+global_sig64 &op_op_4 = sig64(0);
+/////////////////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////////////////
+// array -> array
+//------------------------------------------------------------
+// i[] -> i[]
+global_s32 &arr_ii01[3] = s32[](-1, 0, 1);
+global_u32 &arr_ii02[3] = u32[](1, 0, 1);
+global_s64 &arr_ii03[3] = s64[](-1, 0, 1);
+global_u64 &arr_ii04[3] = u64[](1, 0, 1);
+global_s16 &arr_ii05[3] = s16[](-1, 0, 1);
+global_u16 &arr_ii06[3] = u16[](1, 0, 1);
+global_s8 &arr_ii07[3] = s8[](-1, 0, 1);
+global_u8 &arr_ii08[3] = u8[](1, 0, 1);
+//------------------------------------------------------------
+// f[] -> f[]
+global_f16 &arr_ff01[2] = f16[](0H0000, 0H3c00);
+global_f32 &arr_ff02[2] = f32[](0F00000000, 0F3f800000);
+global_f64 &arr_ff03[2] = f64[](0D0000000000000000, 0D3ff0000000000000);
+//------------------------------------------------------------
+// it[] -> i[]
+global_s8 &arr_iti01[3] = s8[](-1, 0, 1);
+global_u8 &arr_iti02[3] = u8[](255, 0, 1);
+global_s16 &arr_iti03[3] = s16[](-1, 0, 1);
+global_u16 &arr_iti04[3] = u16[](-1, 0, 1);
+global_s32 &arr_iti05[3] = s32[](-1, 0, 1);
+global_u32 &arr_iti06[3] = u32[](-1, 0, 1);
+global_s64 &arr_iti07[3] = s64[](-1, 0, 1);
+global_u64 &arr_iti08[3] = u64[](-1, 0, 1);
+//------------------------------------------------------------
+// ft[] -> f[]
+global_f16 &arr_ftf01[2] = f16[](0H0000, 0H3c00);
+global_f32 &arr_ftf02[2] = f32[](0F00000000, 0F3f800000);
+global_f64 &arr_ftf03[2] = f64[](0D0000000000000000, 0D3ff0000000000000);
+//------------------------------------------------------------
+// p[] -> p[]
+global_u8x4 &arr_pp03[1] = u8x4[](u8x4(255,255,255,255));
+global_s8x4 &arr_pp04[1] = s8x4[](s8x4(-1,-1,-1,-1));
+global_u16x2 &arr_pp05[1] = u16x2[](u16x2(-1,-1));
+global_s16x2 &arr_pp06[1] = s16x2[](s16x2(-1,-1));
+global_u8x8 &arr_pp07[1] = u8x8[](u8x8(255,0,0,0,0,0,0,0));
+global_s8x8 &arr_pp08[1] = s8x8[](s8x8(-1,0,0,0,0,0,0,0));
+global_u16x4 &arr_pp09[1] = u16x4[](u16x4(-1,0,0,0));
+global_s16x4 &arr_pp10[1] = s16x4[](s16x4(-1,0,0,0));
+global_u32x2 &arr_pp11[1] = u32x2[](u32x2(-1,0));
+global_s32x2 &arr_pp12[1] = s32x2[](s32x2(-1,0));
+global_u8x16 &arr_pp13[1] = u8x16[](u8x16(255,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0));
+global_s8x16 &arr_pp14[1] = s8x16[](s8x16(-1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0));
+global_u16x8 &arr_pp15[1] = u16x8[](u16x8(-1,0,0,0,0,0,0,0));
+global_s16x8 &arr_pp16[1] = s16x8[](s16x8(-1,0,0,0,0,0,0,0));
+global_u32x4 &arr_pp17[1] = u32x4[](u32x4(-1,0,0,0));
+global_s32x4 &arr_pp18[1] = s32x4[](s32x4(-1,0,0,0));
+global_u64x2 &arr_pp19[1] = u64x2[](u64x2(-1,0));
+global_s64x2 &arr_pp20[1] = s64x2[](s64x2(-1,0));
+//------------------------------------------------------------
+// opaque[] -> opaque[]
+alloc(agent) global_woimg &arr_op_op_0[1] = woimg[](woimg(geometry = 3d, width = 5, height = 4, depth = 6, channel_type = unorm_int_101010, channel_order = rgbx));
+alloc(agent) global_roimg &arr_op_op_1[1] = roimg[](roimg(geometry = 3d, width = 5, height = 4, depth = 6, channel_type = unorm_int_101010, channel_order = rgbx));
+alloc(agent) global_rwimg &arr_op_op_2[1] = rwimg[](rwimg(geometry = 3d, width = 5, height = 4, depth = 6, channel_type = unorm_int_101010, channel_order = rgbx));
+alloc(agent) global_samp &arr_op_op_3[1] = samp[](samp(coord = normalized, filter = nearest, addressing = clamp_to_edge));
+global_sig64 &arr_op_op_4[1] = sig64[](sig64(0));
+/////////////////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////////////////
+global_s32 &x[10];
+
+kernel &Test()
+{
+	//------------------------------------------------------------
+	// i -> bit
+	mov_b1	$c1, 0;
+	mov_b1	$c1, 1;
+	mov_b1	$c1, 1;
+	mov_b1	$c1, 1;
+	mov_b32	$s1, -1;
+	mov_b32	$s1, 1;
+	mov_b32	$s1, -1;
+	mov_b64	$d1, -1;
+	mov_b64	$d1, 1;
+	mov_b64	$d1, -1;
+	mov_b1	$c1, 0;
+	mov_b1	$c1, 1;
+	mov_b1	$c1, 1;
+	mov_b32	$s1, 15;
+	mov_b32	$s1, -15;
+	mov_b32	$s1, 15;
+	mov_b64	$d1, 15;
+	mov_b64	$d1, -15;
+	mov_b64	$d1, 15;
+	//------------------------------------------------------------
+	// i -> int
+	add_s32	$s0, $s0, -1;
+	add_u32	$s0, $s0, 1;
+	add_u32	$s0, $s0, -1;
+	add_s64	$d0, $d0, -1;
+	add_u64	$d0, $d0, 1;
+	add_u64	$d0, $d0, -1;
+	add_s32	$s0, $s0, 15;
+	add_u32	$s0, $s0, -15;
+	add_u32	$s0, $s0, 15;
+	add_s64	$d0, $d0, 15;
+	add_u64	$d0, $d0, -15;
+	add_u64	$d0, $d0, 15;
+	st_global_s64	-1, [&x];
+	st_global_u32	1, [&x];
+	st_global_s16	-1, [&x];
+	st_global_u8	1, [&x];
+	st_global_s64	15, [&x];
+	st_global_u32	-15, [&x];
+	st_global_s16	15, [&x];
+	st_global_u8	241, [&x];
+	//------------------------------------------------------------
+	// fx -> bit
+	mov_b32	$s1, 0;
+	mov_b64	$d1, 0;
+	mov_b32	$s1, 0x3f800000;
+	mov_b64	$d1, 4607182418800017408;
+	//------------------------------------------------------------
+	// fx -> fx
+	add_f16	$s0, $s0, 0H0000;
+	add_f32	$s0, $s0, 0F00000000;
+	add_f64	$d0, $d0, 0D0000000000000000;
+	add_f16	$s0, $s0, 0H3c00;
+	add_f32	$s0, $s0, 0F3f800000;
+	add_f64	$d0, $d0, 0D3ff0000000000000;
+	//------------------------------------------------------------
+	// i typed -> bit
+	mov_b32	$s1, -1;
+	mov_b32	$s1, -1;
+	mov_b32	$s1, 0;
+	mov_b32	$s1, 1;
+	mov_b64	$d1, -1;
+	mov_b64	$d1, -1;
+	mov_b64	$d1, 0;
+	mov_b64	$d1, 1;
+	//------------------------------------------------------------
+	// i typed -> int
+	add_s32	$s0, $s0, -1;
+	add_s32	$s0, $s0, 1;
+	add_u32	$s0, $s0, -1;
+	add_u32	$s0, $s0, 1;
+	add_s64	$d0, $d0, -1;
+	add_s64	$d0, $d0, 1;
+	add_u64	$d0, $d0, -1;
+	add_u64	$d0, $d0, 1;
+	st_global_s64	-1, [&x];
+	st_global_u32	-1, [&x];
+	st_global_s16	-1, [&x];
+	st_global_u16	-1, [&x];
+	st_global_s8	-1, [&x];
+	st_global_u8	255, [&x];
+	st_global_s64	15, [&x];
+	st_global_u32	15, [&x];
+	st_global_s16	15, [&x];
+	st_global_u16	-15, [&x];
+	st_global_s8	15, [&x];
+	st_global_u8	1, [&x];
+	//------------------------------------------------------------
+	// f typed -> bit
+	mov_b32	$s1, 0;
+	mov_b64	$d1, 0;
+	mov_b32	$s1, 0x3f800000;
+	mov_b64	$d1, 4607182418800017408;
+	//------------------------------------------------------------
+	// f typed -> f
+	add_f32	$s0, $s0, 0F3fc00000;
+	add_f64	$d0, $d0, 0D3ff8000000000000;
+	st_global_f64	0D0000000000000000, [&x];
+	st_global_f32	0F00000000, [&x];
+	st_global_f16	0H0000, [&x];
+	st_global_f64	0D3ff0000000000000, [&x];
+	st_global_f32	0F3f800000, [&x];
+	st_global_f16	0H3c00, [&x];
+	//------------------------------------------------------------
+	// packed -> bit
+	mov_b32	$s1, -1;
+	mov_b32	$s1, -1;
+	mov_b32	$s1, -1;
+	mov_b32	$s1, -1;
+	mov_b64	$d1, 0xff00000000000000;
+	mov_b64	$d1, 0xff00000000000000;
+	mov_b64	$d1, 0xffff000000000000;
+	mov_b64	$d1, 0xffff000000000000;
+	mov_b64	$d1, 0xffffffff00000000;
+	mov_b64	$d1, 0xffffffff00000000;
+	mov_b128	$q1, u8x16(255,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0);
+	mov_b128	$q1, u8x16(255,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0);
+	mov_b128	$q1, u8x16(255,255,0,0,0,0,0,0,0,0,0,0,0,0,0,0);
+	mov_b128	$q1, u8x16(255,255,0,0,0,0,0,0,0,0,0,0,0,0,0,0);
+	mov_b128	$q1, u8x16(255,255,255,255,0,0,0,0,0,0,0,0,0,0,0,0);
+	mov_b128	$q1, u8x16(255,255,255,255,0,0,0,0,0,0,0,0,0,0,0,0);
+	mov_b128	$q1, u8x16(255,255,255,255,255,255,255,255,0,0,0,0,0,0,0,0);
+	mov_b128	$q1, u8x16(255,255,255,255,255,255,255,255,0,0,0,0,0,0,0,0);
+	//------------------------------------------------------------
+	// packed -> packed
+	add_pp_sat_u8x4	$s1, $s0, u8x4(255,0,0,0);
+	add_pp_sat_s8x4	$s1, $s0, s8x4(-1,0,0,0);
+	add_pp_sat_u16x2	$s1, $s0, u16x2(-1,0);
+	add_pp_sat_s16x2	$s1, $s0, s16x2(-1,0);
+	add_pp_sat_s16x2	$s1, $s0, s16x2(-1,0);
+	add_pp_f16x2	$s1, $s0, f16x2(0H3c00,0H4000);
+	add_pp_sat_u8x8	$d1, $d0, u8x8(255,0,0,0,0,0,0,0);
+	add_pp_sat_s8x8	$d1, $d0, s8x8(-1,0,0,0,0,0,0,0);
+	add_pp_sat_u16x4	$d1, $d0, u16x4(-1,0,0,0);
+	add_pp_sat_s16x4	$d1, $d0, s16x4(-1,0,0,0);
+	add_pp_sat_u32x2	$d1, $d0, u32x2(-1,0);
+	add_pp_sat_s32x2	$d1, $d0, s32x2(-1,0);
+	add_pp_f16x4	$d1, $d0, f16x4(0H3c00,0H4000,0H4200,0H4400);
+	add_pp_f32x2	$d1, $d0, f32x2(0F3f800000,0F40000000);
+	add_pp_sat_u8x16	$q1, $q0, u8x16(255,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0);
+	add_pp_sat_s8x16	$q1, $q0, s8x16(-1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0);
+	add_pp_sat_u16x8	$q1, $q0, u16x8(-1,0,0,0,0,0,0,0);
+	add_pp_sat_s16x8	$q1, $q0, s16x8(-1,0,0,0,0,0,0,0);
+	add_pp_sat_u32x4	$q1, $q0, u32x4(-1,0,0,0);
+	add_pp_sat_s32x4	$q1, $q0, s32x4(-1,0,0,0);
+	add_pp_sat_u64x2	$q1, $q0, u64x2(-1,0);
+	add_pp_sat_s64x2	$q1, $q0, s64x2(-1,0);
+	add_pp_f16x8	$q1, $q0, f16x8(0H3c00,0H4000,0H4200,0H4400,0H4500,0H4600,0H4700,0H4800);
+	add_pp_f32x4	$q1, $q0, f32x4(0F3f800000,0F40000000,0F40400000,0F40800000);
+	add_pp_f64x2	$q1, $q0, f64x2(0D3ff0000000000000,0D4000000000000000);
+	//------------------------------------------------------------
+};

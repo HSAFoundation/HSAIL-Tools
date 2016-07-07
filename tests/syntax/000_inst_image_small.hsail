@@ -1,0 +1,54 @@
+module &moduleName:1:0:$full:$small:$near;
+extension "IMAGE";
+global_u32 &x;
+group_u32 &g;
+alloc(agent) global_roimg &roimage_1d = roimg(geometry = 1d, width = 5, channel_type = unorm_int_101010, channel_order = rgbx);
+alloc(agent) global_roimg &roimage_2d = roimg(geometry = 2d, width = 5, height = 4, channel_type = unorm_int_101010, channel_order = rgbx);
+alloc(agent) global_roimg &roimage_3d = roimg(geometry = 3d, width = 5, height = 4, depth = 6, channel_type = unorm_int_101010, channel_order = rgbx);
+alloc(agent) global_roimg &roimage_1da = roimg(geometry = 1da, width = 5, array = 4, channel_type = unorm_int_101010, channel_order = rgbx);
+alloc(agent) global_roimg &roimage_2da = roimg(geometry = 2da, width = 5, height = 4, array = 4, channel_type = unorm_int_101010, channel_order = rgbx);
+alloc(agent) global_roimg &roimage_1db = roimg(geometry = 1db, width = 5, channel_type = unorm_int_101010, channel_order = rgbx);
+alloc(agent) global_roimg &roimage = roimg(geometry = 3d, width = 5, height = 4, depth = 6, channel_type = unorm_int_101010, channel_order = rgbx);
+alloc(agent) global_rwimg &rwimage = rwimg(geometry = 3d, width = 5, height = 4, depth = 6, channel_type = unorm_int_101010, channel_order = rgbx);
+alloc(agent) global_samp &samp = samp(coord = normalized, filter = nearest, addressing = clamp_to_edge);
+readonly_roimg &roimageRO = roimg(geometry = 3d, width = 5, height = 4, depth = 6, channel_type = unorm_int_101010, channel_order = rgbx);
+readonly_rwimg &rwimageRO = rwimg(geometry = 3d, width = 5, height = 4, depth = 6, channel_type = unorm_int_101010, channel_order = rgbx);
+readonly_samp &sampRO = samp(coord = normalized, filter = nearest, addressing = clamp_to_edge);
+
+kernel &TestKernelOpaque(
+	kernarg_rwimg %x1,
+	kernarg_samp %x2)
+{
+	lda_kernarg_u32	$s1, [%x1];
+	ld_kernarg_rwimg	$d2, [$s1];
+	ld_kernarg_samp	$d2, [%x2];
+};
+
+function &tt()(
+	arg_roimg %x11,
+	arg_rwimg %x12,
+	arg_samp %x13)
+{
+};
+
+function &TestFuncOpaque()(
+	arg_rwimg %x1,
+	arg_samp %x2)
+{
+	// opaque refs
+	ld_global_roimg	$d1, [&roimage];
+	ld_global_rwimg	$d1, [&rwimage];
+	ld_global_samp	$d1, [&samp];
+	{
+		arg_roimg %x11;
+		arg_rwimg %x12;
+		arg_samp %x13;
+		st_arg_roimg	$d1, [%x11];
+		st_arg_rwimg	$d1, [%x12];
+		st_arg_samp	$d1, [%x13];
+		call	&tt () (%x11, %x12, %x13);
+	}
+	lda_group_u32	$s1, [&g];
+	ld_arg_rwimg	$d2, [%x1][$s1];
+	ld_arg_samp	$d2, [%x2];
+};

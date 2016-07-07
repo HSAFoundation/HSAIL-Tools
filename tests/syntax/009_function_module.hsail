@@ -1,0 +1,25 @@
+// Module-scope functions must be defined
+//
+module &moduleName:1:0:$full:$large:$default;
+//
+decl indirect function &f1()();
+
+decl function &f2()();
+//
+
+function &Test()()
+{
+	{
+		call	&f1 () ();
+	}
+};
+//
+indirect function &f1()()
+{
+};
+
+function &f2()()
+{
+};
+//
+//

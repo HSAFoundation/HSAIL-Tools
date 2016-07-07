@@ -1,0 +1,53 @@
+module &moduleName:1:0:$full:$large:$default;
+// -----------------
+// A name can be both defined in a module and also declared in the
+// same module.
+// -----------------
+decl global_s32 &k1;
+decl fbarrier &fb1;
+
+function &f1()()
+{
+	lda_global_u64	$d4, [&k1];
+	ldf_u32	$s0, &fb1;
+};
+decl global_s32 &k1;
+decl fbarrier &fb1;
+global_s32 &k1;
+fbarrier &fb1;
+decl global_s32 &k1;
+decl fbarrier &fb1;
+// -----------------
+global_s32 &k2;
+fbarrier &fb2;
+
+function &f2()()
+{
+	lda_global_u64	$d4, [&k2];
+	ldf_u32	$s0, &fb2;
+};
+decl global_s32 &k2;
+decl fbarrier &fb2;
+// -----------------
+decl prog global_s32 &k3;
+decl prog fbarrier &fb3;
+
+function &f3()()
+{
+	lda_global_u64	$d4, [&k3];
+	ldf_u32	$s0, &fb3;
+};
+prog global_s32 &k3;
+prog fbarrier &fb3;
+// -----------------
+prog global_s32 &k4;
+prog fbarrier &fb4;
+
+function &f4()()
+{
+	lda_global_u64	$d4, [&k4];
+	ldf_u32	$s0, &fb4;
+};
+decl prog global_s32 &k4;
+decl prog fbarrier &fb4;
+// -----------------

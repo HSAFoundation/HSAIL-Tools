@@ -1,0 +1,54 @@
+module &moduleName:1:0:$full:$small:$near;
+
+function &TestFuncX()(arg_s32 %in_arg0)
+{
+	ret;
+};
+
+decl prog function &TestFuncUndef()(arg_s32 %in_arg0);
+global_u32 &global_var[12];
+readonly_u32 &readonly_var[12];
+group_u32 &group_var[12];
+
+kernel &testKernel(kernarg_u32 %in_arg0)
+{
+	lda_kernarg_u32	$s1, [%in_arg0];
+	ld_kernarg_u32	$s0, [%in_arg0];
+	ld_kernarg_u32	$s0, [%in_arg0][12];
+	ld_kernarg_u32	$s0, [%in_arg0][$s0+12];
+	ret;
+};
+
+function &TestCallUndefTarget()(arg_u32 %in_arg0[12])
+{
+	ld_arg_u32	$s0, [%in_arg0];
+	ld_arg_u32	$s0, [%in_arg0][12];
+	ld_arg_u32	$s0, [%in_arg0][$s0+12];
+	ld_global_u32	$s0, [&global_var];
+	ld_global_u32	$s0, [&global_var][12];
+	ld_global_u32	$s0, [&global_var][$s0+12];
+	atomic_and_global_scar_system_b32	$s1, [&global_var], 23;
+	lda_group_u32	$s1, [&group_var];
+	lda_group_u32	$s1, [&group_var][12];
+	lda_group_u32	$s1, [&group_var][$s0+12];
+	lda_global_u32	$s2, [&global_var];
+	lda_global_u32	$s2, [&global_var][12];
+	lda_global_u32	$s2, [&global_var][$s0+12];
+	lda_readonly_u32	$s2, [&readonly_var];
+	lda_readonly_u32	$s2, [&readonly_var][12];
+	lda_readonly_u32	$s2, [&readonly_var][$s0+12];
+	// Flat address
+	lda_u32	$s2, [0];
+	lda_u32	$s2, [$s0+12];
+	lda_u32	$s2, [$s0+12];
+	stof_private_u32_u32	$s1, $s0;
+	stof_group_u32_u32	$s1, $s0;
+	ftos_private_u32_u32	$s1, $s0;
+	ftos_group_u32_u32	$s1, $s0;
+	segmentp_private_b1_u32	$c1, $s1;
+};
+
+function &test_indirect()()
+{
+	ret;
+};

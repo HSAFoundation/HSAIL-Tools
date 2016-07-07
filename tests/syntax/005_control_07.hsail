@@ -1,0 +1,11 @@
+module &moduleName:1:0:$full:$large:$default;
+
+function &TestFunc()()
+{
+	//-----------------------------------------------------------------------------------------------------------------------
+	// If multiple control directives are present in the kernel or the functions it calls, they must all have the same values.
+	//-----------------------------------------------------------------------------------------------------------------------
+	maxflatgridsize WAVESIZE;
+	maxflatgridsize 10;
+	// WAVESIZE value is not known, so it might be equal to 10 
+};

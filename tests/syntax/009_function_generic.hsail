@@ -1,0 +1,79 @@
+module &moduleName:1:0:$full:$large:$default;
+
+function &TestFunc()()
+{
+	ret;
+};
+
+function &TestFunc01()(arg_u8x8 %in_arg0)
+{
+
+@lab1:
+	ret;
+};
+
+function &TestFunc12(arg_s32x2 %out_arg0)(
+	arg_u32 %in_arg0,
+	arg_u32 %in_arg1)
+{
+
+@lab1:
+	ret;
+};
+
+function &TestCalls()()
+{
+
+@lab1:
+	{
+		call	&TestFunc () ();
+	}
+	{
+		call	&TestFunc () ();
+	}
+	{
+		call	&TestFunc () ();
+	}
+	{
+		arg_u8x8 %iarg0;
+		st_arg_u64	0, [%iarg0];
+		call	&TestFunc01 () (%iarg0);
+	}
+	{
+		arg_s32x2 %oarg;
+		arg_u32 %iarg0;
+		arg_u32 %iarg1;
+		st_arg_u32	0, [%iarg0];
+		st_arg_u32	0, [%iarg1];
+		call	&TestFunc12 (%oarg) (%iarg0, %iarg1);
+		ld_arg_u64	$d0, [%oarg];
+	}
+	ret;
+};
+indirect function &indirect_func()()
+{
+	ret;
+};
+
+function &TestStaticCalls()(arg_u32 %in_arg0)
+{
+	//
+	{
+		call	&indirect_func () ();
+	}
+};
+
+function &f(arg_u32 %a)(
+	arg_u32 %in_arg0,
+	arg_u32 %in_arg1)
+{
+	ret;
+};
+//---------------------------------------------------------------------------
+// Several Identical Decl are possible
+
+decl function &TestFunc01()(arg_u8x8 %in_arg000);
+
+decl function &TestFunc01()(arg_u8x8 %in_arg0);
+
+decl function &TestFunc01()(arg_u8x8 %in_arg111);

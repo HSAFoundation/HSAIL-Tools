@@ -1,0 +1,13 @@
+module &moduleName:1:0:$full:$large:$default;
+
+function &TestFunc()()
+{
+	//-----------------------------------------------------------------------------------------------------------------------
+	// Must be an immediate value greater than 0, or WAVESIZE.
+	// If multiple control directives are present in the kernel or the functions it calls, they must all have the same values.
+	// The value specified must also be greater than or equal to the product of the values specified by requiredworkgroupsize.
+	//-----------------------------------------------------------------------------------------------------------------------
+	requiredgridsize 1, 1, WAVESIZE;
+	maxflatgridsize WAVESIZE;
+	// The value specified must be greater than or equal to the product of the values specified by requiredgridsize
+};

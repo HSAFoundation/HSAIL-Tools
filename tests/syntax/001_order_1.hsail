@@ -1,0 +1,45 @@
+// Testing order of directives at toplevel
+// 
+loc 20 "this is a file";
+loc 4 "this is a file";
+// comment 
+pragma "123", 0x1f000000ffffffff;
+//----------------------------------------------------
+module &moduleName:1:0:$full:$large:$default;
+//----------------------------------------------------
+pragma "123", 0x1f000000ffffffff;
+loc 20 "this is a file";
+loc 4 "this is a file";
+//----------------------------------------------------
+extension "CORE";
+//----------------------------------------------------
+loc 20 "this is a file";
+loc 4 "this is a file";
+pragma "123", 0x1f000000ffffffff;
+//----------------------------------------------------
+extension "CORE";
+//----------------------------------------------------
+loc 20 "this is a file";
+loc 4 "this is a file";
+pragma "123", 0x1f000000ffffffff;
+//----------------------------------------------------
+// declarations and definitions
+//
+decl global_s32 &v1;
+fbarrier &b1;
+//----------------------------------------------------
+loc 4 "this is a file";
+pragma &v1, &b1;
+pragma "123", 0x1f000000ffffffff;
+//----------------------------------------------------
+// more declarations and definitions
+//
+
+kernel &k()
+{
+};
+global_s32 &v1;
+//----------------------------------------------------
+loc 4 "this is a file";
+pragma &k, &v1, &b1;
+pragma "123", 0x1f000000ffffffff;

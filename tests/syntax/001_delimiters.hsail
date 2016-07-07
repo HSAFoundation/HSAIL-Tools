@@ -1,0 +1,18 @@
+module &moduleName:1:0:$full:$large:$default;
+
+kernel &Test()
+{
+	// 
+	// Next sample
+	// 
+	add_pp_u8x4	$s0, $s0, $s0;
+	add_ps_u8x4	$s0, $s0, $s0;
+	add_sp_u8x4	$s0, $s0, $s0;
+	add_ss_u8x4	$s0, $s0, $s0;
+	// abc 
+	add_pp_sat_u8x4	$s0, $s0, $s0;
+	add_ps_sat_u8x4	$s0, $s0, $s0;
+	add_sp_sat_u8x4	$s0, $s0, $s0;
+	//.add_ss_sat_u8x4.$s0,
+	add_ps_sat_u8x4	$s0, $s0, $s0;
+};

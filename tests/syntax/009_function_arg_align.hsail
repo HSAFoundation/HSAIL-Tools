@@ -1,0 +1,429 @@
+module &moduleName:1:0:$full:$large:$default;
+extension "IMAGE";
+// Natural alignment
+
+function &TestFunc1100()(arg_s8 %in_arg0)
+{
+	ret;
+};
+
+function &TestFunc1104()(arg_u8 %in_arg0)
+{
+	ret;
+};
+
+function &TestFunc1112()(arg_b8 %in_arg0)
+{
+	ret;
+};
+
+function &TestFunc2901()(arg_s16 %in_arg0)
+{
+	ret;
+};
+
+function &TestFunc2105()(arg_u16 %in_arg0)
+{
+	ret;
+};
+
+function &TestFunc2108()(arg_f16 %in_arg0)
+{
+	ret;
+};
+
+function &TestFunc2113()(arg_b16 %in_arg0)
+{
+	ret;
+};
+
+function &TestFunc3102()(arg_s32 %in_arg0)
+{
+	ret;
+};
+
+function &TestFunc3106()(arg_u32 %in_arg0)
+{
+	ret;
+};
+
+function &TestFunc3109()(arg_f32 %in_arg0)
+{
+	ret;
+};
+
+function &TestFunc3114()(arg_b32 %in_arg0)
+{
+	ret;
+};
+
+function &TestFunc3199()(arg_u8x4 %in_arg0)
+{
+	ret;
+};
+
+function &TestFunc3121()(arg_s8x4 %in_arg0)
+{
+	ret;
+};
+
+function &TestFunc3126()(arg_u16x2 %in_arg0)
+{
+	ret;
+};
+
+function &TestFunc3127()(arg_s16x2 %in_arg0)
+{
+	ret;
+};
+
+function &TestFunc3128()(arg_f16x2 %in_arg0)
+{
+	ret;
+};
+
+function &TestFunc4703()(arg_s64 %in_arg0)
+{
+	ret;
+};
+
+function &TestFunc4107()(arg_u64 %in_arg0)
+{
+	ret;
+};
+
+function &TestFunc4110()(arg_f64 %in_arg0)
+{
+	ret;
+};
+
+function &TestFunc4115()(arg_b64 %in_arg0)
+{
+	ret;
+};
+
+function &TestFunc4122()(arg_u8x8 %in_arg0)
+{
+	ret;
+};
+
+function &TestFunc4123()(arg_s8x8 %in_arg0)
+{
+	ret;
+};
+
+function &TestFunc4129()(arg_u16x4 %in_arg0)
+{
+	ret;
+};
+
+function &TestFunc4120()(arg_s16x4 %in_arg0)
+{
+	ret;
+};
+
+function &TestFunc4131()(arg_f16x4 %in_arg0)
+{
+	ret;
+};
+
+function &TestFunc4135()(arg_u32x2 %in_arg0)
+{
+	ret;
+};
+
+function &TestFunc4136()(arg_s32x2 %in_arg0)
+{
+	ret;
+};
+
+function &TestFunc4137()(arg_f32x2 %in_arg0)
+{
+	ret;
+};
+
+function &TestFunc5131()(arg_rwimg %in_arg0)
+{
+	ret;
+};
+
+function &TestFunc5132()(arg_roimg %in_arg0)
+{
+	ret;
+};
+
+function &TestFunc5133()(arg_samp %in_arg0)
+{
+	ret;
+};
+
+function &TestFunc6703()(arg_b128 %in_arg0)
+{
+	ret;
+};
+
+function &TestFunc6129()(arg_u16x8 %in_arg0)
+{
+	ret;
+};
+
+function &TestFunc6120()(arg_s16x8 %in_arg0)
+{
+	ret;
+};
+
+function &TestFunc6131()(arg_f16x8 %in_arg0)
+{
+	ret;
+};
+
+function &TestFunc6135()(arg_u32x4 %in_arg0)
+{
+	ret;
+};
+
+function &TestFunc6136()(arg_s32x4 %in_arg0)
+{
+	ret;
+};
+
+function &TestFunc6137()(arg_f32x4 %in_arg0)
+{
+	ret;
+};
+// Greater alignment
+
+function &TestFunc100_()(align(2) arg_s8 %in_arg0)
+{
+	ret;
+};
+
+function &TestFunc104_()(align(2) arg_u8 %in_arg0)
+{
+	ret;
+};
+
+function &TestFunc112_()(align(2) arg_b8 %in_arg0)
+{
+	ret;
+};
+
+function &TestFunc100__()(align(4) arg_s8 %in_arg0)
+{
+	ret;
+};
+
+function &TestFunc104__()(align(4) arg_u8 %in_arg0)
+{
+	ret;
+};
+
+function &TestFunc112__()(align(4) arg_b8 %in_arg0)
+{
+	ret;
+};
+
+function &TestFunc100___()(align(8) arg_s8 %in_arg0)
+{
+	ret;
+};
+
+function &TestFunc104___()(align(8) arg_u8 %in_arg0)
+{
+	ret;
+};
+
+function &TestFunc112___()(align(8) arg_b8 %in_arg0)
+{
+	ret;
+};
+
+function &TestFunc101_()(align(4) arg_s16 %in_arg0)
+{
+	ret;
+};
+
+function &TestFunc105_()(align(4) arg_u16 %in_arg0)
+{
+	ret;
+};
+
+function &TestFunc108_()(align(4) arg_f16 %in_arg0)
+{
+	ret;
+};
+
+function &TestFunc113_()(align(4) arg_b16 %in_arg0)
+{
+	ret;
+};
+
+function &TestFunc101__()(align(8) arg_s16 %in_arg0)
+{
+	ret;
+};
+
+function &TestFunc105__()(align(8) arg_u16 %in_arg0)
+{
+	ret;
+};
+
+function &TestFunc108__()(align(8) arg_f16 %in_arg0)
+{
+	ret;
+};
+
+function &TestFunc113__()(align(8) arg_b16 %in_arg0)
+{
+	ret;
+};
+
+function &TestFunc102_()(align(8) arg_s32 %in_arg0)
+{
+	ret;
+};
+
+function &TestFunc106_()(align(8) arg_u32 %in_arg0)
+{
+	ret;
+};
+
+function &TestFunc109_()(align(8) arg_f32 %in_arg0)
+{
+	ret;
+};
+
+function &TestFunc114_()(align(8) arg_b32 %in_arg0)
+{
+	ret;
+};
+
+function &TestFunc199_()(align(8) arg_u8x4 %in_arg0)
+{
+	ret;
+};
+
+function &TestFunc121_()(align(8) arg_s8x4 %in_arg0)
+{
+	ret;
+};
+
+function &TestFunc126_()(align(8) arg_u16x2 %in_arg0)
+{
+	ret;
+};
+
+function &TestFunc127_()(align(8) arg_s16x2 %in_arg0)
+{
+	ret;
+};
+
+function &TestFunc128_()(align(8) arg_f16x2 %in_arg0)
+{
+	ret;
+};
+
+function &TestFunc9102_()(align(16) arg_s32 %in_arg0)
+{
+	ret;
+};
+
+function &TestFunc9106_()(align(16) arg_u32 %in_arg0)
+{
+	ret;
+};
+
+function &TestFunc9109_()(align(16) arg_f32 %in_arg0)
+{
+	ret;
+};
+
+function &TestFunc9114_()(align(16) arg_b32 %in_arg0)
+{
+	ret;
+};
+
+function &TestFunc9199_()(align(16) arg_u8x4 %in_arg0)
+{
+	ret;
+};
+
+function &TestFunc9121_()(align(16) arg_s8x4 %in_arg0)
+{
+	ret;
+};
+
+function &TestFunc9126_()(align(16) arg_u16x2 %in_arg0)
+{
+	ret;
+};
+
+function &TestFunc9127_()(align(16) arg_s16x2 %in_arg0)
+{
+	ret;
+};
+
+function &TestFunc9128_()(align(16) arg_f16x2 %in_arg0)
+{
+	ret;
+};
+
+function &TestFunc0131()(align(16) arg_rwimg %in_arg0)
+{
+	ret;
+};
+
+function &TestFunc0132()(align(16) arg_roimg %in_arg0)
+{
+	ret;
+};
+
+function &TestFunc0133()(align(16) arg_samp %in_arg0)
+{
+	ret;
+};
+
+function &TestFunc91021_()(align(32) arg_s32 %in_arg0)
+{
+	ret;
+};
+
+function &TestFunc91995_()(align(64) arg_u8x4 %in_arg0)
+{
+	ret;
+};
+
+function &TestFunc91267_()(align(64) arg_u16x2 %in_arg0)
+{
+	ret;
+};
+
+function &TestFunc91269_()(align(128) arg_u16x2 %in_arg0)
+{
+	ret;
+};
+
+function &TestFunc013100()(align(128) arg_rwimg %in_arg0)
+{
+	ret;
+};
+
+function &TestFunc670399()(align(128) arg_b128 %in_arg0)
+{
+	ret;
+};
+
+function &TestFunc91269z()(align(256) arg_u16x2 %in_arg0)
+{
+	ret;
+};
+
+function &TestFunc01310z()(align(256) arg_rwimg %in_arg0)
+{
+	ret;
+};
+
+function &TestFunc67049z()(align(256) arg_b128 %in_arg0)
+{
+	ret;
+};

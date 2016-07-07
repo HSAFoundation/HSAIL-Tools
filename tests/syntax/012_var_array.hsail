@@ -1,0 +1,14 @@
+// If the object is an array, the size of the array must be specified in the
+// definition but can be omitted in the declaration.
+//
+module &moduleName:1:0:$full:$large:$default;
+decl prog global_u32 &not_flexible1[];
+decl prog const global_u32 &not_flexible2[];
+decl global_u32 &not_flexible3[];
+global_u32 &not_flexible3[4];
+prog global_u32 &not_flexible1[3];
+prog const global_u32 &not_flexible2[3] = u32[](1, 2, 3);
+// Max array size
+global_s8 &x1[18446744073709551615];
+global_s16 &x2[9223372036854775807];
+global_s32 &x3[4611686018427387903];

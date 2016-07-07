@@ -1,0 +1,11 @@
+module &moduleName:1:0:$full:$large:$default;
+
+function &TestFunc()()
+{
+	//-----------------------------------------------------------------------------------------------------------------------
+	// If multiple control directives are present in the kernel or the functions it calls, they must all have the same values.
+	//-----------------------------------------------------------------------------------------------------------------------
+	requiredworkgroupsize 10, WAVESIZE, WAVESIZE;
+	requireddim 1;
+	// WAVESIZE may be 1, so this code is formally correct 
+};

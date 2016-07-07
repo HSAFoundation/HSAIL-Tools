@@ -1,0 +1,1449 @@
+module &moduleName:1:0:$base:$large:$zero;
+extension "CORE";
+// --------------------------------------
+global_u64 &x;
+group_u64 &g;
+global_sig64 &signal;
+// --------------------------------------
+
+function &TestFunc()()
+{
+	ret;
+};
+
+function &TestFunc00()()
+{
+	ret;
+};
+
+function &TestFunc01()(arg_u8x8 %in_arg0)
+{
+
+@lab1:
+	ret;
+};
+
+function &TestFunc12(arg_s32x2 %out_arg0)(
+	arg_u32 %in_arg0,
+	arg_u32 %in_arg1)
+{
+
+@lab1:
+	ret;
+};
+
+function &TestCalls()()
+{
+
+@lab1:
+	{
+		call	&TestFunc () ();
+	}
+	{
+		call	&TestFunc () ();
+	}
+	{
+		call	&TestFunc () ();
+	}
+	{
+		scall_u64	$d0 () () [&TestFunc];
+	}
+	{
+		scall_width(all)_u64	$d0 () () [&TestFunc];
+	}
+	{
+		scall_width(2147483648)_u32	$s0 () () [&TestFunc, &TestFunc00];
+	}
+	{
+		scall_width(all)_u64	$d0 () () [&TestFunc];
+	}
+	{
+		scall_width(WAVESIZE)_u64	$d0 () () [&TestFunc];
+	}
+	{
+		arg_u8x8 %iarg0;
+		st_arg_u64	0, [%iarg0];
+		call	&TestFunc01 () (%iarg0);
+	}
+	{
+		arg_s32x2 %oarg;
+		arg_u32 %iarg0;
+		arg_u32 %iarg1;
+		st_arg_u32	0, [%iarg0];
+		st_arg_u32	0, [%iarg1];
+		call	&TestFunc12 (%oarg) (%iarg0, %iarg1);
+		ld_arg_u64	$d0, [%oarg];
+	}
+	ret;
+};
+
+kernel &TestKernel(kernarg_u32 %arg)
+{
+	lda_kernarg_u64	$d4, [%arg];
+	ld_kernarg_align(128)_equiv(2)_f32	$s1, [%arg];
+};
+
+function &Testinst(arg_u32 %out)(arg_s32 %arg[4])
+{
+	// ------------------------------------
+	global_b8 %globalVar[8];
+	group_b8 %groupVar[8];
+	private_b8 %privateVar[8];
+	readonly_b8 %readonlyVar[8];
+	spill_s32 %spill[4];
+	group_b8 %gs[8];
+	global_u32 %g[3];
+	global_b8 %b8var;
+	global_b32 %b32var;
+	// ------------------------------------
+	lda_global_u64	$d4, [%globalVar];
+	lda_group_u32	$s4, [%groupVar];
+	lda_private_u32	$s4, [%privateVar];
+	lda_readonly_u64	$d4, [%readonlyVar];
+	// ------------------------------------
+	abs_s32	$s1, $s2;
+	abs_s64	$d1, $d2;
+	abs_p_s8x4	$s1, $s2;
+	abs_s_s32x2	$d1, $d1;
+	abs_s_s8x4	$s1, $s2;
+	abs_s_s16x2	$s1, $s2;
+	abs_s_s8x8	$d1, $d1;
+	abs_s_s16x4	$d1, $d1;
+	abs_s_s32x2	$d1, $d1;
+	abs_s_s8x16	$q1, $q1;
+	abs_s_s16x8	$q1, $q1;
+	abs_s_s32x4	$q1, $q1;
+	abs_s_s64x2	$q1, $q1;
+	abs_p_f16x2	$s1, $s1;
+	abs_s_f16x4	$d1, $d1;
+	abs_s_f32x2	$d1, $d1;
+	abs_s_f16x8	$q1, $q1;
+	abs_s_f32x4	$q1, $q1;
+	abs_f16	$s1, $s2;
+	abs_f32	$s1, $s2;
+	//---------------------------------------
+	neg_s32	$s1, 100;
+	neg_s64	$d1, $d2;
+	neg_s_s8x4	$s1, $s2;
+	neg_p_s8x4	$s1, $s2;
+	neg_f32	$s3, 0F3f800000;
+	//---------------------------------------
+	add_s32	$s1, 42, $s2;
+	add_u32	$s1, $s2, 35;
+	add_s64	$d1, $d2, 23;
+	add_u64	$d1, 61, 0x233412349456;
+	add_pp_sat_u16x2	$s1, $s0, $s3;
+	add_pp_u16x4	$d1, $d0, $d3;
+	add_ftz_f16	$s3, $s2, $s1;
+	add_ftz_f32	$s3, $s2, $s1;
+	add_ftz_f16	$s3, $s2, $s1;
+	add_ftz_f32	$s3, $s2, $s1;
+	add_ftz_f16	$s3, $s2, $s1;
+	add_ftz_f32	$s3, $s2, $s1;
+	add_ftz_pp_f16x2	$s3, $s2, $s1;
+	add_ftz_ps_f16x4	$d3, $d2, $d1;
+	add_ftz_sp_f32x2	$d3, $d2, $d1;
+	add_ftz_ss_f16x8	$q3, $q2, $q1;
+	add_ftz_pp_f32x4	$q3, $q2, $q1;
+	add_ftz_pp_f16x2	$s3, $s2, $s1;
+	add_ftz_ps_f16x4	$d3, $d2, $d1;
+	add_ftz_sp_f32x2	$d3, $d2, $d1;
+	add_ftz_ss_f16x8	$q3, $q2, $q1;
+	add_ftz_pp_f32x4	$q3, $q2, $q1;
+	add_ftz_pp_f16x2	$s3, $s2, $s1;
+	add_ftz_ps_f16x4	$d3, $d2, $d1;
+	add_ftz_pp_f16x2	$s3, $s2, $s1;
+	add_ftz_ps_f16x4	$d3, $d2, $d1;
+	add_ftz_sp_f32x2	$d3, $d2, $d1;
+	add_ftz_ss_f16x8	$q3, $q2, $q1;
+	add_ftz_pp_f32x4	$q3, $q2, $q1;
+	add_ftz_pp_f16x2	$s3, $s2, $s1;
+	add_ftz_ps_f16x4	$d3, $d2, $d1;
+	add_ftz_sp_f32x2	$d3, $d2, $d1;
+	add_ftz_ss_f16x8	$q3, $q2, $q1;
+	add_ftz_pp_f32x4	$q3, $q2, $q1;
+	//---------------------------------------
+	div_s32	$s1, 100, 10;
+	div_u32	$s1, $s2, 35;
+	div_s64	$d1, $d2, 23;
+	div_u64	$d1, $d3, 0x233412349456;
+	//---------------------------------------
+	max_s32	$s1, 100, 10;
+	max_u32	$s1, $s2, 35;
+	max_s64	$d1, $d2, 23;
+	max_u64	$d1, $d3, 0x233412349456;
+	//---------------------------------------
+	min_s32	$s1, 100, 10;
+	min_u32	$s1, $s2, 35;
+	min_s64	$d1, $d2, 23;
+	min_u64	$d1, $d3, 0x233412349456;
+	//---------------------------------------
+	mul_s32	$s1, 100, 10;
+	mul_u32	$s1, $s2, 35;
+	mul_s64	$d1, $d2, 23;
+	mul_u64	$d1, $d3, 0x233412349456;
+	//---------------------------------------
+	mulhi_s32	$s1, $s3, $s3;
+	mulhi_u32	$s1, $s2, $s9;
+	//---------------------------------------
+	rem_s32	$s1, 100, 10;
+	rem_u32	$s1, $s2, -1;
+	rem_s64	$d1, $d2, 23;
+	rem_u64	$d1, $d3, 0x233412349456;
+	//---------------------------------------
+	sub_s32	$s1, 100, 10;
+	sub_u32	$s1, $s2, 35;
+	sub_s64	$d1, $d2, 23;
+	sub_u64	$d1, $d3, 0x233412349456;
+	//---------------------------------------
+	mul_pp_u16x4	$d1, $d0, $d3;
+	mulhi_pp_u8x8	$d1, $d3, $d4;
+	sub_sp_u8x8	$d1, $d0, $d3;
+	max_pp_u8x4	$s1, $s0, $s3;
+	min_pp_u8x4	$s1, $s0, $s3;
+	//---------------------------------------
+	mad_s32	$s1, $s2, $s3, $s5;
+	mad_s64	$d1, $d2, $d3, $d2;
+	mad_u32	$s1, $s2, $s3, $s3;
+	mad_u64	$d1, $d2, $d3, $d1;
+	mad_ftz_f16	$s0, $s0, $s0, $s0;
+	mad_ftz_f16	$s0, 0Hffff, $s0, $s0;
+	mad_ftz_f16	$s0, $s0, 0Hffff, $s0;
+	mad_ftz_f16	$s0, $s0, $s0, 0Hffff;
+	mad_ftz_f32	$s0, $s0, $s0, $s0;
+	mad_ftz_f32	$s0, 0Fffffffff, $s0, $s0;
+	mad_ftz_f32	$s0, $s0, 0Fffffffff, $s0;
+	mad_ftz_f32	$s0, $s0, $s0, 0Fffffffff;
+	//---------------------------------------
+	mad24_s32	$s1, $s2, -12, 23;
+	mad24_u32	$s1, $s2, 12, 2;
+	mad24hi_s32	$s1, $s2, -12, 23;
+	mad24hi_u32	$s1, $s2, 12, 2;
+	mul24_s32	$s1, $s2, -12;
+	mul24_u32	$s1, $s2, 12;
+	mul24hi_s32	$s1, $s2, -12;
+	mul24hi_u32	$s1, $s2, 12;
+	//---------------------------------------
+	shl_u32	$s1, $s2, 2;
+	shl_u64	$d1, $d2, 2;
+	shl_s32	$s1, $s2, 2;
+	shl_s64	$d1, $d2, 2;
+	shr_u32	$s1, $s2, 2;
+	shr_u64	$d1, $d2, 2;
+	shr_s32	$s1, $s2, 2;
+	shr_s64	$d1, $d2, 2;
+	shl_u8x8	$d0, $d1, 2;
+	shl_u8x4	$s1, $s2, 2;
+	shl_u8x8	$d1, $d2, 1;
+	shr_u8x4	$s1, $s2, 1;
+	shr_u8x8	$d1, $d2, 2;
+	//---------------------------------------
+	and_b1	$c0, $c2, $c3;
+	and_b32	$s0, $s2, $s3;
+	and_b64	$d0, $d1, $d2;
+	or_b1	$c0, $c2, $c3;
+	or_b32	$s0, $s2, $s3;
+	or_b64	$d0, $d1, $d2;
+	xor_b1	$c0, $c2, $c3;
+	xor_b32	$s0, $s2, $s3;
+	xor_b64	$d0, $d1, $d2;
+	not_b1	$c1, $c2;
+	not_b32	$s0, $s2;
+	not_b64	$d0, $d1;
+	//---------------------------------------
+	popcount_u32_b32	$s1, $s2;
+	popcount_u32_b64	$s1, $d2;
+	popcount_u32_b32	$s1, -1;
+	popcount_u32_b64	$s1, -1;
+	//---------------------------------------
+	bitrev_b32	$s1, $s2;
+	bitrev_b64	$d1, 0x234;
+	bitextract_s32	$s1, $s1, 2, 3;
+	bitextract_s32	$s1, $s1, $s0, $s0;
+	bitextract_u64	$d1, $d1, $s1, $s2;
+	bitinsert_s32	$s1, $s1, $s2, 2, 3;
+	bitinsert_s32	$s1, $s1, $s2, $s0, $s0;
+	bitinsert_u32	$s1, $s1, $s2, $s0, $s0;
+	bitinsert_u64	$d1, $d2, $d3, $s1, $s2;
+	bitmask_b32	$s0, $s1, $s2;
+	bitmask_b64	$d0, $s1, $s2;
+	bitmask_b32	$s0, 1, 0;
+	bitmask_b64	$d0, 1, 2;
+	bitselect_b32	$s3, $s0, $s3, $s4;
+	firstbit_u32_s32	$s0, $s0;
+	firstbit_u32_u64	$s0, $d6;
+	firstbit_u32_s32	$s0, -1;
+	firstbit_u32_u64	$s0, -1;
+	lastbit_u32_u32	$s0, $s0;
+	lastbit_u32_s64	$s0, $d6;
+	lastbit_u32_u32	$s0, -1;
+	lastbit_u32_s64	$s0, -1;
+	//---------------------------------------
+	combine_v2_b64_b32	$d0, ($s0, $s1);
+	combine_v4_b128_b32	$q0, ($s0, $s1, $s2, $s3);
+	combine_v2_b128_b64	$q0, ($d0, $d1);
+	combine_v2_b64_b32	$d0, (0, -1);
+	combine_v2_b64_b32	$d0, (0, -1);
+	combine_v4_b128_b32	$q0, (0, $s1, 2, $s3);
+	combine_v2_b128_b64	$q0, ($d0, 1);
+	combine_v2_b64_b32	$d0, (0, 0x3f800000);
+	combine_v4_b128_b32	$q0, (0, $s1, 0x40000000, $s3);
+	combine_v2_b128_b64	$q0, ($d0, 4607182418800017408);
+	combine_v2_b64_b32	$d0, (0x10002, 0x1020304);
+	combine_v4_b128_b32	$q0, (0x3c004000, $s1, $s2, $s3);
+	combine_v2_b128_b64	$q0, (0x1000200030004, 0x3f80000040000000);
+	//---------------------------------------
+	expand_v2_b32_b64	($s0, $s1), $d0;
+	expand_v4_b32_b128	($s0, $s1, $s2, $s3), $q0;
+	expand_v2_b64_b128	($d0, $d1), $q0;
+	expand_v2_b32_b64	($s0, $s1), -1;
+	//---------------------------------------
+	mov_b1	$c1, 0;
+	mov_b1	$c1, $c2;
+	mov_b32	$s1, 0;
+	mov_b32	$s1, 0;
+	mov_b32	$s1, $s7;
+	mov_b64	$d1, 0;
+	mov_b64	$d1, 0;
+	mov_b64	$d1, $d8;
+	mov_b128	$q1, $q2;
+	mov_f16	$s1, $s8;
+	mov_s32	$s1, $s8;
+	mov_u32	$s1, $s8;
+	mov_f32	$s1, $s8;
+	mov_s64	$d1, $d8;
+	mov_u64	$d1, $d8;
+	//---------------------------------------
+	lda_group_u32	$s4, [%gs];
+	lda_group_u32	$s4, [%gs][12];
+	lda_group_u32	$s4, [%gs][$s0+12];
+	lda_group_u32	$s4, [$s0+12];
+	lda_group_u32	$s4, [$s0];
+	lda_global_u64	$d1, [%g];
+	lda_global_u64	$d1, [$d7+4];
+	lda_global_u64	$d1, [$d1+8];
+	lda_global_u64	$d1, [$d1];
+	lda_global_u64	$d1, [800];
+	lda_global_u64	$d1, [0];
+	lda_readonly_u64	$d1, [0];
+	lda_private_u32	$s1, [0];
+	lda_group_u32	$s1, [0];
+	//---------------------------------------
+
+@lab:
+	shuffle_u8x4	$s10, $s12, $s12, 85;
+	//---------------------------------------
+	unpacklo_u8x4	$s1, $s2, u8x4(1,2,3,4);
+	unpackhi_f16x2	$s3, $s3, $s4;
+	//---------------------------------------
+	pack_f16x2_f16	$s1, $s2, $s3, $s1;
+	pack_f16x4_f16	$d1, $d2, $s3, $s3;
+	pack_f16x8_f16	$q1, $q2, $s3, $s3;
+	pack_f32x2_f32	$d1, $d1, $s2, $s0;
+	pack_f32x4_f32	$q1, $q1, $s2, $s0;
+	pack_u8x4_u32	$s1, $s2, $s3, $s0;
+	pack_u8x8_u32	$d1, $d2, $s3, $s0;
+	pack_u8x16_u32	$q1, $q2, $s3, $s0;
+	pack_u16x2_u32	$s1, $s2, $s3, $s0;
+	pack_u16x4_u32	$d1, $d2, $s3, $s0;
+	pack_u16x8_u32	$q1, $q2, $s3, $s0;
+	pack_u32x2_u32	$d1, $d1, $s1, $s0;
+	pack_u32x4_u32	$q1, $q1, $s1, $s0;
+	pack_u64x2_u64	$q1, $q1, $d1, $s0;
+	pack_s8x4_s32	$s1, $s2, $s3, $s0;
+	pack_s8x8_s32	$d1, $d2, $s3, $s0;
+	pack_s8x16_s32	$q1, $q2, $s3, $s0;
+	pack_s16x2_s32	$s1, $s2, $s3, $s0;
+	pack_s16x4_s32	$d1, $d2, $s3, $s0;
+	pack_s16x8_s32	$q1, $q2, $s3, $s0;
+	pack_s32x2_s32	$d1, $d1, $s1, $s0;
+	pack_s32x4_s32	$q1, $q1, $s1, $s0;
+	pack_s64x2_s64	$q1, $q1, $d1, $s0;
+	pack_s64x2_s64	$q1, $q1, $d1, $s0;
+	pack_u32x2_u32	$d1, $d1, -1, -1;
+	pack_s64x2_s64	$q1, $q1, -1, -1;
+	pack_f32x2_f32	$d1, $d1, $s2, 1;
+	pack_f32x4_f32	$q1, $q1, $s2, 3;
+	pack_u32x2_u32	$d1, $d1, $s1, 2;
+	pack_s64x2_s64	$q1, $q1, $d1, 0;
+	pack_u8x4_u32	$s1, $s2, $s3, 2;
+	pack_f16x2_f16	$s1, $s2, $s3, 1;
+	pack_f16x4_f16	$d1, $d2, $s3, 3;
+	//---------------------------------------
+	unpack_f16_f16x2	$s1, $s2, $s1;
+	unpack_f16_f16x4	$s1, $d2, $s3;
+	unpack_f16_f16x8	$s1, $q2, $s3;
+	unpack_f32_f32x2	$s1, $d2, $s1;
+	unpack_f32_f32x4	$s1, $q2, $s3;
+	unpack_u32_u32x2	$s1, $d1, $s2;
+	unpack_u32_u32x4	$s1, $q1, $s2;
+	unpack_u32_u16x2	$s1, $s1, $s2;
+	unpack_u32_u16x4	$s1, $d1, $s2;
+	unpack_u32_u16x8	$s1, $q1, $s2;
+	unpack_u32_u8x4	$s1, $s1, $s2;
+	unpack_u32_u8x8	$s1, $d1, $s2;
+	unpack_u32_u8x16	$s1, $q1, $s2;
+	unpack_u64_u64x2	$d1, $q1, $s2;
+	unpack_s32_s32x2	$s1, $d1, $s2;
+	unpack_s32_s32x4	$s1, $q1, $s2;
+	unpack_s32_s16x2	$s1, $s1, $s2;
+	unpack_s32_s16x4	$s1, $d1, $s2;
+	unpack_s32_s16x8	$s1, $q1, $s2;
+	unpack_s32_s8x4	$s1, $s1, $s2;
+	unpack_s32_s8x8	$s1, $d1, $s2;
+	unpack_s32_s8x16	$s1, $q1, $s2;
+	unpack_s64_s64x2	$d1, $q1, $s2;
+	unpack_s64_s64x2	$d1, $q1, $s0;
+	unpack_u32_u8x4	$s1, $s2, $s2;
+	unpack_s32_s16x4	$s1, $d1, $s0;
+	unpack_u32_u8x4	$s1, $s2, $s0;
+	unpack_u32_u8x4	$s1, $s2, $s1;
+	unpack_u32_u8x4	$s1, $s2, $s2;
+	unpack_u32_u8x4	$s1, $s2, $s3;
+	unpack_f32_f32x2	$s1, f32x2(0F3f800000,0F40000000), -1;
+	unpack_f32_f32x2	$s1, $d2, 1;
+	unpack_u32_u8x4	$s1, $s2, 2;
+	unpack_s32_s16x4	$s1, $d1, 0;
+	unpack_f16_f16x2	$s1, $s2, 1;
+	unpack_f16_f16x4	$s1, $d2, 3;
+	unpack_f32_f32x4	$s1, $q2, 3;
+	unpack_u32_u32x4	$s1, $q1, 2;
+	unpack_s64_s64x2	$d1, $q1, 0;
+	//---------------------------------------
+	cmov_b32	$s1, $c3, $s1, $s2;
+	cmov_b32	$s1, 1, $s1, $s2;
+	cmov_b64	$d1, $c3, $d1, $d2;
+	cmov_b32	$s1, $c0, $s1, $s2;
+	cmov_u8x4	$s1, $s0, $s1, $s2;
+	cmov_s8x4	$s1, $s0, $s1, $s2;
+	cmov_s8x8	$d1, $d0, $d1, $d2;
+	cmov_s64x2	$q1, $q0, $q1, $q2;
+	copysign_f32	$s3, $s2, $s1;
+	div_ftz_f32	$s3, 0F3f800000, $s1;
+	fma_ftz_f32	$s3, 0F3f800000, $s1, 0F41b80000;
+	max_ftz_f32	$s3, 0F3f800000, $s1;
+	min_ftz_f32	$s3, 0F3f800000, $s1;
+	mul_ftz_f32	$s3, 0F3f800000, $s1;
+	sub_ftz_f32	$s3, 0F3f800000, $s1;
+	fract_ftz_f32	$s0, 0F404ccccd;
+	//---------------------------------------
+	sqrt_ftz_f16	$s0, 0H4266;
+	sqrt_ftz_f32	$s0, 0F404ccccd;
+	sqrt_ftz_f16	$s0, 0H4266;
+	sqrt_ftz_f32	$s0, 0F404ccccd;
+	sqrt_ftz_p_f16x2	$s0, $s0;
+	sqrt_ftz_s_f32x2	$d0, $d0;
+	sqrt_ftz_s_f16x2	$s0, $s0;
+	sqrt_ftz_p_f32x2	$d0, $d0;
+	sqrt_ftz_p_f32x2	$d0, $d0;
+	//---------------------------------------
+	ceil_ftz_f16	$s0, 0H4266;
+	ceil_ftz_f32	$s0, 0F404ccccd;
+	ceil_ftz_f16	$s0, 0H4266;
+	ceil_ftz_p_f16x2	$s0, $s0;
+	ceil_ftz_s_f32x2	$d0, $d0;
+	ceil_ftz_s_f16x2	$s0, $s0;
+	//---------------------------------------
+	floor_ftz_f16	$s0, 0H4266;
+	floor_ftz_f32	$s0, 0F404ccccd;
+	floor_ftz_f16	$s0, 0H4266;
+	floor_ftz_p_f16x2	$s0, $s0;
+	floor_ftz_s_f32x2	$d0, $d0;
+	floor_ftz_s_f16x2	$s0, $s0;
+	//---------------------------------------
+	rint_ftz_f16	$s0, 0H4266;
+	rint_ftz_f32	$s0, 0F404ccccd;
+	rint_ftz_f16	$s0, 0H4266;
+	rint_ftz_p_f16x2	$s0, $s0;
+	rint_ftz_s_f32x2	$d0, $d0;
+	rint_ftz_s_f16x2	$s0, $s0;
+	//---------------------------------------
+	trunc_ftz_f16	$s0, 0H4266;
+	trunc_ftz_f32	$s0, 0F404ccccd;
+	trunc_ftz_f16	$s0, 0H4266;
+	trunc_ftz_p_f16x2	$s0, $s0;
+	trunc_ftz_s_f32x2	$d0, $d0;
+	trunc_ftz_s_f16x2	$s0, $s0;
+	//---------------------------------------
+	class_b1_f16	$c1, $s1, $s0;
+	class_b1_f32	$c1, $s1, 3;
+	class_b1_f32	$c1, 0F3f800000, 3;
+	class_b1_f32	$c1, $s1, $s2;
+	//---------------------------------------
+	ncos_f32	$s1, $s0;
+	nexp2_f32	$s1, $s0;
+	nfma_f32	$s3, 0F3f800000, $s1, 0F41b80000;
+	nlog2_f32	$s1, $s0;
+	nrcp_f32	$s1, $s0;
+	nrsqrt_f32	$s1, $s0;
+	nsin_f32	$s1, $s0;
+	//---------------------------------------
+	bitalign_b32	$s5, $s0, $s1, $s2;
+	bytealign_b32	$s5, $s0, $s1, $s2;
+	lerp_u8x4	$s5, $s0, $s1, $s2;
+	packcvt_u8x4_f32	$s1, $s2, $s3, $s9, $s3;
+	packcvt_u8x4_f32	$s1, 0F3f800000, 0F3f800000, 0F3f800000, 0F3f800000;
+	unpackcvt_f32_u8x4	$s5, $s0, 0;
+	unpackcvt_f32_u8x4	$s5, $s0, 1;
+	unpackcvt_f32_u8x4	$s5, $s0, 2;
+	unpackcvt_f32_u8x4	$s5, $s0, 3;
+	sad_u32_u32	$s5, -1, -1, -1;
+	sad_u32_u32	$s5, $s0, $s1, $s6;
+	sad_u32_u16x2	$s5, $s0, $s1, $s6;
+	sad_u32_u8x4	$s5, $s0, $s1, $s6;
+	//---------------------------------------
+	sadhi_u16x2_u8x4	$s5, $s0, $s1, $s6;
+	sadhi_u16x2_u8x4	$s5, u8x4(1,0,1,0), u8x4(1,2,1,5), u16x2(0x3039,-1);
+	//---------------------------------------
+	segmentp_global_b1_u64	$c1, $d0;
+	segmentp_global_b1_u64	$c1, 64;
+	segmentp_group_nonull_b1_u64	$c1, $d0;
+	segmentp_private_b1_u64	$c1, $d0;
+	//---------------------------------------
+	stof_private_nonull_u64_u32	$d1, $s1;
+	stof_group_nonull_u64_u32	$d1, $s1;
+	stof_private_u64_u32	$d1, 64;
+	stof_group_u64_u32	$d1, 64;
+	ftos_group_nonull_u32_u64	$s1, $d2;
+	ftos_private_nonull_u32_u64	$s1, $d2;
+	ftos_group_u32_u64	$s1, 0;
+	ftos_private_u32_u64	$s1, 0;
+	//---------------------------------------
+	cmp_eq_b1_b1	$c1, $c2, 0;
+	cmp_eq_s32_b1	$s1, $c2, 0;
+	cmp_eq_s32_b1	$s1, 1, 0;
+	cmp_eq_f32_b1	$s1, $c2, 1;
+	cmp_ne_b1_b1	$c1, $c2, 0;
+	cmp_ne_s32_b1	$s1, $c2, 0;
+	cmp_ne_f32_b1	$s1, $c2, 1;
+	cmp_lt_b1_s32	$c1, $s2, 0;
+	cmp_lt_b1_s32	$c1, -1, -1;
+	cmp_lt_s32_u32	$s1, $s2, -1;
+	cmp_lt_s32_u64	$s1, $d2, -1;
+	cmp_lt_ftz_f32_f32	$s1, 0F3f800000, 0F00000000;
+	cmp_gt_b1_s32	$c1, $s2, 0;
+	cmp_gt_s32_u32	$s1, $s2, 0;
+	cmp_eq_f32_b32	$s1, $s2, 0;
+	cmp_equ_ftz_b1_f32	$c1, $s2, 0F00000000;
+	cmp_sltu_ftz_b1_f32	$c1, $s2, 0F00000000;
+	cmp_lt_pp_u8x4_u8x4	$s1, $s2, $s3;
+	cmp_lt_ftz_pp_u16x2_f16x2	$s1, $s2, $s3;
+	cmp_lt_ftz_pp_u16x2_f16x2	$s1, $s2, $s3;
+	cmp_lt_ftz_pp_u32x2_f32x2	$d1, $d2, $d3;
+	cmp_eq_b1_b1	$c1, $c2, $c0;
+	cmp_eq_s32_b1	$s1, $c2, $c0;
+	cmp_eq_u32_b1	$s1, $c2, $c0;
+	cmp_eq_f32_b1	$s1, $c2, $c0;
+	cmp_ne_b1_b1	$c1, $c2, $c0;
+	cmp_ne_s32_b1	$s1, $c2, $c0;
+	cmp_ne_f32_b1	$s1, $c2, $c0;
+	cmp_lt_b1_u32	$c1, $s2, $s0;
+	cmp_lt_u32_s32	$s1, $s2, $s0;
+	cmp_lt_ftz_f32_f32	$s1, $s2, $s0;
+	cmp_eq_b1_b32	$c1, $s2, $s0;
+	cmp_gt_s32_u32	$s1, $s2, $s0;
+	cmp_gt_f32_s32	$s1, $s2, $s0;
+	cmp_equ_ftz_b1_f32	$c1, $s2, $s0;
+	cmp_sltu_ftz_s32_f16	$s1, $s1, $s2;
+	cmp_gt_ftz_f32_f32	$s1, $s2, $s0;
+	cmp_lt_ftz_pp_u16x2_f16x2	$s1, $s2, $s3;
+	cmp_lt_ftz_pp_u16x4_f16x4	$d1, $d2, $d3;
+	cmp_lt_ftz_pp_u32x2_f32x2	$d1, $d2, $d3;
+	cmp_lt_ftz_pp_u16x8_f16x8	$q1, $q2, $q3;
+	cmp_lt_ftz_pp_u32x4_f32x4	$q1, $q2, $q3;
+	cmp_lt_ftz_pp_u16x2_f16x2	$s1, $s2, $s3;
+	cmp_lt_ftz_pp_u16x4_f16x4	$d1, $d2, $d3;
+	cmp_lt_ftz_pp_u32x2_f32x2	$d1, $d2, $d3;
+	cmp_lt_ftz_pp_u16x8_f16x8	$q1, $q2, $q3;
+	cmp_lt_ftz_pp_u32x4_f32x4	$q1, $q2, $q3;
+	cmp_lt_pp_u8x4_s8x4	$s1, $s2, $s3;
+	cmp_lt_pp_u16x2_s16x2	$s1, $s2, $s3;
+	cmp_lt_pp_u8x8_s8x8	$d1, $d2, $d3;
+	cmp_lt_pp_u16x4_s16x4	$d1, $d2, $d3;
+	cmp_lt_pp_u32x2_s32x2	$d1, $d2, $d3;
+	cmp_lt_pp_u8x16_s8x16	$q1, $q2, $q3;
+	cmp_lt_pp_u16x8_s16x8	$q1, $q2, $q3;
+	cmp_lt_pp_u32x4_s32x4	$q1, $q2, $q3;
+	cmp_lt_pp_u64x2_s64x2	$q1, $q2, $q3;
+	//---------------------------------------
+	cvt_ftz_b1_f32	$c1, 0F3f800000;
+	cvt_ftz_u8_f32	$s1, $s2;
+	cvt_ftz_s8_f32	$s1, $s2;
+	cvt_ftz_u16_f32	$s1, $s2;
+	cvt_ftz_s16_f32	$s1, $s2;
+	cvt_ftz_u32_f32	$s1, $s2;
+	cvt_ftz_s32_f32	$s1, $s2;
+	cvt_f32_b1	$s2, $c1;
+	cvt_f32_b1	$s2, 1;
+	cvt_f32_u8	$s2, $s1;
+	cvt_f32_s8	$s2, $s1;
+	cvt_f32_s8	$s2, -4;
+	cvt_f32_u16	$s2, $s1;
+	cvt_f32_s16	$s2, $s1;
+	cvt_f32_s16	$s2, 123;
+	cvt_f32_u32	$s2, -1;
+	cvt_f32_u64	$s2, -1;
+	cvt_f32_s32	$s2, $s1;
+	cvt_f32_s32	$s2, -123;
+	// common cases
+	cvt_ftz_u32_f32	$s1, $s2;
+	cvt_ftz_u32_f32	$s1, $s2;
+	cvt_ftz_u32_f32	$s1, $s2;
+	cvt_ftz_f16_f32	$s1, $s2;
+	cvt_s32_u8	$s1, $s2;
+	cvt_s32_b1	$s1, $c2;
+	cvt_ftz_f32_f16	$s1, $s2;
+	cvt_ftz_s32_f32	$s1, $s2;
+	// f->s/u: int rounding
+	cvt_ftz_s8_f32	$s1, $s2;
+	cvt_ftz_zeroi_sat_s8_f16	$s1, $s2;
+	cvt_ftz_szeroi_s8_f32	$s1, $s2;
+	cvt_ftz_szeroi_sat_s8_f16	$s1, $s2;
+	// s/u->f: fp rounding
+	cvt_f32_s32	$s2, $s1;
+	//---------------------------------------
+	ld_global_s8	$s1, [&x][$d3+4];
+	ld_global_u8	$s1, [&x][$d3+4];
+	ld_global_s16	$s1, [&x][$d3+4];
+	ld_global_u16	$s1, [&x];
+	ld_global_s32	$s1, [&x];
+	ld_global_u32	$s1, [&x];
+	ld_v2_s8	($s1, $s2), [$d3+4];
+	ld_v2_u8	($s1, $s2), [$d3+4];
+	ld_v2_s16	($s1, $s2), [$d3+4];
+	ld_v2_u16	($s1, $s2), [$d3+4];
+	ld_v2_s32	($s1, $s2), [$d3+4];
+	ld_v2_u32	($s1, $s2), [$d3+4];
+	ld_v4_s8	($s1, $s2, $s3, $s4), [$d3+4];
+	ld_v4_u8	($s1, $s2, $s3, $s4), [$d3+4];
+	ld_v4_s16	($s1, $s2, $s3, $s4), [$d3+4];
+	ld_v4_u16	($s1, $s2, $s3, $s4), [$d3+4];
+	ld_v4_s32	($s1, $s2, $s3, $s4), [$d3+4];
+	ld_v4_u32	($s1, $s2, $s3, $s4), [$d3+4];
+	// segment rules
+	ld_global_f32	$s1, [&x][$d0];
+	ld_arg_equiv(2)_f32	$s1, [%arg][$s0];
+	ld_group_u32	$s0, [&g][$s0];
+	// b128
+	ld_global_b128	$q1, [$d0];
+	// width
+	ld_global_width(64)_f16	$s1, [$d0];
+	ld_width(all)_f16	$s1, [$d0];
+	ld_width(WAVESIZE)_f16	$s1, [$d0];
+	ld_global_sig64	$d3, [&signal];
+	ld_global_f32	$s1, [%b32var];
+	// generic cases
+	ld_global_s32	$s1, [&x];
+	ld_global_f16	$s1, [&x];
+	ld_global_f32	$s1, [&x];
+	ld_global_equiv(2)_f32	$s1, [&x];
+	ld_global_equiv(2)_f32	$s1, [$d3+4];
+	ld_private_f32	$s1, [$s3+4];
+	ld_spill_f32	$s1, [%spill][$s3+4];
+	ld_f32	$s1, [$d3+4];
+	ld_f32	$s1, [$d3+4];
+	ld_v3_s32	($s1, $s2, $s6), [$d3+4];
+	ld_v4_f32	($s1, $s7, $s6, $s2), [$d3+4];
+	ld_v2_equiv(9)_f32	($s1, $s2), [$d3+4];
+	ld_equiv(1)_u64	$d3, [$d4+32];
+	ld_v2_equiv(1)_u64	($d1, $d2), [$d0+32];
+	ld_v4_width(8)_f32	($s1, $s3, $s6, $s2), [$d3+4];
+	ld_equiv(1)_u64	$d6, [128];
+	ld_v2_equiv(9)_width(4)_f32	($s1, $s2), [$d3+4];
+	ld_width(64)_u32	$s0, [$d2];
+	ld_equiv(1)_width(1024)_u64	$d6, [128];
+	ld_equiv(1)_width(all)_u64	$d6, [128];
+	ld_v2_u64	($d1, $d2), [$d0+32];
+	ld_v2_equiv(1)_u64	($d1, $d2), [$d0+32];
+	ld_v2_equiv(254)_u64	($d1, $d2), [$d0+32];
+	ld_v2_equiv(255)_u64	($d1, $d2), [$d0+32];
+	ld_u64	$d6, [128];
+	ld_width(2)_u64	$d6, [128];
+	ld_width(4)_u64	$d6, [128];
+	ld_width(8)_u64	$d6, [128];
+	ld_width(16)_u64	$d6, [128];
+	ld_width(32)_u64	$d6, [128];
+	ld_width(64)_u64	$d6, [128];
+	ld_width(128)_u64	$d6, [128];
+	ld_width(256)_u64	$d6, [128];
+	ld_width(512)_u64	$d6, [128];
+	ld_width(1024)_u64	$d6, [128];
+	ld_width(2048)_u64	$d6, [128];
+	ld_width(4096)_u64	$d6, [128];
+	ld_width(8192)_u64	$d6, [128];
+	ld_width(16384)_u64	$d6, [128];
+	ld_width(32768)_u64	$d6, [128];
+	ld_width(65536)_u64	$d6, [128];
+	ld_width(131072)_u64	$d6, [128];
+	ld_width(262144)_u64	$d6, [128];
+	ld_width(524288)_u64	$d6, [128];
+	ld_width(1048576)_u64	$d6, [128];
+	ld_width(2097152)_u64	$d6, [128];
+	ld_width(4194304)_u64	$d6, [128];
+	ld_width(8388608)_u64	$d6, [128];
+	ld_width(16777216)_u64	$d6, [128];
+	ld_width(33554432)_u64	$d6, [128];
+	ld_width(67108864)_u64	$d6, [128];
+	ld_width(134217728)_u64	$d6, [128];
+	ld_width(268435456)_u64	$d6, [128];
+	ld_width(536870912)_u64	$d6, [128];
+	ld_width(1073741824)_u64	$d6, [128];
+	ld_width(2147483648)_u64	$d6, [128];
+	ld_width(WAVESIZE)_u64	$d6, [128];
+	ld_width(all)_u64	$d6, [128];
+	ld_width(2)_u64	$d6, [128];
+	ld_width(16)_u64	$d6, [128];
+	// address size
+	ld_global_f32	$s1, [0];
+	ld_readonly_f32	$s1, [0];
+	ld_group_f32	$s1, [0];
+	ld_private_f32	$s1, [0];
+	ld_kernarg_f32	$s1, [0];
+	ld_arg_f32	$s1, [%arg][4];
+	ld_spill_f32	$s1, [%spill][8];
+	ld_f32	$s1, [0];
+	// tests from spec
+	ld_global_f32	$s1, [&x];
+	ld_global_s32	$s1, [&x];
+	ld_global_f16	$s1, [&x];
+	ld_global_width(WAVESIZE)_f16	$s1, [&x];
+	ld_global_align(2)_const_width(all)_f16	$s1, [&x];
+	ld_arg_equiv(2)_f32	$s1, [%arg];
+	ld_private_f32	$s1, [$s3+4];
+	ld_spill_f32	$s1, [%spill][$s3+4];
+	ld_f32	$s1, [$d3+4];
+	ld_align(16)_f32	$s1, [$d3+4];
+	ld_v3_s32	($s1, $s2, $s6), [$d3+4];
+	ld_v4_f32	($s1, $s2, $s6, $s7), [$d3+4];
+	ld_v2_equiv(9)_f32	($s1, $s2), [$d3+4];
+	ld_group_u32	$s0, [$s2];
+	ld_equiv(1)_u64	$d3, [$d4+32];
+	ld_v2_equiv(1)_u64	($d1, $d2), [$d0+32];
+	ld_v4_width(8)_f32	($s0, $s1, $s6, $s2), [$d3+4];
+	ld_equiv(1)_u64	$d6, [128];
+	ld_v2_equiv(9)_width(4)_f32	($s1, $s2), [$d3+4];
+	ld_width(64)_u32	$s0, [$d2];
+	ld_equiv(1)_width(1024)_u64	$d6, [128];
+	ld_equiv(1)_width(all)_u64	$d6, [128];
+	//---------------------------------------
+	st_global_s8	$s1, [&x];
+	st_global_u8	$s1, [&x];
+	st_global_s16	$s1, [&x];
+	st_global_u16	$s1, [&x];
+	st_global_s32	$s1, [&x];
+	st_global_u32	$s1, [&x];
+	st_v2_s8	($s1, $s2), [$d3+4];
+	st_v2_u8	($s1, $s2), [$d3+4];
+	st_v2_s16	($s1, $s2), [$d3+4];
+	st_v2_u16	($s1, $s2), [$d3+4];
+	st_v2_s32	($s1, $s2), [$d3+4];
+	st_v2_u32	($s1, $s2), [$d3+4];
+	st_v4_s8	($s1, $s2, $s3, $s4), [$d3+4];
+	st_v4_u8	($s1, $s2, $s3, $s4), [$d3+4];
+	st_v4_s16	($s1, $s2, $s3, $s4), [$d3+4];
+	st_v4_u16	($s1, $s2, $s3, $s4), [$d3+4];
+	st_v4_s32	($s1, $s2, $s3, $s4), [$d3+4];
+	st_v4_u32	($s1, $s2, $s3, $s4), [$d3+4];
+	st_v2_s32	(1, 2), [$d3+4];
+	st_v2_u32	(1, $s2), [$d3+4];
+	st_v3_s32	(1, 2, 3), [$d3+4];
+	st_v3_f32	(0F3f800000, 0F40000000, 0F40400000), [$d3+4];
+	st_v3_u32	(1, $s2, $s2), [$d3+4];
+	st_v4_s8	(-24, -48, -72, 96), [$d3+4];
+	st_v4_s8	(-100, -56, 30, -40), [$d3+4];
+	st_v4_u8	($s1, 254, 200, 216), [$d3+4];
+	// segment rules
+	st_global_f32	$s1, [&x][$d0];
+	st_arg_equiv(2)_f32	$s1, [%out][$s0];
+	st_group_u32	$s0, [&g][$s0];
+	// b128
+	st_global_b128	$q1, [$d0];
+	// opaque refs
+	st_global_sig64	$d3, [&signal];
+	st_global_f32	$s1, [&x];
+	st_global_s32	$s1, [&x];
+	st_global_f32	$s1, [&x];
+	st_global_u8	$s1, [&x];
+	st_global_u16	$s1, [&x];
+	st_global_u32	$s1, [&x];
+	st_global_f16	$s1, [&x];
+	st_global_f32	$s1, [&x];
+	st_global_equiv(2)_f32	$s1, [&x];
+	st_equiv(2)_f32	$s1, [$d3+4];
+	st_private_f32	$s1, [$s3+4];
+	st_global_f32	$s1, [$d3+4];
+	st_spill_f32	$s1, [%spill][$s3+4];
+	{
+		arg_u8x8 %argX;
+		st_arg_s64	$d1, [%argX][$s3-8];
+		call	&TestFunc01 () (%argX);
+	}
+	st_f32	$s1, [$d3+4];
+	st_f32	$s1, [$d3+4];
+	st_v4_f32	($s1, $s1, $s6, $s2), [$d3+4];
+	st_v2_equiv(9)_f32	($s1, $s2), [$d3+4];
+	st_v3_s32	($s1, $s1, $s6), [$d3+4];
+	st_group_u32	$s0, [$s2];
+	st_equiv(1)_u64	$d3, [$d4+32];
+	st_equiv(1)_u64	$d3, [$d4+32];
+	st_v2_equiv(1)_u64	($d1, $d2), [$d0+32];
+	st_equiv(1)_u64	$d6, [128];
+	// address size
+	st_global_f32	$s1, [0];
+	st_group_f32	$s1, [0];
+	st_private_f32	$s1, [0];
+	{
+		arg_u8x8 %argX;
+		st_arg_s64	$d1, [%argX];
+		call	&TestFunc01 () (%argX);
+	}
+	st_spill_f32	$s1, [%spill];
+	st_f32	$s1, [0];
+	// align
+	st_align(2)_f32	$s1, [0];
+	st_global_align(4)_f32	$s1, [0];
+	st_global_align(8)_f32	$s1, [0];
+	st_global_align(256)_equiv(1)_f32	$s1, [0];
+	// equiv
+	st_global_align(8)_f32	$s1, [0];
+	st_global_align(8)_f32	$s1, [0];
+	st_align(16)_equiv(1)_f32	$s1, [0];
+	st_align(16)_f32	$s1, [0];
+	// tests from spec
+	st_global_f32	$s1, [&x];
+	st_global_align(4)_f32	$s1, [&x];
+	st_global_u8	$s1, [&x];
+	st_global_u16	$s1, [&x];
+	st_global_u32	$s1, [&x];
+	st_global_u32	200, [&x];
+	st_global_u32	WAVESIZE, [&x];
+	st_global_f16	$s1, [&x];
+	st_private_f32	$s1, [$s3+4];
+	st_global_f32	$s1, [$d3+4];
+	st_spill_f32	$s1, [%spill][$s3+4];
+	st_f32	$s1, [$d3+4];
+	st_align(4)_f32	$s1, [$d3+4];
+	st_v4_f32	($s1, $s1, $s6, $s2), [$d3+4];
+	st_v2_align(8)_equiv(9)_f32	($s1, $s2), [$d3+4];
+	st_v3_s32	($s1, $s1, $s6), [$d3+4];
+	st_group_u32	$s0, [$s2];
+	st_equiv(1)_u64	$d3, [$d4+32];
+	st_align(16)_equiv(1)_u64	$d3, [$d4+32];
+	st_v2_equiv(1)_u64	($d1, $d2), [$d0+32];
+	st_equiv(1)_u64	$d6, [128];
+	//---------------------------------------
+	atomic_and_global_scar_system_b32	$s1, [&x][$d0], 23;
+	atomic_or_global_scar_system_b64	$d1, [&x], 23;
+	atomic_xor_global_scar_system_b64	$d1, [&x], 23;
+	atomic_cas_global_scar_system_b64	$d1, [&x], 23, 12;
+	atomic_exch_global_scar_system_b64	$d1, [&x], 23;
+	atomic_add_global_scar_system_u64	$d1, [&x], 23;
+	atomic_sub_global_scar_system_u64	$d1, [&x], 23;
+	atomic_wrapinc_global_scar_system_u64	$d1, [&x], 23;
+	atomic_wrapdec_global_scar_system_u64	$d1, [&x], 23;
+	atomic_max_global_scar_system_s64	$d1, [&x], 23;
+	atomic_min_global_scar_system_s64	$d1, [&x], 23;
+	atomic_and_global_scar_system_b32	$s1, [&x], 23;
+	atomic_or_global_scar_system_b64	$d1, [&x], 23;
+	atomic_xor_global_scar_system_b64	$d1, [&x], 23;
+	atomic_cas_global_scar_system_b64	$d1, [&x], 23, 12;
+	atomic_exch_global_scar_system_b64	$d1, [&x], 23;
+	atomic_add_global_scar_system_u64	$d1, [&x], 23;
+	atomic_sub_global_scar_system_u64	$d1, [&x], 23;
+	atomic_wrapinc_global_scar_system_u64	$d1, [&x], 23;
+	atomic_wrapdec_global_scar_system_u64	$d1, [&x], 23;
+	atomic_max_global_scar_system_s64	$d1, [&x], 23;
+	atomic_min_global_scar_system_s64	$d1, [&x], 23;
+	atomic_and_global_scar_agent_b32	$s1, [&x][$d0], 23;
+	atomic_or_global_scar_agent_b64	$d1, [&x], 23;
+	atomic_xor_global_scar_agent_b64	$d1, [&x], 23;
+	atomic_cas_global_scar_agent_b64	$d1, [&x], 23, 12;
+	atomic_exch_global_scar_agent_b64	$d1, [&x], 23;
+	atomic_add_global_scar_agent_u64	$d1, [&x], 23;
+	atomic_sub_global_scar_agent_u64	$d1, [&x], 23;
+	atomic_wrapinc_global_scar_agent_u64	$d1, [&x], 23;
+	atomic_wrapdec_global_scar_agent_u64	$d1, [&x], 23;
+	atomic_max_global_scar_agent_s64	$d1, [&x], 23;
+	atomic_min_global_scar_agent_s64	$d1, [&x], 23;
+	atomic_and_global_scar_agent_b32	$s1, [&x], 23;
+	atomic_or_global_scar_agent_b64	$d1, [&x], 23;
+	atomic_xor_global_scar_agent_b64	$d1, [&x], 23;
+	atomic_cas_global_scar_agent_b64	$d1, [&x], 23, 12;
+	atomic_exch_global_scar_agent_b64	$d1, [&x], 23;
+	atomic_add_global_scar_agent_u64	$d1, [&x], 23;
+	atomic_sub_global_scar_agent_u64	$d1, [&x], 23;
+	atomic_wrapinc_global_scar_agent_u64	$d1, [&x], 23;
+	atomic_wrapdec_global_scar_agent_u64	$d1, [&x], 23;
+	atomic_max_global_scar_agent_s64	$d1, [&x], 23;
+	atomic_min_global_scar_agent_s64	$d1, [&x], 23;
+	atomic_and_global_scar_wave_b32	$s1, [&x][$d0], 23;
+	atomic_or_global_scar_wave_b64	$d1, [&x], 23;
+	atomic_xor_global_scar_wave_b64	$d1, [&x], 23;
+	atomic_cas_global_scar_wave_b64	$d1, [&x], 23, 12;
+	atomic_exch_global_scar_wave_b64	$d1, [&x], 23;
+	atomic_add_global_scar_wave_u64	$d1, [&x], 23;
+	atomic_sub_global_scar_wave_u64	$d1, [&x], 23;
+	atomic_wrapinc_global_scar_wave_u64	$d1, [&x], 23;
+	atomic_wrapdec_global_scar_wave_u64	$d1, [&x], 23;
+	atomic_max_global_scar_wave_s64	$d1, [&x], 23;
+	atomic_min_global_scar_wave_s64	$d1, [&x], 23;
+	atomic_and_global_scar_wave_b32	$s1, [&x], 23;
+	atomic_or_global_scar_wave_b64	$d1, [&x], 23;
+	atomic_xor_global_scar_wave_b64	$d1, [&x], 23;
+	atomic_cas_global_scar_wave_b64	$d1, [&x], 23, 12;
+	atomic_exch_global_scar_wave_b64	$d1, [&x], 23;
+	atomic_add_global_scar_wave_u64	$d1, [&x], 23;
+	atomic_sub_global_scar_wave_u64	$d1, [&x], 23;
+	atomic_wrapinc_global_scar_wave_u64	$d1, [&x], 23;
+	atomic_wrapdec_global_scar_wave_u64	$d1, [&x], 23;
+	atomic_max_global_scar_wave_s64	$d1, [&x], 23;
+	atomic_min_global_scar_wave_s64	$d1, [&x], 23;
+	atomic_and_global_scar_wg_b32	$s1, [&x][$d0], 23;
+	atomic_or_global_scar_wg_b64	$d1, [&x], 23;
+	atomic_xor_global_scar_wg_b64	$d1, [&x], 23;
+	atomic_cas_global_scar_wg_b64	$d1, [&x], 23, 12;
+	atomic_exch_global_scar_wg_b64	$d1, [&x], 23;
+	atomic_add_global_scar_wg_u64	$d1, [&x], 23;
+	atomic_sub_global_scar_wg_u64	$d1, [&x], 23;
+	atomic_wrapinc_global_scar_wg_u64	$d1, [&x], 23;
+	atomic_wrapdec_global_scar_wg_u64	$d1, [&x], 23;
+	atomic_max_global_scar_wg_s64	$d1, [&x], 23;
+	atomic_min_global_scar_wg_s64	$d1, [&x], 23;
+	atomic_and_global_scar_wg_b32	$s1, [&x], 23;
+	atomic_or_global_scar_wg_b64	$d1, [&x], 23;
+	atomic_xor_global_scar_wg_b64	$d1, [&x], 23;
+	atomic_cas_global_scar_wg_b64	$d1, [&x], 23, 12;
+	atomic_exch_global_scar_wg_b64	$d1, [&x], 23;
+	atomic_add_global_scar_wg_u64	$d1, [&x], 23;
+	atomic_sub_global_scar_wg_u64	$d1, [&x], 23;
+	atomic_wrapinc_global_scar_wg_u64	$d1, [&x], 23;
+	atomic_wrapdec_global_scar_wg_u64	$d1, [&x], 23;
+	atomic_max_global_scar_wg_s64	$d1, [&x], 23;
+	atomic_min_global_scar_wg_s64	$d1, [&x], 23;
+	atomic_and_group_rlx_wg_b32	$s1, [&g][$s0], 23;
+	atomic_or_group_rlx_wg_b64	$d1, [&g], 23;
+	atomic_xor_group_rlx_wg_b64	$d1, [&g], 23;
+	atomic_cas_group_rlx_wg_b64	$d1, [&g], 23, 9;
+	atomic_exch_group_rlx_wg_b64	$d1, [&g], 23;
+	atomic_add_group_rlx_wg_u64	$d1, [&g], 23;
+	atomic_sub_group_rlx_wg_u64	$d1, [&g], 23;
+	atomic_wrapinc_group_rlx_wg_u64	$d1, [&g], 23;
+	atomic_wrapdec_group_rlx_wg_u64	$d1, [&g], 23;
+	atomic_max_group_rlx_wg_u64	$d1, [&g], 23;
+	atomic_min_group_rlx_wg_u64	$d1, [&g], 23;
+	atomic_and_group_rlx_wg_b32	$s1, [&g], 23;
+	atomic_or_group_rlx_wg_b64	$d1, [&g], 23;
+	atomic_xor_group_rlx_wg_b64	$d1, [&g], 23;
+	atomic_cas_group_rlx_wg_b64	$d1, [&g], 23, 9;
+	atomic_exch_group_rlx_wg_b64	$d1, [&g], 23;
+	atomic_add_group_rlx_wg_u64	$d1, [&g], 23;
+	atomic_sub_group_rlx_wg_u64	$d1, [&g], 23;
+	atomic_wrapinc_group_rlx_wg_u64	$d1, [&g], 23;
+	atomic_wrapdec_group_rlx_wg_u64	$d1, [&g], 23;
+	atomic_max_group_rlx_wg_s64	$d1, [&g], 23;
+	atomic_min_group_rlx_wg_s64	$d1, [&g], 23;
+	atomic_and_group_rlx_wave_b32	$s1, [&g][$s0], 23;
+	atomic_or_group_rlx_wave_b64	$d1, [&g], 23;
+	atomic_xor_group_rlx_wave_b64	$d1, [&g], 23;
+	atomic_cas_group_rlx_wave_b64	$d1, [&g], 23, 9;
+	atomic_exch_group_rlx_wave_b64	$d1, [&g], 23;
+	atomic_add_group_rlx_wave_u64	$d1, [&g], 23;
+	atomic_sub_group_rlx_wave_u64	$d1, [&g], 23;
+	atomic_wrapinc_group_rlx_wave_u64	$d1, [&g], 23;
+	atomic_wrapdec_group_rlx_wave_u64	$d1, [&g], 23;
+	atomic_max_group_rlx_wave_u64	$d1, [&g], 23;
+	atomic_min_group_rlx_wave_u64	$d1, [&g], 23;
+	atomic_and_group_rlx_wave_b32	$s1, [&g], 23;
+	atomic_or_group_rlx_wave_b64	$d1, [&g], 23;
+	atomic_xor_group_rlx_wave_b64	$d1, [&g], 23;
+	atomic_cas_group_rlx_wave_b64	$d1, [&g], 23, 9;
+	atomic_exch_group_rlx_wave_b64	$d1, [&g], 23;
+	atomic_add_group_rlx_wave_u64	$d1, [&g], 23;
+	atomic_sub_group_rlx_wave_u64	$d1, [&g], 23;
+	atomic_wrapinc_group_rlx_wave_u64	$d1, [&g], 23;
+	atomic_wrapdec_group_rlx_wave_u64	$d1, [&g], 23;
+	atomic_max_group_rlx_wave_s64	$d1, [&g], 23;
+	atomic_min_group_rlx_wave_s64	$d1, [&g], 23;
+	atomic_and_rlx_wg_b32	$s1, [$d2], 23;
+	atomic_or_rlx_wg_b64	$d1, [$d4], 23;
+	atomic_xor_rlx_wg_b64	$d1, [$d3], 23;
+	atomic_cas_rlx_wg_b64	$d1, [$d5], 23, 12;
+	atomic_exch_rlx_wg_b64	$d1, [$d4], 23;
+	atomic_add_rlx_wg_u64	$d1, [$d6], 23;
+	atomic_sub_rlx_wg_u64	$d1, [$d3], 23;
+	atomic_wrapinc_rlx_wg_u64	$d1, [$d3], 23;
+	atomic_wrapdec_rlx_wg_u64	$d1, [$d4], 23;
+	atomic_max_rlx_wg_u64	$d1, [$d5], 23;
+	atomic_and_rlx_wg_b32	$s1, [$d2], 23;
+	atomic_or_rlx_wg_b64	$d1, [$d4], 23;
+	atomic_xor_rlx_wg_b64	$d1, [$d3], 23;
+	atomic_cas_rlx_wg_b64	$d1, [$d5], 23, 12;
+	atomic_exch_rlx_wg_b64	$d1, [$d4], 23;
+	atomic_add_rlx_wg_s64	$d1, [$d6], 23;
+	atomic_sub_rlx_wg_s64	$d1, [$d3], 23;
+	atomic_wrapinc_rlx_wg_u64	$d1, [$d3], 23;
+	atomic_wrapdec_rlx_wg_u64	$d1, [$d4], 23;
+	atomic_max_rlx_wg_u64	$d1, [$d5], 23;
+	atomic_min_rlx_wg_u64	$d1, [$d7], 23;
+	atomic_min_rlx_wg_u64	$d1, [$d7], 23;
+	atomic_and_rlx_wave_b32	$s1, [$d2], 23;
+	atomic_or_rlx_wave_b64	$d1, [$d4], 23;
+	atomic_xor_rlx_wave_b64	$d1, [$d3], 23;
+	atomic_cas_rlx_wave_b64	$d1, [$d5], 23, 12;
+	atomic_exch_rlx_wave_b64	$d1, [$d4], 23;
+	atomic_add_rlx_wave_u64	$d1, [$d6], 23;
+	atomic_sub_rlx_wave_u64	$d1, [$d3], 23;
+	atomic_wrapinc_rlx_wave_u64	$d1, [$d3], 23;
+	atomic_wrapdec_rlx_wave_u64	$d1, [$d4], 23;
+	atomic_max_rlx_wave_u64	$d1, [$d5], 23;
+	atomic_and_rlx_wave_b32	$s1, [$d2], 23;
+	atomic_or_rlx_wave_b64	$d1, [$d4], 23;
+	atomic_xor_rlx_wave_b64	$d1, [$d3], 23;
+	atomic_cas_rlx_wave_b64	$d1, [$d5], 23, 12;
+	atomic_exch_rlx_wave_b64	$d1, [$d4], 23;
+	atomic_add_rlx_wave_s64	$d1, [$d6], 23;
+	atomic_sub_rlx_wave_s64	$d1, [$d3], 23;
+	atomic_wrapinc_rlx_wave_u64	$d1, [$d3], 23;
+	atomic_wrapdec_rlx_wave_u64	$d1, [$d4], 23;
+	atomic_max_rlx_wave_u64	$d1, [$d5], 23;
+	atomic_min_rlx_wave_u64	$d1, [$d7], 23;
+	atomic_min_rlx_wave_u64	$d1, [$d7], 23;
+	atomic_and_rlx_agent_b32	$s1, [$d2], 23;
+	atomic_or_rlx_agent_b64	$d1, [$d4], 23;
+	atomic_xor_rlx_agent_b64	$d1, [$d3], 23;
+	atomic_cas_rlx_agent_b64	$d1, [$d5], 23, 12;
+	atomic_exch_rlx_agent_b64	$d1, [$d4], 23;
+	atomic_add_rlx_agent_u64	$d1, [$d6], 23;
+	atomic_sub_rlx_agent_u64	$d1, [$d3], 23;
+	atomic_wrapinc_rlx_agent_u64	$d1, [$d3], 23;
+	atomic_wrapdec_rlx_agent_u64	$d1, [$d4], 23;
+	atomic_max_rlx_agent_u64	$d1, [$d5], 23;
+	atomic_and_rlx_agent_b32	$s1, [$d2], 23;
+	atomic_or_rlx_agent_b64	$d1, [$d4], 23;
+	atomic_xor_rlx_agent_b64	$d1, [$d3], 23;
+	atomic_cas_rlx_agent_b64	$d1, [$d5], 23, 12;
+	atomic_exch_rlx_agent_b64	$d1, [$d4], 23;
+	atomic_add_rlx_agent_s64	$d1, [$d6], 23;
+	atomic_sub_rlx_agent_s64	$d1, [$d3], 23;
+	atomic_wrapinc_rlx_agent_u64	$d1, [$d3], 23;
+	atomic_wrapdec_rlx_agent_u64	$d1, [$d4], 23;
+	atomic_max_rlx_agent_u64	$d1, [$d5], 23;
+	atomic_min_rlx_agent_u64	$d1, [$d7], 23;
+	atomic_min_rlx_agent_u64	$d1, [$d7], 23;
+	atomic_and_rlx_system_b32	$s1, [$d2], 23;
+	atomic_or_rlx_system_b64	$d1, [$d4], 23;
+	atomic_xor_rlx_system_b64	$d1, [$d3], 23;
+	atomic_cas_rlx_system_b64	$d1, [$d5], 23, 12;
+	atomic_exch_rlx_system_b64	$d1, [$d4], 23;
+	atomic_add_rlx_system_u64	$d1, [$d6], 23;
+	atomic_sub_rlx_system_u64	$d1, [$d3], 23;
+	atomic_wrapinc_rlx_system_u64	$d1, [$d3], 23;
+	atomic_wrapdec_rlx_system_u64	$d1, [$d4], 23;
+	atomic_max_rlx_system_u64	$d1, [$d5], 23;
+	atomic_and_rlx_system_b32	$s1, [$d2], 23;
+	atomic_or_rlx_system_b64	$d1, [$d4], 23;
+	atomic_xor_rlx_system_b64	$d1, [$d3], 23;
+	atomic_cas_rlx_system_b64	$d1, [$d5], 23, 12;
+	atomic_exch_rlx_system_b64	$d1, [$d4], 23;
+	atomic_add_rlx_system_s64	$d1, [$d6], 23;
+	atomic_sub_rlx_system_s64	$d1, [$d3], 23;
+	atomic_wrapinc_rlx_system_u64	$d1, [$d3], 23;
+	atomic_wrapdec_rlx_system_u64	$d1, [$d4], 23;
+	atomic_max_rlx_system_u64	$d1, [$d5], 23;
+	atomic_min_rlx_system_u64	$d1, [$d7], 23;
+	atomic_min_rlx_system_u64	$d1, [$d7], 23;
+	atomic_min_global_rlx_wg_u64	$d1, [0], 23;
+	atomic_min_group_rlx_wg_s64	$d1, [0], 23;
+	atomic_min_rlx_wg_u64	$d1, [0], 23;
+	atomic_and_scacq_wg_b32	$s1, [$d2], 23;
+	atomic_xor_scacq_wg_b64	$d1, [$d3], 23;
+	atomic_cas_scacq_wg_b64	$d1, [$d5], 23, 12;
+	atomic_add_scacq_wg_u64	$d1, [$d6], 23;
+	atomic_sub_scacq_wg_u64	$d1, [$d3], 23;
+	atomic_wrapinc_scacq_wg_u64	$d1, [$d3], 23;
+	atomic_wrapdec_scacq_wg_u64	$d1, [$d4], 23;
+	atomic_max_scacq_wg_u64	$d1, [$d5], 23;
+	atomic_exch_scacq_wg_b64	$d1, [$d4], 23;
+	atomic_or_scacq_wg_b64	$d1, [$d4], 23;
+	atomic_and_screl_wg_b32	$s1, [$d2], 23;
+	atomic_xor_screl_wg_b64	$d1, [$d3], 23;
+	atomic_cas_screl_wg_b64	$d1, [$d5], 23, 12;
+	atomic_add_screl_wg_u64	$d1, [$d6], 23;
+	atomic_sub_screl_wg_u64	$d1, [$d3], 23;
+	atomic_wrapinc_screl_wg_u64	$d1, [$d3], 23;
+	atomic_wrapdec_screl_wg_u64	$d1, [$d4], 23;
+	atomic_max_screl_wg_u64	$d1, [$d5], 23;
+	atomic_exch_screl_wg_b64	$d1, [$d4], 23;
+	atomic_or_screl_wg_b64	$d1, [$d4], 23;
+	atomic_and_screl_agent_b32	$s1, [$d2], 23;
+	atomic_xor_screl_agent_b64	$d1, [$d3], 23;
+	atomic_cas_screl_agent_b64	$d1, [$d5], 23, 12;
+	atomic_add_screl_agent_u64	$d1, [$d6], 23;
+	atomic_sub_screl_agent_u64	$d1, [$d3], 23;
+	atomic_wrapinc_screl_agent_u64	$d1, [$d3], 23;
+	atomic_wrapdec_screl_agent_u64	$d1, [$d4], 23;
+	atomic_max_screl_agent_u64	$d1, [$d5], 23;
+	atomic_exch_screl_agent_b64	$d1, [$d4], 23;
+	atomic_or_screl_agent_b64	$d1, [$d4], 23;
+	atomic_ld_global_rlx_system_b32	$s1, [&x];
+	atomic_ld_global_scacq_agent_b32	$s1, [&x];
+	atomic_ld_global_scacq_wave_b32	$s1, [&x];
+	atomic_ld_global_scacq_wg_b32	$s1, [&x];
+	atomic_ld_group_scacq_wave_b32	$s1, [&g];
+	atomic_ld_group_scacq_wg_b32	$s1, [&g];
+	atomic_ld_scacq_system_b64	$d1, [0];
+	atomic_ld_scacq_agent_b64	$d1, [0];
+	atomic_ld_scacq_wave_b64	$d1, [0];
+	atomic_ld_scacq_wg_b64	$d1, [0];
+	atomic_and_scar_system_equiv(8)_b32	$s1, [0], 23;
+	atomic_and_global_scar_system_equiv(1)_b32	$s1, [&x][$d0], 23;
+	atomic_and_group_scar_wave_equiv(255)_b32	$s1, [&g][$s0], 23;
+	atomic_and_group_scar_wg_b32	$s1, [&g][$s0], 23;
+	//---------------------------------------
+	atomicnoret_and_global_scar_system_b32	[&x], 23;
+	atomicnoret_or_global_scar_system_b64	[&x], 23;
+	atomicnoret_xor_global_scar_system_b64	[&x], 23;
+	atomicnoret_add_global_scar_system_u64	[&x], 23;
+	atomicnoret_sub_global_scar_system_u64	[&x], 23;
+	atomicnoret_wrapinc_global_scar_system_u64	[&x], 23;
+	atomicnoret_wrapdec_global_scar_system_u64	[&x], 23;
+	atomicnoret_max_global_scar_system_u64	[&x], 23;
+	atomicnoret_min_global_scar_system_u64	[&x], 23;
+	atomicnoret_and_global_scacq_agent_b32	[&x], 23;
+	atomicnoret_or_global_scacq_agent_b64	[&x], 23;
+	atomicnoret_xor_global_scacq_agent_b64	[&x], 23;
+	atomicnoret_add_global_scacq_agent_u64	[&x], 23;
+	atomicnoret_sub_global_scacq_agent_u64	[&x], 23;
+	atomicnoret_wrapinc_global_scacq_agent_u64	[&x], 23;
+	atomicnoret_wrapdec_global_scacq_agent_u64	[&x], 23;
+	atomicnoret_max_global_scacq_agent_u64	[&x], 23;
+	atomicnoret_min_global_scacq_agent_u64	[&x], 23;
+	atomicnoret_and_global_rlx_wave_b32	[&x], 23;
+	atomicnoret_or_global_rlx_wave_b64	[&x], 23;
+	atomicnoret_xor_global_rlx_wave_b64	[&x], 23;
+	atomicnoret_add_global_rlx_wave_u64	[&x], 23;
+	atomicnoret_sub_global_rlx_wave_u64	[&x], 23;
+	atomicnoret_wrapinc_global_rlx_wave_u64	[&x], 23;
+	atomicnoret_wrapdec_global_rlx_wave_u64	[&x], 23;
+	atomicnoret_max_global_rlx_wave_u64	[&x], 23;
+	atomicnoret_min_global_rlx_wave_u64	[&x], 23;
+	atomicnoret_and_global_screl_wg_b32	[&x], 23;
+	atomicnoret_or_global_screl_wg_b64	[&x], 23;
+	atomicnoret_xor_global_screl_wg_b64	[&x], 23;
+	atomicnoret_add_global_screl_wg_u64	[&x], 23;
+	atomicnoret_sub_global_screl_wg_u64	[&x], 23;
+	atomicnoret_wrapinc_global_screl_wg_u64	[&x], 23;
+	atomicnoret_wrapdec_global_screl_wg_u64	[&x], 23;
+	atomicnoret_max_global_screl_wg_u64	[&x], 23;
+	atomicnoret_min_global_screl_wg_u64	[&x], 23;
+	atomicnoret_and_group_rlx_wave_b32	[&g][4], 23;
+	atomicnoret_or_group_rlx_wave_b64	[&g][$s0], 23;
+	atomicnoret_xor_group_rlx_wave_b64	[&g], 23;
+	atomicnoret_add_group_screl_wave_u64	[&g], 23;
+	atomicnoret_sub_group_screl_wave_u64	[&g], 23;
+	atomicnoret_wrapinc_group_screl_wave_u64	[&g], 23;
+	atomicnoret_wrapdec_group_screl_wave_u64	[&g], 23;
+	atomicnoret_max_group_screl_wave_u64	[&g], 23;
+	atomicnoret_min_group_screl_wave_u64	[&g], 23;
+	atomicnoret_and_group_scacq_wg_b32	[&g][4], 23;
+	atomicnoret_or_group_scacq_wg_b64	[&g][$s0], 23;
+	atomicnoret_xor_group_scacq_wg_b64	[&g], 23;
+	atomicnoret_add_group_scar_wg_u64	[&g], 23;
+	atomicnoret_sub_group_scar_wg_u64	[&g], 23;
+	atomicnoret_wrapinc_group_scar_wg_u64	[&g], 23;
+	atomicnoret_wrapdec_group_scar_wg_u64	[&g], 23;
+	atomicnoret_max_group_scar_wg_u64	[&g], 23;
+	atomicnoret_min_group_scar_wg_u64	[&g], 23;
+	atomicnoret_and_rlx_wg_b32	[0], 23;
+	atomicnoret_or_rlx_wg_b64	[0], 23;
+	atomicnoret_xor_rlx_wg_b64	[0], 23;
+	atomicnoret_add_rlx_wg_u64	[0], 23;
+	atomicnoret_sub_rlx_wg_u64	[0], 23;
+	atomicnoret_wrapinc_rlx_wg_u64	[0], 23;
+	atomicnoret_wrapdec_rlx_wg_u64	[0], 23;
+	atomicnoret_max_rlx_wg_u64	[0], 23;
+	atomicnoret_min_rlx_wg_u64	[0], 23;
+	atomicnoret_and_screl_wave_b32	[0], 23;
+	atomicnoret_or_screl_wave_b64	[0], 23;
+	atomicnoret_xor_screl_wave_b64	[0], 23;
+	atomicnoret_add_screl_wave_u64	[0], 23;
+	atomicnoret_sub_screl_wave_u64	[0], 23;
+	atomicnoret_wrapinc_screl_wave_u64	[0], 23;
+	atomicnoret_wrapdec_screl_wave_u64	[0], 23;
+	atomicnoret_max_screl_wave_u64	[0], 23;
+	atomicnoret_min_screl_wave_u64	[0], 23;
+	atomicnoret_and_scar_agent_b32	[0], 23;
+	atomicnoret_or_scar_agent_b64	[0], 23;
+	atomicnoret_xor_scar_agent_b64	[0], 23;
+	atomicnoret_add_scar_agent_u64	[0], 23;
+	atomicnoret_sub_scar_agent_u64	[0], 23;
+	atomicnoret_wrapinc_scar_agent_u64	[0], 23;
+	atomicnoret_wrapdec_scar_agent_u64	[0], 23;
+	atomicnoret_max_scar_agent_u64	[0], 23;
+	atomicnoret_min_scar_agent_u64	[0], 23;
+	atomicnoret_and_scacq_system_b32	[0], 23;
+	atomicnoret_or_scacq_system_b64	[0], 23;
+	atomicnoret_xor_scacq_system_b64	[0], 23;
+	atomicnoret_add_scacq_system_u64	[0], 23;
+	atomicnoret_sub_scacq_system_u64	[0], 23;
+	atomicnoret_wrapinc_scacq_system_u64	[0], 23;
+	atomicnoret_wrapdec_scacq_system_u64	[0], 23;
+	atomicnoret_max_scacq_system_u64	[0], 23;
+	atomicnoret_min_scacq_system_u64	[0], 23;
+	atomicnoret_st_global_rlx_wave_b32	[&x], $s1;
+	atomicnoret_st_global_screl_wg_b32	[&x], $s1;
+	atomicnoret_st_global_rlx_system_b32	[&x], $s1;
+	atomicnoret_st_global_screl_agent_b32	[&x], $s1;
+	atomicnoret_st_global_screl_agent_b32	[&x], $s1;
+	atomicnoret_st_group_rlx_wave_b32	[&g], $s1;
+	atomicnoret_st_group_rlx_wg_b32	[&g], $s1;
+	atomicnoret_st_rlx_wave_b64	[0], $d1;
+	atomicnoret_st_screl_wg_b64	[0], $d1;
+	atomicnoret_st_rlx_system_b64	[0], $d1;
+	atomicnoret_st_screl_agent_b64	[0], $d1;
+	atomicnoret_and_scar_system_b32	[0], 23;
+	atomicnoret_and_global_scar_system_equiv(1)_b32	[&x], 23;
+	atomicnoret_and_group_scar_wg_equiv(255)_b32	[&g], 23;
+	//---------------------------------------
+	// signal + rlx
+	signal_ld_rlx_b64_sig64	$d2, $d0;
+	signal_and_rlx_b64_sig64	$d2, $d0, $d3;
+	signal_or_rlx_b64_sig64	$d2, $d0, $d3;
+	signal_xor_rlx_b64_sig64	$d2, $d0, $d3;
+	signal_cas_rlx_b64_sig64	$d2, $d0, $d3, $d3;
+	signal_exch_rlx_b64_sig64	$d2, $d0, $d3;
+	signal_add_rlx_u64_sig64	$d2, $d0, $d3;
+	signal_sub_rlx_u64_sig64	$d2, $d0, $d3;
+	signal_wait_eq_rlx_s64_sig64	$d2, $d0, $d3;
+	signal_wait_ne_rlx_s64_sig64	$d2, $d0, $d3;
+	signal_wait_lt_rlx_s64_sig64	$d2, $d0, $d3;
+	signal_wait_gte_rlx_s64_sig64	$d2, $d0, $d3;
+	signal_waittimeout_eq_rlx_s64_sig64	$d2, $d0, $d3, $d4;
+	signal_waittimeout_ne_rlx_s64_sig64	$d2, $d0, $d3, $d5;
+	signal_waittimeout_lt_rlx_s64_sig64	$d2, $d0, $d3, $d4;
+	signal_waittimeout_gte_rlx_s64_sig64	$d2, $d0, $d3, $d5;
+	signalnoret_st_rlx_b64_sig64	$d0, $d2;
+	signalnoret_and_rlx_b64_sig64	$d0, $d3;
+	signalnoret_or_rlx_b64_sig64	$d0, $d3;
+	signalnoret_xor_rlx_b64_sig64	$d0, $d3;
+	signalnoret_add_rlx_s64_sig64	$d0, $d3;
+	signalnoret_sub_rlx_u64_sig64	$d0, $d3;
+	//---------------------------------------
+	// signal + acq
+	signal_ld_scacq_b64_sig64	$d2, $d0;
+	signal_and_scacq_b64_sig64	$d2, $d0, WAVESIZE;
+	signal_or_scacq_b64_sig64	$d2, $d0, WAVESIZE;
+	signal_xor_scacq_b64_sig64	$d2, $d0, WAVESIZE;
+	signal_cas_scacq_b64_sig64	$d2, $d0, WAVESIZE, 12;
+	signal_exch_scacq_b64_sig64	$d2, $d0, WAVESIZE;
+	signal_add_scacq_u64_sig64	$d2, $d0, WAVESIZE;
+	signal_sub_scacq_s64_sig64	$d2, $d0, WAVESIZE;
+	signal_wait_eq_scacq_s64_sig64	$d2, $d0, WAVESIZE;
+	signal_wait_ne_scacq_s64_sig64	$d2, $d0, $d3;
+	signal_wait_lt_scacq_s64_sig64	$d2, $d0, WAVESIZE;
+	signal_wait_gte_scacq_s64_sig64	$d2, $d0, $d3;
+	signal_waittimeout_eq_scacq_s64_sig64	$d2, $d0, WAVESIZE, $d4;
+	signal_waittimeout_ne_scacq_s64_sig64	$d2, $d0, $d3, 1000;
+	signal_waittimeout_lt_scacq_s64_sig64	$d2, $d0, WAVESIZE, $d4;
+	signal_waittimeout_gte_scacq_s64_sig64	$d2, $d0, $d3, 1000;
+	signalnoret_and_scacq_b64_sig64	$d0, WAVESIZE;
+	signalnoret_or_scacq_b64_sig64	$d0, WAVESIZE;
+	signalnoret_xor_scacq_b64_sig64	$d0, WAVESIZE;
+	signalnoret_add_scacq_u64_sig64	$d0, WAVESIZE;
+	signalnoret_sub_scacq_u64_sig64	$d0, WAVESIZE;
+	//---------------------------------------
+	// signal + rel
+	signal_and_screl_b64_sig64	$d2, $d0, 23;
+	signal_or_screl_b64_sig64	$d2, $d0, 23;
+	signal_xor_screl_b64_sig64	$d2, $d0, 23;
+	signal_cas_screl_b64_sig64	$d2, $d0, 23, 12;
+	signal_exch_screl_b64_sig64	$d2, $d0, 23;
+	signal_add_screl_s64_sig64	$d2, $d0, 23;
+	signal_sub_screl_s64_sig64	$d2, $d0, 23;
+	signalnoret_st_screl_b64_sig64	$d0, $d2;
+	signalnoret_and_screl_b64_sig64	$d0, 23;
+	signalnoret_or_screl_b64_sig64	$d0, 23;
+	signalnoret_xor_screl_b64_sig64	$d0, 23;
+	signalnoret_add_screl_u64_sig64	$d0, 23;
+	signalnoret_sub_screl_u64_sig64	$d0, 23;
+	//---------------------------------------
+	// signal + ar
+	//signal_ld_scar_b64_sig64 $d2, $d0;
+	signal_and_scar_b64_sig64	$d2, $d0, 23;
+	signal_or_scar_b64_sig64	$d2, $d0, 23;
+	signal_xor_scar_b64_sig64	$d2, $d0, 23;
+	signal_cas_scar_b64_sig64	$d2, $d0, 23, WAVESIZE;
+	signal_exch_scar_b64_sig64	$d2, $d0, 23;
+	signal_add_scar_s64_sig64	$d2, $d0, 23;
+	signal_sub_scar_s64_sig64	$d2, $d0, 23;
+	signalnoret_and_scar_b64_sig64	$d0, 23;
+	signalnoret_or_scar_b64_sig64	$d0, 23;
+	signalnoret_xor_scar_b64_sig64	$d0, 23;
+	signalnoret_add_scar_s64_sig64	$d0, 23;
+	signalnoret_sub_scar_u64_sig64	$d0, 23;
+	//---------------------------------------
+	memfence_scacq_system;
+	memfence_scacq_agent;
+	memfence_scacq_wg;
+	memfence_scacq_wave;
+	memfence_screl_system;
+	memfence_screl_agent;
+	memfence_screl_wg;
+	memfence_screl_wave;
+	memfence_scar_system;
+	memfence_scar_agent;
+	memfence_scar_wg;
+	memfence_scar_wave;
+	//---------------------------------------
+	cbr_b1	$c0, @label3;
+	br	@label2;
+
+@label1:
+
+@label2:
+
+@label3:
+	//---------------------------------------
+	activelanecount_u32_b1	$s1, $c2;
+	activelanecount_width(1024)_u32_b1	$s1, 0;
+	activelanecount_width(WAVESIZE)_u32_b1	$s1, WAVESIZE;
+	activelanecount_u32_b1	$s1, $c2;
+	activelanecount_u32_b1	$s1, 1;
+	activelanecount_u32_b1	$s1, WAVESIZE;
+	activelanemask_v4_b64_b1	($d1, $d2, $d3, $d4), $c0;
+	activelanemask_v4_width(1024)_b64_b1	($d1, $d2, $d3, $d4), 1;
+	activelanemask_v4_width(WAVESIZE)_b64_b1	($d1, $d2, $d3, $d4), 0;
+	activelanemask_v4_b64_b1	($d1, $d2, $d3, $d4), WAVESIZE;
+	activelanemask_v4_b64_b1	($d1, $d2, $d3, $d4), $c0;
+	activelanemask_v4_b64_b1	($d1, $d2, $d3, $d4), 1;
+	activelanemask_v4_b64_b1	($d1, $d2, $d3, $d4), WAVESIZE;
+	activelaneid_u32	$s1;
+	activelaneid_width(WAVESIZE)_u32	$s1;
+	activelanepermute_b1	$c1, $c2, $s2, $c3, $c1;
+	activelanepermute_b1	$c1, 0, 121, 0, 1;
+	activelanepermute_b32	$s1, $s2, $s2, $s3, $c1;
+	activelanepermute_b32	$s1, 222, 0x14d, 0x1bc, 0;
+	activelanepermute_width(WAVESIZE)_b64	$d1, $d2, $s2, $d3, $c1;
+	activelanepermute_width(4)_b64	$d1, $d2, 0x309, 0x378, 0;
+	activelanepermute_width(all)_b128	$q1, $q2, $s2, $q3, $c1;
+	//---------------------------------------
+	alloca_u32	$s1, $s0;
+	alloca_u32	$s1, 24;
+	alloca_u32	$s1, WAVESIZE;
+	alloca_align(2)_u32	$s1, 0;
+	alloca_align(8)_u32	$s1, 1;
+	alloca_align(128)_u32	$s1, -1;
+	alloca_align(256)_u32	$s1, -1;
+	//---------------------------------------
+	nullptr_group_u32	$s0;
+	nullptr_u64	$d1;
+	//---------------------------------------
+	addqueuewriteindex_global_rlx_u64	$d1, [&x], $d0;
+	addqueuewriteindex_global_scacq_u64	$d1, [$d2], 0;
+	addqueuewriteindex_global_screl_u64	$d1, [0], -1;
+	addqueuewriteindex_scar_u64	$d1, [$d2], WAVESIZE;
+	casqueuewriteindex_global_rlx_u64	$d1, [&x], $d3, $d4;
+	casqueuewriteindex_global_scacq_u64	$d1, [$d2], -1, -1;
+	casqueuewriteindex_global_screl_u64	$d1, [0], WAVESIZE, $d4;
+	casqueuewriteindex_scar_u64	$d1, [$d2], $d3, WAVESIZE;
+	ldqueuereadindex_global_scacq_u64	$d5, [&x];
+	ldqueuereadindex_global_scacq_u64	$d5, [0];
+	ldqueuereadindex_scacq_u64	$d5, [$d2];
+	ldqueuewriteindex_global_rlx_u64	$d3, [&x];
+	ldqueuewriteindex_global_scacq_u64	$d3, [0];
+	ldqueuewriteindex_rlx_u64	$d3, [$d2];
+	stqueuewriteindex_global_rlx_u64	[&x], $d4;
+	stqueuewriteindex_global_screl_u64	[0], 0;
+	stqueuewriteindex_screl_u64	[$d2], WAVESIZE;
+	stqueuereadindex_rlx_u64	[$d0], $d0;
+	stqueuereadindex_rlx_u64	[0], $d0;
+	stqueuereadindex_screl_u64	[$d0], -1;
+	stqueuereadindex_screl_u64	[$d0], WAVESIZE;
+	stqueuereadindex_screl_u64	[$d0], $d0;
+	stqueuereadindex_global_rlx_u64	[&x], $d0;
+	stqueuereadindex_global_rlx_u64	[$d0], $d0;
+	stqueuereadindex_global_rlx_u64	[0], $d0;
+	stqueuereadindex_global_rlx_u64	[&x], -1;
+	stqueuereadindex_global_rlx_u64	[&x], WAVESIZE;
+	stqueuereadindex_global_screl_u64	[&x], $d0;
+	//---------------------------------------
+	debugtrap_u32	$s0;
+	debugtrap_u32	1;
+	debugtrap_u32	WAVESIZE;
+	//---------------------------------------
+	clock_u64	$d6;
+	cuid_u32	$s7;
+	maxcuid_u32	$s6;
+	waveid_u32	$s3;
+	maxwaveid_u32	$s4;
+	laneid_u32	$s1;
+	cleardetectexcept_u32	1;
+	getdetectexcept_u32	$s1;
+	setdetectexcept_u32	1;
+	nop;
+	gridsize_u32	$s2, 2;
+	gridsize_u64	$d2, 2;
+	gridgroups_u32	$s2, 2;
+	workgroupsize_u32	$s1, 0;
+	currentworkgroupsize_u32	$s1, 0;
+	currentworkgroupsize_u32	$s1, 1;
+	currentworkgroupsize_u32	$s1, 2;
+	workitemabsid_u32	$s1, 0;
+	workitemabsid_u64	$d1, 0;
+	workgroupid_u32	$s1, 0;
+	workgroupid_u32	$s1, 1;
+	workgroupid_u32	$s1, 2;
+	workitemid_u32	$s1, 0;
+	workitemid_u32	$s1, 1;
+	workitemid_u32	$s1, 2;
+	workitemflatabsid_u32	$s1;
+	workitemflatabsid_u64	$d1;
+	packetcompletionsig_sig64	$d6;
+};
+fbarrier &gfb;
+
+function &Test7()()
+{
+	fbarrier %fb0;
+	fbarrier %fb;
+	//---------------------------------------
+	barrier;
+	barrier_width(64);
+	barrier;
+	barrier_width(WAVESIZE);
+	wavebarrier;
+	//---------------------------------------
+	initfbar	%fb0;
+	joinfbar	%fb0;
+	waitfbar	%fb0;
+	leavefbar	%fb0;
+	releasefbar	%fb0;
+	ldf_u32	$s0, %fb0;
+	joinfbar	$s0;
+	initfbar	&gfb;
+	joinfbar	&gfb;
+	waitfbar	&gfb;
+	leavefbar	&gfb;
+	releasefbar	&gfb;
+	ldf_u32	$s0, &gfb;
+	initfbar	%fb;
+	joinfbar	%fb;
+	waitfbar	%fb;
+	leavefbar	%fb;
+	releasefbar	%fb;
+	ldf_u32	$s0, %fb;
+	initfbar	$s0;
+	joinfbar	$s0;
+	waitfbar	$s0;
+	leavefbar	$s0;
+	releasefbar	$s0;
+	arrivefbar	$s0;
+	joinfbar_width(1)	%fb;
+	leavefbar_width(1)	%fb;
+	waitfbar_width(1)	%fb;
+	arrivefbar_width(1)	%fb;
+	//---------------------------------------
+	waitfbar_width(1)	%fb;
+	//---------------------------------------
+	arrivefbar_width(1)	%fb;
+};

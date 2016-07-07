@@ -1,0 +1,19 @@
+// Names may have "_" as the second symbol
+//
+module &moduleName:1:0:$full:$large:$default;
+extension "IMAGE";
+
+kernel &_(kernarg_samp %x)
+{
+	ret;
+};
+
+kernel &_a(kernarg_samp %x)
+{
+	ret;
+};
+
+kernel &_0(kernarg_samp %x)
+{
+	ret;
+};

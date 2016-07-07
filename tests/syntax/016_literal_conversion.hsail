@@ -1,0 +1,288 @@
+module &moduleName:1:0:$full:$large:$near;
+extension "IMAGE";
+///======================================================================================================
+/// PACKED CONSTANTS
+///======================================================================================================
+
+function &packed_positive()()
+{
+	// According to rules for 's' and 'u' types defined in "Packed Constants", 
+	// "If a value is too large to fit in the format, the lower-order bits are used."
+	// Consequently, the following code should be compilable:
+	add_pp_s8x4	$s1, $s2, s8x4(-1,0,0,0);
+	add_pp_s8x4	$s1, $s2, s8x4(-10,-128,-1,10);
+	// NB: CHECK TRUNCATION FOR EACH PACKED TYPE (I.E. ADD TESTS)
+	add_pp_s8x4	$s1, $s2, s8x4(-16,0,0,16);
+	add_pp_s8x4	$s1, $s2, s8x4(-8,0,0,8);
+	add_pp_u8x4	$s1, $s2, u8x4(240,0,0,16);
+	add_pp_s8x4	$s1, $s2, s8x4(-8,0,0,8);
+	// According to spec, constant values used to form packed integer literals
+	// may be specified as decimal/hex/octal numbers with an optional prefix '+' or '-'.
+	// However, current implementation allows prefix '+' or '-' with decimal literals only.
+	// The following code fails to compile:
+	add_pp_s8x4	$s1, $s2, s8x4(-16,16,16,16);
+	add_pp_s8x4	$s1, $s2, s8x4(-8,8,8,8);
+	add_pp_u8x4	$s1, $s2, u8x4(246,128,255,10);
+	add_pp_f32x2	$d1, $d2, f32x2(0Fc1200000,0F3dcccccd);
+	add_pp_f32x2	$d1, $d2, f32x2(0F412028f6,0F41200000);
+	add_pp_f32x2	$d1, $d2, f32x2(0Fbf800000,0Fc2c80000);
+	add_pp_f32x2	$d1, $d2, f32x2(0F00000000,0F80000000);
+	add_pp_f32x2	$d1, $d2, f32x2(0F80000000,0F00000000);
+	add_pp_f32x2	$d1, $d2, f32x2(0Fffffffff,0F12345678);
+	add_pp_f32x2	$d1, $d2, f32x2(0F432aaa00,0F432aaa00);
+	add_pp_f32x2	$d1, $d2, f32x2(0F432aaa00,0Fc32aaa00);
+	ret;
+};
+///======================================================================================================
+/// CONVERSIONS OF CONSTANTS
+///======================================================================================================
+
+function &conv_positive()()
+{
+	// NB: ADD TESTS THAT CHECK CONVERSION RESULT
+	// NB: ADD TESTS THAT COVER MORE TYPES
+	// packed
+	//
+	add_pp_u32x2	$d1, $d2, u32x2(0,0);
+	add_pp_f32x2	$d1, $d2, f32x2(0F00000000,0F00000000);
+	// float
+	//
+	add_f32	$s1, $s2, 0F00000000;
+	// int
+	//
+	add_s32	$s1, $s2, 0;
+	// 
+	add_s32	$s1, $s2, -16;
+	add_s32	$s1, $s2, -8;
+	add_s32	$s1, $s2, 16;
+	add_s32	$s1, $s2, 8;
+	add_pp_f32x2	$d1, $d2, f32x2(0Fffffffff,0F7fffffff);
+	// NB: should be truncated
+	add_s32	$s1, $s2, -1;
+	// bit
+	mov_b128	$q1, u8x16(0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0);
+	mov_b128	$q1, u8x16(0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0);
+	mov_b64	$d1, 0;
+	mov_b32	$s1, 0;
+	mov_b64	$d1, 0;
+	mov_b64	$d1, 0;
+	// should be truncated
+	mov_b32	$s1, -1;
+	// b1
+	// The exception is the b1 type used in controls, which is interpreted as in C and C++: 
+	// a zero 64-bit value is treated as 0 and a non-zero 64-bit value is treated as 1
+	//
+	// *** VALIDATE OUTPUT ***
+	//
+	// 0 => 0
+	mov_b1	$c1, 0;
+	//
+	// 1 => 1
+	mov_b1	$c1, 1;
+	//
+	// 2 => 1
+	mov_b1	$c1, 1;
+	//
+	// 0x1000000000000000 => 1    
+	mov_b1	$c1, 1;
+	//
+	// 2, 4 => 1
+	and_b1	$c1, 1, 1;
+};
+///======================================================================================================
+/// CONSTANTS IN DIRECTIVES AND MODIFIERS
+///======================================================================================================
+readonly_roimg &ro_img21 = roimg(geometry = 3d, width = 18446744069414584325, height = 4, depth = 6, channel_type = unorm_int_101010, channel_order = r);
+readonly_roimg &ro_img22 = roimg(geometry = 3d, width = 5, height = 18446744069414584324, depth = 6, channel_type = unorm_int_101010, channel_order = r);
+readonly_roimg &ro_img23 = roimg(geometry = 3d, width = 5, height = 4, depth = 18446744069414584326, channel_type = unorm_int_101010, channel_order = r);
+readonly_roimg &ro_img25 = roimg(geometry = 2da, width = 5, height = 4, array = 18446744069414584324, channel_type = unorm_int_101010, channel_order = rgbx);
+
+function &modifiers_positive()()
+{
+	// version
+	// The code below should follow general truncation rules and result in valid (!) numbers.
+	// Only _align, _equiv and _width pass this check; other fail with "value is out of bounds" message
+	align(16) global_s32 %x01;
+	global_u8 %x02[18446744069414584324];
+	ld_group_align(16)_f64	$d1, [0];
+	ld_global_equiv(255)_f64	$d1, [0];
+	ld_global_width(4)_f64	$d1, [0];
+	loc 4294967295 4294967295 "";
+	ld_group_align(16)_f64	$d1, [4294967295];
+	ld_group_align(16)_f64	$d1, [4294967295];
+	// hex constants
+	ld_group_align(8)_f64	$d1, [0];
+	ld_global_equiv(4)_f64	$d1, [0];
+	ld_global_width(4)_f64	$d1, [0];
+	ld_global_width(2)_f64	$d1, [4];
+	// oct constants
+	ld_group_align(8)_f64	$d1, [0];
+	ld_global_equiv(4)_f64	$d1, [0];
+	ld_global_width(4)_f64	$d1, [0];
+	ld_global_width(2)_f64	$d1, [4];
+};
+
+function &modifiers_positive_1()()
+{
+	align(8) global_s32 %x010;
+	align(8) global_s32 %x020;
+	global_u32 %a020[3];
+	loc 2 "";
+	loc 2 "";
+};
+readonly_roimg &ro_img01 = roimg(geometry = 3d, width = 5, height = 4, depth = 6, channel_type = unorm_int_101010, channel_order = r);
+readonly_roimg &ro_img02 = roimg(geometry = 3d, width = 5, height = 4, depth = 6, channel_type = unorm_int_101010, channel_order = r);
+readonly_roimg &ro_img03 = roimg(geometry = 3d, width = 5, height = 4, depth = 6, channel_type = unorm_int_101010, channel_order = r);
+readonly_roimg &ro_img05 = roimg(geometry = 2da, width = 5, height = 4, array = 4, channel_type = unorm_int_101010, channel_order = rgbx);
+readonly_roimg &ro_img11 = roimg(geometry = 3d, width = 5, height = 4, depth = 6, channel_type = unorm_int_101010, channel_order = r);
+readonly_roimg &ro_img12 = roimg(geometry = 3d, width = 5, height = 4, depth = 6, channel_type = unorm_int_101010, channel_order = r);
+readonly_roimg &ro_img13 = roimg(geometry = 3d, width = 5, height = 4, depth = 6, channel_type = unorm_int_101010, channel_order = r);
+readonly_roimg &ro_img15 = roimg(geometry = 2da, width = 5, height = 4, array = 4, channel_type = unorm_int_101010, channel_order = rgbx);
+///======================================================================================================
+/// CONSTANTS IN INITIALIZERS
+///======================================================================================================
+
+function &init_positive()()
+{
+	// int
+	//
+	global_u32 %xi1 = 255;
+	global_u32 %xi2 = 0x1ff;
+	global_u64 %xi3 = -1;
+	global_s64 %xi4 = -1;
+	global_s64 %xi9[4] = s64[](0, 255, 0x1ff, -1);
+	// NB: Should truncate 64-bit to destination, but currently fails
+	global_u32 %xu01 = -1;
+	global_s8 %xs02 = -1;
+	// bit
+	//
+	global_b8 %xb00 = 255;
+	global_b32 %xb01 = 255;
+	global_b32 %xb02 = 0x1ff;
+	global_b64 %xb03 = -1;
+	global_b64 %xb04 = -1;
+	global_b16 %xb11 = 0;
+	global_b32 %xb12 = 0;
+	global_b64 %xb13 = 0;
+	global_b16 %xba1 = 0;
+	global_b16 %xba2 = -32768;
+	global_b32 %xba3 = 0;
+	global_b32 %xba4 = -2147483648;
+	global_b64 %xba5 = 0;
+	global_b64 %xba6 = -9223372036854775808;
+	global_b16 %xbb1 = 0x4a00;
+	global_b16 %xbb2 = 0xca00;
+	global_b32 %xbb3 = 0x41400000;
+	global_b32 %xbb4 = 0xc1400000;
+	global_b64 %xbb5 = 0x4028000000000000;
+	global_b64 %xbb6 = 0xc028000000000000;
+	global_b32 %xb21 = 0;
+	global_b32 %xb22 = 0;
+	global_b64 %xb23 = 0;
+	global_b128 %xb24 = u8x16(0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0);
+	global_b64 %xbx3 = 0;
+	// DOUBLE FLOAT SUFFIX
+	global_b64 %xbx4 = 0;
+	// NB: Should truncate 64-bit to destination
+	global_b32 %xbb01 = -1;
+	global_b8 %xbb02 = 255;
+	// Should be compiled ok
+	global_b8 %xba001 = 255;
+	global_b8 %xbb002 = 1;
+	global_b32 %xbc013 = 63;
+	global_b32 %xbc014 = -63;
+	global_b16 %xbcb15 = 0x1234;
+	global_b16 %xbcb26 = 0x9234;
+	global_b32 %xbcb37 = 0x12345678;
+	global_b32 %xbcb48 = 0x92345678;
+	global_b64 %xbcb59 = 0x1234567812345678;
+	global_b64 %xbcb60 = 0x9234567812345678;
+	// float
+	global_b16 %xfa1 = 0;
+	global_b32 %xfa3 = 0;
+	global_b64 %xfa6 = 0;
+	// should be compiled ok
+	global_f64 %xbb50 = 0D4028000000000000;
+	global_f64 %xbb60 = 0D4028000000000000;
+	global_f64 %xbb90[2] = f64[](0D4028000000000000, 0D4028000000000000);
+	// packed
+	global_s32x2 %pp06[2] = s32x2[](s32x2(-1,-1), s32x2(0,0));
+	global_s8x4 %pp21 = s8x4(0,0,0,0);
+	global_u8x8 %pp22 = u8x8(0,0,0,0,0,0,0,0);
+	global_s16x4 %pp23 = s16x4(0,0,0,0);
+	global_s32x2 %pp25 = s32x2(0,0);
+};
+///======================================================================================================
+/// CONSTANTS IN CONTROL DIRECTIVES
+///======================================================================================================
+
+function &Control_positive_dec()()
+{
+	enablebreakexceptions 7;
+	enabledetectexceptions 7;
+	maxdynamicgroupsize 1;
+	maxflatgridsize 1;
+	// Must be an immediate value greater than 0, or WAVESIZE.
+	maxflatworkgroupsize 1;
+	// Must be an immediate value greater than 0, or WAVESIZE.
+	requireddim 3;
+	// Must be an immediate value with the value 1, 2, or 3.
+	requiredgridsize 7, 8, 9;
+	// Must be an immediate value greater than 0, or WAVESIZE.
+	requiredworkgroupsize 2, 2, 2;
+	// Must be an immediate value greater than 0, or WAVESIZE.
+};
+
+function &Control_positive_hex()()
+{
+	enablebreakexceptions 7;
+	enabledetectexceptions 7;
+	maxdynamicgroupsize 1;
+	maxflatgridsize 1;
+	// Must be an immediate value greater than 0, or WAVESIZE.
+	maxflatworkgroupsize 1;
+	// Must be an immediate value greater than 0, or WAVESIZE.
+	requireddim 3;
+	// Must be an immediate value with the value 1, 2, or 3.
+	requiredgridsize 7, 8, 9;
+	// Must be an immediate value greater than 0, or WAVESIZE.
+	requiredworkgroupsize 2, 2, 2;
+	// Must be an immediate value greater than 0, or WAVESIZE.
+};
+
+function &Control_positive_hex_max()()
+{
+	enablebreakexceptions 0xffffffff;
+	enabledetectexceptions 0xffffffff;
+	maxdynamicgroupsize 0xffffffff;
+	maxflatgridsize 0xffffffffffffffff;
+	// Must be an immediate value greater than 0, or WAVESIZE.
+	maxflatworkgroupsize 0xffffffff;
+	// Must be an immediate value greater than 0, or WAVESIZE.
+	requireddim 3;
+	// Must be an immediate value with the value 1, 2, or 3.
+	requiredgridsize 0xffffffffffffffff, 0xffffffffffffffff, 0xffffffffffffffff;
+	// Must be an immediate value greater than 0, or WAVESIZE.
+	requiredworkgroupsize 0xffffffff, 0xffffffff, 0xffffffff;
+	// Must be an immediate value greater than 0, or WAVESIZE.
+};
+
+function &Control_positive_oct()()
+{
+	enablebreakexceptions 7;
+	enabledetectexceptions 7;
+	maxdynamicgroupsize 1;
+	maxflatgridsize 1;
+	// Must be an immediate value greater than 0, or WAVESIZE.
+	maxflatworkgroupsize 1;
+	// Must be an immediate value greater than 0, or WAVESIZE.
+	requireddim 3;
+	// Must be an immediate value with the value 1, 2, or 3.
+	requiredgridsize 7, 6, 5;
+	// Must be an immediate value greater than 0, or WAVESIZE.
+	requiredworkgroupsize 2, 6, 5;
+	// Must be an immediate value greater than 0, or WAVESIZE.
+};
+///======================================================================================================
+/// THE END
+///======================================================================================================

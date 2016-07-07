@@ -1,0 +1,6 @@
+module &moduleName:1:0:$full:$large:$default;
+
+function &TestFunc()()
+{
+	requiredgridsize 0x7fffffff10000003, 0x7fffffff20000003, 0x7fffffff30000003;
+};
