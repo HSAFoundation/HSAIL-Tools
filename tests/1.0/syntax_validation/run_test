@@ -1,0 +1,27 @@
+#!/bin/bash
+
+if [ $# -ne 4 ]; then
+  echo "Usage: $0 HSAILASM NAME TEST_DIR GOLDEN_DIR"
+  echo "Error: expected 4 arguments."
+  exit 1
+fi
+
+set -e
+
+HSAILASM=$1
+NAME=$2
+TEST_DIR=$3
+GOLDEN_DIR=$4
+
+echo "Assembling"
+set +e
+$HSAILASM -enable-comments -assemble $TEST_DIR/$NAME.hsail -o ${NAME}_1.brig > ${NAME}_2.log
+res=$?
+set -e
+if [ $res -eq 0 ]; then
+  echo "Assembly passed unexpectedly."
+  exit 1
+fi
+
+echo "Comparing assembly log with golden"
+diff -u ${NAME}_2.log $GOLDEN_DIR/${NAME}.log

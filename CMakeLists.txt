@@ -59,6 +59,7 @@ if(BUILD_HSAILASM)
   add_subdirectory(HSAILAsm)
   add_subdirectory(tests/1.0/instruction)
   add_subdirectory(tests/1.0/syntax)
+  add_subdirectory(tests/1.0/syntax_validation)
 endif()
 
 if(BUILD_HSAILTESTGEN)
