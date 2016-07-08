@@ -60,6 +60,7 @@ set(libhsail_srcs
   HSAILCore.hdl
   HSAILImage.hdl
   HSAILDefs.hdl
+  BrigMeta.info
 )
 
 set(generated_dir ${CMAKE_CURRENT_BINARY_DIR}/generated)
@@ -109,6 +110,7 @@ add_custom_command(
     HSAILCore.hdl
     HSAILImage.hdl
     HSAILDefs.hdl
+    BrigMeta.info
   COMMENT "Generating libHSAIL sources"
 )
 

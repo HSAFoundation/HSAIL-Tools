@@ -41,7 +41,7 @@
 #include "HSAILBrigantine.h"
 #include "HSAILUtilities.h"
 
-#include <strstream>
+#include <sstream>
 
 
 namespace HSAIL_ASM
@@ -458,7 +458,7 @@ OperandRegister Brigantine::createOperandReg(const SRef& name,const SourceInfo* 
     default:
       assert(!"invalid register name");
     }
-    std::istrstream is(name.substr(2).begin, name.substr(2).length());
+    std::istringstream is(std::string(name.substr(2).begin, name.substr(2).length()));
     int num;
     is >> num;
 

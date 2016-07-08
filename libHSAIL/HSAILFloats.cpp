@@ -40,7 +40,6 @@
 // SOFTWARE.
 #include "HSAILFloats.h"
 #include "HSAILSRef.h"
-#include <strstream>
 #include <iosfwd>
 #include <sstream>
 #include <string>
@@ -189,10 +188,10 @@ static inline int digitValueBitLen(int c)
     return 1;
 }
 
-class istringstreamalert : public std::istrstream {
+class istringstreamalert : public std::istringstream {
 public:
     istringstreamalert(const char* s, unsigned cnt)
-        : std::istrstream(s,cnt) {
+        : std::istringstream(std::string(s,cnt)) {
         exceptions(std::ios::failbit | std::ios::badbit);
     }
 };

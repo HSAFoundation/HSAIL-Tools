@@ -872,7 +872,7 @@ void Disassembler::printInst(InstQueryImage i) const
     print(opcode2str(i.opcode()));
     print_(imageGeometry2str(i.geometry()));
 
-    print_(imageQuery2str(i.imageQuery()));
+    print_(imageQuery2str(i.query()));
 
     print_(type2str(i.type()));
     print_(type2str(i.imageType()));
@@ -883,7 +883,7 @@ void Disassembler::printInst(InstQuerySampler i) const
 {
     print(opcode2str(i.opcode()));
 
-    print_(samplerQuery2str(i.samplerQuery()));
+    print_(samplerQuery2str(i.query()));
 
     print_(type2str(i.type()));
     printInstArgs(i);

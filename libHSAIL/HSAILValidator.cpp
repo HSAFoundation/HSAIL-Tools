@@ -264,7 +264,7 @@ public: // Brig Object Properties
         assert(isVar(d));
         if (DirectiveVariable sym = d) return sym.align();
         assert(false);
-        return BRIG_ALIGNMENT_LAST;
+        return BRIG_ALIGNMENT_UNDEF;
     }
 
     static unsigned getAllocation(Code d)
@@ -2491,7 +2491,7 @@ private:
 
             validateOperand(init); // may not be validated yet
 
-            validate(init, dim == init.elements().size(), "Initializer size does not match array size");
+            validate(init, dim == static_cast<unsigned>(init.elements().size()), "Initializer size does not match array size"); //F elements().size() should return an unsigned value!
         }
     }
 
@@ -2904,21 +2904,21 @@ private:
         validateBrigProp(item, PROP_ALIGN, val, structName, fieldName);
     }
 
-    void validate_BrigAluModifier(Inst item, BrigAluModifier val, const char* structName, const char* fieldName) const
+    void validate_BrigAluModifier(Inst item, BrigAluModifier8_t val, const char* structName, const char* fieldName) const
     {
-        unsigned mod = val.allBits;
+        unsigned mod = val;
         validate(item, (mod & ~BRIG_ALU_FTZ) == 0, "Invalid ALU modifier value", mod);
     }
 
-    void validate_BrigMemoryModifier(Inst item, BrigMemoryModifier val, const char* structName, const char* fieldName) const
+    void validate_BrigMemoryModifier(Inst item, BrigMemoryModifier8_t val, const char* structName, const char* fieldName) const
     {
-        unsigned mod = val.allBits;
+        unsigned mod = val;
         validate(item, (mod & ~BRIG_MEMORY_CONST) == 0, "Invalid memory modifier (const) value", mod);
     }
 
-    void validate_BrigSegCvtModifier(Inst item, BrigSegCvtModifier val, const char* structName, const char* fieldName) const
+    void validate_BrigSegCvtModifier(Inst item, BrigSegCvtModifier8_t val, const char* structName, const char* fieldName) const
     {
-        unsigned mod = val.allBits;
+        unsigned mod = val;
         validate(item, (mod & ~BRIG_SEG_CVT_NONULL) == 0, "Invalid segcvt modifier value", mod);
     }
 
@@ -2926,9 +2926,9 @@ private:
     // Validation of BRIG properties NOT used in instructions
     // These properties can only include standard values (even if there are extensions)
 
-    void validate_BrigExecutableModifier(Code item, BrigExecutableModifier val, const char* structName, const char* fieldName) const
+    void validate_BrigExecutableModifier(Code item, BrigExecutableModifier8_t val, const char* structName, const char* fieldName) const
     {
-        unsigned mod = val.allBits;
+        unsigned mod = val;
         unsigned mask = BRIG_EXECUTABLE_DEFINITION;
 
         validate(item, (mod & ~mask) == 0, "Invalid executable modifier value", mod);
@@ -2939,9 +2939,9 @@ private:
         validate(item, linkage2str(linkage) != NULL, "Invalid linkage value", linkage);
     }
 
-    void validate_BrigVariableModifier(Code item, BrigVariableModifier val, const char* structName, const char* fieldName) const
+    void validate_BrigVariableModifier(Code item, BrigVariableModifier8_t val, const char* structName, const char* fieldName) const
     {
-        unsigned mod = val.allBits;
+        unsigned mod = val;
         unsigned mask = BRIG_VARIABLE_DEFINITION | BRIG_VARIABLE_CONST;
 
         validate(item, (mod & ~mask) == 0, "Invalid variable modifier value", mod);

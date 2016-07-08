@@ -155,7 +155,7 @@ Inst parseMnemoMipMapQueryImage(unsigned opCode, Scanner& scanner, Brigantine& b
 
     InstQueryImage inst    = bw.addInst<InstQueryImage>(opCode,dstType);
     inst.geometry()        = geom;
-    inst.imageQuery()      = BRIG_IMAGE_QUERY_AMD_MIPMAP_NUMMIPLEVELS;
+    inst.query()           = BRIG_IMAGE_QUERY_AMD_MIPMAP_NUMMIPLEVELS;
     inst.imageType()       = imgType;
 
     return inst;

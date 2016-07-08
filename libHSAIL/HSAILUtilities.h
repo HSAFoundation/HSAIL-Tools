@@ -66,6 +66,20 @@ class OperandCodeRef;
 struct SRef;
 
 //============================================================================
+// Helper constants used internally to symbolize invalid/uninitialized values 
+
+#define BRIG_CHANNEL_ORDER_UNKNOWN                  (static_cast<BrigImageChannelOrder> (BrigImageChannelOrder8_t(-1)))
+#define BRIG_CHANNEL_TYPE_UNKNOWN                   (static_cast<BrigImageChannelType>  (BrigImageChannelType8_t(-1)))
+#define BRIG_GEOMETRY_UNKNOWN                       (static_cast<BrigImageGeometry>     (BrigImageGeometry8_t(-1)))
+#define BRIG_MACHINE_UNDEF                          (static_cast<BrigMachineModel>      (BrigMachineModel8_t(-1)))
+#define BRIG_PROFILE_UNDEF                          (static_cast<BrigProfile>           (BrigProfile8_t(-1)))
+#define BRIG_TYPE_INVALID                           (static_cast<BrigType>              (BrigType16_t(-1)))
+#define BRIG_ALIGNMENT_UNDEF                        (static_cast<BrigAlignment>         (BrigAlignment8_t(-1)))
+
+#define BRIG_SECTION_INDEX_IMPLEMENTATION_DEFINED   (BRIG_SECTION_INDEX_BEGIN_IMPLEMENTATION_DEFINED)
+#define MAX_OPERANDS_NUM (6)
+
+//============================================================================
 // Operations with directives
 
 bool     isDirective(unsigned id);

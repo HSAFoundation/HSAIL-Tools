@@ -70,7 +70,7 @@ class Brigantine
     unsigned                m_profile;
 
     typedef std::vector< std::pair< ItemRef<Code>, SourceInfo > > RefList;
-    typedef std::map<BrigStringOffset32_t, RefList> LabelMap;
+    typedef std::map<BrigDataOffset32_t, RefList> LabelMap;
 
     LabelMap m_labelMap; // string offset -> array of label refs
 

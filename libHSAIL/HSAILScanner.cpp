@@ -45,7 +45,6 @@
 #include <algorithm>
 #include <limits>
 #include <utility>
-#include <strstream>
 
 StreamScannerBase::StreamScannerBase(std::istream& is)
     : m_end(0)
@@ -152,10 +151,10 @@ void printError(std::ostream& os, std::istream& is, const SrcLoc& errLoc, const 
 namespace HSAIL_ASM
 {
 
-class Scanner::istringstreamalert : public std::istrstream {
+class Scanner::istringstreamalert : public std::istringstream {
 public:
     istringstreamalert(const SRef& s)
-        : std::istrstream(s.begin,s.length()) {
+        : std::istringstream(std::string(s.begin,s.length())) {
         exceptions(std::ios::failbit | std::ios::badbit);
     }
 };

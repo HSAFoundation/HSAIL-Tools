@@ -1,0 +1,537 @@
+###
+### Copyright (c) 2014, HSA Foundation, Inc
+### All rights reserved.
+###
+### Permission is hereby granted, free of charge, to any person obtaining a copy
+### of this software and associated documentation files (the "Software"), to deal
+### with the Software without restriction, including without limitation the
+### rights to use, copy, modify, merge, publish, distribute, sublicense, and/or
+### sell copies of the Software, and to permit persons to whom the Software is
+### furnished to do so, subject to the following conditions:
+###
+###   * Redistributions of source code must retain the above copyright notice,
+###     this list of conditions and the following disclaimers.
+###
+###   * Redistributions in binary form must reproduce the above copyright notice,
+###     this list of conditions and the following disclaimers in the
+###     documentation and/or other materials provided with the distribution.
+###
+###   * Neither the names of the HSA Team, HSA Foundation,  University of
+###     Illinois at Urbana-Champaign, nor the names of its contributors may be
+###     used to endorse or promote products derived from this Software without
+###     specific prior written permission.
+###
+### THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+### IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+### FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SHALL THE
+### CONTRIBUTORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+### LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+### OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS WITH
+### THE SOFTWARE.
+###
+###
+###################################################################################################################
+# DESCRIPTION OF META-INFORMATION
+#
+# INTRODUCTION
+#   Types and constants defined in Brig.h are designed for use in C.
+#   To simplify working with these types in C++, each type is wrapped into a C++ code called proxy.
+#   Metainformation defined in this file is required for automatic generation of proxies for all Brig types.
+#
+# NOTES
+#   - order is important (perl code may use previously defined props)
+#
+###################################################################################################################
+# IGNORES
+
+ignore ExceptionsMask
+ignore SectionHeader
+ignore ModuleHeader
+ignore Module_t
+
+###################################################################################################################
+# TYPEDEFS
+
+type Version                    nodump nollvm
+type Version32_t                                                       wtype=ValRef<uint32_t>
+
+type Alignment8_t               defValue=BRIG_ALIGNMENT_NONE
+type Allocation8_t              defValue=BRIG_ALLOCATION_NONE
+type ImageChannelOrder8_t       defValue=BRIG_CHANNEL_ORDER_UNKNOWN
+type ImageChannelType8_t        defValue=BRIG_CHANNEL_TYPE_UNKNOWN
+type ImageGeometry8_t           defValue=BRIG_GEOMETRY_UNKNOWN
+type Linkage8_t                 defValue=BRIG_LINKAGE_NONE
+type MachineModel8_t            defValue=BRIG_MACHINE_LARGE
+type MemoryOrder8_t             defValue=BRIG_MEMORY_ORDER_RELAXED
+type MemoryScope8_t             defValue=BRIG_MEMORY_SCOPE_SYSTEM
+type Pack8_t                    defValue=BRIG_PACK_NONE
+type Profile8_t                 defValue=BRIG_PROFILE_FULL
+type Round8_t                   defValue=BRIG_ROUND_NONE
+type SamplerAddressing8_t       defValue=BRIG_ADDRESSING_CLAMP_TO_EDGE
+type Segment8_t                 defValue=BRIG_SEGMENT_NONE
+type Type16_t                   defValue=BRIG_TYPE_NONE
+
+type CodeOffset32_t             defValue=0                            wtype=ItemRef<Code>
+type DataOffsetCodeList32_t     defValue=0                            wtype=ListRef<Code>
+type DataOffsetOperandList32_t  defValue=0                            wtype=ListRef<Operand>
+type DataOffsetString32_t       defValue=0                            wtype=StrRef
+type OperandOffset32_t          defValue=0                            wtype=ItemRef<Operand>
+type StringOffset32_t           defValue=0                            wtype=StrRef
+
+###################################################################################################################
+# BITMASKS
+
+bitmask AluModifier8_t          AluModifier           ftz
+bitmask ExecutableModifier8_t   ExecutableModifier    isDefinition
+bitmask MemoryModifier8_t       MemoryModifier        isConst
+bitmask SegCvtModifier8_t       SegCvtModifier        isNoNull
+bitmask VariableModifier8_t     VariableModifier      isDefinition  isConst
+
+###################################################################################################################
+# ENUMS
+
+type Kind
+
+        skip            = / ( none | _reserved | ( directive | inst | operand ) _ ( begin | end ) )$ /x
+        wname           = M2N(uc($_))
+        mnemo           = $wname 
+
+        isBodyOnly      = / directive_ ( arg_block | control | label ) /x
+        isToplevelOnly  = / ( directive_ ) .* ( module | extension | function | kernel | signature ) /x
+        sizeof          = "sizeof(" . BrigStruct($wname) . ")" 
+
+        :switch         bool isBodyOnly(Directive d)           { switch(d.kind())   { case $_: return $isBodyOnly;       default: assert(false); return false; } }
+        :switch         bool isToplevelOnly(Directive d)       { switch(d.kind())   { case $_: return $isToplevelOnly;   default: assert(false); return false; } }
+        :switch         int size_of_brig_record(unsigned arg)  { switch(arg)        { case $_: return $sizeof;           default:                return -1;    } }
+
+type Alignment
+
+        skip            = / last | max /x
+        mnemo           = (
+                            none ? undef, 
+                            1    ? '', 
+                            *    ? $_
+                          )
+
+        bytes           = /(\d+)/ ? $1 : undef
+        rbytes          = $bytes
+
+        :switch         const char* align2str(unsigned arg)    { switch(arg)   { case $_: return $mnemo;   default:                 return NULL; } }
+        :switch         unsigned align2num(unsigned arg)       { switch(arg)   { case $_: return $bytes;   default:  assert(false); return -1;   } }
+        :switch         BrigAlignment num2align(uint64_t arg)  { switch(arg)   { case $rbytes: return $_;  default:  return BRIG_ALIGNMENT_UNDEF; } }
+
+type Allocation         token=EAllocKind
+
+        mnemo           = /none/ ? '' : $_
+
+type AtomicOperation    token=_EMAtomicOp       context=EInstModifierInstAtomicContext        tdcaption='Atomic Operations'
+
+        mnemo           = $_
+
+type CompareOperation   token=_EMCompare        tdcaption='Comparison Operators'
+    
+        mnemo           = $_
+
+type ControlDirective   token=EControl
+
+        skip            = /none/
+        mnemo           = $_
+
+type ExecutableModifierMask     nodump
+
+type ImageChannelOrder  token=EImageOrder       context=EImageOrderContext
+
+        skip            = /first_user_defined/
+        mnemo           = s/order_//; $_                                    # FIXME: simplify for HSAIL 1.1 (see 'purify')
+
+type ImageChannelType   token=EImageFormat
+
+        skip            = /first_user_defined/
+        mnemo           = s/type_//; $_                                     # FIXME: simplify for HSAIL 1.1 (see 'purify')
+
+type ImageGeometry      token=EImageGeometry    tdcaption=Geometry
+
+        skip            = /first_user_defined/
+        mnemo           = $_
+        dim             = /^([0-9]+d)(a)?/ ? $1 + (defined $2?1:0) : undef
+        depth           = /depth$/
+
+        :switch         unsigned getBrigGeometryDim(unsigned geo)  { switch(geo)   { case $_: return $dim;    default:  assert(0); return 0;  } }
+        :switch         bool isBrigGeometryDepth(unsigned geo)     { switch(geo)   { case $_: return $depth;  default:  return false;  } }
+
+type ImageQuery
+
+        skip            = /first_user_defined/
+        mnemo           = s/query_//; $_                                    # FIXME: simplify for HSAIL 1.1 (see 'purify')
+
+type Linkage
+
+        mnemo           = /none/ ? '' : $_
+
+type MachineModel       token=ETargetMachine
+
+        mnemo           = '$' . $_
+
+type MemoryOrder        token=_EMMemoryOrder
+
+        mnemo           = (
+                            order_none                ? '',                 # FIXME: simplify for HSAIL 1.1 (see 'purify')
+                            order_relaxed             ? 'rlx',              # FIXME: simplify for HSAIL 1.1 (see 'purify')
+                            order_sc_acquire          ? 'scacq',            # FIXME: simplify for HSAIL 1.1 (see 'purify')
+                            order_sc_release          ? 'screl',            # FIXME: simplify for HSAIL 1.1 (see 'purify')
+                            order_sc_acquire_release  ? 'scar',             # FIXME: simplify for HSAIL 1.1 (see 'purify')
+                          )
+
+type MemoryScope        token=_EMMemoryScope
+
+        mnemo           = (
+                            scope_none       ? '',                          # FIXME: simplify for HSAIL 1.1 (see 'purify')
+                            scope_workitem   ? '',                          # FIXME: simplify for HSAIL 1.1 (see 'purify')
+                            scope_wavefront  ? 'wave',                      # FIXME: simplify for HSAIL 1.1 (see 'purify')
+                            scope_workgroup  ? 'wg',                        # FIXME: simplify for HSAIL 1.1 (see 'purify')
+                            scope_agent      ? 'agent',                     # FIXME: simplify for HSAIL 1.1 (see 'purify')
+                            scope_system     ? 'system',                    # FIXME: simplify for HSAIL 1.1 (see 'purify')
+                          )
+
+type Opcode             token=EInstruction      context=EDefaultContext     scanner=Instructions    tdcaption='Instruction Opcodes'
+
+        skip            = / image | sampler | first_user_defined /x    # image and sampler opcodes are handled by IMAGE extension
+        mnemo           = $_
+
+        format          = (
+                            nop                 ? 'NOP',
+                            abs                 ? 'BASIC_OR_MOD',
+                            add                 ? 'BASIC_OR_MOD',
+                            ceil                ? 'BASIC_OR_MOD',
+                            copysign            ? 'BASIC_OR_MOD',
+                            div                 ? 'BASIC_OR_MOD',
+                            floor               ? 'BASIC_OR_MOD',
+                            fma                 ? 'BASIC_OR_MOD',
+                            fract               ? 'BASIC_OR_MOD',
+                            mad                 ? 'BASIC_OR_MOD',
+                            max                 ? 'BASIC_OR_MOD',
+                            min                 ? 'BASIC_OR_MOD',
+                            mul                 ? 'BASIC_OR_MOD',
+                            mulhi               ? 'BASIC_OR_MOD',
+                            neg                 ? 'BASIC_OR_MOD',
+                            rint                ? 'BASIC_OR_MOD',
+                            sqrt                ? 'BASIC_OR_MOD',
+                            sub                 ? 'BASIC_OR_MOD',
+                            trunc               ? 'BASIC_OR_MOD',
+                            popcount            ? 'SOURCE_TYPE',
+                            firstbit            ? 'SOURCE_TYPE',
+                            lastbit             ? 'SOURCE_TYPE',
+                            combine             ? 'SOURCE_TYPE',
+                            expand              ? 'SOURCE_TYPE',
+                            lda                 ? 'ADDR',
+                            pack                ? 'SOURCE_TYPE',
+                            unpack              ? 'SOURCE_TYPE',
+                            class               ? 'SOURCE_TYPE',
+                            packcvt             ? 'SOURCE_TYPE',
+                            unpackcvt           ? 'SOURCE_TYPE',
+                            sad                 ? 'SOURCE_TYPE',
+                            sadhi               ? 'SOURCE_TYPE',
+                            segmentp            ? 'SEG_CVT',
+                            ftos                ? 'SEG_CVT',
+                            stof                ? 'SEG_CVT',
+                            cmp                 ? 'CMP',
+                            cvt                 ? 'CVT',
+                            ld                  ? 'MEM',
+                            st                  ? 'MEM',
+                            atomic              ? 'ATOMIC',
+                            atomicnoret         ? 'ATOMIC',
+                            signal              ? 'SIGNAL',
+                            signalnoret         ? 'SIGNAL',
+                            memfence            ? 'MEM_FENCE',
+                            cbr                 ? 'BR',
+                            br                  ? 'BR',
+                            sbr                 ? 'BR',
+                            barrier             ? 'BR',
+                            wavebarrier         ? 'BR',
+                            arrivefbar          ? 'BR',
+                            initfbar            ? 'BASIC_NO_TYPE',
+                            joinfbar            ? 'BR',
+                            leavefbar           ? 'BR',
+                            releasefbar         ? 'BASIC_NO_TYPE',
+                            waitfbar            ? 'BR',
+                            activelanecount     ? 'LANE',
+                            activelaneid        ? 'LANE',
+                            activelanemask      ? 'LANE',
+                            activelanepermute   ? 'LANE',
+                            call                ? 'BR',
+                            scall               ? 'BR',
+                            icall               ? 'BR',
+                            ret                 ? 'BASIC_NO_TYPE',
+                            alloca              ? 'MEM',
+                            addqueuewriteindex  ? 'QUEUE',
+                            casqueuewriteindex  ? 'QUEUE',
+                            ldqueuereadindex    ? 'QUEUE',
+                            ldqueuewriteindex   ? 'QUEUE',
+                            stqueuereadindex    ? 'QUEUE',
+                            stqueuewriteindex   ? 'QUEUE',
+                            nullptr             ? 'SEG',
+                            *                   ? 'BASIC'
+                          )
+
+        psopnd          = (
+                            sbr                 ? 'SbrOperands',
+                            call                ? 'CallOperands',
+                            scall               ? 'CallOperands',
+                            icall               ? 'CallOperands',
+                          )
+
+        vecOpndIndex    = (
+                            combine             ? 1,
+                            expand              ? 0,
+                            ld                  ? 0,
+                            st                  ? 0,
+                            activelanemask      ? 0,
+                          )
+
+        numdst          = (
+                            st                  ? 0,
+                            atomicnoret         ? 0,
+                            signalnoret         ? 0,
+                            memfence            ? 0,
+                            cbr                 ? 0,
+                            br                  ? 0,
+                            sbr                 ? 0,
+                            barrier             ? 0,
+                            wavebarrier         ? 0,
+                            arrivefbar          ? 0,
+                            initfbar            ? 0,
+                            joinfbar            ? 0,
+                            leavefbar           ? 0,
+                            releasefbar         ? 0,
+                            waitfbar            ? 0,
+                            call                ? 0,
+                            scall               ? 0,
+                            icall               ? 0,
+                            cleardetectexcept   ? 0,
+                            setdetectexcept     ? 0,
+                            stqueuereadindex    ? 0,
+                            stqueuewriteindex   ? 0,
+                            debugtrap           ? 0,
+                          )
+
+        pscode          = M2N($format)
+
+        opcodeparser    = "parseMnemo$pscode"
+        opndparser      = $psopnd && "&Parser::parse$psopnd"
+
+        :switch         int getCoreVXIndex(BrigOpcode16_t arg)        { switch(arg)   { case $_: return $vecOpndIndex;   default:  return -1; } }
+        :switch         int getCoreDstOperandsNum(BrigOpcode16_t arg) { switch(arg)   { case $_: return $numdst;         default:  return 1;  } }
+
+        :switch         (ParserUtilities)
+                        OpcodeParser getCoreOpcodeParser(BrigOpcode16_t arg)                    { switch(arg)  { case $_: return $opcodeparser;   default:  return parseMnemoBasic;  } }
+
+        :switch         (ParserUtilities)
+                        Parser::OperandParser Parser::getCoreOperandParser(BrigOpcode16_t arg)  { switch(arg)  { case $_: return $opndparser;     default:  return &Parser::parseOperands;  } }
+
+type Pack               token=_EMPacking    tdcaption=Packing
+
+        mnemo           = s/sat$/_sat/; /none/ ? '' : $_
+
+type Profile            token=ETargetProfile
+
+        mnemo           = '$' . $_
+
+type RegisterKind       nollvm
+
+        mnemo           = s/kind_//; '$' . substr($_, 0, 1)         # FIXME: simplify for HSAIL 1.1 (see 'purify')
+        bits            = (                                         # FIXME: simplify for HSAIL 1.1 (see 'purify')
+                            kind_control ? 1,                       # FIXME: simplify for HSAIL 1.1 (see 'purify')
+                            kind_single  ? 32,                      # FIXME: simplify for HSAIL 1.1 (see 'purify')
+                            kind_double  ? 64,                      # FIXME: simplify for HSAIL 1.1 (see 'purify')
+                            kind_quad    ? 128                      # FIXME: simplify for HSAIL 1.1 (see 'purify')
+                          )
+
+        :switch         unsigned getRegBits(BrigRegisterKind16_t arg) { switch(arg)      { case $_: return $bits;         default:  return (unsigned)-1;  } }
+
+type Round              token=_EMRound
+
+        mnemo           = (
+                            float_near_even                      ? 'near',
+                            float_zero                           ? 'zero',
+                            float_plus_infinity                  ? 'up',
+                            float_minus_infinity                 ? 'down',
+                            integer_near_even                    ? 'neari',
+                            integer_zero                         ? 'zeroi',
+                            integer_plus_infinity                ? 'upi',
+                            integer_minus_infinity               ? 'downi',
+                            integer_near_even_sat                ? 'neari_sat',
+                            integer_zero_sat                     ? 'zeroi_sat',
+                            integer_plus_infinity_sat            ? 'upi_sat',
+                            integer_minus_infinity_sat           ? 'downi_sat',
+                            integer_signaling_near_even          ? 'sneari',
+                            integer_signaling_zero               ? 'szeroi',
+                            integer_signaling_plus_infinity      ? 'supi',
+                            integer_signaling_minus_infinity     ? 'sdowni',
+                            integer_signaling_near_even_sat      ? 'sneari_sat',
+                            integer_signaling_zero_sat           ? 'szeroi_sat',
+                            integer_signaling_plus_infinity_sat  ? 'supi_sat',
+                            integer_signaling_minus_infinity_sat ? 'sdowni_sat',
+                          )
+
+        sat             = /_sat$/
+        sig             = /_signaling_/
+        int             = /^integer_/
+        flt             = /^float_/
+
+        :switch         bool isSatRounding(unsigned rounding)       { switch(rounding)  { case $_: return $sat;  default: return false; } }
+        :switch         bool isSignalingRounding(unsigned rounding) { switch(rounding)  { case $_: return $sig;  default: return false; } }
+        :switch         bool isIntRounding(unsigned rounding)       { switch(rounding)  { case $_: return $int;  default: return false; } }
+        :switch         bool isFloatRounding(unsigned rounding)     { switch(rounding)  { case $_: return $flt;  default: return false; } }
+
+type SamplerAddressing  token=ESamplerAddressingMode
+
+        skip            = /first_user_defined/
+        mnemo           = $_
+
+type SamplerCoordNormalization      token=ESamplerCoord
+
+        mnemo           = $_
+
+type SamplerFilter
+
+        skip            = /first_user_defined/
+        mnemo           = $_
+
+type SamplerQuery       token=_EMSamplerQuery
+
+        mnemo           = s/query_//; $_                # FIXME: simplify for HSAIL 1.1 (see 'purify')
+
+type SectionIndex       nollvm
+
+        mnemo           = s/index_//; 'hsa_' . $_       # FIXME: simplify for HSAIL 1.1 (see 'purify')
+
+type Segment            token=_EMSegment      context=EInstModifierContext
+
+        skip            = /first_user_defined/
+        mnemo           = / none | flat /x ? '' : $_
+
+# FIXME: this is a noname enum; how to specify it here? Currently this is hardcoded in generate.pl
+# type PackedTypeBits     nodump  nollvm
+
+type Type               token=_EMType
+
+        mnemo           = / array$ | none$ /x ? '' : $_
+
+        array           = /array$/
+        a2e             = /^(.*)_array$/              ? uc("BRIG_TYPE_$1") : 'BRIG_TYPE_NONE'
+        e2a             = / _array$ | none$ | b1$ /x  ? 'BRIG_TYPE_NONE'   : uc("BRIG_TYPE_${_}_ARRAY")
+        t2s             = s/_array$/[]/; $_
+
+        defaultNumBits  = / array$ /x ? undef : / ([0-9]+) x ([0-9]+) /x ? $1*$2 : /([0-9]+)/ ? $1 : undef
+        numBits         = (
+                            samp     ? 64,
+                            roimg    ? 64,
+                            woimg    ? 64,
+                            rwimg    ? 64,
+                            sig32    ? 64,
+                            sig64    ? 64,
+                            *        ? $defaultNumBits
+                          ) 
+
+        numBytes        = /b1$/ ? 1 : $numBits ? ($numBits / 8) : undef
+
+        :switch         bool isArrayType(unsigned type)                { switch(type)  { case $_: return $array;     default: return false;          } }
+        :switch         unsigned arrayType2elementType(unsigned type)  { switch(type)  { case $_: return $a2e;       default: return BRIG_TYPE_NONE; } }
+        :switch         unsigned elementType2arrayType(unsigned type)  { switch(type)  { case $_: return $e2a;       default: return BRIG_TYPE_NONE; } }
+        :switch         const char* type2name(unsigned type)           { switch(type)  { case $_: return $t2s;       default: return NULL;           } }
+        :switch         unsigned getBrigTypeNumBits(unsigned type)     { switch(type)  { case $_: return $numBits;   default: assert(0); return 0;   } }
+        :switch         unsigned getBrigTypeNumBytes(unsigned type)    { switch(type)  { case $_: return $numBytes;  default: assert(0); return 0;   } }
+
+        dispatch        = /array$/ ? "v.visitNone(type)" : /^([busf]|sig)[0-9]+/ ? "v.template visit< BrigTypeTraits<BRIG_TYPE_" . uc($_) . "> >()" : "v.visitNone(type)"
+
+        :switch(TemplateUtilities)
+                        template<typename RetType, typename Visitor>
+                        RetType dispatchByType_gen(unsigned type, Visitor& v)
+                        { switch(type)      { case $_: return $dispatch;           default: return v.visitNone(type);    } }
+
+type VariableModifierMask   nodump
+
+type Base
+type Data
+
+###################################################################################################################
+# PROXIES
+
+proxy UInt64                                            acc=subItem<UInt64> wtype=UInt64
+                                                        defValue = 0
+
+                                                        :proto KLASS& operator=(uint64_t rhs);
+                                                        :proto operator uint64_t();
+
+                                                        :impl  inline KLASS& KLASS::operator=(uint64_t rhs) { lo() = (uint32_t)rhs; hi() = (uint32_t)(rhs >> 32); return *this; }
+                                                        :impl  inline KLASS::operator uint64_t() { return ((uint64_t)hi()) << 32 | lo(); }
+
+alias Code                      :Base                   section=BRIG_SECTION_INDEX_CODE
+alias Directive                 :Code
+alias Operand                   :Base                   section=BRIG_SECTION_INDEX_OPERAND
+
+proxy DirectiveArgBlock         :Directive
+alias DirectiveArgBlockStart    :DirectiveArgBlock
+alias DirectiveArgBlockEnd      :DirectiveArgBlock
+
+proxy DirectiveExecutable       :Directive
+                                                        defValue = (outArgCount ? 0, inArgCount ? 0)
+
+alias DirectiveKernel           :DirectiveExecutable
+alias DirectiveFunction         :DirectiveExecutable
+alias DirectiveSignature        :DirectiveExecutable
+alias DirectiveIndirectFunction :DirectiveExecutable
+
+proxy InstBase                  : Code                  wname=Inst
+
+                                                        :proto Operand operand(int index);
+                                                        :impl  inline Operand KLASS::operand(int index) { return operands()[index]; }
+
+proxy DirectiveLoc              : Directive
+                                                        defValue = (column ? 1)
+
+proxy DirectiveNone             : Directive             enum=BRIG_KIND_NONE
+
+proxy DirectiveVariable         : Directive
+
+                                                        :proto bool isArray();
+                                                        :proto unsigned elementType();
+                                                        :impl  inline bool KLASS::isArray() { return isArrayType(type()); }
+                                                        :impl  inline unsigned KLASS::elementType() { return isArray()? arrayType2elementType(type()) : type(); }
+
+proxy InstQueryImage            : InstBase
+                                                        hdlProp = (query ? 'imageQuery')
+
+proxy InstQuerySampler          : InstBase
+                                                        hdlProp = (query ? 'samplerQuery')
+
+
+proxy OperandAddress            : Operand
+                                                        wtype = ( 
+                                                                    symbol  ? 'ItemRef<DirectiveVariable>', 
+                                                                    reg     ? 'ItemRef<OperandRegister>' 
+                                                                )
+
+proxy OperandCodeList           : Operand
+
+                                                        :proto unsigned elementCount();
+                                                        :proto Code elements(int index);
+                                                        :impl  inline unsigned KLASS::elementCount() { return elements().size(); }
+                                                        :impl  inline Code KLASS::elements(int index) { return elements()[index]; }
+
+proxy OperandConstantOperandList : Operand
+
+                                                        :proto unsigned elementCount();
+                                                        :proto Operand elements(int index);
+                                                        :impl  inline unsigned KLASS::elementCount() { return elements().size(); }
+                                                        :impl  inline Operand KLASS::elements(int index) { return elements()[index]; }
+
+proxy OperandOperandList        : Operand
+
+                                                        :proto unsigned elementCount();
+                                                        :proto Operand elements(int index);
+                                                        :impl  inline unsigned KLASS::elementCount() { return elements().size(); }
+                                                        :impl  inline Operand KLASS::elements(int index) { return elements()[index]; }
+
+
+###################################################################################################################

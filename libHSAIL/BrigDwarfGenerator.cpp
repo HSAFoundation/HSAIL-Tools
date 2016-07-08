@@ -658,7 +658,6 @@ BrigDwarfGenerator_impl::generateDwarfForBrigSymbol( HSAIL_ASM::Directive d,
                                                      unsigned dwarfTag)
 {
     HSAIL_ASM::DirectiveVariable dSym( d );
-    BrigDirectiveVariable * pBds( dSym.brig() );
     Dwarf_Error * nullError( 0 );
     Dwarf_P_Die nullSibling( 0 );
 

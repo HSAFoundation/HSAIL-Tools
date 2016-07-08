@@ -126,7 +126,7 @@ OptionalU tryParseWidthModifier(Scanner& scanner) {
 unsigned parseAlign(Scanner& scanner) {
     scanner.eatToken(ELParen);
     unsigned res = num2align(scanner.readIntLiteral());
-    if (res == BRIG_ALIGNMENT_LAST) {
+    if (res == BRIG_ALIGNMENT_UNDEF) {
         scanner.syntaxError("Invalid alignment");
     }
     scanner.eatToken(ERParen);
@@ -404,7 +404,7 @@ Inst parseMnemoQueryImage(unsigned opCode, Scanner& scanner, Brigantine& bw, int
 
     InstQueryImage inst    = bw.addInst<InstQueryImage>(opCode,dstType);
     inst.geometry()        = geom;
-    inst.imageQuery()      = query;
+    inst.query()           = query;
     inst.imageType()       = imgType;
     return inst;
 }
@@ -416,7 +416,7 @@ Inst parseMnemoQuerySampler(unsigned opCode, Scanner& scanner, Brigantine& bw, i
     // parse done
 
     InstQuerySampler inst  = bw.addInst<InstQuerySampler>(opCode,dstType);
-    inst.samplerQuery()    = query;
+    inst.query()           = query;
     return inst;
 }
 
