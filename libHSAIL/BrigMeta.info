@@ -502,9 +502,14 @@ proxy DirectiveVariable         : Directive
 proxy InstQueryImage            : InstBase
                                                         hdlProp = (query ? 'imageQuery')
 
+                                                        :proto EnumValRef<BrigImageQuery,uint8_t>                 imageQuery(); // defined for backward compatibility with legacy code
+                                                        :impl  inline EnumValRef<BrigImageQuery,uint8_t> InstQueryImage::imageQuery() { return query(); }
+
 proxy InstQuerySampler          : InstBase
                                                         hdlProp = (query ? 'samplerQuery')
 
+                                                        :proto EnumValRef<BrigSamplerQuery,uint8_t>               samplerQuery(); // defined for backward compatibility with legacy code
+                                                        :impl  inline EnumValRef<BrigSamplerQuery,uint8_t> InstQuerySampler::samplerQuery() { return query(); }
 
 proxy OperandAddress            : Operand
                                                         wtype = ( 
