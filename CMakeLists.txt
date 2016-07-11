@@ -10,7 +10,7 @@ endif()
 if(UNIX)
   add_compile_options(${EXTRA_CFLAGS})
   #FIXME: Should set -fno-rtti etc. from LLVM config flags.
-  add_compile_options(-fpic -Wall -std=c++11 -pthread -fno-rtti -fvisibility-inlines-hidden)
+  add_compile_options(-fpic -Wall -Werror -std=c++11 -pthread -fno-rtti -fvisibility-inlines-hidden)
   add_definitions(-D__STDC_LIMIT_MACROS)
   add_definitions(-D__STDC_CONSTANT_MACROS)
   add_definitions(-D__STDC_FORMAT_MACROS)
