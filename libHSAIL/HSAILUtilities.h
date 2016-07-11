@@ -76,8 +76,16 @@ struct SRef;
 #define BRIG_TYPE_INVALID                           (static_cast<BrigType>              (BrigType16_t(-1)))
 #define BRIG_ALIGNMENT_UNDEF                        (static_cast<BrigAlignment>         (BrigAlignment8_t(-1)))
 
+//============================================================================
+// Helper constants defined for compatibility with legacy code
+
 #define BRIG_SECTION_INDEX_IMPLEMENTATION_DEFINED   (BRIG_SECTION_INDEX_BEGIN_IMPLEMENTATION_DEFINED)
 #define MAX_OPERANDS_NUM (6)
+
+#define BRIG_ALIGNMENT_LAST     (static_cast<BrigAlignment>(BRIG_ALIGNMENT_MAX + 1))
+#define BRIG_MEMORY_ORDER_LAST  (static_cast<BrigMemoryOrder>(BRIG_MEMORY_ORDER_SC_ACQUIRE_RELEASE + 1))
+#define BRIG_MEMORY_SCOPE_LAST  (static_cast<BrigMemoryScope>(BRIG_MEMORY_SCOPE_SYSTEM + 1))
+#define BRIG_WIDTH_LAST         (static_cast<BrigWidth>(BRIG_WIDTH_ALL + 1))
 
 //============================================================================
 // Operations with directives

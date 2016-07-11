@@ -766,13 +766,10 @@ void BrigDwarfGenerator_impl::generateDwarfForBrigKernelFunction( HSAIL_ASM::Dir
         if (!pSrcInfo) continue;
         if ( !m_isDwarfLineSetAddressCalled )
         {
-            Dwarf_Unsigned rv = dwarf_lne_set_address( m_pDwarfDebug,
-                                                       instr.brigOffset(),
-                                                       m_codeSymbol,
-                                                       nullError );
-            // TBD: do we need this assert?
-            //
-            assert(rv == 0);
+            dwarf_lne_set_address( m_pDwarfDebug,
+                                   instr.brigOffset(),
+                                   m_codeSymbol,
+                                   nullError );
             m_isDwarfLineSetAddressCalled = true;
         }
         dwarf_add_line_entry( m_pDwarfDebug,
