@@ -6,6 +6,21 @@ if(LIBELF_FOUND)
   find_package(LibDwarf)
 endif()
 
+# Only try to build libbrigdwarf if we have both libelf and libdwarf.
+
+# TODO: The checks for libdwarf and libelf need to be refined. There
+# are several versions of each, and not all of them work here.
+# e.g. This does not build with the versions in macports.
+
+cmake_dependent_option(BUILD_LIBBRIGDWARF "Build libbrigdwarf" ON
+  "LIBELF_FOUND;LIBDWARF_FOUND" OFF)
+
+message(STATUS "Building with BRIG DWARF support: ${BUILD_LIBBRIGDWARF}")
+
+if (LIBDWARF_USE_INIT_C)
+  add_definitions("-DLIBDWARF_USE_INIT_C")
+endif()
+
 set(libhsail_public_headers
   Brig.h
   HSAILBrigContainer.h
@@ -142,12 +157,12 @@ add_dependencies(hsail libhsail-includes)
 
 target_include_directories(hsail PUBLIC ${CMAKE_CURRENT_SOURCE_DIR} ${generated_dir})
 
-if(UNIX)
-  target_link_libraries(hsail dl)
-endif()
 if(BUILD_LIBBRIGDWARF)
   target_link_libraries(hsail dwarf)
   target_link_libraries(hsail elf)
+endif()
+if(UNIX)
+  target_link_libraries(hsail dl)
 endif()
 
 install(TARGETS hsail

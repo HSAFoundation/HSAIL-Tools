@@ -1,8 +1,3 @@
-include_directories(${PROJECT_SOURCE_DIR}/libHSAIL)
-include_directories(${PROJECT_BINARY_DIR}/libHSAIL/generated)
-
-include_directories(${PROJECT_SOURCE_DIR}/libHSAIL-AMD)
-
 include_directories(${LLVM_PATH}/include)
 
 include_directories(${LLVM_INCLUDE_DIR})
@@ -15,7 +10,6 @@ endif()
 
 add_executable(HSAILasm HSAILAsm.cpp)
 target_link_libraries(HSAILasm hsail hsail-amd)
-add_dependencies(HSAILasm libhsail-includes)
 
 # FIXME: We also need to get the link dependencies of the libLLVMSupport
 target_link_libraries(HSAILasm ${LLVM_SUPPORT_LIB})
@@ -23,6 +17,7 @@ target_link_libraries(HSAILasm ${LLVM_SUPPORT_LIB})
 find_library(CURSES_LIB curses)
 
 #include(LLVM-Config.cmake)
+#FIXME: Should set -fno-rtti etc. from LLVM config flags.
 
 if(BUILD_LIBBRIGDWARF)
   include_directories(${LIBELF_INCLUDE_DIRS})
