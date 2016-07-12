@@ -19,7 +19,6 @@ list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake_modules")
 include(CMakeDependentOption)
 
 find_package(RE2C REQUIRED)
-find_package(LLVM REQUIRED)
 
 option(VENDOR_EXTENSIONS "Enable vendor extensions" ON)
 message(STATUS "Vendor extensions: ${VENDOR_EXTENSIONS}")

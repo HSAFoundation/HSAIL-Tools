@@ -1,13 +1,3 @@
-include_directories(${LLVM_PATH}/include)
-
-include_directories(${LLVM_INCLUDE_DIR})
-
-if(UNIX)
-  include_directories(${LLVM_PATH}/linux/include)
-else()
-  include_directories(${LLVM_PATH}/win32/include)
-endif()
-
 add_executable(HSAILasm HSAILAsm.cpp)
 
 target_link_libraries(HSAILasm hsail)
@@ -16,13 +6,7 @@ if(AMD_EXTENSIONS)
   target_link_libraries(HSAILasm hsail-amd)
 endif()
 
-# FIXME: We also need to get the link dependencies of the libLLVMSupport
-target_link_libraries(HSAILasm ${LLVM_SUPPORT_LIB})
-
 find_library(CURSES_LIB curses)
-
-#include(LLVM-Config.cmake)
-#FIXME: Should set -fno-rtti etc. from LLVM config flags.
 
 if(BUILD_LIBBRIGDWARF)
   include_directories(${LIBELF_INCLUDE_DIRS})
@@ -32,7 +16,6 @@ if(BUILD_LIBBRIGDWARF)
 endif()
 
 if(CURSES_LIB)
-  # FIXME: Find dependencies pulled in by LLVMSupport
   target_link_libraries(HSAILasm ${CURSES_LIB})
 endif()
 if(UNIX)

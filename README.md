@@ -26,7 +26,6 @@ libHSAIL requires the following components:
  * CMake
  * libelf (if `BUILD_WITH_LIBBRIGDWARF=1`)
  * libdwarf (if `BUILD_WITH_LIBBRIGDWARF=1`)
- * LLVM (only Support and Object libraries, if `BUILD_HSAILASM=1`)
  * perl
  * re2c
 
@@ -80,7 +79,6 @@ solution file which can be opened and built in Visual Studio.
 
 For Windows, it is possible to obtain dependencies from corresponding software sources:
 
-* LLVM can be downloaded from http://llvm.org/releases/.
 * re2c source, Windows binaries and some linux packages can be donwloaded from
   http://sourceforge.net/projects/re2c/.
 * Perl for Windows can be obtained from any of the following sources:
