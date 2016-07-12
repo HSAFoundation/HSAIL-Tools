@@ -3,6 +3,8 @@ cmake_minimum_required(VERSION 2.6)
 project(HSAIL-Tools)
 
 if(MSVC)
+  add_compile_options(/W3 /WX)
+  add_definitions(-D_CRT_SECURE_NO_WARNINGS)
   set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} /MT")
   set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} /MTd")
 endif()
