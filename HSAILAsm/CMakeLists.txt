@@ -9,7 +9,12 @@ else()
 endif()
 
 add_executable(HSAILasm HSAILAsm.cpp)
-target_link_libraries(HSAILasm hsail hsail-amd)
+
+target_link_libraries(HSAILasm hsail)
+
+if(AMD_EXTENSIONS)
+  target_link_libraries(HSAILasm hsail-amd)
+endif()
 
 # FIXME: We also need to get the link dependencies of the libLLVMSupport
 target_link_libraries(HSAILasm ${LLVM_SUPPORT_LIB})

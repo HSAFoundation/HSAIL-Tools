@@ -21,13 +21,23 @@ include(CMakeDependentOption)
 find_package(RE2C REQUIRED)
 find_package(LLVM REQUIRED)
 
+option(VENDOR_EXTENSIONS "Enable vendor extensions" ON)
+message(STATUS "Vendor extensions: ${VENDOR_EXTENSIONS}")
+
+cmake_dependent_option(AMD_EXTENSIONS "Enable AMD HSAIL extensions" ON "VENDOR_EXTENSIONS" OFF)
+message(STATUS "AMD extensions: ${AMD_EXTENSIONS}")
+
 option(BUILD_HSAILASM "Build HSAILAsm" ON)
 message(STATUS "Building HSAILAsm: ${BUILD_HSAILASM}")
 
 enable_testing()
 
 add_subdirectory(libHSAIL)
-add_subdirectory(libHSAIL-AMD)
+
+if(AMD_EXTENSIONS)
+  add_subdirectory(libHSAIL-AMD)
+  add_definitions(-DAMD_EXTENSIONS)
+endif()
 
 # FIXME: We should check for a usable version of libelf / libdwarf.
 if(BUILD_HSAILASM)

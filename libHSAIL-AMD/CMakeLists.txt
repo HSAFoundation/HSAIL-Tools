@@ -42,7 +42,7 @@ add_custom_command(
     DEPENDS
       ${libHSAIL-PATH}/Brig.h
       gcn.hdl mipmap.hdl dg.hdl
-    COMMENT "Generating GCN and MIPMAP validators"
+    COMMENT "Generating libHSAIL-AMD sources"
 )
 
 add_library(hsail-amd ${libhsail_amd_srcs} ${libhsail_amd_public_headers} ${amd_generated_headers})

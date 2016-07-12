@@ -59,7 +59,9 @@
 #include "HSAILTool.h"
 #include "HSAILExtManager.h"
 #include "HSAILImageExt.h"
+#ifdef AMD_EXTENSIONS
 #include "HSAILAmdExt.h"
+#endif // AMD_EXTENSIONS
 
 #ifdef WITH_LIBBRIGDWARF
 #include "BrigDwarfGenerator.h"
@@ -76,7 +78,10 @@ int main(int argc, char **argv) {
     sys::PrintStackTraceOnErrorSignal();
     PrettyStackTraceProgram X(argc, argv);
 
+#ifdef AMD_EXTENSIONS
     amd::hsail::registerExtensions();
+#endif // AMD_EXTENSIONS
+
     Tool tool;
 
     DEBUG(tool.SetEnableComments(true));
