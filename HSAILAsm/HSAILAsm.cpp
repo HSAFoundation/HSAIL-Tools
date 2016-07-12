@@ -52,9 +52,9 @@
 #include "HSAILAmdExt.h"
 #endif // AMD_EXTENSIONS
 
-#ifdef WITH_LIBBRIGDWARF
-#include "BrigDwarfGenerator.h"
-#endif
+#ifdef _MSC_VER
+#include <Windows.h>
+#endif // _MSC_VER
 
 using namespace HSAIL_ASM;
 
