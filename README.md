@@ -14,10 +14,8 @@ The following components are provided:
  * **libHSAIL-AMD** is the library with AMD HSAIL extensions.
  * **HSAILAsm** is command-line interface to libHSAIL.
 
-The following branches are currently used:
+This version of libHSAIL supports HSA PRM 1.02 (Final) specification.
 
- * **master** branch has libHSAIL for HSA PRM 1.0 (Final) specification.
- * **hsail1.0p** branch has libHSAIL for HSAIL 1.0 Provisional specification.
 
 ### BUILD PREREQUISITES
 
@@ -31,7 +29,7 @@ libHSAIL requires the following components:
 
 libHSAIL CMake build will automatically find these dependencies if installed.
 
-libHSAIL itself can be built without debug support and does not require libdwarf
+libHSAIL can be built without debug support and does not require libelf/libdwarf
 in this case.
 
 
@@ -39,10 +37,18 @@ in this case.
 
 We recommend to use out-of-source CMake build and create separate directory to run CMake.
 
-To build libHSAIL without libBRIGDwarf (no debug support), specify
-`-DBUILD_WITH_LIBBRIGDWARF=0` option to CMake.
+To build libHSAIL without BRIG DWARF (no debug support), specify
+`-DBUILD_WITH_LIBBRIGDWARF=OFF` option to CMake.
 
-To avoid building HSAILAsm, specify `-DBUILD_HSAILASM=0` option to CMake.
+To avoid building HSAILAsm, specify `-DBUILD_HSAILASM=OFF` option to CMake.
+
+To avoid building all vendor extensions, specify `-DVENDOR_EXTENSIONS=OFF` option to CMake.
+
+To avoid building AMD extensions, specify `-DAMD_EXTENSIONS=OFF` option to CMake.
+
+A set of tests is included and can be run with 'make test' (requires HSAILAsm to be built).
+
+To enable additional syntax validation tests, specify `-DSYNTAX_VALIDATION_TESTS=ON` option to CMake.
 
 
 ### BUILD (Linux)
@@ -58,7 +64,7 @@ them on Ubuntu 14.04 system:
 
     sudo apt-get install cmake libdwarf-dev libelf-dev llvm-dev ncurses-dev re2c perl
 
-Building on Linux requires GCC 4.4+.
+Building on Linux requires GCC 4.8+.
 
 On Linux, CMake normally finds all dependencies automatically. However, it is also
 possible to override it (see, for example, scripts in `bin/` subdirectory).
@@ -72,7 +78,7 @@ CMake command line should specify compiler configuration:
 
     md build/win64
     cd build/win64
-    cmake -G "Visual Studio 11 2012 Win64" ...
+    cmake -G "Visual Studio 12 2013 Win64" ...
 
 CMake will attempt to locate corresponding compiler and generate Visual Studio
 solution file which can be opened and built in Visual Studio.
