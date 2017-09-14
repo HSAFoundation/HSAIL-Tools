@@ -1783,7 +1783,7 @@ sub registerProp {
 sub getBrigPropByType {
     my ($type) = @_;
 
-    for my $prop (keys %brigProps) {
+    for my $prop (sort keys %brigProps) {
         my ($ty, $acc) = @{$brigProps{$prop}};
         if ($ty eq $type) { return $prop; }
     }
