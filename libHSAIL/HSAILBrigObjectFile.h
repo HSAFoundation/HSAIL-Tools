@@ -105,7 +105,7 @@ public:
 
     template <typename T, unsigned N>
     int write(const T (&a)[N], unsigned numElems = 0) {
-        return write((const char*)a, sizeof a[0] * numElems? numElems : N);
+        return write((const char*)a, sizeof(a[0]) * (numElems != 0 ? numElems : N));
     }
 };
 
