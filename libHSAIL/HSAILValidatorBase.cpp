@@ -393,7 +393,8 @@ bool PropValidator::checkOperandKind(Inst inst, unsigned operandIdx, unsigned* v
         case OPERAND_VAL_ADDR:      if (OperandAddress(opr))                                    return true; break;
         case OPERAND_VAL_LAB:       if (isCodeRef(opr, BRIG_KIND_DIRECTIVE_LABEL))              return true; break;
         case OPERAND_VAL_FUNC:      if (isCodeRef(opr, BRIG_KIND_DIRECTIVE_FUNCTION) ||
-                                        isCodeRef(opr, BRIG_KIND_DIRECTIVE_INDIRECT_FUNCTION))  return true; break;
+                                        isCodeRef(opr, BRIG_KIND_DIRECTIVE_INDIRECT_FUNCTION))  return true;
+                break;
         case OPERAND_VAL_IFUNC:     if (isCodeRef(opr, BRIG_KIND_DIRECTIVE_INDIRECT_FUNCTION))  return true; break;
         case OPERAND_VAL_KERNEL:    if (isCodeRef(opr, BRIG_KIND_DIRECTIVE_KERNEL))             return true; break;
         case OPERAND_VAL_SIGNATURE: if (isCodeRef(opr, BRIG_KIND_DIRECTIVE_SIGNATURE))          return true; break;
